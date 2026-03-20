@@ -1,0 +1,9 @@
+.DS_Store
+dist/
+task_plan.md
+progress.md
+findings.md
+docs/plans/
+skill/liangqin-pricing/reports/
+*.pyc
+__pycache__/

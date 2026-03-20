@@ -1,0 +1,7 @@
+{
+  "version": "2025-06-01",
+  "built_at": "2026-03-15T06:43:01",
+  "status": "candidate",
+  "price_index_file": "price-index.json",
+  "rules_candidate_file": "rules/rules-candidate.json"
+}
