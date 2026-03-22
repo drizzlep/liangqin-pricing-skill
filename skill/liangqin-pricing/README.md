@@ -5,6 +5,29 @@
 - 运行层：给小龙虾日常报价用
 - 维护层：给内部更新价格和规则用
 
+## GitHub 公开版说明
+
+为了让其他 OpenClaw 安装时仓库更轻，GitHub 公开版默认：
+
+- 保留可直接运行的 `rules-index.json`、`runtime-rules.json`、规则草稿和审阅稿
+- 不提交 `sources/archived/addenda/` 里的原始大 PDF
+
+也就是说：
+
+- 公开仓库可以直接用于安装和运行报价
+- 如果你只是使用这套 skill，不需要原始 PDF
+- 如果你要重新从 PDF 生成 addendum，请把你自己的原始文件放进 `sources/inbox/`，再运行更新脚本
+
+## OpenClaw 安装
+
+如果其他 OpenClaw 想直接使用这个版本，建议固定到 tag：
+
+```bash
+git clone --branch v2026.03.23.1 --depth 1 https://github.com/drizzlep/liangqin-pricing-skill.git
+```
+
+然后把 `skill/liangqin-pricing` 同步到 OpenClaw workspace 即可。
+
 ## 日常只需要看这几个文件
 
 - `SKILL.md`

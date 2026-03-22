@@ -9,5 +9,6 @@ skill/liangqin-pricing/reports/*
 !skill/liangqin-pricing/reports/addenda/**
 skill/liangqin-pricing/reports/addenda/.DS_Store
 skill/liangqin-pricing/reports/addenda/**/.DS_Store
+skill/liangqin-pricing/sources/archived/addenda/**/*.pdf
 *.pyc
 __pycache__/
