@@ -1,0 +1,55 @@
+{
+  "suite_name": "liangqin-openclaw-regression",
+  "version": "2026-03-22",
+  "cases": [
+    {
+      "id": "cabinet-smoke-flowing-cloud",
+      "category": "smoke",
+      "message": "我要做个北美黑胡桃木流云衣柜，长1.8米，高2.2米，深670，多少钱？",
+      "expected_keywords": ["正式报价", "超深", "15%"],
+      "forbidden_keywords": ["参考总价"]
+    },
+    {
+      "id": "opening-method-follow-up",
+      "category": "addendum-follow-up",
+      "message": "我要做一个北美黑胡桃木流云门衣柜，长1.8米，高2.2米，深600，不做拉手和抠手，开启方向先不说，这种现在怎么报？",
+      "expected_any_keywords": [["开启方式", "左开", "右开", "怎么开", "按弹开启"]],
+      "forbidden_keywords": ["不影响报价"]
+    },
+    {
+      "id": "bed-mattress-weight-follow-up",
+      "category": "addendum-follow-up",
+      "message": "我要做一个尾翻箱体床，1.8乘2米，北美黑胡桃木，床垫重量暂时未知，你先按规则告诉我还需要补什么信息，以及举升器怎么判断。",
+      "expected_keywords": ["床垫重量", "750N", "备注"],
+      "forbidden_keywords": ["电动举升器", "力矩公式", "默认一套"]
+    },
+    {
+      "id": "bed-limiter-rule",
+      "category": "addendum-explanation",
+      "message": "尾翻箱体床，床垫宽1.6米的话，床垫限位器要几个，安装在哪边？",
+      "expected_keywords": ["2个", "床头方向"],
+      "forbidden_keywords": ["不确定"]
+    },
+    {
+      "id": "wireless-switch-rule",
+      "category": "addendum-explanation",
+      "message": "无线单面板动能开关能不能配单色温灯带？能调亮度和色温吗？",
+      "expected_keywords": ["单色温灯带", "亮度", "色温"],
+      "forbidden_keywords": ["不支持单色温灯带"]
+    },
+    {
+      "id": "grain-continuity-rule",
+      "category": "addendum-explanation",
+      "message": "黑胡桃平板门柜子如果要做纹理连续，连续长度超过0.9米，是不是要补差？",
+      "expected_keywords": ["补差", "0.9", "900"],
+      "forbidden_keywords": ["不用补差"]
+    },
+    {
+      "id": "base-wardrobe-no-addendum-pollution",
+      "category": "negative",
+      "message": "做一个北美白橡木普通平板门衣柜，长1.6米，高2.4米，深600，正常报价，不考虑灯带、无线开关、流云飞瀑这些。",
+      "expected_keywords": ["正式报价", "北美白橡木"],
+      "forbidden_keywords": ["无线单面板动能开关", "流云", "飞瀑"]
+    }
+  ]
+}

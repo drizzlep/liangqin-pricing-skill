@@ -53,6 +53,27 @@ description: "Use when user asks for furniture pricing, custom wardrobe/bookcase
   - 例如 `北美白橡木柜体 + 北美黑胡桃木流云平板门`
   - 应算 `3880 - 2980 = 900`
   - 不能算 `8680 - 6880 = 1800`
+- 如果命中 `设计师追加规则`，优先按追加规则补问、限制或解释，不要用“没命中特殊规则”带过。
+- 对 `无把手 / 无抠手` 柜门：
+  - 除已明确默认开启方式的门型外
+  - 只要用户还没明确 `开启方式 / 开启方向 / 是否按弹`
+  - 就必须追问 `开启方式`
+  - 不能直接说“不影响报价”
+- 对 `床垫重量 / 750N 举升器`：
+  - 只允许按当前良禽规则回答
+  - 可说 `床垫重量应≤50kg`
+  - 可说 `超重可使用两套750N举升器`
+  - 可说 `当W＞1800时默认使用两套750N举升器，需要单独收费`
+  - 可说 `下单需备注床垫重量及举升器数量`
+  - 如果用户当前只是问 `还缺什么信息`、`怎么判断`、`是否能报`
+  - 先只讲上面这套规则
+  - 在 `床垫重量未知` 的这一轮，不要整理成 `条件 | 一套/两套` 对照表
+  - 在 `床垫重量未知` 的这一轮，不要直接写 `一套750N举升器`
+  - 尤其 `W=1800` 时，只能说 `属于临界值，仍需结合床垫重量确认`
+  - 这一轮回复里要显式保留 `下单备注`，提醒用户备注 `床垫重量` 和 `举升器数量`
+  - 不要提前混入 `小蜻蜓举升器 / 电动举升器 / +600 / +1000`
+  - 只有当用户进一步明确追问 `升级哪种举升器`、`升级怎么收费` 时，才展开配件加价规则
+  - 不要自行扩展成 `普通气压杆 / 加强气压杆 / 电动举升 / 双电动 / 力矩公式` 这类通用常识
 - 不暴露内部来源，例如 sheet、单元格、表号、源码路径。
 
 ## 路径判断
@@ -143,6 +164,50 @@ python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/detect_special_cab
   - 先只追问冰箱净高或上柜高度
   - 不要先拿普通柜体单价直接正式报价
 
+3A. 如果用户当前是在问 `规则怎么判断 / 还缺什么信息 / 能不能用 / 要几个 / 是否需要补差`，且明显可能命中设计师追加规则，先运行：
+
+```bash
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/query_addendum_guidance.py --text "用户原话"
+```
+
+使用方式：
+
+- 如果返回 `recommended_reply_mode=follow_up`
+  - 先按返回的 `follow_up_questions[0].question` 追问
+  - 如果同时返回 `suggested_reply`
+    - 优先按这段组织回复
+  - 如果用户明确要求“按规则解释”，可以在追问后补一小句，只能复述返回的 `constraints / adjustments`
+  - 不要额外补行业常识、五金理论、结构力学推导
+- 如果返回 `recommended_reply_mode=rule_explanation`
+  - 如果同时返回 `suggested_reply`
+    - 优先按这段组织回复
+  - 直接按返回的 `constraints / adjustments` 解释
+  - 不要再混入其他未命中的配件规则
+- 对 `床垫重量 / 750N举升器` 这类问题：
+  - 先看这个脚本结果
+  - 不要跳过脚本直接自由发挥
+
+3B. 如果用户当前明显是在问 `床垫重量未知还缺什么`、`750N举升器怎么判断`、`箱体床举升器规则`，优先先运行：
+
+```bash
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/query_bed_weight_guidance.py --text "用户原话"
+```
+
+使用方式：
+
+- 如果返回 `matched=true`
+  - 优先按返回的 `suggested_reply` 原样或最小改写回复
+  - 不要扩展成电动举升、力矩公式、工程选型、DIY结构计算
+  - 不要混入 `小蜻蜓举升器 / 电动举升器 / +600 / +1000`，除非用户下一轮继续追问升级加价
+  - 对 `W=1800` 这类临界值：
+    - 只能说“还需结合床垫重量确认”
+    - 不要直接替用户下结论成“单套方案”
+  - 如果当前 `床垫重量未知`
+    - 不要写 `床垫≤50kg | 一套750N` 这种表格或对照句式
+    - 不要在这一轮给出最终套数结论
+    - 要明确写出 `下单备注：床垫重量、举升器数量`
+- 这一步优先级高于通用 `query_addendum_guidance.py`
+
 4. 柜体类、床类、桌类先运行：
 
 ```bash
@@ -216,6 +281,14 @@ python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/calculate_hidden_r
   - 折减后单价
 
 8. 根据 `references/current/rules.md` 套用对应业务规则。
+   如果用户问题直接命中以下 `设计师追加规则`，优先按该规则回答或追问，不要退回宽泛常识：
+
+- `无把手 / 无抠手柜门` 的 `开启方式` 确认
+- `床垫重量 / 750N举升器 / 下单备注`
+- `尾翻 / 侧翻箱体床限位器`
+- `无线单面板动能开关`
+- `流云 / 飞瀑 / 平板门纹理连续 >0.9m`
+
    如果是双面门柜体，且两边门型组合已经明确，优先先运行：
 
 ```bash
@@ -367,6 +440,8 @@ python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/refresh_and_test.p
 - 样例：`references/current/examples.md`
 - 预检脚本：`scripts/precheck_quote.py`
 - 特殊柜体识别：`scripts/detect_special_cabinet_rule.py`
+- 追加规则查询：`scripts/query_addendum_guidance.py`
+- 床垫重量追加规则：`scripts/query_bed_weight_guidance.py`
 - 查价脚本：`scripts/query_price_index.py`
 - 排版脚本：`scripts/format_quote_reply.py`
 - 门板补差脚本：`scripts/calculate_door_panel_adjustment.py`

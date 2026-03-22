@@ -1,0 +1,47 @@
+{
+  "domain_count": 7,
+  "domains": [
+    {
+      "domain": "cabinet",
+      "entry_count": 49,
+      "reference_hint": "references/current/rules-cabinet.md",
+      "filename": "rules-draft-cabinet.md"
+    },
+    {
+      "domain": "bed",
+      "entry_count": 8,
+      "reference_hint": "references/current/rules-beds.md",
+      "filename": "rules-draft-bed.md"
+    },
+    {
+      "domain": "table",
+      "entry_count": 5,
+      "reference_hint": "references/current/rules-tables.md",
+      "filename": "rules-draft-table.md"
+    },
+    {
+      "domain": "accessory",
+      "entry_count": 5,
+      "reference_hint": "references/current/rules-accessories.md",
+      "filename": "rules-draft-accessory.md"
+    },
+    {
+      "domain": "door_panel",
+      "entry_count": 15,
+      "reference_hint": "references/current/rules-components.md",
+      "filename": "rules-draft-door_panel.md"
+    },
+    {
+      "domain": "material",
+      "entry_count": 3,
+      "reference_hint": "references/current/rules-components.md",
+      "filename": "rules-draft-material.md"
+    },
+    {
+      "domain": "general",
+      "entry_count": 12,
+      "reference_hint": "references/current/rules-overview.md",
+      "filename": "rules-draft-general.md"
+    }
+  ]
+}

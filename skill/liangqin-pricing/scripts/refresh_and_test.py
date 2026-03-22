@@ -21,7 +21,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--skill-dir", default=str(Path(__file__).resolve().parent.parent), help="Skill root directory.")
     parser.add_argument("--timeout", type=int, default=120, help="Agent timeout in seconds.")
     parser.add_argument("--thinking", default="minimal", help="Agent thinking level.")
-    parser.add_argument("--no-update", action="store_true", help="Skip update_release.py even if inbox contains xlsx/docx.")
+    parser.add_argument("--no-update", action="store_true", help="Skip update_release.py even if inbox contains xlsx + rule files.")
     parser.add_argument(
         "--reset-quote-sessions",
         action="store_true",
@@ -41,8 +41,8 @@ def run_step(command: list[str], *, capture: bool = False) -> subprocess.Complet
 
 def has_ready_sources(inbox_dir: Path) -> bool:
     has_xlsx = any(inbox_dir.glob("*.xlsx"))
-    has_docx = any(inbox_dir.glob("*.docx"))
-    return has_xlsx and has_docx
+    has_rules = any(inbox_dir.glob("*.docx")) or any(inbox_dir.glob("*.pdf"))
+    return has_xlsx and has_rules
 
 
 def extract_json_payload(raw: str) -> dict[str, object]:
@@ -70,7 +70,7 @@ def main() -> int:
     session_id = args.session_id or f"liangqin-test-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
 
     if not args.no_update and has_ready_sources(inbox_dir):
-        print_header("检测到 inbox 里有 xlsx + docx，先更新当前版本")
+        print_header("检测到 inbox 里有 xlsx + 规则文件，先更新当前版本")
         update = run_step([sys.executable, str(scripts_dir / "update_release.py"), "--skill-dir", str(skill_dir)])
         if update.returncode != 0:
             return update.returncode

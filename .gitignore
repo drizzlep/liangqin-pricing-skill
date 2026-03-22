@@ -4,6 +4,8 @@ task_plan.md
 progress.md
 findings.md
 docs/plans/
-skill/liangqin-pricing/reports/
+skill/liangqin-pricing/reports/*
+!skill/liangqin-pricing/reports/addenda/
+!skill/liangqin-pricing/reports/addenda/**
 *.pyc
 __pycache__/

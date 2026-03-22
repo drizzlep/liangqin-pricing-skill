@@ -21,14 +21,14 @@
 2. `scripts/query_price_index.py`
    只查询当前版本里的基础价格。
 3. `scripts/format_quote_reply.py`
-   只负责把结果排成正式报价。
+   默认会在排版前尝试套用活跃 addendum layer，再统一输出成一段正式报价；如需跳过可用 `--disable-addenda`。
 
 ## 后续调价怎么维护
 
 如果后面有人给你新的：
 
 - 产品目录 `xlsx`
-- 定制规则 `docx`
+- 定制规则 `docx / pdf`
 
 不需要手改 Python，也不需要分步跑一堆脚本。
 
@@ -43,13 +43,31 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/update_release.py
 
 这个命令会自动完成：
 
-- 识别最新的 `xlsx` 和 `docx`
+- 识别最新的 `xlsx` 和规则文件（优先 `docx`，没有时回退 `pdf`）
 - 生成新的价格索引
 - 提取新的规则候选
+- 生成一份规则审阅稿 `Markdown`
+- 生成一份高信号规则索引 `JSON + Markdown`
+- 生成一组分域规则草稿 `Markdown`
 - 构建版本
 - 校验版本
 - 激活到 `data/current`
 - 同步到 OpenClaw workspace
+
+## 设计师追加规则怎么维护
+
+如果后面你拿到的是单独的设计师补充规则文件，不希望污染主规则：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/update_addendum_layer.py --rules-source "/path/to/设计师补充规则.pdf" --layer-id "designer-manual-a" --layer-name "设计师追加规则 A"
+```
+
+这条链路会：
+
+- 保持 `references/current/*` 主规则不变
+- 单独生成一个 addendum layer
+- 单独生成候选、索引、分域草稿
+- 供后续报价在主规则之后做二次判断
 
 ## 最傻瓜的刷新 + 测试
 
@@ -66,7 +84,7 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py
 
 它会自动做两件事：
 
-1. 如果 `sources/inbox/` 里有新的 `xlsx + docx`，先更新当前版本
+1. 如果 `sources/inbox/` 里有新的 `xlsx + 规则文件`，先更新当前版本
 2. 用 fresh session 跑一轮测试，避免掉回旧会话逻辑
 
 如果你想换成自己的测试问题：
@@ -95,6 +113,28 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/reset_quote_sessions.py --ap
 python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py --reset-quote-sessions
 ```
 
+## 批量真实题测试
+
+如果你想把一批固定题目反复回归，而不是一次只测一题：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/run_openclaw_prompt_suite.py --publish-skill --reset-quote-sessions
+```
+
+默认题库在：
+
+- `references/current/openclaw-prompt-suite.json`
+
+输出结果会落到：
+
+- `reports/validation/openclaw-prompt-suite-时间戳.json`
+
+如果只想跑某几题：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/run_openclaw_prompt_suite.py --case-id opening-method-follow-up --case-id bed-mattress-weight-follow-up
+```
+
 ## 目录说明
 
 - `SKILL.md`
@@ -108,7 +148,7 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py --reset-
 - `data/versions/`
   历史版本。
 - `sources/inbox/`
-  新版 `xlsx/docx` 投放区。
+  新版 `xlsx + docx/pdf` 投放区。
 - `sources/archived/`
   已归档的原始文件。
 - `scripts/update_release.py`

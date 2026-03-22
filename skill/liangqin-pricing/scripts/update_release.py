@@ -12,9 +12,18 @@ from pathlib import Path
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Update the Liangqin skill from one xlsx and one docx.")
+    parser = argparse.ArgumentParser(description="Update the Liangqin skill from one xlsx and one rule source.")
     parser.add_argument("--price-book", help="Path to the source product catalog xlsx. Defaults to latest .xlsx in sources/inbox.")
-    parser.add_argument("--rules-docx", help="Path to the source pricing-rules docx. Defaults to latest .docx in sources/inbox.")
+    parser.add_argument(
+        "--rules-source",
+        dest="rules_source",
+        help="Path to the source pricing-rules docx/pdf. Defaults to the latest docx, or latest pdf when no docx exists.",
+    )
+    parser.add_argument(
+        "--rules-docx",
+        dest="rules_source",
+        help="Backward-compatible alias for --rules-source. Can point to a docx or pdf rule file.",
+    )
     parser.add_argument("--version", help="Version label. Defaults to today's date in YYYY-MM-DD.")
     parser.add_argument("--skill-dir", default=str(Path(__file__).resolve().parent.parent), help="Skill root directory.")
     parser.add_argument("--activate", action=argparse.BooleanOptionalAction, default=True, help="Activate the built version into data/current.")
@@ -27,6 +36,18 @@ def pick_latest(directory: Path, suffix: str) -> Path:
     if not candidates:
         raise SystemExit(f"未找到 {suffix} 文件：{directory}")
     return candidates[0]
+
+
+def pick_latest_rules_source(directory: Path) -> Path:
+    docx_candidates = sorted(directory.glob("*.docx"), key=lambda path: path.stat().st_mtime, reverse=True)
+    if docx_candidates:
+        return docx_candidates[0]
+
+    pdf_candidates = sorted(directory.glob("*.pdf"), key=lambda path: path.stat().st_mtime, reverse=True)
+    if pdf_candidates:
+        return pdf_candidates[0]
+
+    raise SystemExit(f"未找到规则文件（.docx / .pdf）：{directory}")
 
 
 def run_step(command: list[str]) -> None:
@@ -45,23 +66,27 @@ def main() -> int:
 
     version = args.version or datetime.now().strftime("%Y-%m-%d")
     price_book = Path(args.price_book).expanduser().resolve() if args.price_book else pick_latest(inbox_dir, ".xlsx")
-    rules_docx = Path(args.rules_docx).expanduser().resolve() if args.rules_docx else pick_latest(inbox_dir, ".docx")
+    rules_source = Path(args.rules_source).expanduser().resolve() if args.rules_source else pick_latest_rules_source(inbox_dir)
 
     reports_dir.mkdir(parents=True, exist_ok=True)
     archive_dir = archived_root / version
     archive_dir.mkdir(parents=True, exist_ok=True)
 
     archived_price_book = archive_dir / price_book.name
-    archived_rules_docx = archive_dir / rules_docx.name
+    archived_rules_source = archive_dir / rules_source.name
     shutil.copy2(price_book, archived_price_book)
-    shutil.copy2(rules_docx, archived_rules_docx)
+    shutil.copy2(rules_source, archived_rules_source)
 
     price_index_output = reports_dir / f"price-index-{version}.json"
     rules_candidate_output = reports_dir / f"rules-candidate-{version}.json"
+    rules_markdown_output = reports_dir / f"rules-source-{version}.md"
+    rules_index_output = reports_dir / f"rules-index-{version}.json"
+    rules_index_markdown_output = reports_dir / f"rules-index-{version}.md"
+    rules_drafts_output_dir = reports_dir / f"rules-drafts-{version}"
     version_dir = skill_dir / "data" / "versions" / version
 
     print(f"[1/6] 使用价格目录：{price_book.name}")
-    print(f"[2/6] 使用规则文档：{rules_docx.name}")
+    print(f"[2/6] 使用规则文档：{rules_source.name}")
 
     run_step(
         [
@@ -81,12 +106,42 @@ def main() -> int:
             sys.executable,
             str(scripts_dir / "extract_rules_candidate.py"),
             "--input",
-            str(rules_docx),
+            str(rules_source),
             "--output",
             str(rules_candidate_output),
+            "--markdown-output",
+            str(rules_markdown_output),
         ]
     )
     print(f"[4/6] 已提取规则候选：{rules_candidate_output.name}")
+    print(f"      已生成审阅稿：{rules_markdown_output.name}")
+
+    run_step(
+        [
+            sys.executable,
+            str(scripts_dir / "build_rules_index.py"),
+            "--input",
+            str(rules_candidate_output),
+            "--output",
+            str(rules_index_output),
+            "--markdown-output",
+            str(rules_index_markdown_output),
+        ]
+    )
+    print(f"      已生成规则索引：{rules_index_output.name}")
+    print(f"      已生成索引概览：{rules_index_markdown_output.name}")
+
+    run_step(
+        [
+            sys.executable,
+            str(scripts_dir / "build_rules_drafts.py"),
+            "--input",
+            str(rules_index_output),
+            "--output-dir",
+            str(rules_drafts_output_dir),
+        ]
+    )
+    print(f"      已生成分域规则草稿目录：{rules_drafts_output_dir.name}")
 
     run_step(
         [

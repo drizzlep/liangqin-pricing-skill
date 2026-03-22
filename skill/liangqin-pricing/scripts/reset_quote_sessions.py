@@ -32,15 +32,38 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Also reset Feishu quote sessions.",
     )
+    parser.add_argument(
+        "--dingtalk-chat-type",
+        choices=("all", "group", "direct"),
+        default="all",
+        help="Only reset DingTalk sessions for the selected chat type. Defaults to all.",
+    )
     return parser.parse_args()
 
 
-def should_reset_session_key(key: str, *, include_feishu: bool = False) -> bool:
+def matches_dingtalk_chat_type(key: str, dingtalk_chat_type: str) -> bool:
+    if dingtalk_chat_type == "all":
+        return True
+    if f":dingtalk:{dingtalk_chat_type}:" in key:
+        return True
+    if f":dingtalk-connector:{dingtalk_chat_type}:" in key:
+        return True
+    if f'"chattype":"{dingtalk_chat_type}"' in key:
+        return True
+    return False
+
+
+def should_reset_session_key(
+    key: str,
+    *,
+    include_feishu: bool = False,
+    dingtalk_chat_type: str = "all",
+) -> bool:
     if key == "agent:main:main":
-        return True
-    if ":dingtalk:" in key:
-        return True
-    if '"channel":"dingtalk-connector"' in key:
+        return dingtalk_chat_type == "all"
+    if (":dingtalk:" in key or ":dingtalk-connector:" in key or '"channel":"dingtalk-connector"' in key) and matches_dingtalk_chat_type(
+        key, dingtalk_chat_type
+    ):
         return True
     if include_feishu and (":feishu:" in key or '"channel":"feishu"' in key):
         return True
@@ -55,11 +78,20 @@ def load_sessions(path: Path) -> dict[str, dict[str, Any]]:
     return payload
 
 
-def collect_targets(sessions: dict[str, dict[str, Any]], *, include_feishu: bool = False) -> dict[str, dict[str, Any]]:
+def collect_targets(
+    sessions: dict[str, dict[str, Any]],
+    *,
+    include_feishu: bool = False,
+    dingtalk_chat_type: str = "all",
+) -> dict[str, dict[str, Any]]:
     return {
         key: value
         for key, value in sessions.items()
-        if should_reset_session_key(key, include_feishu=include_feishu)
+        if should_reset_session_key(
+            key,
+            include_feishu=include_feishu,
+            dingtalk_chat_type=dingtalk_chat_type,
+        )
     }
 
 
@@ -125,7 +157,11 @@ def main() -> int:
     args = parse_args()
     store_path = Path(args.store).expanduser().resolve()
     sessions = load_sessions(store_path)
-    targets = collect_targets(sessions, include_feishu=args.include_feishu)
+    targets = collect_targets(
+        sessions,
+        include_feishu=args.include_feishu,
+        dingtalk_chat_type=args.dingtalk_chat_type,
+    )
 
     print_targets(targets, store_path)
     if not targets:
@@ -136,6 +172,8 @@ def main() -> int:
         command = "python3 ~/.openclaw/skills/liangqin-pricing/scripts/reset_quote_sessions.py --apply"
         if args.include_feishu:
             command += " --include-feishu"
+        if args.dingtalk_chat_type != "all":
+            command += f" --dingtalk-chat-type {args.dingtalk_chat_type}"
         print(command)
         return 0
 
