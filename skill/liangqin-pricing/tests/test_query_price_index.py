@@ -71,6 +71,29 @@ class QueryPriceIndexTests(unittest.TestCase):
         self.assertTrue(MODULE.record_matches(matched_record, args))
         self.assertFalse(MODULE.record_matches(other_record, args))
 
+    def test_dimension_filters_match_rock_slab_dining_table_variant(self) -> None:
+        args = self.make_args(sheet="餐桌", name_exact="岩板餐桌", length="1.6", depth="0.8")
+        matched_record = {
+            "sheet": "餐桌",
+            "name": "岩板餐桌",
+            "is_queryable": True,
+            "record_kind": "price",
+            "pricing_mode": "unit_price",
+            "variant_tags": [],
+            "dimensions": {"length": 1.6, "depth": 0.8},
+        }
+        other_record = {
+            "sheet": "餐桌",
+            "name": "岩板餐桌",
+            "is_queryable": True,
+            "record_kind": "price",
+            "pricing_mode": "unit_price",
+            "variant_tags": [],
+            "dimensions": {"length": 1.8, "depth": 0.9},
+        }
+        self.assertTrue(MODULE.record_matches(matched_record, args))
+        self.assertFalse(MODULE.record_matches(other_record, args))
+
 
 if __name__ == "__main__":
     unittest.main()

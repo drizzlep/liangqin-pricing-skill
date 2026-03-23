@@ -32,6 +32,18 @@ FOCUS_TERMS = (
     "纹理连续",
     "连纹",
     "补差",
+    "岩板长度",
+    "空区高度",
+    "超出侧板面积",
+    "柜侧前开口",
+    "柜侧前缺口",
+    "柜侧闭合缺口",
+    "遇见书柜",
+    "分段缝",
+    "开放格",
+    "常规拆装柜体",
+    "牙称",
+    "牙称高度",
 )
 
 
@@ -62,7 +74,53 @@ def build_probe_payload(text: str) -> dict[str, Any]:
 
 
 def extract_focus_terms(text: str) -> list[str]:
-    return [term for term in FOCUS_TERMS if term in text]
+    focus_terms = [term for term in FOCUS_TERMS if term in text]
+    if "榻榻米" in text and "托称" in text:
+        focus_terms.append("榻榻米组合柜空区加托称时需固定上墙")
+    if "柜侧前开口" in text:
+        focus_terms.append("柜侧前开口尺寸限制")
+    if "柜侧前缺口" in text:
+        focus_terms.append("柜侧前缺口尺寸限制")
+    if "柜侧闭合缺口" in text:
+        focus_terms.append("柜侧闭合缺口尺寸限制")
+    if "遇见书柜" in text:
+        focus_terms.append("遇见书柜下柜高度超过1700mm时不建议做侧包顶底")
+    if "开放格" in text and "分段缝" in text:
+        focus_terms.append("超高带门柜体开放格分段缝优先对齐层板上方")
+    if "常规拆装柜体" in text and ("顶盖侧" in text or "侧盖顶" in text or "1700" in text):
+        focus_terms.append("常规拆装柜体高度≤1700mm默认顶盖侧，＞1700mm默认侧盖顶")
+    if "牙称" in text:
+        focus_terms.append("常规拆装柜体牙称常用50/80mm，允许范围50-250mm")
+    if "岩板" in text and "台面" in text:
+        focus_terms.append("岩板台面")
+    if "岩板" in text and "背板" in text:
+        focus_terms.append("岩板背板")
+    if "铝框" in text and "岩板" in text and ("门" in text or "门板" in text):
+        focus_terms.extend(["铝框岩板门板", "铝框岩板门"])
+    return list(dict.fromkeys(focus_terms))
+
+
+def should_use_strict_focus(focus_terms: list[str]) -> bool:
+    return any(
+        term in {
+            "岩板台面",
+            "岩板背板",
+            "铝框岩板门板",
+            "铝框岩板门",
+            "岩板长度",
+            "空区高度",
+            "超出侧板面积",
+            "榻榻米组合柜空区加托称时需固定上墙",
+            "柜侧前开口尺寸限制",
+            "柜侧前缺口尺寸限制",
+            "柜侧闭合缺口尺寸限制",
+            "遇见书柜下柜高度超过1700mm时不建议做侧包顶底",
+            "超高带门柜体开放格分段缝优先对齐层板上方",
+            "常规拆装柜体高度≤1700mm默认顶盖侧，＞1700mm默认侧盖顶",
+            "常规拆装柜体牙称常用50/80mm，允许范围50-250mm",
+        }
+        for term in focus_terms
+    )
 
 
 def filter_by_focus(entries: list[dict[str, Any]], focus_terms: list[str], *, fallback_to_original: bool = True) -> list[dict[str, Any]]:
@@ -122,9 +180,10 @@ def query_guidance(text: str, addenda_root: Path) -> dict[str, Any]:
                     follow_ups.append(follow_up)
 
     focus_terms = extract_focus_terms(text)
+    strict_focus = should_use_strict_focus(focus_terms)
     follow_ups = filter_by_focus(follow_ups, focus_terms)
-    constraints = filter_by_focus(constraints, focus_terms)
-    adjustments = filter_by_focus(adjustments, focus_terms, fallback_to_original=False)
+    constraints = filter_by_focus(constraints, focus_terms, fallback_to_original=not strict_focus)
+    adjustments = filter_by_focus(adjustments, focus_terms, fallback_to_original=not strict_focus)
 
     if follow_ups:
         reply_mode = "follow_up"

@@ -6,17 +6,38 @@ from __future__ import annotations
 import argparse
 import copy
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
 
 
 DOMAIN_KEYWORDS: list[tuple[str, tuple[str, ...]]] = [
-    ("cabinet", ("柜", "衣柜", "书柜", "玄关柜", "电视柜", "餐边柜", "流云", "飞瀑")),
+    ("cabinet", ("柜", "衣柜", "书柜", "玄关柜", "电视柜", "餐边柜", "流云", "飞瀑", "抽屉", "抽面")),
     ("bed", ("床", "箱体床", "架式床", "榻榻米")),
     ("table", ("桌", "书桌", "餐桌", "边几", "岛台")),
     ("accessory", ("拉手", "灯带", "开关", "插座", "脚轮")),
-    ("door_panel", ("门板", "拼框门", "平板门", "玻璃门", "格栅门")),
+    (
+        "door_panel",
+        (
+            "门板",
+            "拼框门",
+            "平板门",
+            "玻璃门",
+            "格栅门",
+            "铝框门",
+            "针式铰链铝框门",
+            "铝框岩板门",
+            "藤编门",
+            "拱形藤编门",
+            "美式木门",
+            "美式玻璃门",
+            "拱形玻璃门",
+            "胶囊玻璃门",
+            "超高拼框木门",
+            "超高拼框玻璃门",
+        ),
+    ),
 ]
 
 DOMAIN_COMPATIBILITY_KEYWORDS: dict[tuple[str, str], tuple[str, ...]] = {
@@ -47,6 +68,17 @@ SIGNAL_TERMS = [
     "拼框门",
     "玻璃门",
     "格栅门",
+    "铝框门",
+    "针式铰链铝框门",
+    "铝框岩板门",
+    "藤编门",
+    "拱形藤编门",
+    "美式木门",
+    "美式玻璃门",
+    "拱形玻璃门",
+    "胶囊玻璃门",
+    "超高拼框木门",
+    "超高拼框玻璃门",
     "开放格",
     "圆边",
     "层板",
@@ -69,6 +101,7 @@ SIGNAL_TERMS = [
     "冰箱柜",
     "钻石柜",
     "操作空区",
+    "遇见书柜",
 ]
 
 UNKNOWN_MARKERS = ("未知", "未提供", "待确认", "待补充", "未确认", "不详", "先不说", "未备注", "没说")
@@ -87,6 +120,24 @@ LOW_SIGNAL_TERMS = {
     "门板",
     "柜门",
     "柜体",
+}
+
+FIELD_VALUE_PATTERNS: dict[str, tuple[str, ...]] = {
+    "岩板长度": (
+        r"(?:岩板长度|台面长度|门板长度|长度|长)[^0-9]{0,6}\d+(?:\.\d+)?(?:m|米|cm|厘米|mm|毫米)",
+    ),
+    "空区高度": (
+        r"(?:空区高度|空区高|高度|高)[^0-9]{0,6}\d+(?:\.\d+)?(?:m|米|cm|厘米|mm|毫米)",
+    ),
+    "超出侧板面积": (
+        r"(?:超出侧板面积|侧板面积|面积)[^0-9]{0,6}\d+(?:\.\d+)?(?:㎡|m²|m2|平方米|平米|平方)",
+    ),
+}
+
+FIELD_VALUE_EXTRACT_PATTERNS: dict[str, tuple[str, ...]] = {
+    "空区高度": (
+        r"(?:空区高度|空区高|高度|高)[^0-9]{0,6}(\d+(?:\.\d+)?)(mm|毫米|cm|厘米|m|米)",
+    ),
 }
 
 
@@ -290,6 +341,48 @@ def classify_match(match: dict[str, Any]) -> str:
     return "adjustment"
 
 
+def field_value_present(field: str, item_source_text: str) -> bool:
+    patterns = FIELD_VALUE_PATTERNS.get(field, ())
+    if not patterns:
+        return False
+    return any(re.search(pattern, item_source_text, flags=re.IGNORECASE) for pattern in patterns)
+
+
+def parse_metric_value(value: str, unit: str) -> float:
+    number = float(value)
+    normalized_unit = unit.lower()
+    if normalized_unit in {"mm", "毫米"}:
+        return number / 1000
+    if normalized_unit in {"cm", "厘米"}:
+        return number / 100
+    return number
+
+
+def extract_metric_field_value(field: str, item_source_text: str) -> float | None:
+    patterns = FIELD_VALUE_EXTRACT_PATTERNS.get(field, ())
+    for pattern in patterns:
+        match = re.search(pattern, item_source_text, flags=re.IGNORECASE)
+        if match:
+            return parse_metric_value(match.group(1), match.group(2))
+    return None
+
+
+def infer_conditional_required_fields(item_source_text: str, match: dict[str, Any]) -> list[str]:
+    title = str(match.get("title", "") or match.get("clean_title", ""))
+    detail = str(match.get("detail", "") or match.get("excerpt", ""))
+    text = f"{title} {detail}"
+
+    if "岩板背板" not in text:
+        return []
+
+    opening_height = extract_metric_field_value("空区高度", item_source_text)
+    if opening_height is None or opening_height < 0.55:
+        return []
+    if field_value_present("超出侧板面积", item_source_text):
+        return []
+    return ["超出侧板面积"]
+
+
 def infer_missing_required_fields(item: dict[str, Any], match: dict[str, Any]) -> list[str]:
     required_fields = [str(field).strip() for field in match.get("required_fields", []) if str(field).strip()]
     if not required_fields:
@@ -297,16 +390,24 @@ def infer_missing_required_fields(item: dict[str, Any], match: dict[str, Any]) -
 
     item_source_text = build_item_source_text(item)
     has_unknown_marker = any(marker in item_source_text for marker in UNKNOWN_MARKERS)
-    if not has_unknown_marker:
-        return []
 
     missing_fields: list[str] = []
     for field in required_fields:
-        if field in item_source_text:
+        if field_value_present(field, item_source_text):
+            continue
+        if has_unknown_marker and field in item_source_text:
+            missing_fields.append(field)
+            continue
+        if field in FIELD_VALUE_PATTERNS:
             missing_fields.append(field)
 
     if not missing_fields and len(required_fields) == 1:
-        missing_fields.append(required_fields[0])
+        if has_unknown_marker:
+            missing_fields.append(required_fields[0])
+    conditional_missing = infer_conditional_required_fields(item_source_text, match)
+    for field in conditional_missing:
+        if field not in missing_fields:
+            missing_fields.append(field)
     return missing_fields
 
 

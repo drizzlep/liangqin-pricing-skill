@@ -288,6 +288,11 @@ python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/calculate_hidden_r
 - `尾翻 / 侧翻箱体床限位器`
 - `无线单面板动能开关`
 - `流云 / 飞瀑 / 平板门纹理连续 >0.9m`
+- `岩板台面 / 岩板背板 / 铝框岩板门板`
+- `常规拆装柜体高度默认结构 / 牙称高度范围`
+- `柜侧前开口 / 柜侧前缺口 / 柜侧闭合缺口`
+- `超高带门柜体开放格分段缝`
+- `遇见书柜下柜高度超过1700mm的结构限制`
 
    如果是双面门柜体，且两边门型组合已经明确，优先先运行：
 
@@ -318,6 +323,33 @@ python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/calculate_operatio
 - 用户没给空区尺寸时，先问这一个问题：
   - `这个操作空区带背板区域我还需要确认宽和高，大概分别是多少？`
   - 不先退回普通柜体的门型/系列追问
+
+   如果是柜体附加 `岩板台面 / 岩板背板 / 铝框岩板门板`，优先先运行：
+
+```bash
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/calculate_rock_slab_price.py --scenario rock_slab_countertop --slab-length "1.8" --base-subtotal 22457.6
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/calculate_rock_slab_price.py --scenario rock_slab_backboard --slab-length "1.5" --opening-height "0.55" --cabinet-material "北美黑胡桃木" --side-panel-area "0.36" --base-subtotal 15000
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/calculate_rock_slab_price.py --scenario rock_slab_aluminum_frame_door --slab-length "2" --base-subtotal 18800
+```
+
+适用说明：
+
+- 岩板台面：
+  - `1460 × 岩板长度 + 柜体正常计算`
+  - 用户没给 `岩板长度` 时，先只问 `请确认岩板长度`
+- 铝框岩板门板：
+  - `1860 × 岩板长度 + 无门柜体价格`
+  - 基础柜体口径固定按 `无门柜体价格`
+- 岩板背板：
+  - `1460 × 岩板长度`
+  - 先确认 `空区高度`
+  - `空区高度 < 55cm` 时不算侧板
+  - `空区高度 ≥ 55cm` 时，再确认 `超出侧板面积`
+  - 不要自行从宽高深反推侧板面积
+- 如果脚本已经返回 `base_subtotal / rock_slab_addition / side_panel_addition / final_subtotal / calculation_steps`
+  - 正式报价时直接按这套结构展开
+  - 不要把岩板加价揉进基础柜体单价
+  - 不要把侧板加价写成“另计”
 
    如果是成人床明确产品，且命中以下情况，优先先运行：
 
@@ -445,6 +477,7 @@ python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/refresh_and_test.p
 - 查价脚本：`scripts/query_price_index.py`
 - 排版脚本：`scripts/format_quote_reply.py`
 - 门板补差脚本：`scripts/calculate_door_panel_adjustment.py`
+- 岩板加价脚本：`scripts/calculate_rock_slab_price.py`
 - 玫瑰木折减脚本：`scripts/calculate_hidden_rosewood_discount.py`
 - 统一更新入口：`scripts/update_release.py`
 - 刷新并测试：`scripts/refresh_and_test.py`

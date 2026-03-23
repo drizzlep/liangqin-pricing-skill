@@ -155,6 +155,54 @@ class FormatQuoteReplyTests(unittest.TestCase):
         self.assertIn("追加确认：请确认床垫重量", rendered)
         self.assertEqual(rendered.count("正式报价："), 1)
 
+    def test_render_keeps_rock_slab_calculation_steps_in_formal_quote(self) -> None:
+        payload = {
+            "items": [
+                {
+                    "product": "玄关柜",
+                    "confirmed": "北美白橡木，岩板台面，岩板长度1.8m",
+                    "pricing_method": "投影面积计价+岩板加价",
+                    "calculation_steps": [
+                        "基础柜体价格 = 1.6 × 2.2 × 6380 = 22457.6",
+                        "岩板台面加价 = 1460 × 1.8 = 2628",
+                        "小计 = 22457.6 + 2628 = 25085.6",
+                    ],
+                    "subtotal": "25085.6元",
+                }
+            ],
+            "total": "25085.6元",
+        }
+
+        rendered = MODULE.render(payload)
+
+        self.assertIn("岩板台面加价 = 1460 × 1.8 = 2628", rendered)
+        self.assertIn("正式报价：25085.6元", rendered)
+
+    def test_render_keeps_rock_slab_backboard_side_panel_steps_in_formal_quote(self) -> None:
+        payload = {
+            "items": [
+                {
+                    "product": "玄关柜",
+                    "confirmed": "北美黑胡桃木，岩板背板，岩板长度1.5m，空区高度0.55m，超出侧板面积0.36㎡",
+                    "pricing_method": "投影面积计价+岩板加价",
+                    "calculation_steps": [
+                        "基础柜体价格 = 15000",
+                        "岩板背板加价 = 1460 × 1.5 = 2190",
+                        "侧板加价 = 0.36 × 2028 = 730.08",
+                        "小计 = 15000 + 2190 + 730.08 = 17920.08",
+                    ],
+                    "subtotal": "17920.08元",
+                }
+            ],
+            "total": "17920.08元",
+        }
+
+        rendered = MODULE.render(payload)
+
+        self.assertIn("岩板背板加价 = 1460 × 1.5 = 2190", rendered)
+        self.assertIn("侧板加价 = 0.36 × 2028 = 730.08", rendered)
+        self.assertIn("正式报价：17920.08元", rendered)
+
 
 if __name__ == "__main__":
     unittest.main()
