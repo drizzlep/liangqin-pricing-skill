@@ -33,6 +33,18 @@ TEXT_TAGS: list[tuple[str, tuple[str, ...]]] = [
     ("折减", ("折减", "降低", "系数", "非见光面", "见光面")),
 ]
 
+VISUAL_RULE_KEYWORDS = (
+    "可选色样",
+    "常规色",
+    "示意图",
+    "结构图",
+    "尺寸图",
+    "俯视图",
+    "侧视图",
+    "背视图",
+    "产品编号 图片",
+)
+
 _PDF_RENDERER_BIN: Path | None = None
 
 SWIFT_RENDER_SCRIPT = """\
@@ -145,6 +157,15 @@ def merge_text_sources(*texts: str) -> str:
                 seen.add(line)
                 merged.append(line)
     return "\n".join(merged)
+
+
+def should_ocr_page(*, text_layer_text: str, image_count: int, ocr_min_chars: int) -> bool:
+    normalized_text = normalize_text(text_layer_text)
+    if effective_char_count(normalized_text) < ocr_min_chars:
+        return True
+    if image_count >= 3 and any(keyword in normalized_text for keyword in VISUAL_RULE_KEYWORDS):
+        return True
+    return False
 
 
 def infer_tags(text: str) -> list[str]:
@@ -332,10 +353,17 @@ def ocr_pdf_page(pdf_path: Path, page_number: int) -> str:
         return txt_path.read_text(encoding="utf-8", errors="ignore")
 
 
-def build_pdf_page_record(page_number: int, text_layer_text: str, ocr_text: str, *, ocr_min_chars: int) -> dict[str, object]:
+def build_pdf_page_record(
+    page_number: int,
+    text_layer_text: str,
+    ocr_text: str,
+    *,
+    ocr_min_chars: int,
+    image_count: int = 0,
+) -> dict[str, object]:
     text_layer_text = normalize_text(text_layer_text)
     ocr_text = normalize_text(ocr_text)
-    needs_ocr = effective_char_count(text_layer_text) < ocr_min_chars
+    needs_ocr = should_ocr_page(text_layer_text=text_layer_text, image_count=image_count, ocr_min_chars=ocr_min_chars)
 
     if text_layer_text and not needs_ocr:
         extract_method = "text_layer"
@@ -360,6 +388,7 @@ def build_pdf_page_record(page_number: int, text_layer_text: str, ocr_text: str,
         "tags": tags,
         "rule_type": rule_type,
         "confidence": confidence_for(extract_method, raw_text),
+        "image_count": image_count,
     }
 
 
@@ -371,15 +400,24 @@ def extract_pdf_page_records(path: Path, *, ocr_min_chars: int) -> list[dict[str
             text_layer_text = page.extract_text() or ""
         except Exception:
             text_layer_text = ""
+        image_count = len(list(page.images))
 
         ocr_text = ""
-        if effective_char_count(text_layer_text) < ocr_min_chars:
+        if should_ocr_page(text_layer_text=text_layer_text, image_count=image_count, ocr_min_chars=ocr_min_chars):
             try:
                 ocr_text = ocr_pdf_page(path, page_number)
             except Exception:
                 ocr_text = ""
 
-        records.append(build_pdf_page_record(page_number, text_layer_text, ocr_text, ocr_min_chars=ocr_min_chars))
+        records.append(
+            build_pdf_page_record(
+                page_number,
+                text_layer_text,
+                ocr_text,
+                ocr_min_chars=ocr_min_chars,
+                image_count=image_count,
+            )
+        )
     return records
 
 

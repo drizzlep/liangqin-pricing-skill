@@ -37,6 +37,24 @@ PRICING_KEYWORDS = (
     "规则",
 )
 
+CATALOG_OPTION_KEYWORDS = (
+    "可选色样",
+    "常规色",
+    "颜色可选",
+    "颜色有两种",
+    "可选颜色",
+)
+
+ROCK_SLAB_COLOR_NAMES = (
+    "圣勃朗鱼肚白",
+    "保加利亚浅灰",
+    "劳伦特黑金",
+    "极光黑",
+    "极光白",
+    "阿勒山闪电黑",
+    "莱姆石中灰",
+)
+
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build a high-signal rules index from candidate JSON.")
@@ -52,6 +70,10 @@ def normalize_text(text: str) -> str:
 
 def effective_char_count(text: str) -> int:
     return len(re.sub(r"\s+", "", text))
+
+
+def split_lines(text: str) -> list[str]:
+    return [line.strip() for line in str(text).splitlines() if line.strip()]
 
 
 def is_noisy_heading(text: str) -> bool:
@@ -111,6 +133,13 @@ def compute_relevance_score(text: str, tags: list[str], rule_type: str, confiden
     return score
 
 
+def classify_response_kind(text: str) -> str:
+    normalized = normalize_text(text)
+    if any(keyword in normalized for keyword in CATALOG_OPTION_KEYWORDS):
+        return "catalog_option"
+    return "pricing_rule"
+
+
 def build_entry(section: dict[str, object]) -> dict[str, object]:
     heading = str(section.get("heading", ""))
     content = [str(item) for item in section.get("content", [])]
@@ -122,6 +151,9 @@ def build_entry(section: dict[str, object]) -> dict[str, object]:
     domain = classify_domain(full_text, tags)
     score = compute_relevance_score(full_text, tags, rule_type, confidence)
     excerpt = normalize_text(full_text)[:240]
+    response_kind = classify_response_kind(full_text)
+    pricing_relevant = score >= 5
+    runtime_relevant = pricing_relevant or response_kind == "catalog_option"
 
     return {
         "page": int(section.get("page", 1)),
@@ -135,13 +167,82 @@ def build_entry(section: dict[str, object]) -> dict[str, object]:
         "extract_method": section.get("extract_method", "unknown"),
         "normalized_rule": section.get("normalized_rule", ""),
         "relevance_score": score,
-        "pricing_relevant": score >= 5,
+        "pricing_relevant": pricing_relevant,
+        "runtime_relevant": runtime_relevant,
+        "response_kind": response_kind,
     }
+
+
+def build_page_entry(page: dict[str, object]) -> dict[str, object] | None:
+    raw_text = str(page.get("raw_text", "")).strip()
+    if not raw_text:
+        return None
+    response_kind = classify_response_kind(raw_text)
+    image_count = int(page.get("image_count", 0) or 0)
+    if response_kind != "catalog_option" and image_count < 3:
+        return None
+
+    tags = [str(item) for item in page.get("tags", [])]
+    domain = classify_domain(raw_text, tags)
+    score = compute_relevance_score(raw_text, tags, str(page.get("rule_type", "narrative_rule")), float(page.get("confidence", 0.0)))
+    lines = split_lines(raw_text)
+    clean_title = choose_clean_title(lines[0] if lines else "", lines[1:], tags)
+    if response_kind == "catalog_option" and any(color_name in raw_text for color_name in ROCK_SLAB_COLOR_NAMES):
+        if "岩板" not in tags:
+            tags.append("岩板")
+    if response_kind == "catalog_option" and ("保加利亚浅灰" in raw_text or "劳伦特黑金" in raw_text):
+        clean_title = "岩板餐桌可选色样"
+        domain = "table"
+        if "餐桌" not in tags:
+            tags.append("餐桌")
+    elif response_kind == "catalog_option" and "岩板" in raw_text:
+        clean_title = "岩板可选色样"
+
+    return {
+        "page": int(page.get("page", 1)),
+        "domain": domain,
+        "clean_title": clean_title,
+        "heading": lines[0] if lines else "",
+        "excerpt": normalize_text(raw_text)[:240],
+        "tags": tags,
+        "rule_type": str(page.get("rule_type", "narrative_rule")),
+        "confidence": float(page.get("confidence", 0.0)),
+        "extract_method": str(page.get("extract_method", "unknown")),
+        "normalized_rule": str(page.get("normalized_explanation", "")),
+        "relevance_score": max(score, 6 if response_kind == "catalog_option" else score),
+        "pricing_relevant": False,
+        "runtime_relevant": True,
+        "response_kind": response_kind,
+    }
+
+
+def deduplicate_entries(entries: list[dict[str, object]]) -> list[dict[str, object]]:
+    deduplicated: list[dict[str, object]] = []
+    seen: set[tuple[int, str, str]] = set()
+    for entry in entries:
+        key = (
+            int(entry.get("page", 0)),
+            str(entry.get("clean_title", "")).strip(),
+            str(entry.get("response_kind", "")).strip(),
+        )
+        if key in seen:
+            continue
+        seen.add(key)
+        deduplicated.append(entry)
+    return deduplicated
 
 
 def build_rules_index(payload: dict[str, object]) -> dict[str, object]:
     sections = payload.get("sections", [])
     entries = [build_entry(section) for section in sections if isinstance(section, dict)]
+    pages = payload.get("pages", [])
+    for page in pages if isinstance(pages, list) else []:
+        if not isinstance(page, dict):
+            continue
+        page_entry = build_page_entry(page)
+        if page_entry is not None:
+            entries.append(page_entry)
+    entries = deduplicate_entries(entries)
     entries.sort(key=lambda item: (-item["relevance_score"], item["page"], item["clean_title"]))
 
     domain_counts = Counter(entry["domain"] for entry in entries)

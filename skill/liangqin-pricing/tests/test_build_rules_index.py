@@ -13,6 +13,32 @@ SPEC.loader.exec_module(MODULE)
 
 
 class BuildRulesIndexTests(unittest.TestCase):
+    def test_build_index_adds_catalog_option_entry_from_visual_pdf_page(self) -> None:
+        payload = {
+            "source_file": "/tmp/rules.pdf",
+            "source_format": "pdf",
+            "pages": [
+                {
+                    "page": 279,
+                    "extract_method": "hybrid",
+                    "image_count": 8,
+                    "raw_text": "可选色样 圣勃朗鱼肚白 保加利亚浅灰 劳伦特黑金 极光黑 极光白 阿勒山闪电黑 岩板",
+                    "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。识别标签：待分类。关键信息：可选色样；圣勃朗鱼肚白；劳伦特黑金。",
+                    "tags": ["待分类"],
+                    "rule_type": "narrative_rule",
+                    "confidence": 0.86,
+                }
+            ],
+            "sections": [],
+        }
+
+        index = MODULE.build_rules_index(payload)
+        entry = index["entries"][0]
+
+        self.assertEqual(entry["response_kind"], "catalog_option")
+        self.assertTrue(entry["runtime_relevant"])
+        self.assertIn("可选色样", entry["clean_title"])
+
     def test_build_index_classifies_domain_and_relevance(self) -> None:
         payload = {
             "source_file": "/tmp/rules.pdf",

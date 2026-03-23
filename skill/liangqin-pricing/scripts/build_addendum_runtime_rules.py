@@ -332,7 +332,9 @@ def should_include_runtime_rule(rule: dict[str, object]) -> bool:
     ) < 8
 
 
-def classify_action_type(text: str) -> str:
+def classify_action_type(text: str, *, response_kind: str = "") -> str:
+    if response_kind == "catalog_option" or "可选色样" in text or "常规色" in text:
+        return "catalog_option"
     if any(keyword in text for keyword in ("需先确认", "先确认", "应先追问", "还需要确认", "请先确认", "未知")):
         return "follow_up"
     if any(keyword in text for keyword in ("应≤", "应≥", "不可", "不能", "限制", "上限", "下限", "默认使用", "需改用")):
@@ -378,13 +380,14 @@ def build_runtime_rule(entry: dict[str, object]) -> dict[str, object]:
     tags = [normalize_text(str(tag)) for tag in entry.get("tags", []) if normalize_text(str(tag))]
     title = preferred_runtime_title(detail, domain) or choose_runtime_title(str(entry.get("clean_title", "")), detail, tags)
     combined_text = " ".join([title, detail, *tags])
+    response_kind = str(entry.get("response_kind", "")).strip()
     required_fields = infer_required_fields(combined_text)
     trigger_terms = extract_trigger_terms(title, detail, tags, required_fields)
 
     return {
         "page": int(entry.get("page", 1)),
         "domain": domain,
-        "action_type": classify_action_type(combined_text),
+        "action_type": classify_action_type(combined_text, response_kind=response_kind),
         "title": title,
         "detail": detail,
         "trigger_terms": trigger_terms,
@@ -394,6 +397,7 @@ def build_runtime_rule(entry: dict[str, object]) -> dict[str, object]:
         "relevance_score": int(entry.get("relevance_score", 0)),
         "source_heading": str(entry.get("heading", "")),
         "normalized_rule": str(entry.get("normalized_rule", "")),
+        "response_kind": response_kind,
     }
 
 
@@ -401,7 +405,9 @@ def build_runtime_rules(index: dict[str, object], *, layer_id: str, layer_name: 
     entries = index.get("entries", [])
     rules = []
     for entry in entries:
-        if not isinstance(entry, dict) or not bool(entry.get("pricing_relevant", False)):
+        if not isinstance(entry, dict):
+            continue
+        if not bool(entry.get("pricing_relevant", False)) and not bool(entry.get("runtime_relevant", False)):
             continue
         rule = build_runtime_rule(entry)
         if should_include_runtime_rule(rule):

@@ -291,7 +291,7 @@ def choose_runtime_matches(item: dict[str, Any], rules: list[dict[str, Any]]) ->
     item_text = normalize_text(item_source_text)
     item_signals = extract_signals(item_source_text, [])
 
-    matched: list[dict[str, Any]] = []
+    matched: list[tuple[int, dict[str, Any]]] = []
     for rule in rules:
         if not isinstance(rule, dict):
             continue
@@ -324,16 +324,33 @@ def choose_runtime_matches(item: dict[str, Any], rules: list[dict[str, Any]]) ->
         elif not any(token and len(token) >= 6 and token[:8] in item_text for token in tokens if token):
             continue
 
-        matched.append(rule)
+        score = int(rule.get("relevance_score", 0)) * 10
+        score += sum(3 for term in trigger_terms if term and term in item_source_text)
+        score += sum(2 for term in tags if term and term not in GENERIC_TERMS and term in item_source_text)
+        if title and title in item_source_text:
+            score += 6
+        if any(keyword in item_source_text and keyword in title for keyword in ("餐桌", "书桌", "衣柜", "书柜", "床", "岩板")):
+            score += 4
+        if title not in {"可选色样", "常规色"}:
+            score += 1
 
-    matched.sort(key=lambda rule: (-int(rule.get("relevance_score", 0)), str(rule.get("title", ""))))
-    return matched[:2]
+        matched.append((score, rule))
+
+    matched.sort(key=lambda item: (-item[0], -int(item[1].get("relevance_score", 0)), int(item[1].get("page", 0)), str(item[1].get("title", ""))))
+    selected = [rule for _, rule in matched[:2]]
+    if selected and str(selected[0].get("action_type", "")) == "catalog_option":
+        top_title = str(selected[0].get("title", "")).strip()
+        if top_title not in {"可选色样", "常规色"}:
+            return [selected[0]]
+    return selected
 
 
 def classify_match(match: dict[str, Any]) -> str:
     title = str(match.get("clean_title", ""))
     excerpt = str(match.get("excerpt", ""))
     text = f"{title} {excerpt}"
+    if any(keyword in text for keyword in ("可选色样", "常规色", "颜色可选")):
+        return "catalog_option"
     if any(keyword in text for keyword in ("需先确认", "先确认", "应先追问", "还需要确认", "请先确认", "未知")):
         return "follow_up"
     if any(keyword in text for keyword in ("应≤", "应≥", "不可", "不能", "限制", "上限", "下限", "默认使用", "需改用")):
@@ -485,7 +502,7 @@ def apply_addendum_layers(payload: dict[str, Any], addenda_root: Path) -> dict[s
                 if kind == "adjustment":
                     decisions["adjustments"].append(decision)
                     item_adjustments.append(f"{decision['layer_name']}：{decision['title']}。{decision['detail']}".strip())
-                elif kind == "constraint":
+                elif kind in {"constraint", "catalog_option"}:
                     decisions["constraints"].append(decision)
                 else:
                     decisions["follow_up_questions"].append(decision)

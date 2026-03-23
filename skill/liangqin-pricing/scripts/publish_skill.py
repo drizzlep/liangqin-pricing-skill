@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and publish the shared Liangqin skill into the OpenClaw workspace."""
+"""Validate and publish the shared Liangqin skill into OpenClaw skill stores."""
 
 from __future__ import annotations
 
@@ -14,10 +14,12 @@ import yaml
 
 ALLOWED_FRONTMATTER_KEYS = {"name", "description", "license", "allowed-tools", "metadata"}
 IGNORE_NAMES = {"__pycache__", ".DS_Store"}
+DEFAULT_ACTIVE_DEST = Path.home() / ".openclaw" / "skills" / "liangqin-pricing"
+DEFAULT_WORKSPACE_DEST = Path.home() / ".openclaw" / "workspace" / "skills" / "liangqin-pricing"
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Validate and publish the Liangqin skill to the OpenClaw workspace.")
+    parser = argparse.ArgumentParser(description="Validate and publish the Liangqin skill to OpenClaw skill stores.")
     parser.add_argument(
         "--source",
         default=str(Path(__file__).resolve().parent.parent),
@@ -25,8 +27,13 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--dest",
-        default=str(Path.home() / ".openclaw" / "workspace" / "skills" / "liangqin-pricing"),
-        help="Workspace skill destination directory.",
+        default=str(DEFAULT_ACTIVE_DEST),
+        help="Primary OpenClaw skill destination directory.",
+    )
+    parser.add_argument(
+        "--workspace-dest",
+        default=str(DEFAULT_WORKSPACE_DEST),
+        help="Optional OpenClaw workspace mirror destination directory.",
     )
     return parser.parse_args()
 
@@ -82,15 +89,21 @@ def main() -> int:
     args = parse_args()
     source = Path(args.source).expanduser().resolve()
     dest = Path(args.dest).expanduser().resolve()
+    workspace_dest = Path(args.workspace_dest).expanduser().resolve() if args.workspace_dest else None
 
-    if source == dest:
+    destinations: list[Path] = [dest]
+    if workspace_dest and workspace_dest not in destinations:
+        destinations.append(workspace_dest)
+
+    if any(source == candidate for candidate in destinations):
         raise SystemExit("Source and destination must be different.")
 
     validate_skill_dir(source)
-    publish(source, dest)
-    validate_skill_dir(dest)
+    for candidate in destinations:
+        publish(source, candidate)
+        validate_skill_dir(candidate)
+        print(f"Published skill to {candidate}")
 
-    print(f"Published skill to {dest}")
     return 0
 
 

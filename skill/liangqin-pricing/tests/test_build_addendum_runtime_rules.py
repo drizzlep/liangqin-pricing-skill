@@ -13,6 +13,29 @@ SPEC.loader.exec_module(MODULE)
 
 
 class BuildAddendumRuntimeRulesTests(unittest.TestCase):
+    def test_build_runtime_rules_includes_catalog_option_entries(self) -> None:
+        index = {
+            "entries": [
+                {
+                    "page": 279,
+                    "domain": "table",
+                    "clean_title": "岩板可选色样",
+                    "excerpt": "可选色样：圣勃朗鱼肚白、保加利亚浅灰、劳伦特黑金、极光黑、极光白、阿勒山闪电黑。",
+                    "tags": ["岩板", "餐桌"],
+                    "response_kind": "catalog_option",
+                    "runtime_relevant": True,
+                    "relevance_score": 6,
+                    "pricing_relevant": False,
+                }
+            ]
+        }
+
+        payload = MODULE.build_runtime_rules(index, layer_id="designer-option", layer_name="设计师追加规则 Option")
+
+        self.assertEqual(len(payload["rules"]), 1)
+        self.assertEqual(payload["rules"][0]["action_type"], "catalog_option")
+        self.assertIn("圣勃朗鱼肚白", payload["rules"][0]["detail"])
+
     def test_build_runtime_rules_generates_structured_entries(self) -> None:
         index = {
             "entries": [

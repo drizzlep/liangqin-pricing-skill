@@ -16,6 +16,61 @@ SPEC.loader.exec_module(MODULE)
 
 
 class QueryAddendumGuidanceTests(unittest.TestCase):
+    def test_query_guidance_returns_rock_slab_dining_table_color_options(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            addenda_root = Path(tmpdir)
+            layer_dir = addenda_root / "designer-rock-slab-options"
+            reports_dir = addenda_root / "reports"
+            reports_dir.mkdir()
+            runtime_rules_path = reports_dir / "runtime-rules.json"
+            runtime_rules_path.write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-rock-slab-options",
+                        "layer_name": "设计师追加规则 Rock Slab Options",
+                        "rules": [
+                            {
+                                "page": 279,
+                                "domain": "table",
+                                "action_type": "catalog_option",
+                                "title": "岩板餐桌可选色样",
+                                "detail": "岩板餐桌当前参考 12mm 岩板可选色样：圣勃朗鱼肚白（天鹅绒面）、保加利亚浅灰（细哑面）、劳伦特黑金（粗哑面）、极光黑（粗哑面 / 模具面）、极光白（天鹅绒面 / 模具面）、阿勒山闪电黑（粗哑面+数码纹理通体）。",
+                                "trigger_terms": ["岩板餐桌", "花色", "色样", "岩板"],
+                                "required_fields": [],
+                                "tags": ["岩板", "餐桌", "花色"],
+                                "relevance_score": 8,
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            layer_dir.mkdir()
+            (layer_dir / "manifest.json").write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-rock-slab-options",
+                        "layer_name": "设计师追加规则 Rock Slab Options",
+                        "status": "ACTIVE",
+                        "artifacts": {"runtime_rules_file": str(runtime_rules_path)},
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            payload = MODULE.query_guidance(
+                "岩板餐桌都有什么花色可选？",
+                addenda_root,
+            )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["recommended_reply_mode"], "rule_explanation")
+        self.assertEqual(payload["constraints"][0]["title"], "岩板餐桌可选色样")
+        self.assertIn("圣勃朗鱼肚白", payload["suggested_reply"])
+        self.assertIn("劳伦特黑金", payload["suggested_reply"])
+        self.assertIn("极光白", payload["suggested_reply"])
+
     def test_query_guidance_returns_opening_method_follow_up(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             addenda_root = Path(tmpdir)
@@ -930,6 +985,17 @@ class QueryAddendumGuidanceTests(unittest.TestCase):
         self.assertEqual(payload["recommended_reply_mode"], "rule_explanation")
         self.assertEqual(payload["constraints"][0]["title"], "常规拆装柜体牙称常用50/80mm，允许范围50-250mm")
         self.assertIn("衣柜常用80mm", payload["suggested_reply"])
+
+    def test_actual_query_guidance_matches_rock_slab_dining_table_color_options(self) -> None:
+        payload = MODULE.query_guidance(
+            "岩板餐桌都有什么花色可选？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertEqual(payload["recommended_reply_mode"], "rule_explanation")
+        self.assertEqual(payload["constraints"][0]["title"], "岩板餐桌可选色样")
+        self.assertIn("圣勃朗鱼肚白", payload["suggested_reply"])
+        self.assertIn("劳伦特黑金", payload["suggested_reply"])
 
 
 if __name__ == "__main__":

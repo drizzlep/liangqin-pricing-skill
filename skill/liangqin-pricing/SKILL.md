@@ -1,6 +1,6 @@
 ---
 name: liangqin-pricing
-description: "Use when user asks for furniture pricing, custom wardrobe/bookcase/bed/table quotes, reference estimates, or maintenance actions such as importing a new price workbook, importing new pricing rules, updating current data, or checking the current release. Prefer this shared skill when pricing needs to remain reusable across OpenClaw environments."
+description: "Use when user asks about Liangqin furniture pricing, custom wardrobe/bookcase/bed/table quotes, reference estimates, configurable product options such as materials/colors/patterns, designer-manual rule explanations, or maintenance actions such as importing a new price workbook, importing new pricing rules, updating current data, or checking the current release. Prefer this shared skill when Liangqin product answers need to remain reusable across OpenClaw environments."
 ---
 
 # 良禽佳木定制报价顾问
@@ -289,6 +289,7 @@ python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/calculate_hidden_r
 - `无线单面板动能开关`
 - `流云 / 飞瀑 / 平板门纹理连续 >0.9m`
 - `岩板台面 / 岩板背板 / 铝框岩板门板`
+- `岩板餐桌花色 / 岩板可选色样`
 - `常规拆装柜体高度默认结构 / 牙称高度范围`
 - `柜侧前开口 / 柜侧前缺口 / 柜侧闭合缺口`
 - `超高带门柜体开放格分段缝`

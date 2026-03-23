@@ -81,6 +81,15 @@ def write_minimal_pdf(path: Path, lines: list[str]) -> None:
 
 
 class ExtractRulesCandidateTests(unittest.TestCase):
+    def test_should_ocr_page_when_visual_rule_page_has_many_images(self) -> None:
+        should_ocr = MODULE.should_ocr_page(
+            text_layer_text="可选色样 圣勃朗鱼肚白 极光白 阿勒山闪电黑",
+            image_count=4,
+            ocr_min_chars=20,
+        )
+
+        self.assertTrue(should_ocr)
+
     def test_ensure_pdf_renderer_binary_reuses_compiled_binary(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             cache_dir = Path(tmpdir)

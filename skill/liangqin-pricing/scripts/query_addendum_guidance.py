@@ -159,7 +159,7 @@ def query_guidance(text: str, addenda_root: Path) -> dict[str, Any]:
             kind = str(match.get("action_type", "")) or classify_match(match)
             missing_fields = infer_missing_required_fields(probe_item, match)
             decision = build_decision(str(manifest["layer_name"]), match, kind)
-            if kind == "constraint" and all(
+            if kind in {"constraint", "catalog_option"} and all(
                 existing.get("title") != decision["title"] or existing.get("detail") != decision["detail"]
                 for existing in constraints
             ):
