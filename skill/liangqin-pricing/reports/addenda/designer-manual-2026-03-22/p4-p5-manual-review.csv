@@ -1,0 +1,3 @@
+page,block_id,manual_readable_text,interpretation,recommended_status,next_action
+4,p004-b01,"原木定制三大误区；FAS级、Sup级、F&BP级到底谁是最高等级？ 主要用于解释市售木材分级与 NHLA 标准的关系","该页核心作用是科普木材等级概念，重点在纠正常见误区，并未提出可直接执行的报价、配置或结构限制；应视为背景说明而非规则候选","non_rule_background","保留背景说明记录，不入 runtime，不进入规则草稿层"
+5,p005-b01,"原木定制三大误区；木材等级≠选料水平≠家具品质；强调需要好的木材等级、优秀选料水平和严格选料标准","该页继续解释木材等级与家具品质之间的认知关系，属于理念说明与品牌选料原则表达，没有稳定的可结构化报价规则句","non_rule_background","保留背景说明记录，不入 runtime，不进入规则草稿层"

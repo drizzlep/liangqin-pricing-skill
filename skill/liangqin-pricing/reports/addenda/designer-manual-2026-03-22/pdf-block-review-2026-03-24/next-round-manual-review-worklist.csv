@@ -1,0 +1,4 @@
+stage,block_id,current_status,next_action,notes
+design_draft,p049-b04,needs_manual_judgement,保留在设计结构草稿层,作为 p48/p49 联合草稿的标题锚点
+design_draft,p049-b05,needs_manual_judgement,继续整理尺寸术语,聚焦 20/12/8/6 的术语口径确认
+candidate_rule,p288-b01,new_candidate_rule,拆成 2-4 条候选规则草稿,已完成人工摘要与拆句方向整理
