@@ -56,17 +56,53 @@ class PrecheckQuoteTests(unittest.TestCase):
         self.assertFalse(result["ready_for_formal_quote"])
         self.assertEqual(result["next_required_field"], "door_type")
 
-    def test_generic_cabinet_with_unique_dimension_match_also_asks_door_type(self) -> None:
-        args = self.make_args(category="玄关柜", length="1.2", depth="0.4", height="2.4", material="北美黑胡桃木")
+    def test_explicit_bookcase_product_without_depth_uses_catalog_default_depth(self) -> None:
+        args = self.make_args(category="飘飘书柜", length="1.5", height="1", material="北美黑胡桃木")
         result = MODULE.precheck_cabinet(args)
-        self.assertFalse(result["ready_for_formal_quote"])
-        self.assertEqual(result["next_required_field"], "door_type")
+        self.assertTrue(result["ready_for_formal_quote"])
+        self.assertIsNone(result["next_required_field"])
+        self.assertEqual(result["assumed_defaults"][0]["field"], "depth")
+        self.assertEqual(result["assumed_defaults"][0]["value"], "0.35")
+        self.assertEqual(result["default_quote_profile"]["name"], "飘飘家开放书柜")
 
-    def test_generic_bookcase_with_nonstandard_dimensions_skips_quote_kind_and_asks_door_path(self) -> None:
+    def test_generic_cabinets_with_defaults_are_ready_for_formal_quote(self) -> None:
+        cases = [
+            ("书柜", "2", None, "2.4", "北美樱桃木", "飘飘家开放书柜", "0.35", "no"),
+            ("衣柜", "1.8", None, "2.2", "北美黑胡桃木", "升级经典门衣柜", "0.6", "yes"),
+            ("玄关柜", "1.2", None, "2.4", "北美黑胡桃木", "经典玄关柜", "0.4", "yes"),
+            ("电视柜", "2.2", None, "1.85", "北美黑胡桃木", "简美电视柜及配柜", "0.45", "unknown"),
+            ("餐边柜", "1.5", None, "2.2", "北美黑胡桃木", "简美餐边柜高柜", "0.45", "unknown"),
+        ]
+
+        for category, length, depth, height, material, anchor_name, default_depth, default_has_door in cases:
+            with self.subTest(category=category):
+                args = self.make_args(
+                    category=category,
+                    length=length,
+                    depth=depth,
+                    height=height,
+                    material=material,
+                )
+                result = MODULE.precheck_cabinet(args)
+                self.assertTrue(result["ready_for_formal_quote"])
+                self.assertIsNone(result["next_required_field"])
+                self.assertEqual(result["default_quote_profile"]["name"], anchor_name)
+                self.assertEqual(result["default_quote_profile"]["assumed_depth"], default_depth)
+                self.assertEqual(result["default_quote_profile"]["assumed_has_door"], default_has_door)
+
+    def test_generic_bookcase_with_explicit_depth_still_uses_default_open_profile(self) -> None:
         args = self.make_args(category="书柜", length="2", depth="0.35", height="2.4", material="北美樱桃木")
         result = MODULE.precheck_cabinet(args)
+        self.assertTrue(result["ready_for_formal_quote"])
+        self.assertEqual(result["default_quote_profile"]["name"], "飘飘家开放书柜")
+        self.assertEqual(result["default_quote_profile"]["assumed_has_door"], "no")
+
+    def test_generic_bookcase_with_adjustment_keyword_does_not_use_default_profile(self) -> None:
+        args = self.make_args(category="书柜", length="2", height="2.4", material="北美樱桃木", shape="带抽屉")
+        result = MODULE.precheck_cabinet(args)
         self.assertFalse(result["ready_for_formal_quote"])
-        self.assertEqual(result["next_required_field"], "has_door")
+        self.assertEqual(result["next_required_field"], "depth")
+        self.assertNotIn("default_quote_profile", result)
 
     def test_diamond_cabinet_asks_structure_rule_instead_of_generic_door_path(self) -> None:
         args = self.make_args(category="钻石柜", length="1.2", depth="0.4", height="2.4", material="北美白蜡木")

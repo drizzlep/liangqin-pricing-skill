@@ -44,6 +44,7 @@ dist/liangqin-pricing-installer-YYYYMMDD.sh
 
 - 价格索引
 - 报价规则
+- 设计师追加规则 layer
 - 安装和发布脚本
 
 所以就算目标环境没有最初的产品目录 Excel 和定制规则 Doc，也可以直接报价。

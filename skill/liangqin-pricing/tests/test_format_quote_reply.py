@@ -96,10 +96,12 @@ class FormatQuoteReplyTests(unittest.TestCase):
         rendered = MODULE.render(payload)
 
         self.assertIn("计算过程：", rendered)
+        self.assertIn("这次按投影面积计价。", rendered)
         self.assertIn("追加规则：纹理连续超过0.9m", rendered)
         self.assertEqual(rendered.count("正式报价："), 1)
         self.assertNotIn("追加规则1：", rendered)
-        self.assertIn("说明：按当前规则可正式报价；已套用设计师追加规则：手册 A", rendered)
+        self.assertIn("补充：按当前规则可正式报价；已套用设计师追加规则：手册 A", rendered)
+        self.assertNotIn("计价方式：", rendered)
 
     def test_render_reads_structured_addendum_decisions(self) -> None:
         payload = {

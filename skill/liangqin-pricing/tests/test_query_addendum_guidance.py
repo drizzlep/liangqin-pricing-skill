@@ -16,6 +16,475 @@ SPEC.loader.exec_module(MODULE)
 
 
 class QueryAddendumGuidanceTests(unittest.TestCase):
+    def test_query_guidance_adds_natural_answer_for_runtime_constraint(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            addenda_root = Path(tmpdir)
+            layer_dir = addenda_root / "designer-cabinet"
+            reports_dir = addenda_root / "reports"
+            reports_dir.mkdir()
+            runtime_rules_path = reports_dir / "runtime-rules.json"
+            runtime_rules_path.write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-cabinet",
+                        "layer_name": "设计师追加规则 Cabinet",
+                        "rules": [
+                            {
+                                "page": 50,
+                                "domain": "cabinet",
+                                "action_type": "constraint",
+                                "title": "窄边风格拆装时门盖牙称与顶挡条最少留出15mm",
+                                "detail": "窄边风格拆装柜体中，门盖牙称与顶挡条时，最少需要留出15mm。",
+                                "trigger_terms": ["窄边风格", "牙称", "顶挡条"],
+                                "required_fields": [],
+                                "tags": ["柜体", "尺寸阈值", "窄边"],
+                                "relevance_score": 10,
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            layer_dir.mkdir()
+            (layer_dir / "manifest.json").write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-cabinet",
+                        "layer_name": "设计师追加规则 Cabinet",
+                        "status": "ACTIVE",
+                        "artifacts": {"runtime_rules_file": str(runtime_rules_path)},
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            payload = MODULE.query_guidance(
+                "窄边风格柜体门板要盖到顶挡条，现场安装怕打架，需要提前留多少？",
+                addenda_root,
+            )
+
+        self.assertEqual(payload["answer_style"], "natural_rule_explanation")
+        self.assertEqual(payload["evidence_level"], "hard_rule")
+        self.assertIn("至少预留15mm", payload["answer_summary"])
+        self.assertIn("明确要求", payload["answer_summary"])
+        self.assertEqual(payload["confidence_note"], "")
+
+    def test_query_guidance_falls_back_to_knowledge_entry_for_narrow_edge_slot_depth(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            addenda_root = Path(tmpdir)
+            layer_dir = addenda_root / "designer-cabinet"
+            reports_dir = addenda_root / "reports"
+            reports_dir.mkdir()
+            runtime_rules_path = reports_dir / "runtime-rules.json"
+            runtime_rules_path.write_text(
+                json.dumps(
+                    {"layer_id": "designer-cabinet", "layer_name": "设计师追加规则 Cabinet", "rules": []},
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            knowledge_path = reports_dir / "knowledge-layer.json"
+            knowledge_path.write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-cabinet",
+                        "layer_name": "设计师追加规则 Cabinet",
+                        "entries": [
+                            {
+                                "topic": "直角圆边窄边高柜凹槽内退尺寸提示",
+                                "answerable_summary": "直角圆边窄边高柜这组节点，当前能确认存在凹槽内退尺寸约束。现有复盘里能稳定读到的尺寸包括上节点20/8/12、下节点12/6/8；其中20mm更倾向于顶挡条可见高度或宽度相关尺寸，但术语口径还没完全锁定。",
+                                "evidence_level": "high_confidence_review",
+                                "source_pages": [48, 49],
+                                "trigger_terms": ["直角圆边", "窄边高柜", "凹槽内退尺寸", "节点尺寸"],
+                                "do_not_overclaim": "不要把20mm直接说成已经锁定名称的工艺死规则。",
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            layer_dir.mkdir()
+            (layer_dir / "manifest.json").write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-cabinet",
+                        "layer_name": "设计师追加规则 Cabinet",
+                        "status": "ACTIVE",
+                        "artifacts": {
+                            "runtime_rules_file": str(runtime_rules_path),
+                            "knowledge_layer_file": str(knowledge_path),
+                        },
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            payload = MODULE.query_guidance(
+                "直角圆边的窄边高柜，凹槽内退尺寸有没有什么要注意的？",
+                addenda_root,
+            )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["answer_style"], "natural_rule_explanation")
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("凹槽内退尺寸约束", payload["answer_summary"])
+        self.assertIn("20/8/12", payload["answer_summary"])
+        self.assertIn("术语口径还没完全锁定", payload["confidence_note"])
+        self.assertEqual(payload["constraints"], [])
+
+    def test_query_guidance_answers_node_dimensions_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "窄边高柜做直角圆边的时候，上下节点尺寸有没有固定要求？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertIn("12/12/8", payload["answer_summary"])
+        self.assertIn("20/8/12", payload["answer_summary"])
+        self.assertIn("12/6/8", payload["answer_summary"])
+        self.assertIn("20mm", payload["confidence_note"])
+
+    def test_query_guidance_answers_lighting_switch_guidance_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "灯带开关下单时怎么备注安装位置？如果客户还没定位置，是不是可以写现场确定？另外做分区控制是不是要额外收费？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("优先选用有线开关", payload["answer_summary"])
+        self.assertIn("现场确定开关位置", payload["answer_summary"])
+        self.assertIn("分区控制", payload["answer_summary"])
+        self.assertIn("额外收费", payload["answer_summary"])
+
+    def test_query_guidance_answers_hand_sweep_switch_installation_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "可隔门板手扫雷达开关一般怎么安装？能不能底装在岩板下面，或者侧装在侧板里？正面明装是不是就按触摸开关用？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertEqual(payload["constraints"], [])
+        self.assertIn("底装", payload["answer_summary"])
+        self.assertIn("侧装", payload["answer_summary"])
+        self.assertIn("触摸开关", payload["answer_summary"])
+
+    def test_query_guidance_answers_integrated_switch_series_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "12mm集控感应开关这组一共有几款？人体红外和手扫、触摸这几种有什么区别？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertEqual(payload["constraints"], [])
+        self.assertIn("三种常见类型", payload["answer_summary"])
+        self.assertIn("人体红外", payload["answer_summary"])
+        self.assertIn("手扫", payload["answer_summary"])
+        self.assertIn("触摸", payload["answer_summary"])
+
+    def test_query_guidance_answers_lift_inner_space_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "箱体床做小蜻蜓举升器时，内空高度和内空长度有没有最低要求？中间那段长度能不能做可开启床屉板？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertEqual(payload["constraints"], [])
+        self.assertIn("196mm", payload["answer_summary"])
+        self.assertIn("950mm", payload["answer_summary"])
+        self.assertIn("不能做可开启床屉板", payload["answer_summary"])
+
+    def test_query_guidance_answers_slat_frame_quantity_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "所有床的排骨架如果床宽超过1450，是不是默认双块？排骨条宽度是不是统一80mm？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertEqual(payload["constraints"], [])
+        self.assertIn("1450mm", payload["answer_summary"])
+        self.assertIn("双块排骨架", payload["answer_summary"])
+        self.assertIn("80mm", payload["answer_summary"])
+
+    def test_query_guidance_answers_drawer_face_pairing_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "抽屉如果上下左右四边都内嵌，抽面一般做多厚？如果是26厚门板配22mm抽屉，抽面怎么处理？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertEqual(payload["constraints"], [])
+        self.assertIn("22 厚", payload["answer_summary"])
+        self.assertIn("全盖层板", payload["answer_summary"])
+        self.assertIn("26 厚", payload["answer_summary"])
+
+    def test_query_guidance_answers_sliding_door_inset_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "推拉门如果是22厚门板，直边圆边和内斜边分别要内缩多少？单小块门板宽度有没有上限？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertEqual(payload["constraints"], [])
+        self.assertIn("60mm", payload["answer_summary"])
+        self.assertIn("65mm", payload["answer_summary"])
+        self.assertIn("600mm", payload["answer_summary"])
+
+    def test_query_guidance_answers_single_small_panel_seam_limits_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "单小块门板如果外观做中缝，宽度一般能放到多大？如果不做中缝是不是就要控制得更窄？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("450mm", payload["answer_summary"])
+        self.assertIn("600mm", payload["answer_summary"])
+        self.assertIn("无中缝", payload["answer_summary"])
+
+    def test_query_guidance_answers_odd_door_opening_direction_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "柜门数量是单数的时候，图纸是不是一定要标开启方向？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("单数", payload["answer_summary"])
+        self.assertIn("开启方向", payload["answer_summary"])
+        self.assertIn("图纸", payload["answer_summary"])
+
+    def test_query_guidance_answers_drawer_desk_clearance_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "带抽屉书桌如果桌长做到1400以上，桌下抽屉内部空间是不是会变小？要提前注意多少？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("1400mm", payload["answer_summary"])
+        self.assertIn("钢管", payload["answer_summary"])
+        self.assertIn("25mm", payload["answer_summary"])
+
+    def test_query_guidance_answers_parallel_desk_segment_guidance_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "定制并立书桌如果桌长做得比较长，要不要分段或者做拆装？入户搬运这块怎么提醒客户？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("2000mm", payload["answer_summary"])
+        self.assertIn("2400mm", payload["answer_summary"])
+        self.assertIn("拆装结构", payload["answer_summary"])
+        self.assertIn("分段", payload["answer_summary"])
+
+    def test_query_guidance_answers_lift_desk_power_guidance_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "升降桌设计时电源怎么预留？如果客户家插座离得远，现场能不能直接改线或者剪插头？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertEqual(payload["constraints"], [])
+        self.assertIn("3.3m", payload["answer_summary"])
+        self.assertIn("预留插座", payload["answer_summary"])
+        self.assertIn("插线板", payload["answer_summary"])
+        self.assertIn("现场接线", payload["answer_summary"])
+
+    def test_query_guidance_answers_mattress_limiter_installation_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "尾翻箱体床和侧翻箱体床的床垫限位器一般装几个、装在哪边？规格大概是多少？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("50*80*260", payload["answer_summary"])
+        self.assertIn("床头方向", payload["answer_summary"])
+        self.assertIn("锁扣相反方向", payload["answer_summary"])
+        self.assertIn("1500mm", payload["answer_summary"])
+
+    def test_query_guidance_answers_luopang_dimension_marking_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "罗胖系列桌子下单出图时尺寸应该标桌面还是支腿？支腿和桌面默认差多少？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("桌面或凳面尺寸", payload["answer_summary"])
+        self.assertIn("不要标注支腿尺寸", payload["answer_summary"])
+        self.assertIn("10mm", payload["answer_summary"])
+
+    def test_query_guidance_answers_wall_mounted_desk_guidance_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "挂墙书桌是不是必须固定在承重墙上？订制的话桌面边角能不能改，容腿空间一般怎么留？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("固定在承重墙上", payload["answer_summary"])
+        self.assertIn("桌面边角", payload["answer_summary"])
+        self.assertIn("580mm", payload["answer_summary"])
+        self.assertIn("隐藏支架", payload["answer_summary"])
+
+    def test_query_guidance_answers_luopang_drawer_table_dimensions_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "罗胖带屉餐桌或者罗胖书桌，屉柜一般多宽多深多高？跟桌面长宽怎么对应？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("屉柜总长", payload["answer_summary"])
+        self.assertIn("L-160", payload["answer_summary"])
+        self.assertIn("400", payload["answer_summary"])
+        self.assertIn("600", payload["answer_summary"])
+        self.assertIn("300mm", payload["answer_summary"])
+
+    def test_query_guidance_answers_luopang_table_custom_limits_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "罗胖餐桌或者罗胖书桌如果做订制，长度和宽度上限一般按多少理解？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("2000mm", payload["answer_summary"])
+        self.assertIn("900mm", payload["answer_summary"])
+
+    def test_query_guidance_answers_round_table_and_jianmei_max_sizes_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "经典圆餐桌和简美大桌如果做订制，尺寸上限一般到哪里？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("桌面直径通常不超过 1400mm", payload["answer_summary"])
+        self.assertIn("长度不超过 2100mm", payload["answer_summary"])
+        self.assertIn("宽度不超过 900mm", payload["answer_summary"])
+
+    def test_query_guidance_answers_parallel_desk_no_drawer_limits_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "定制并立书桌如果做无屉款，最长能做到多少，宽度有没有上限？横称高度一般怎么跟桌长对应？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("2200mm", payload["answer_summary"])
+        self.assertIn("600mm", payload["answer_summary"])
+        self.assertIn("横称高度", payload["answer_summary"])
+        self.assertIn("50", payload["answer_summary"])
+        self.assertIn("100", payload["answer_summary"])
+
+    def test_query_guidance_answers_legless_desk_fixing_and_limits_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "定制无腿书桌要怎么固定？能不能做抽屉？桌长、进深和高度大概有什么限制？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("承重墙", payload["answer_summary"])
+        self.assertIn("左右固定到柜子", payload["answer_summary"])
+        self.assertIn("1800mm", payload["answer_summary"])
+        self.assertIn("600mm", payload["answer_summary"])
+        self.assertIn("150mm", payload["answer_summary"])
+
+    def test_query_guidance_answers_child_furniture_safety_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "儿童家具如果做拉手、翻门和玻璃，有没有什么限制？藤编网布这些能不能用在孩子能碰到的位置？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("优先使用扣手", payload["answer_summary"])
+        self.assertIn("儿童拉手", payload["answer_summary"])
+        self.assertIn("藤编、网布", payload["answer_summary"])
+        self.assertIn("玻璃部件", payload["answer_summary"])
+        self.assertIn("1600mm", payload["answer_summary"])
+
+    def test_query_guidance_answers_child_corner_radius_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "儿童家具外露边角一般怎么做？危险外角的圆半径和圆弧长度有没有最低要求？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("圆边圆角", payload["answer_summary"])
+        self.assertIn("10mm", payload["answer_summary"])
+        self.assertIn("15mm", payload["answer_summary"])
+
+    def test_query_guidance_answers_child_bed_access_safety_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "儿童高架床的进出通道和围栏附近间隙一般怎么控？梯子最高踏步离入口大概有什么限制？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("进出通道", payload["answer_summary"])
+        self.assertIn("500mm", payload["answer_summary"])
+        self.assertIn("小于 7mm", payload["answer_summary"])
+        self.assertIn("不大于 400mm", payload["answer_summary"])
+
+    def test_query_guidance_answers_hinge_angle_and_note_requirements_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "海蒂诗铝框门铰链默认开多大？如果我想改成165度，是不是要另外上传图纸和备注具体门扇？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("95°", payload["answer_summary"])
+        self.assertIn("165°", payload["answer_summary"])
+        self.assertIn("上传", payload["answer_summary"])
+        self.assertIn("哪一扇门", payload["answer_summary"])
+
+    def test_query_guidance_answers_child_handle_styles_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "儿童房家具如果不用扣手，儿童拉手都有哪些常见款式？有没有甜甜圈、云朵、小熊这类？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("甜甜圈", payload["answer_summary"])
+        self.assertIn("云朵", payload["answer_summary"])
+        self.assertIn("小熊", payload["answer_summary"])
+        self.assertIn("小鱼", payload["answer_summary"])
+
+    def test_query_guidance_answers_empty_space_brace_rules_from_actual_knowledge_layer(self) -> None:
+        payload = MODULE.query_guidance(
+            "空区加托称时，前后托称怎么配？不同长度和高度有没有常用规则？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("前托称", payload["answer_summary"])
+        self.assertIn("后托称", payload["answer_summary"])
+        self.assertIn("60*26", payload["answer_summary"])
+        self.assertIn("70*26", payload["answer_summary"])
+        self.assertIn("80*26", payload["answer_summary"])
+
     def test_query_guidance_returns_rock_slab_dining_table_color_options(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             addenda_root = Path(tmpdir)
@@ -598,7 +1067,7 @@ class QueryAddendumGuidanceTests(unittest.TestCase):
 
         self.assertEqual(payload["recommended_reply_mode"], "rule_explanation")
         self.assertEqual(payload["constraints"][0]["title"], "窄边风格拆装时门盖牙称与顶挡条最少留出15mm")
-        self.assertIn("最少需要留出15mm", payload["suggested_reply"])
+        self.assertIn("至少预留15mm", payload["suggested_reply"])
 
     def test_query_guidance_matches_new_modern_edge_structure_constraint(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

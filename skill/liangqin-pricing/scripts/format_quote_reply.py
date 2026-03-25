@@ -71,7 +71,7 @@ def item_lines(item: dict[str, Any], index: int, multiple: bool) -> list[str]:
     lines = [
         f"{label}：{title}",
         f"已确认：{confirmed}",
-        f"计价方式：{pricing_method}",
+        f"这次按{pricing_method}。",
         "计算过程：",
     ]
     for step in merged_steps:
@@ -103,7 +103,7 @@ def render(payload: dict[str, Any]) -> str:
     addendum_notes = [str(formalize_text(str(note_item).strip()) or "").strip() for note_item in (payload.get("addendum_notes") or [])]
     merged_notes = [entry for entry in [note, *addendum_notes] if entry]
     if merged_notes:
-        lines.append(f"说明：{'；'.join(merged_notes)}")
+        lines.append(f"补充：{'；'.join(merged_notes)}")
 
     return "\n".join(lines)
 

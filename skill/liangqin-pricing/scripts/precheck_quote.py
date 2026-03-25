@@ -70,6 +70,72 @@ CUSTOM_INTENT_PATTERN = re.compile(r"(定制|订制|定做|订做|订个|订一|
 STANDARD_INTENT_KEYWORDS = ["成品", "标品", "标准品", "现成"]
 CURRENT_INDEX_PATH = Path(__file__).resolve().parent.parent / "data" / "current" / "price-index.json"
 
+DEFAULT_CABINET_PROFILES = {
+    "书柜": {
+        "product_code": "SG-01",
+        "name": "飘飘家开放书柜",
+        "sheet": "书柜",
+        "pricing_mode": "projection_area",
+        "assumed_depth": 0.35,
+        "assumed_has_door": "no",
+        "assumed_door_type": "",
+        "display_name": "常规开放书柜",
+    },
+    "衣柜": {
+        "product_code": "YG-22",
+        "name": "升级经典门衣柜",
+        "sheet": "衣柜",
+        "pricing_mode": "projection_area",
+        "assumed_depth": 0.6,
+        "assumed_has_door": "yes",
+        "assumed_door_type": "带门",
+        "display_name": "常规带门衣柜",
+    },
+    "玄关柜": {
+        "product_code": "XGG-02",
+        "name": "经典玄关柜",
+        "sheet": "玄关柜",
+        "pricing_mode": "projection_area",
+        "assumed_depth": 0.4,
+        "assumed_has_door": "yes",
+        "assumed_door_type": "带门",
+        "display_name": "常规带门玄关柜",
+    },
+    "电视柜": {
+        "product_code": "DSG-05",
+        "name": "简美电视柜及配柜",
+        "sheet": "电视柜",
+        "pricing_mode": "projection_area",
+        "assumed_depth": 0.45,
+        "assumed_has_door": "unknown",
+        "assumed_door_type": "",
+        "display_name": "常规电视柜",
+    },
+    "餐边柜": {
+        "product_code": "CBG-14",
+        "name": "简美餐边柜高柜",
+        "sheet": "餐边柜",
+        "pricing_mode": "projection_area",
+        "assumed_depth": 0.45,
+        "assumed_has_door": "unknown",
+        "assumed_door_type": "",
+        "display_name": "常规餐边柜",
+    },
+}
+
+DEFAULT_BLOCKING_CABINET_KEYWORDS = {
+    "抽屉",
+    "灯带",
+    "异形",
+    "双面门",
+    "岩板",
+    "门板",
+    "玫瑰木",
+    "非见光",
+    "超深",
+    "改深",
+}
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Check which quote parameter should be asked next.")
@@ -182,6 +248,10 @@ def load_queryable_price_records() -> list[dict[str, Any]]:
 
 def is_blank(value: str | None) -> bool:
     return value is None or str(value).strip() == ""
+
+
+def format_meter_value(value: float) -> str:
+    return f"{value:.3f}".rstrip("0").rstrip(".")
 
 
 def collect_source_text(args: argparse.Namespace) -> str:
@@ -574,8 +644,181 @@ def needs_quote_kind_confirmation(args: argparse.Namespace, category_type: str) 
     if category_type in {"bed", "table"}:
         return True
     if category_type == "cabinet":
+        if has_cabinet_core_quote_fields(args):
+            return False
         return any(keyword in category for keyword in MIXED_QUOTE_KIND_CATEGORY_KEYWORDS)
     return False
+
+
+def has_cabinet_core_quote_fields(args: argparse.Namespace) -> bool:
+    category = str(args.category or "").strip()
+    if category not in DEFAULT_CABINET_PROFILES:
+        return False
+    return not any(is_blank(getattr(args, field_name, None)) for field_name in ["length", "height", "material"])
+
+
+def cabinet_has_default_blocker(args: argparse.Namespace) -> bool:
+    source_text = collect_source_text(args)
+    return any(keyword in source_text for keyword in DEFAULT_BLOCKING_CABINET_KEYWORDS)
+
+
+def load_default_cabinet_anchor(profile: dict[str, Any]) -> dict[str, Any] | None:
+    for record in load_queryable_price_records():
+        if record.get("record_kind") != "price":
+            continue
+        if record.get("sheet") != profile["sheet"]:
+            continue
+        if record.get("product_code") != profile["product_code"]:
+            continue
+        if record.get("name") != profile["name"]:
+            continue
+        if record.get("pricing_mode") != profile["pricing_mode"]:
+            continue
+        door_type = str(record.get("door_type") or "").strip()
+        expected_door_type = str(profile.get("assumed_door_type") or "").strip()
+        if expected_door_type and door_type != expected_door_type:
+            continue
+        return record
+    return None
+
+
+def build_default_quote_profile(
+    *,
+    source: str,
+    anchor_record: dict[str, Any],
+    assumed_depth: float,
+    assumed_has_door: str,
+    assumed_door_type: str,
+    display_name: str,
+) -> dict[str, Any]:
+    return {
+        "source": source,
+        "sheet": str(anchor_record.get("sheet") or "").strip(),
+        "product_code": str(anchor_record.get("product_code") or "").strip(),
+        "name": str(anchor_record.get("name") or "").strip(),
+        "pricing_mode": str(anchor_record.get("pricing_mode") or "").strip(),
+        "door_type": assumed_door_type,
+        "assumed_depth": format_meter_value(assumed_depth),
+        "assumed_has_door": assumed_has_door,
+        "display_name": display_name,
+    }
+
+
+def explicit_cabinet_default_context(args: argparse.Namespace) -> dict[str, Any] | None:
+    matched_product = infer_explicit_product_match(args)
+    if not matched_product:
+        return None
+    if "projection_area" not in set(matched_product.get("pricing_modes", [])):
+        return None
+
+    sample_dimensions = matched_product.get("dimensions") or {}
+    sample_depth = parse_dimension_to_meters(sample_dimensions.get("depth"))
+    if sample_depth is None:
+        return None
+
+    provided_depth = parse_dimension_to_meters(args.depth)
+    if provided_depth is not None:
+        if provided_depth > 0.7:
+            return None
+        return None
+
+    assumed_defaults = []
+    if provided_depth is None:
+        assumed_defaults.append(
+            {
+                "field": "depth",
+                "value": format_meter_value(sample_depth),
+                "reason": "explicit cabinet product uses catalog standard depth",
+            }
+        )
+
+    return {
+        "mode": "explicit_product",
+        "assumed_defaults": assumed_defaults,
+        "default_quote_profile": build_default_quote_profile(
+            source="explicit_product",
+            anchor_record={
+                "sheet": matched_product.get("sheet"),
+                "product_code": matched_product.get("product_code"),
+                "name": matched_product.get("name"),
+                "pricing_mode": "projection_area",
+            },
+            assumed_depth=provided_depth if provided_depth is not None else sample_depth,
+            assumed_has_door="unknown",
+            assumed_door_type="",
+            display_name=str(matched_product.get("name") or "").strip(),
+        ),
+    }
+
+
+def generic_cabinet_default_context(args: argparse.Namespace) -> dict[str, Any] | None:
+    category = str(args.category or "").strip()
+    profile = DEFAULT_CABINET_PROFILES.get(category)
+    if not profile:
+        return None
+    if infer_explicit_product_match(args) is not None:
+        return None
+    if not has_cabinet_core_quote_fields(args):
+        return None
+    if cabinet_has_default_blocker(args):
+        return None
+
+    provided_depth = parse_dimension_to_meters(args.depth)
+    if provided_depth is not None and provided_depth > 0.7:
+        return None
+
+    anchor_record = load_default_cabinet_anchor(profile)
+    if not anchor_record:
+        return None
+
+    assumed_defaults = []
+    effective_depth = provided_depth
+    if effective_depth is None:
+        effective_depth = float(profile["assumed_depth"])
+        assumed_defaults.append(
+            {
+                "field": "depth",
+                "value": format_meter_value(effective_depth),
+                "reason": "generic cabinet quote uses the category standard depth",
+            }
+        )
+
+    assumed_has_door = str(profile["assumed_has_door"])
+    if args.has_door == "unknown" and assumed_has_door != "unknown":
+        assumed_defaults.append(
+            {
+                "field": "has_door",
+                "value": assumed_has_door,
+                "reason": "generic cabinet quote uses the category default structure",
+            }
+        )
+
+    assumed_door_type = str(profile["assumed_door_type"])
+    if is_blank(args.door_type) and assumed_door_type:
+        assumed_defaults.append(
+            {
+                "field": "door_type",
+                "value": assumed_door_type,
+                "reason": "generic cabinet quote uses the category default door path",
+            }
+        )
+
+    return {
+        "mode": "generic_profile",
+        "assumed_defaults": assumed_defaults,
+        "default_quote_profile": build_default_quote_profile(
+            source="generic_category",
+            anchor_record=anchor_record,
+            assumed_depth=effective_depth,
+            assumed_has_door=assumed_has_door,
+            assumed_door_type=assumed_door_type,
+            display_name=str(profile["display_name"]),
+        ),
+    }
+
+
+def resolve_cabinet_default_context(args: argparse.Namespace) -> dict[str, Any] | None:
+    return explicit_cabinet_default_context(args) or generic_cabinet_default_context(args)
 
 
 def quote_kind_question(category_type: str) -> str:
@@ -618,6 +861,8 @@ def response(
     next_required_field: str | None,
     next_question: str | None,
     reason: str,
+    assumed_defaults: list[dict[str, str]] | None = None,
+    default_quote_profile: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     payload = {
         "ready_for_formal_quote": ready,
@@ -626,6 +871,10 @@ def response(
         "next_question": next_question,
         "reason": reason,
     }
+    if assumed_defaults:
+        payload["assumed_defaults"] = assumed_defaults
+    if default_quote_profile:
+        payload["default_quote_profile"] = default_quote_profile
     if not ready:
         payload["ask_only_this_question"] = True
         payload["do_not_list_style_options"] = True
@@ -634,6 +883,7 @@ def response(
 
 
 def precheck_cabinet(args: argparse.Namespace) -> dict[str, Any]:
+    default_context = resolve_cabinet_default_context(args)
     explicit_product = has_explicit_product_identity(args)
     if needs_quote_kind_confirmation(args, "cabinet"):
         return response(
@@ -667,7 +917,17 @@ def precheck_cabinet(args: argparse.Namespace) -> dict[str, Any]:
             next_question="这类柜体我先需要确认长度，请问大概做多长？",
             reason="cabinet requires length before formal quote",
         )
-    if is_blank(args.depth):
+    if is_blank(args.depth) and not (default_context and default_context["mode"] == "explicit_product"):
+        if default_context and default_context["mode"] == "generic_profile":
+            return response(
+                ready=True,
+                category_type="cabinet",
+                next_required_field=None,
+                next_question=None,
+                reason="generic cabinet quote can use the category default baseline profile",
+                assumed_defaults=default_context["assumed_defaults"],
+                default_quote_profile=default_context["default_quote_profile"],
+            )
         return response(
             ready=False,
             category_type="cabinet",
@@ -690,6 +950,16 @@ def precheck_cabinet(args: argparse.Namespace) -> dict[str, Any]:
             next_required_field="material",
             next_question="这类柜体我还需要确认材质，你想用哪种木材？",
             reason="cabinet requires material before formal quote",
+        )
+    if default_context and default_context["mode"] == "generic_profile":
+        return response(
+            ready=True,
+            category_type="cabinet",
+            next_required_field=None,
+            next_question=None,
+            reason="generic cabinet quote can use the category default baseline profile",
+            assumed_defaults=default_context["assumed_defaults"],
+            default_quote_profile=default_context["default_quote_profile"],
         )
     if is_diamond_cabinet_request(args) and is_blank(args.shape):
         return response(
@@ -737,6 +1007,8 @@ def precheck_cabinet(args: argparse.Namespace) -> dict[str, Any]:
         next_required_field=None,
         next_question=None,
         reason="cabinet intake has the required fields for a formal quote",
+        assumed_defaults=default_context["assumed_defaults"] if default_context else None,
+        default_quote_profile=default_context["default_quote_profile"] if default_context else None,
     )
 
 

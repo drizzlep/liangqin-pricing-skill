@@ -44,8 +44,14 @@ bash scripts/package_openclaw_skill.sh /你的输出目录
 - `README.md`
 - `data/current/`
 - `references/current/`
+- `references/addenda/`
+- `reports/addenda/`
 - `scripts/`
 - `sources/inbox/README.md`
+
+其中 `references/addenda/ + reports/addenda/` 会把当前生效的设计师追加规则清单、索引和 runtime 规则一起带上，避免“本地能答，别人安装包里没有这条追加规则”。
+
+为控制包体，交付包会自动剔除 `pdf-block-review` 里的大图裁切、页面截图、临时放大图这类纯审阅素材；真正用于回答和检索的 `manifest / rules-source / rules-index / runtime-rules / manual-review` 会保留。
 
 同时会补齐这些后续维护会用到的目录：
 

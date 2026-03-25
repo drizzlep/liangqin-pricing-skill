@@ -9,6 +9,9 @@
     "rules_candidate_file": "../../../reports/addenda/designer-manual-2026-03-22/rules-candidate.json",
     "rules_index_file": "../../../reports/addenda/designer-manual-2026-03-22/rules-index.json",
     "runtime_rules_file": "../../../reports/addenda/designer-manual-2026-03-22/runtime-rules.json",
+    "knowledge_layer_file": "../../../reports/addenda/designer-manual-2026-03-22/knowledge-layer.json",
+    "coverage_ledger_file": "../../../reports/addenda/designer-manual-2026-03-22/coverage-ledger.json",
+    "coverage_ledger_overrides_file": "../../../reports/addenda/designer-manual-2026-03-22/coverage-ledger-overrides.json",
     "rules_source_markdown_file": "../../../reports/addenda/designer-manual-2026-03-22/rules-source.md",
     "rules_drafts_dir": "../../../reports/addenda/designer-manual-2026-03-22/rules-drafts",
     "rules_drafts_manifest_file": "../../../reports/addenda/designer-manual-2026-03-22/rules-drafts/manifest.json"

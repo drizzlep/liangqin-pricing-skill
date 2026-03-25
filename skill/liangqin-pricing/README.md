@@ -90,6 +90,8 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/update_addendum_layer.py --r
 - 保持 `references/current/*` 主规则不变
 - 单独生成一个 addendum layer
 - 单独生成候选、索引、分域草稿
+- 额外生成一份 `knowledge-layer.json` 作为“可回答但暂不程序化”的知识层
+- 额外生成一份 `coverage-ledger.json` 作为整本 PDF 的统一覆盖台账
 - 供后续报价在主规则之后做二次判断
 
 ## 最傻瓜的刷新 + 测试

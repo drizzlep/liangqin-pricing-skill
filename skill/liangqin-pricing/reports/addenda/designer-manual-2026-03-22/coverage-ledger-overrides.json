@@ -1,0 +1,807 @@
+{
+  "overrides": [
+    {
+      "page": 1,
+      "status": "excluded_background",
+      "note": "复核结论认定为背景页或噪声页，继续排除在回答与报价链路之外。"
+    },
+    {
+      "page": 20,
+      "status": "excluded_background",
+      "note": "复核结论认定为背景页或噪声页，继续排除在回答与报价链路之外。"
+    },
+    {
+      "page": 47,
+      "topic": "直角圆边-窄边矮柜",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为高置信结构复盘提示，不直接入 runtime。"
+    },
+    {
+      "page": 48,
+      "topic": "直角圆边-窄边高柜",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为高置信结构复盘提示，不直接入 runtime。"
+    },
+    {
+      "page": 49,
+      "topic": "尺寸阈值 规则",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为高置信结构复盘提示，不直接入 runtime。"
+    },
+    {
+      "page": 49,
+      "topic": "窄边风格——拆装注意事项",
+      "status": "runtime_hard_rule",
+      "note": "顶挡条 15mm 规则已进入 runtime；页面其他结构图仅作辅助解释。"
+    },
+    {
+      "page": 78,
+      "status": "excluded_background",
+      "note": "复核结论认定为背景页或噪声页，继续排除在回答与报价链路之外。"
+    },
+    {
+      "page": 179,
+      "status": "covered_existing",
+      "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 174,
+      "topic": "尺寸阈值 规则",
+      "status": "excluded_background",
+      "note": "该页残片更像章节衔接或 OCR 碎片，不作为独立规则处理。"
+    },
+    {
+      "page": 191,
+      "status": "covered_existing",
+      "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 192,
+      "status": "covered_existing",
+      "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 202,
+      "status": "covered_existing",
+      "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 203,
+      "status": "covered_existing",
+      "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 204,
+      "status": "covered_existing",
+      "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 205,
+      "status": "covered_existing",
+      "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 206,
+      "status": "covered_existing",
+      "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 207,
+      "status": "covered_existing",
+      "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 208,
+      "status": "covered_existing",
+      "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 284,
+      "status": "excluded_background",
+      "note": "复核结论认定为背景页或噪声页，继续排除在回答与报价链路之外。"
+    },
+    {
+      "page": 290,
+      "topic_contains": "24v驱动款可隔门板手扫雷达开关",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为手扫雷达开关安装方式提示，不直接入 runtime。"
+    },
+    {
+      "page": 193,
+      "topic": "尺寸阈值 规则",
+      "status": "covered_existing",
+      "note": "该页碎片尺寸信息已由常规铰链铝框门 runtime 规则覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 201,
+      "topic": "1.抽屉上下左右都是内嵌的情况，抽面 22 厚(美式抽屉除外)",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为抽面厚度与盖法搭配提示。"
+    },
+    {
+      "page": 201,
+      "topic": "2.有 26 厚门板和 22mm 抽屉的情况，抽面全盖层板",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为抽面厚度与盖法搭配提示。"
+    },
+    {
+      "page": 227,
+      "topic": "1. 木轨道及五金轨道使用规则见表",
+      "status": "excluded_background",
+      "note": "该条更像表头说明，本体规则已由后续轨道和门厚规则覆盖。"
+    },
+    {
+      "page": 227,
+      "topic": "22厚门板：直边、圆边内缩60mm，内斜边内缩65mm",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为推拉门22厚门板内缩提示。"
+    },
+    {
+      "page": 227,
+      "topic": "门高≤1200300≤门宽＜450",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为单小块门板尺寸提示的一部分。"
+    },
+    {
+      "page": 232,
+      "topic": "300≤W≤12001200＜H≤2300单块小门板W≤600mm",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为单小块门板尺寸提示的一部分。"
+    },
+    {
+      "page": 291,
+      "topic": "12mm集控人体红外感应开关(插拔头)05.63.0012；",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为集控感应开关系列与使用差异提示，不直接入 runtime。"
+    },
+    {
+      "page": 291,
+      "topic": "12mm集控感应开关（插拔头）系列：共三款",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为集控感应开关系列与使用差异提示，不直接入 runtime。"
+    },
+    {
+      "page": 296,
+      "status": "excluded_background",
+      "note": "这页主要是米家或语音配网教程，当前不进入报价或规则咨询链路。"
+    },
+    {
+      "page": 297,
+      "status": "excluded_background",
+      "note": "这页主要是手机 APP 配网教程，当前不进入报价或规则咨询链路。"
+    },
+    {
+      "page": 369,
+      "topic_contains": "1.内空要求H≥196mm",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为小蜻蜓举升器安装空间与内空要求提示。"
+    },
+    {
+      "page": 369,
+      "topic_contains": "3.床不得空载",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为小蜻蜓举升器使用提醒提示。"
+    },
+    {
+      "page": 369,
+      "topic_contains": "4.不同力值气弹簧使用规范",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为小蜻蜓举升器默认挡位提示。"
+    },
+    {
+      "page": 370,
+      "topic_contains": "1.内空要求H≥196mm",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为小蜻蜓举升器安装空间与内空要求提示。"
+    },
+    {
+      "page": 370,
+      "topic_contains": "2.使用一套举升器时床垫重量应≤50kg",
+      "status": "covered_existing",
+      "note": "该条已由现有床垫重量与 750N 举升器 runtime 规则覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 370,
+      "topic_contains": "3.床不得空载",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为小蜻蜓举升器使用提醒提示。"
+    },
+    {
+      "page": 370,
+      "topic_contains": "4.不同力值气弹簧使用规范",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为小蜻蜓举升器默认挡位提示。"
+    },
+    {
+      "page": 374,
+      "topic_contains": "1.宽度≤1450mm时，排骨架数量为单",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为床类排骨架单双块口径提示。"
+    },
+    {
+      "page": 374,
+      "topic_contains": "1.宽度＞1450mm时，排骨架数量为双",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为床类排骨架单双块口径提示。"
+    },
+    {
+      "page": 374,
+      "topic_contains": "2.排骨条均为80mm宽",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为床类排骨条宽度提示。"
+    },
+    {
+      "page": 374,
+      "current_status": "unresolved",
+      "topic": "3.排骨架间隙为15-25mm",
+      "status": "covered_existing",
+      "note": "该条已由现有排骨架间隙 runtime 规则覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 396,
+      "topic_contains": "带抽屉桌桌长≥1400mm时",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为带抽屉桌长尺寸时钢管占位与抽屉净空减少 25mm 的结构提示。"
+    },
+    {
+      "page": 397,
+      "topic_contains": "2100＜T≤2200100经典儿童多屉书桌",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为定制并立书桌长尺寸时分段、拆装与搬运提醒。"
+    },
+    {
+      "page": 397,
+      "topic_contains": "带屉订制款：",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为带屉订制桌的钢管占位与抽屉净空减少 25mm 的结构提示。"
+    },
+    {
+      "page": 402,
+      "topic_contains": "5.升降桌需使用电源",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为升降桌电源、插座预留与现场接线边界提示。"
+    },
+    {
+      "page": 390,
+      "current_status": "runtime_hard_rule",
+      "topic": "8 I a ¥ we Nu’ & by LOX gum",
+      "status": "runtime_hard_rule",
+      "note": "该页原 OCR 标题噪声较重，但核心内容已补充为知识层回答，用于罗胖系列尺寸标注与支腿默认差值的人话解释。"
+    },
+    {
+      "page": 404,
+      "topic": "1.订制可改桌面边角;",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为挂墙桌订制边角可改与整体订制注意事项提示。"
+    },
+    {
+      "page": 404,
+      "topic_contains": "3.若作为书桌或梳妆台等需考虑桌下容腿空间",
+      "status": "runtime_hard_rule",
+      "note": "容腿空间与尺寸阈值仍保留 runtime；同时补充知识层用于挂墙桌固定方式、隐藏支架与订制提醒的人话回答。"
+    },
+    {
+      "page": 389,
+      "topic_contains": "1100＜L＜1800L-180",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为罗胖带屉桌屉柜总长与桌面长度对应口径提示。"
+    },
+    {
+      "page": 389,
+      "topic": "桌面宽度W屉柜深度",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为罗胖带屉桌屉柜深度与桌面宽度对应口径提示。"
+    },
+    {
+      "page": 389,
+      "topic_contains": "700≤W≤900600标准屉柜高度=300mm罗胖桌系列",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为罗胖带屉桌屉柜宽度、深度与标准高度口径提示。"
+    },
+    {
+      "page": 389,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "1200≤L＜1400400",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为罗胖带屉桌屉柜宽度分档口径的一部分。"
+    },
+    {
+      "page": 389,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "1400≤L＜1600450",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为罗胖带屉桌屉柜宽度分档口径的一部分。"
+    },
+    {
+      "page": 389,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "1600≤L＜1800500",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为罗胖带屉桌屉柜宽度分档口径的一部分。"
+    },
+    {
+      "page": 389,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "600≤W＜700520",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为罗胖带屉桌屉柜深度分档口径的一部分。"
+    },
+    {
+      "page": 389,
+      "topic": "屉柜宽度屉柜深度屉柜高度",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为罗胖带屉桌屉柜总长与桌面长度对应口径提示。"
+    },
+    {
+      "page": 389,
+      "topic": "订制款：",
+      "summary_contains": "长度≤2000mm；宽度≤900mm",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为罗胖桌系列订制尺寸上限提示。"
+    },
+    {
+      "page": 390,
+      "topic": "Ps es, ¥ B\\e E 20uu’ ¥ be TOOK TOoWM",
+      "status": "excluded_background",
+      "note": "该条为明显 OCR 噪声碎片，页面有效信息已由罗胖系列尺寸标注知识项吸收。"
+    },
+    {
+      "page": 390,
+      "topic": "° ___ b*~| ] ¥ eK wr ¥ pRsoxsoum",
+      "status": "excluded_background",
+      "note": "该条为明显 OCR 噪声碎片，页面有效信息已由罗胖系列尺寸标注知识项吸收。"
+    },
+    {
+      "page": 390,
+      "current_status": "unresolved",
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "7 c || BOSARE: 3将",
+      "status": "excluded_background",
+      "note": "该条为明显 OCR 噪声碎片，页面有效信息已由罗胖系列尺寸标注知识项吸收。"
+    },
+    {
+      "page": 394,
+      "topic": "1200≤L＜140060 35 150 70 90 10 70",
+      "status": "covered_existing",
+      "note": "该条属于斜腿桌系列尺寸表碎片，已由同页 runtime 规则覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 394,
+      "topic": "1400≤L≤160060 35 170 90 90 10 80",
+      "status": "covered_existing",
+      "note": "该条属于斜腿桌系列尺寸表碎片，已由同页 runtime 规则覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 394,
+      "topic": "1600＜L≤210070 40 200 120 90 10 902000*900*780",
+      "status": "covered_existing",
+      "note": "该条属于斜腿桌系列尺寸表碎片，已由同页 runtime 规则覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 394,
+      "topic": "2100*900*780斜腿桌系列",
+      "status": "covered_existing",
+      "note": "该条更像斜腿桌系列标准款标题，核心尺寸规则已由同页 runtime 覆盖。"
+    },
+    {
+      "page": 396,
+      "topic_contains": "2100＜L≤2200100经典双屉书桌",
+      "status": "covered_existing",
+      "note": "该条属于带屉书桌尺寸表表头碎片，核心结构提醒已由现有知识层条目吸收。"
+    },
+    {
+      "page": 396,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "1200≤L＜140070",
+      "status": "covered_existing",
+      "note": "该条属于带屉书桌横称分档表碎片，当前不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 396,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "1400≤L≤160080",
+      "status": "covered_existing",
+      "note": "该条属于带屉书桌横称分档表碎片，当前不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 396,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "1600＜L≤210090",
+      "status": "covered_existing",
+      "note": "该条属于带屉书桌横称分档表碎片，当前不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 397,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "1200≤T＜140070",
+      "status": "covered_existing",
+      "note": "该条属于并立书桌横称分档表碎片，核心长尺寸和拆装提示已由知识层条目吸收。"
+    },
+    {
+      "page": 397,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "1400≤T≤160080",
+      "status": "covered_existing",
+      "note": "该条属于并立书桌横称分档表碎片，核心长尺寸和拆装提示已由知识层条目吸收。"
+    },
+    {
+      "page": 397,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "1600＜T≤210090",
+      "status": "covered_existing",
+      "note": "该条属于并立书桌横称分档表碎片，核心长尺寸和拆装提示已由知识层条目吸收。"
+    },
+    {
+      "page": 395,
+      "topic": "订制款：",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为简美大桌订制尺寸上限提示。"
+    },
+    {
+      "page": 403,
+      "topic": "双面抽屉标准款：",
+      "status": "excluded_background",
+      "note": "该条更像标准款标题残片，不单独进入回答链路。"
+    },
+    {
+      "page": 403,
+      "current_status": "unresolved",
+      "topic": "订制款：",
+      "summary_contains": "1400*1400*780",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为经典圆餐桌订制直径上限提示。"
+    },
+    {
+      "page": 403,
+      "current_status": "unresolved",
+      "topic": "订制款：",
+      "summary_contains": "1600*700*780",
+      "status": "covered_existing",
+      "note": "该条已由现有书桌长尺寸钢管占位与抽屉净空减少 25mm 的知识层口径覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 403,
+      "current_status": "unresolved",
+      "topic": "订制款：",
+      "summary_contains": "2000*900*780",
+      "status": "covered_existing",
+      "note": "该条与“其他桌”订制尺寸上限 runtime 口径重复，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 398,
+      "topic_contains": "2100＜L≤2200100定制并立书桌",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为定制并立书桌无屉款上限、横称高度与屉柜移位口径提示。"
+    },
+    {
+      "page": 398,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "1200≤L＜140070",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为定制并立书桌无屉款横称高度口径的一部分。"
+    },
+    {
+      "page": 398,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "1400≤L≤160080",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为定制并立书桌无屉款横称高度口径的一部分。"
+    },
+    {
+      "page": 398,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "1600＜L≤210090",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为定制并立书桌无屉款横称高度口径的一部分。"
+    },
+    {
+      "page": 401,
+      "topic": "无屉定制款：",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为定制无腿书桌固定方式、带屉/无屉边界与尺寸限制提示。"
+    },
+    {
+      "page": 401,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "1200≤L＜140070",
+      "status": "covered_existing",
+      "note": "该条已被定制无腿书桌与并立书桌横称高度知识层口径覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 401,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "1400≤L≤160080",
+      "status": "covered_existing",
+      "note": "该条已被定制无腿书桌与并立书桌横称高度知识层口径覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 401,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "1600＜L≤210090",
+      "status": "covered_existing",
+      "note": "该条已被定制无腿书桌与并立书桌横称高度知识层口径覆盖，不再单独作为新增缺口处理。"
+    },
+    {
+      "page": 341,
+      "topic": "1. 通用要求",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为儿童床通用安全设计提醒。"
+    },
+    {
+      "page": 341,
+      "topic": "2.注意事项",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为上层床使用提醒与客户告知事项提示。"
+    },
+    {
+      "page": 344,
+      "topic": "4.进出通道",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为儿童高架床进出通道安全限制提示。"
+    },
+    {
+      "page": 344,
+      "topic_contains": "500mm，或者与没有缺口的安全栏板顶部距离不大于500mm。",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为儿童高架床通道间隙与围栏距离口径提示。"
+    },
+    {
+      "page": 358,
+      "topic": "1.2 突出物",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为儿童家具拉手安全口径提示。"
+    },
+    {
+      "page": 358,
+      "topic": "1.3 孔、间隙及开口",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为儿童家具可触及区域禁用藤编网布提示。"
+    },
+    {
+      "page": 358,
+      "topic": "1.4 垂直开启的翻门、翻板",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为儿童家具翻门翻板安全提示。"
+    },
+    {
+      "page": 358,
+      "topic": "1.5 玻璃部件",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为儿童家具玻璃使用高度限制提示。"
+    },
+    {
+      "page": 357,
+      "topic": "1.1 边缘、尖端及外角",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为儿童家具外露边角圆角安全口径提示。"
+    },
+    {
+      "page": 366,
+      "topic": "2.进出通道",
+      "status": "covered_existing",
+      "note": "该条只是回引儿童家具进出通道要求，已由儿童床进出通道知识层口径覆盖。"
+    },
+    {
+      "page": 327,
+      "topic": "海蒂诗铝框门铰链",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为海蒂诗铝框门铰链开启角度与盖法提示。"
+    },
+    {
+      "page": 328,
+      "topic_contains": "若想使用海蒂诗165°铰链需要上传图纸并备注",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为 165° 大角度铰链上传图纸与备注要求提示。"
+    },
+    {
+      "page": 222,
+      "topic_contains": "经年累月的使用和磨损",
+      "status": "excluded_background",
+      "note": "该条主要是藤编材质保养背景说明，已由现有藤面提醒规则吸收，不单独进入回答链路。"
+    },
+    {
+      "page": 222,
+      "topic_contains": "3.温度变化：温度的变化也可能影响藤编家具的表面",
+      "status": "excluded_background",
+      "note": "该条主要是藤编材质保养背景说明，已由现有藤面提醒规则吸收，不单独进入回答链路。"
+    },
+    {
+      "page": 406,
+      "status": "excluded_background",
+      "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。"
+    },
+    {
+      "page": 407,
+      "status": "excluded_background",
+      "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。"
+    },
+    {
+      "page": 408,
+      "status": "excluded_background",
+      "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。"
+    },
+    {
+      "page": 409,
+      "status": "excluded_background",
+      "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。"
+    },
+    {
+      "page": 410,
+      "status": "excluded_background",
+      "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。"
+    },
+    {
+      "page": 412,
+      "status": "excluded_background",
+      "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。"
+    },
+    {
+      "page": 413,
+      "status": "excluded_background",
+      "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。"
+    },
+    {
+      "page": 416,
+      "status": "excluded_background",
+      "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。"
+    },
+    {
+      "page": 127,
+      "topic": "1200＜L≤1600D≤300 H＜900 无托称后托称*1",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为空区托称前后托称搭配与长度分档提示。"
+    },
+    {
+      "page": 127,
+      "topic": "1600＜L≤1800/ H＜900 60*26（木质托称）",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为空区托称木质托称尺寸分档提示。"
+    },
+    {
+      "page": 127,
+      "topic": "1800＜L≤2000/ H＜900 前托称*1前托称*1",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为空区托称前后托称搭配与 70*26 分档提示。"
+    },
+    {
+      "page": 256,
+      "topic": "180儿童木质拉手-用于儿童房家具",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为儿童木质拉手常见款式提示。"
+    },
+    {
+      "page": 256,
+      "topic_contains": "云朵拉手",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为儿童木质拉手常见款式提示。"
+    },
+    {
+      "page": 256,
+      "topic_contains": "四叶草拉手",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为儿童木质拉手常见款式提示。"
+    },
+    {
+      "page": 257,
+      "topic_contains": "圆形拉手",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为儿童木质拉手常见款式提示。"
+    },
+    {
+      "page": 257,
+      "topic_contains": "小熊拉手",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为儿童木质拉手常见款式提示。"
+    },
+    {
+      "page": 257,
+      "topic_contains": "小鱼拉手",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为儿童木质拉手常见款式提示。"
+    },
+    {
+      "page": 257,
+      "topic": "80儿童木质拉手-用于儿童房家具",
+      "status": "excluded_background",
+      "note": "该条已明显串入后续金属拉手页 OCR 噪声，不单独作为儿童木质拉手规则处理。"
+    },
+    {
+      "page": 30,
+      "status": "excluded_background",
+      "note": "该页为明显 OCR 噪声残片，且 rules-index 已判定为非 pricing relevant，不再单独处理。"
+    },
+    {
+      "page": 176,
+      "status": "excluded_background",
+      "note": "该页更像平开门章节标题残片，后续具体规则已由相邻 runtime 和知识层条目覆盖。"
+    },
+    {
+      "page": 177,
+      "topic_contains": "柜门数量为单数的柜体",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为奇数柜门图纸需标开启方向提示。"
+    },
+    {
+      "page": 180,
+      "topic": "外观有中缝",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为单小块门板有无中缝时宽度分界提示。"
+    },
+    {
+      "page": 233,
+      "status": "excluded_background",
+      "note": "该页为明显 OCR 噪声残片，且 rules-index 已判定为非 pricing relevant，不再单独处理。"
+    },
+    {
+      "page": 251,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "3e0 um",
+      "status": "excluded_background",
+      "note": "该条为下翻门页面中的 OCR 噪声残片，不再单独处理。"
+    },
+    {
+      "page": 251,
+      "topic": "尺寸阈值 规则",
+      "summary_contains": "50 ww；abu",
+      "status": "excluded_background",
+      "note": "该条为下翻门页面中的 OCR 噪声残片，不再单独处理。"
+    },
+    {
+      "page": 282,
+      "status": "excluded_background",
+      "note": "该页为明显 OCR 噪声残片，且 rules-index 已判定为非 pricing relevant，不再单独处理。"
+    },
+    {
+      "page": 283,
+      "status": "excluded_background",
+      "note": "该页为明显 OCR 噪声残片，且 rules-index 已判定为非 pricing relevant，不再单独处理。"
+    },
+    {
+      "page": 316,
+      "status": "excluded_background",
+      "note": "该页当前仅剩尺寸噪声碎片，且 rules-index 已判定为非 pricing relevant，不再单独处理。"
+    },
+    {
+      "page": 324,
+      "status": "excluded_background",
+      "note": "该页为明显 OCR 噪声残片，且 rules-index 已判定为非 pricing relevant，不再单独处理。"
+    },
+    {
+      "page": 362,
+      "topic_contains": "床垫限位器",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为箱体床床垫限位器规格与默认安装提示。"
+    },
+    {
+      "page": 363,
+      "topic_contains": "尾翻箱体床限位器安装于床头方向",
+      "status": "knowledge_ready",
+      "note": "已转入知识层回答，当前作为尾翻/侧翻箱体床床垫限位器安装方向与数量提示。"
+    },
+    {
+      "page": 402,
+      "topic": "CZ-09 罗胖高屉餐桌",
+      "status": "covered_existing",
+      "note": "该条属于现有价目表已收录的正式产品行，当前不再作为新增 PDF 缺口单独处理。"
+    },
+    {
+      "page": 86,
+      "topic": "3. 顶板飞檐-顶盖侧，侧包底",
+      "status": "excluded_background",
+      "note": "该条更像结构背景说明，且 rules-index 已判定为非 pricing relevant，不再单独处理。"
+    }
+  ],
+  "append_entries": [
+    {
+      "page": 288,
+      "topic": "灯带开关总览页",
+      "status": "knowledge_ready",
+      "domain": "accessory",
+      "pricing_relevant": true,
+      "rule_type": "narrative_rule",
+      "summary": "本页可稳定提炼为下单与图纸备注提示：优先选用有线开关、需考虑走线位置、开关默认外露式、需备注开关名称与安装位置、分区控制或单区域多个开关需额外收费。",
+      "note": "已转入知识层回答，当前作为高置信备注与收费提示，不直接入 runtime。",
+      "source": "manual_review"
+    }
+  ]
+}

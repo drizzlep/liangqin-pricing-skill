@@ -3,6 +3,34 @@
   "version": "2026-03-22",
   "cases": [
     {
+      "id": "generic-bookcase-default-baseline",
+      "category": "default-baseline",
+      "message": "做一个1米高，1.5米长的北美黑胡桃木书柜，多少钱？",
+      "expected_keywords": [
+        "正式报价",
+        "北美黑胡桃木"
+      ],
+      "expected_any_keywords": [
+        [
+          "标准进深",
+          "常规开放书柜"
+        ],
+        [
+          "抽屉",
+          "灯带",
+          "改门型",
+          "超常规进深"
+        ]
+      ],
+      "forbidden_keywords": [
+        "请问大概做多深",
+        "成品/标准品",
+        "还是按定制",
+        "|------|",
+        "以上按常规拆装结构报价"
+      ]
+    },
+    {
       "id": "cabinet-smoke-flowing-cloud",
       "category": "smoke",
       "message": "我要做个北美黑胡桃木流云衣柜，长1.8米，高2.2米，深670，多少钱？",
@@ -29,6 +57,34 @@
       "message": "尾翻箱体床，床垫宽1.6米的话，床垫限位器要几个，安装在哪边？",
       "expected_keywords": ["2个", "床头方向"],
       "forbidden_keywords": ["不确定"]
+    },
+    {
+      "id": "bed-limiter-installation-detailed",
+      "category": "addendum-explanation",
+      "message": "尾翻箱体床和侧翻箱体床的床垫限位器一般装几个、装在哪边？规格大概是多少？",
+      "expected_keywords": ["50*80*260", "床头方向", "锁扣相反方向", "1500"],
+      "forbidden_keywords": ["不确定", "普通气压杆", "电动举升"]
+    },
+    {
+      "id": "odd-door-opening-direction-note",
+      "category": "addendum-explanation",
+      "message": "柜门数量是单数的时候，图纸是不是一定要标开启方向？",
+      "expected_keywords": ["单数", "开启方向", "图纸"],
+      "forbidden_keywords": ["不用标", "影响不大", "不需要备注"]
+    },
+    {
+      "id": "single-small-panel-seam-limits",
+      "category": "addendum-explanation",
+      "message": "单小块门板如果外观做中缝，宽度一般能放到多大？如果不做中缝是不是就要控制得更窄？",
+      "expected_keywords": ["450", "600", "无中缝", "有中缝"],
+      "forbidden_keywords": ["都一样", "没有区别", "不确定"]
+    },
+    {
+      "id": "aluminum-frame-hinge-angle-note",
+      "category": "addendum-explanation",
+      "message": "海蒂诗铝框门铰链默认开多大？如果我想改成165度，是不是要另外上传图纸和备注具体门扇？",
+      "expected_keywords": ["95°", "165°", "上传", "哪一扇门"],
+      "forbidden_keywords": ["随便改", "不用图纸", "默认就是165"]
     },
     {
       "id": "wireless-switch-rule",

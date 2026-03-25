@@ -52,6 +52,10 @@ mkdir -p "$PACKAGE_ROOT/data/versions"
 
 mkdir -p "$PACKAGE_ROOT/references"
 cp -R "$SOURCE_DIR/references/current" "$PACKAGE_ROOT/references/current"
+if [[ -d "$SOURCE_DIR/references/addenda" ]]; then
+  cp -R "$SOURCE_DIR/references/addenda" "$PACKAGE_ROOT/references/addenda"
+  find "$PACKAGE_ROOT/references/addenda" -type f \( -name ".DS_Store" -o -name "*.pyc" \) -delete
+fi
 
 mkdir -p "$PACKAGE_ROOT/scripts"
 cp -R "$SOURCE_DIR/scripts/." "$PACKAGE_ROOT/scripts/"
@@ -66,6 +70,15 @@ mkdir -p "$PACKAGE_ROOT/sources/archived"
 
 mkdir -p "$PACKAGE_ROOT/reports/validation"
 mkdir -p "$PACKAGE_ROOT/reports/diffs"
+if [[ -d "$SOURCE_DIR/reports/addenda" ]]; then
+  cp -R "$SOURCE_DIR/reports/addenda" "$PACKAGE_ROOT/reports/addenda"
+  find "$PACKAGE_ROOT/reports/addenda" \
+    -type d \
+    \( -name "__pycache__" -o -name "block-images" -o -name "page-images" -o -name "p48-p49-detail-crops" -o -name "tmp-p49-zoom" \) \
+    -prune \
+    -exec rm -rf {} +
+  find "$PACKAGE_ROOT/reports/addenda" -type f \( -name ".DS_Store" -o -name "*.pyc" \) -delete
+fi
 
 ZIP_PATH="$OUTPUT_DIR/$PACKAGE_NAME"
 rm -f "$ZIP_PATH"
