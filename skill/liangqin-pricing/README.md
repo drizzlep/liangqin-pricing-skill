@@ -20,10 +20,12 @@
 
 ## OpenClaw 安装
 
-如果其他 OpenClaw 想直接使用这个版本，建议固定到 tag：
+如果其他 OpenClaw 想直接使用这个版本，优先使用 GitHub Releases 里的 zip 或 installer 附件。
+
+如果你确实要从仓库源码安装，再按 release 对应 tag 拉取：
 
 ```bash
-git clone --branch v2026.03.26 --depth 1 https://github.com/drizzlep/liangqin-pricing-skill.git
+git clone --branch <release-tag> --depth 1 https://github.com/drizzlep/liangqin-pricing-skill.git
 ```
 
 然后把 `skill/liangqin-pricing` 同步到 OpenClaw workspace 即可。
