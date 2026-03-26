@@ -113,6 +113,89 @@
       "message": "做一个北美白橡木普通平板门衣柜，长1.6米，高2.4米，深600，正常报价，不考虑灯带、无线开关、流云飞瀑这些。",
       "expected_keywords": ["正式报价", "北美白橡木"],
       "forbidden_keywords": ["无线单面板动能开关", "流云", "飞瀑"]
+    },
+    {
+      "id": "modular-child-bed-follow-up",
+      "category": "child-bed-modular",
+      "message": "做一张定制半高床，1.2米乘2米，北美樱桃木。",
+      "expected_any_keywords": [["直梯", "斜梯", "梯柜", "上层出入方式"]],
+      "forbidden_keywords": ["经典挂梯上下床", "成品/标准品", "query_price_index.py"]
+    },
+    {
+      "id": "modular-child-bed-formal-quote",
+      "category": "child-bed-modular",
+      "message": "做一张定制上下床，1.2米乘2米，北美白橡木，梯柜款，下层箱体床，胶囊围栏，围栏长2米高0.4米，梯柜踏步宽520，进深500，直接正式报价。",
+      "expected_keywords": ["正式报价", "梯柜", "箱体床"],
+      "forbidden_keywords": ["query_price_index.py", "经典梯柜上下床", "参考总价"]
+    },
+    {
+      "id": "modular-child-bed-loft-formal-quote",
+      "category": "child-bed-modular",
+      "message": "做一张定制高架床，1.2米乘2米，北美白橡木，梯柜款，胶囊围栏，围栏长2米高0.4米，梯柜踏步宽510，进深500，直接正式报价。",
+      "expected_keywords": ["正式报价", "高架床", "梯柜"],
+      "expected_any_keywords": [["10685", "10,685"]],
+      "forbidden_keywords": ["query_price_index.py", "参考总价", "经典梯柜上下床"]
+    },
+    {
+      "id": "modular-child-bed-rosewood-bunk-special",
+      "category": "child-bed-modular",
+      "message": "做一张乌拉圭玫瑰木定制梯柜上下床，1.2米乘2米，下层架式床，篱笆围栏，梯柜踏步宽520，进深500，直接正式报价。",
+      "expected_keywords": ["正式报价"],
+      "expected_any_keywords": [["梯柜上床", "上床模块"], ["12970", "12,970"]],
+      "forbidden_keywords": ["高架床模块：2 × 1.2", "参考总价"]
+    },
+    {
+      "id": "modular-child-bed-staggered-special",
+      "category": "child-bed-modular",
+      "message": "做一张乌拉圭玫瑰木定制错层床，1.2米乘2米，下层架式床，城堡围栏，斜梯，直接正式报价。",
+      "expected_keywords": ["正式报价", "错层床"],
+      "expected_any_keywords": [["错层床上床", "错层床下床"], ["11370", "11,370"]],
+      "forbidden_keywords": ["高架床模块：2 × 1.2", "参考总价"]
+    },
+    {
+      "id": "modular-child-bed-width-limit",
+      "category": "child-bed-modular",
+      "message": "做一张定制高架床，1.35米乘2米，北美白橡木，梯柜款，胶囊围栏，围栏长2米高0.4米，梯柜踏步宽520，进深500，这种能直接正式报价吗？",
+      "expected_any_keywords": [["上限是 1.2 米", "不大于 1.2", "需不大于 1.2", "须 ≤1.2m", "须<=1.2m", "必须 ≤ 1.2m", "必须<=1.2m", "≤ 1.2m", "≤1.2米", "1.2 米", "1.2米", "不能大于 1.2", "床垫宽度需不大于 1.2", "大于 1.2m 时，不能直接正式报价"]],
+      "forbidden_keywords": ["10685", "10,685", "20275", "20,275", "成品还是定制", "目录成品", "床面到地面高度", "木蜡油", "清漆", "另一套报价体系", "给成年人用"]
+    },
+    {
+      "id": "modular-child-bed-standard-guardrail-follow-up",
+      "category": "child-bed-modular",
+      "message": "做一张定制半高床，1.2米乘2米，北美白蜡木，梯柜款，经典护栏款。",
+      "expected_keywords": ["标准围栏"],
+      "expected_any_keywords": [["胶囊围栏", "蘑菇围栏", "田园围栏", "篱笆围栏", "圆柱围栏", "方圆围栏", "城堡围栏"]],
+      "forbidden_keywords": ["参考价", "经典护栏款已确认", "胶囊围栏先给你报", "vercel.app", "查看报价单", "部署完成"]
+    },
+    {
+      "id": "loft-double-row-wardrobe-follow-up",
+      "category": "child-bed-modular",
+      "message": "一张半高梯柜上铺床1.2*2米床垫尺寸的，经典护栏款。床下前后双排衣柜，前后柜体互通形式。前面有门无背板的衣柜长2米高1.2米，后方无门有背板的衣柜也是长2米高1.2米。请帮忙看下用玫瑰木和白蜡木做的话分别是多少钱。",
+      "expected_keywords": ["进深"],
+      "expected_any_keywords": [["前后双排", "两排衣柜", "各自的进深", "后排进深", "后排深度", "后排柜体进深"]],
+      "forbidden_keywords": ["常规带门衣柜", "经典护栏款已确认", "26,557", "26557", "29,309", "29309"]
+    },
+    {
+      "id": "loft-double-row-wardrobe-rear-depth-follow-up",
+      "category": "child-bed-modular",
+      "message": "一张半高梯柜上铺床1.2*2米床垫尺寸的，北美白蜡木，胶囊围栏，围栏长2米高0.4米，梯柜踏步宽520，进深500。床下前后双排衣柜，前后柜体互通形式。前排衣柜深450，有门无背板，长2米高1.2米；后方无门有背板的衣柜长2米高1.2米。请帮忙看下多少钱。",
+      "expected_any_keywords": [["后方", "后排"], ["进深", "深度"]],
+      "forbidden_keywords": ["29,309", "29309"]
+    },
+    {
+      "id": "loft-double-row-wardrobe-formal-quote",
+      "category": "child-bed-modular",
+      "message": "一张半高梯柜上铺床1.2*2米床垫尺寸的，胶囊围栏，围栏长2米高0.4米。床下前后双排衣柜，前后柜体互通形式，前后两排都深450。前面有门无背板的衣柜长2米高1.2米，后方无门有背板的衣柜也是长2米高1.2米。请帮忙看下用玫瑰木和白蜡木做的话分别是多少钱。",
+      "expected_keywords": ["乌拉圭玫瑰木", "北美白蜡木", "前排衣柜", "后排衣柜"],
+      "expected_any_keywords": [["26557", "26,557"], ["29309", "29,309"]],
+      "forbidden_keywords": ["经典护栏款", "常规带门衣柜", "还需要确认进深"]
+    },
+    {
+      "id": "loft-underbed-depth-limit",
+      "category": "child-bed-modular",
+      "message": "一张北美白蜡木半高梯柜上铺床1.2*2米床垫尺寸的，胶囊围栏，围栏长2米高0.4米。床下前排做有门无背板衣柜，长2米高1.2米深500。请直接正式报价。",
+      "expected_any_keywords": [["不大于 450mm", "只支持单排进深不大于 450mm", "≤450mm", "≤ 450mm", "450mm 的组合报价", "超出了脚本支持的 450mm 上限", "上限 450mm", "超过了组合脚本的可报价范围"]],
+      "forbidden_keywords": ["19,481", "19481", "分开报价", "分别走定制路径", "床体和衣柜分别", "单独报价", "另算", "分拆方式", "两条定制路径分别报价", "前排单独报价", "成品还是定制"]
     }
   ]
 }

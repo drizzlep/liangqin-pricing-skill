@@ -14,6 +14,23 @@ description: "Use when user asks about Liangqin furniture pricing, custom wardro
   - `北美白蜡木`
   - `乌拉圭玫瑰木`
 - 正式报价前，只追问真正影响价格的关键参数。
+- 只要用户说的是 `经典护栏款 / 经典护栏 / 护栏经典款`，在映射成标准围栏名称前：
+  - 严禁正式报价
+  - 严禁参考价
+  - 严禁假设它等于 `胶囊围栏` 或任何其他围栏
+  - 严禁输出外部链接、报价单链接、部署地址
+- 下面两类儿童床限制属于最高优先级，优先于其他任何补问：
+  - `上铺 / 高架床床垫宽度 >1.2m`：直接限制，不继续追问其他参数
+  - `半高床 / 高架床 + 床下柜` 缺 `后排进深`：先问后排进深，绝不正式报价
+- 对 `半高床 / 高架床 + 床下双排柜体`，必须死记下面这条：
+  - `梯柜进深500` 只是梯柜进深
+  - `前排深450` 只是前排柜体进深
+  - 这两个值都不能自动当成 `后排柜体进深`
+  - 只要 `后方/后排` 柜体没单独给深度，就必须继续追问，不能报 `29,309`
+- 对 `半高床 / 高架床 + 床下柜体超深`
+  - 不允许建议“拆成半高床模块和常规衣柜两条定制路径分别报价”
+  - 不允许建议“前排单独报价、后排另算”
+  - 这类场景当前只允许：说明超出 `450mm` 上限，并建议改回 `≤450mm`
 - 只要关键参数已经齐全，且规则路径已经明确，就必须给 `正式报价`，不要退回成 `参考总价`。
 - 如果预检脚本已经给出 `next_question`，优先原样追问，不追加第二个问题。
 - 不要向咨询用户暴露内部执行过程，不要发送这类话术：
@@ -124,6 +141,53 @@ description: "Use when user asks about Liangqin furniture pricing, custom wardro
 - 上下床对外统一使用：
   - `挂梯款`
   - `梯柜款（梯柜下可储物）`
+- 对 `定制 / 非标儿童床`、`半高床`、`高架床`、`错层床`
+  - 转入 `模块化儿童床报价` 路径
+  - 不和目录 `儿童床` 成品价混算
+  - 固定补问顺序：`床形态 > 上层出入方式 > 床垫尺寸 > 下层结构 > 材质 > 围栏样式 > 围栏尺寸/梯子尺寸`
+- 如果用户描述里同时出现 `床下柜体 / 双排 / 前后 / 互通 / 有门无背板 / 无门有背板`
+  - 直接视为 `模块化儿童床 + 床下柜` 路径
+  - 不回退成普通儿童床模块价
+  - 也不把床下柜体拆成 `常规带门衣柜默认基础档` 单独绕路正式报价
+- 命中 `模块化儿童床 + 床下柜` 路径时，禁止脑补默认值：
+  - 不能把 `经典护栏款` 默认当成 `胶囊围栏` 或其他标准围栏
+  - 不能把 `前后互通` 默认当成 `前后都深 450`
+  - 不能把只给了 `前排进深` 的场景自动补成 `后排同深`
+  - 不能因为历史示例里出现过 `26,557 / 29,309`，就在缺参时直接复用这两个金额
+- 模块化儿童床报价当前只围绕已支持的价格参数补问：
+  - 不追问 `床面离地高度 / 床底高度`
+  - 不追问 `木蜡油还是清漆`
+  - 不追问 `围栏背板/底板是否同材质`
+  - 不追问 `柜体是实木还是多层板贴皮`
+  - 除非用户主动明确提出混材、涂装或工艺升级，否则不要扩展成深化设计问卷
+- 对 `半高床 / 高架床 + 床下柜体`
+  - 前排、后排 `进深` 都是正式报价前的硬条件
+  - 缺任意一排进深时，不正式报价
+  - 只要还缺 `后排进深`，就先追问 `后排进深`，不要先展开任何金额计算
+  - `梯柜进深 / 梯柜踏步进深` 只能用于梯柜计价，不能代替前排或后排柜体进深
+  - `前排深 450` 只代表前排柜体，不得自动套给 `后排`
+  - 不能用前排进深替代后排进深，也不能因为用户说了“互通”就默认前后同深
+- 对 `半高床 / 高架床 + 床下柜体`
+  - 单排进深 `>450mm` 时，当前不能按组合脚本正式报价
+  - 这条限制优先级高于其余补参；只要已经看到 `>450mm`，就先返回限制说明，不要先追问梯柜尺寸等其他字段
+  - 不允许把这类场景拆成“床体模块价 + 常规定制衣柜”继续正式报价
+  - 不允许改口成“床体和衣柜分别走另一套定制路径”
+  - 只能返回限制说明，或引导用户改成 `≤450mm`
+- 对 `经典护栏款 / 经典护栏 / 护栏经典款` 这类别名
+  - 先追问标准围栏名称
+  - 如果同一轮还缺床下前后柜体进深，可以把 `标准围栏 + 前后进深` 放在同一轮一起追问
+- 对 `高架床 / 上铺床垫宽度 >1.2m`
+  - 直接说明“当前不能正式报价”
+  - 这条限制优先级高于围栏、梯柜等其余补参
+  - 明确原因是 `上铺或高架床床垫宽度需不大于 1.2m`
+  - 不要转去追问 `成品还是定制`
+  - 不要改口成“成年人高架床走另一套报价体系”
+  - 不要继续沿普通模块床或目录成品路径往下报价
+- 以下都属于错误回答，必须避免：
+  - 用户说 `经典护栏款 + 前后双排互通`，却直接按 `胶囊围栏 + 前后都深 450` 给正式报价
+  - 用户只给了前排深度，却把后排深度默认为相同
+  - 单排进深 `>450mm` 时，拆成“半高床模块价 + 普通衣柜投影面积价”继续正式报价
+  - 上铺床垫宽度 `>1.2m` 时，仍继续报模块价或目录价
 
 ### 混合路径产品
 
@@ -219,10 +283,33 @@ python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/query_bed_weight_g
     - 要明确写出 `下单备注：床垫重量、举升器数量`
 - 这一步优先级高于通用 `query_addendum_guidance.py`
 
+3C. 如果用户当前是在说 `上下床 / 半高床 / 高架床 / 错层床` 这类儿童床自然语言需求，优先先运行：
+
+```bash
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/detect_modular_child_bed_rule.py --text "用户原话"
+```
+
+使用方式：
+
+- 如果返回 `recommended_reply_mode=constraint`
+  - 优先按返回的 `next_question` 或 `constraints` 组织限制说明
+  - 不要继续追问其他补充参数
+- 如果返回 `recommended_reply_mode=follow_up`
+  - 优先按返回的 `next_question` 追问
+  - 如果同时返回多条 `follow_up_questions`
+    - 允许同一轮一起问这些硬条件
+  - 不要用 `梯柜进深` 或 `前排进深` 替代 `后排进深`
+- 这一步主要用来处理自然语言抽取容易漂移的儿童床场景
+  - 例如 `高架床宽度 >1.2m`
+  - `床下双排柜但后排进深缺失`
+  - `床下单排进深 >450mm`
+  - `经典护栏款` 这类别名
+  - 命中这些情况时，这一步优先级高于通用补问直觉
+
 4. 柜体类、床类、桌类先运行：
 
 ```bash
-python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/precheck_quote.py --category "品类名" [--length "长度"] [--depth "进深"] [--height "高度"] [--width "宽度"] [--material "材质"] [--has-door yes|no|unknown] [--door-type "门型"] [--series "系列"]
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/precheck_quote.py --category "品类名" [--length "长度"] [--depth "进深"] [--height "高度"] [--width "宽度"] [--material "材质"] [--has-door yes|no|unknown] [--door-type "门型"] [--series "系列"] [--bed-form "床形态"] [--access-style "上层出入方式"] [--lower-bed-type "下层结构"] [--guardrail-style "围栏样式"]
 ```
 
 如果用户已经明确说了产品名，示例应理解为：
@@ -235,7 +322,44 @@ python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/precheck_quote.py 
 
 5. 如果 `ready_for_formal_quote=false`，先问 `next_question`。
    不要在 `next_question` 前后再加内部解释、执行说明或第二个问题。
-6. 如果预检通过，再运行：
+6. 如果预检通过，先看 `pricing_route`：
+
+- 如果 `pricing_route=modular_child_bed_combo`
+  - 不走 `query_price_index.py`
+  - 直接运行 `calculate_modular_child_bed_combo_quote.py`
+  - 如果脚本当前不支持该结构或尺寸，直接按限制说明回复，不要改走别的衣柜/书柜路径继续正式报价
+- 如果 `pricing_route=modular_child_bed`
+  - 不走 `query_price_index.py`
+  - 直接运行模块化儿童床组合计价脚本
+- 其他路径
+  - 再运行 `query_price_index.py`
+
+模块化儿童床推荐写法：
+
+```bash
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/calculate_modular_child_bed_quote.py --bed-form "上下床" --material "北美白橡木" --width "1.2" --length "2" --access-style "梯柜" --lower-bed-type "箱体床" --guardrail-style "胶囊围栏" --guardrail-length "2" --guardrail-height "0.4" --stair-width "0.52" --stair-depth "0.5"
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/calculate_modular_child_bed_quote.py --bed-form "半高床" --material "北美黑胡桃木" --width "1" --length "2" --access-style "斜梯" --access-height "1.2" --guardrail-style "圆柱围栏" --guardrail-length "2" --guardrail-height "0.35"
+```
+
+模块化儿童床 + 床下柜推荐写法：
+
+```bash
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/calculate_modular_child_bed_combo_quote.py --material "乌拉圭玫瑰木" --bed-form "半高床" --width "1.2" --length "2" --access-style "梯柜" --guardrail-style "胶囊围栏" --guardrail-length "2" --guardrail-height "0.4" --stair-width "0.52" --stair-depth "0.5" --front-cabinet-length "2" --front-cabinet-height "1.2" --front-cabinet-depth "0.45" --front-cabinet-mode "有门无背板" --rear-cabinet-length "2" --rear-cabinet-height "1.2" --rear-cabinet-depth "0.45" --rear-cabinet-mode "无门有背板" --interconnected-rows
+```
+
+适用说明：
+
+- `上下床 / 半高床 / 高架床 / 错层床` 这类定制儿童床，优先走这条路径
+- 半高床统一按 `高架床单层模块组合` 处理
+- 玫瑰木命中特价模块时，脚本会优先使用特价模块，不再叠加通用公式
+- 上铺或高架床床垫宽度大于 `1.2m` 时，不直接正式报价
+- 如果是 `半高床 / 高架床 + 床下柜体`，且预检返回 `pricing_route=modular_child_bed_combo`，优先改走组合脚本
+- 如果用户原话里已经出现 `前排 / 后排 / 双排 / 互通 / 无背板 / 有背板`
+  - 不要忽略这些字段重新退回“还想做直梯还是斜梯”之类已回答的问题
+  - 只追问真正还缺的那一项，例如 `后排进深`
+  - 在缺标准围栏名或前后排进深时，不要凭示例或经验直接补成 `胶囊围栏 / 450`
+
+7. 如果是目录价路径，再运行：
 
 ```bash
 python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/query_price_index.py ...
@@ -253,7 +377,7 @@ python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/query_price_index.
 
 只有在用户没有给出明确产品名时，才退回 `--name-contains`。
 
-7. 如果命中下面两类门板补差，先运行：
+8. 如果命中下面两类门板补差，先运行：
 
 ```bash
 python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/calculate_door_panel_adjustment.py --cabinet-material "北美黑胡桃木" --target-door-material "北美黑胡桃木" --base-unit-price 8680 --cabinet-door-family frame --target-door-family flat
@@ -291,7 +415,7 @@ python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/calculate_hidden_r
   - 折减系数
   - 折减后单价
 
-8. 根据 `references/current/rules.md` 套用对应业务规则。
+9. 根据 `references/current/rules.md` 套用对应业务规则。
    如果用户问题直接命中以下 `设计师追加规则`，优先按该规则回答或追问，不要退回宽泛常识：
 
 - `无把手 / 无抠手柜门` 的 `开启方式` 确认
@@ -376,7 +500,7 @@ python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/calculate_bed_quot
 - 目录无 `1.2 米` 标准价时，用 `1.5 米 - (1.8 米 - 1.5 米)` 反推
 - 超大床按 `1.5 米基础价 ÷ 1.5 × 修改后长边`
 - 架式床 / 箱体床加高按整床 `+15%`
-9. 数字确认后，运行：
+10. 数字确认后，运行：
 
 ```bash
 python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/format_quote_reply.py --input-json '...'
@@ -487,6 +611,9 @@ python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/refresh_and_test.p
 - 追加规则查询：`scripts/query_addendum_guidance.py`
 - 床垫重量追加规则：`scripts/query_bed_weight_guidance.py`
 - 查价脚本：`scripts/query_price_index.py`
+- 模块化儿童床数据：`data/current/modular-child-bed-price.json`
+- 模块化儿童床抽取脚本：`scripts/extract_modular_child_bed_data.py`
+- 模块化儿童床计价脚本：`scripts/calculate_modular_child_bed_quote.py`
 - 排版脚本：`scripts/format_quote_reply.py`
 - 门板补差脚本：`scripts/calculate_door_panel_adjustment.py`
 - 岩板加价脚本：`scripts/calculate_rock_slab_price.py`

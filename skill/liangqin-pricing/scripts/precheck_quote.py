@@ -38,6 +38,8 @@ BED_CATEGORIES = {
     "子母床",
     "高架床",
     "儿童高架床",
+    "半高床",
+    "错层床",
     "伴床",
     "儿童床书柜伴床",
     "ins儿童床",
@@ -69,6 +71,8 @@ STANDARD_PRICING_MODES = {"unit_price", "per_item", "mixed"}
 CUSTOM_INTENT_PATTERN = re.compile(r"(定制|订制|定做|订做|订个|订一|来订|想订)")
 STANDARD_INTENT_KEYWORDS = ["成品", "标品", "标准品", "现成"]
 CURRENT_INDEX_PATH = Path(__file__).resolve().parent.parent / "data" / "current" / "price-index.json"
+MODULAR_CHILD_BED_KEYWORDS = {"儿童床", "上下床", "子母床", "高架床", "半高床", "错层床"}
+MODULAR_CHILD_BED_FORMS = {"上下床", "半高床", "高架床", "错层床"}
 
 DEFAULT_CABINET_PROFILES = {
     "书柜": {
@@ -134,7 +138,15 @@ DEFAULT_BLOCKING_CABINET_KEYWORDS = {
     "非见光",
     "超深",
     "改深",
+    "无背板",
+    "有背板",
+    "背板",
+    "双排",
+    "互通",
+    "前后",
 }
+MODULAR_CHILD_BED_GUARDRAIL_STYLES = {"胶囊围栏", "蘑菇围栏", "田园围栏", "篱笆围栏", "圆柱围栏", "方圆围栏", "城堡围栏"}
+UNDERBED_CABINET_MODES = {"无门无背板", "有门无背板", "无门有背板"}
 
 
 def parse_args() -> argparse.Namespace:
@@ -155,6 +167,25 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--door-type", default="", help="Known door type.")
     parser.add_argument("--series", default="", help="Known series or style.")
     parser.add_argument("--shape", default="", help="Known special shape info.")
+    parser.add_argument("--bed-form", default="", help="Modular child-bed form such as 上下床、半高床、高架床、错层床.")
+    parser.add_argument("--access-style", default="", help="Upper-bed access style such as 直梯、斜梯、梯柜.")
+    parser.add_argument("--lower-bed-type", default="", help="Lower-bed structure such as 架式床、箱体床.")
+    parser.add_argument("--guardrail-style", default="", help="Guardrail style for modular child-bed quotes.")
+    parser.add_argument("--guardrail-length", default="", help="Guardrail run length for modular child-bed quotes.")
+    parser.add_argument("--guardrail-height", default="", help="Guardrail height for modular child-bed quotes.")
+    parser.add_argument("--access-height", default="", help="Vertical ladder height for modular child-bed quotes.")
+    parser.add_argument("--stair-width", default="", help="Stair-cabinet tread width for modular child-bed quotes.")
+    parser.add_argument("--stair-depth", default="", help="Stair-cabinet depth for modular child-bed quotes.")
+    parser.add_argument("--underbed-cabinet-mode", default="", help="Whether the child bed includes under-bed cabinets.")
+    parser.add_argument("--front-cabinet-length", default="", help="Front under-bed cabinet length.")
+    parser.add_argument("--front-cabinet-height", default="", help="Front under-bed cabinet height.")
+    parser.add_argument("--front-cabinet-depth", default="", help="Front under-bed cabinet depth.")
+    parser.add_argument("--front-cabinet-mode", default="", help="Front under-bed cabinet mode.")
+    parser.add_argument("--rear-cabinet-length", default="", help="Rear under-bed cabinet length.")
+    parser.add_argument("--rear-cabinet-height", default="", help="Rear under-bed cabinet height.")
+    parser.add_argument("--rear-cabinet-depth", default="", help="Rear under-bed cabinet depth.")
+    parser.add_argument("--rear-cabinet-mode", default="", help="Rear under-bed cabinet mode.")
+    parser.add_argument("--interconnected-rows", action="store_true", help="Whether front/rear cabinet rows are interconnected.")
     parser.add_argument("--approximate-only", action="store_true", help="Whether the user only wants a reference quote.")
     return parser.parse_args()
 
@@ -172,7 +203,7 @@ def normalize_category_label(category: str) -> str:
         return "tatami"
     if "书桌柜" in category or "转角书桌" in category:
         return "table"
-    if "儿童床" in category or "上下床" in category or "子母床" in category or "高架床" in category:
+    if "儿童床" in category or "上下床" in category or "子母床" in category or "高架床" in category or "半高床" in category or "错层床" in category:
         return "bed"
     return "generic"
 
@@ -260,6 +291,10 @@ def collect_source_text(args: argparse.Namespace) -> str:
             str(args.category or ""),
             str(args.series or ""),
             str(args.shape or ""),
+            str(getattr(args, "bed_form", "") or ""),
+            str(getattr(args, "access_style", "") or ""),
+            str(getattr(args, "lower_bed_type", "") or ""),
+            str(getattr(args, "guardrail_style", "") or ""),
         ]
     ).strip()
 
@@ -882,6 +917,294 @@ def response(
     return payload
 
 
+def is_modular_child_bed_request(args: argparse.Namespace) -> bool:
+    category = str(args.category or "").strip()
+    if normalize_category_label(category) != "bed":
+        return False
+    if has_explicit_product_identity(args) and infer_quote_kind(args) != "custom":
+        return False
+    if any(keyword in category for keyword in {"半高床", "错层床"}):
+        return True
+    return infer_quote_kind(args) == "custom" and any(keyword in category for keyword in MODULAR_CHILD_BED_KEYWORDS)
+
+
+def has_underbed_cabinet_request(args: argparse.Namespace) -> bool:
+    fields = [
+        "underbed_cabinet_mode",
+        "front_cabinet_length",
+        "front_cabinet_height",
+        "front_cabinet_depth",
+        "front_cabinet_mode",
+        "rear_cabinet_length",
+        "rear_cabinet_height",
+        "rear_cabinet_depth",
+        "rear_cabinet_mode",
+    ]
+    if any(not is_blank(str(getattr(args, field, "") or "").strip()) for field in fields):
+        return True
+    return bool(getattr(args, "interconnected_rows", False))
+
+
+def bed_pricing_route(args: argparse.Namespace) -> str:
+    if is_modular_child_bed_request(args):
+        if has_underbed_cabinet_request(args):
+            return "modular_child_bed_combo"
+        return "modular_child_bed"
+    category = str(args.category or "").strip()
+    if any(keyword in category for keyword in MODULAR_CHILD_BED_KEYWORDS) and has_explicit_product_identity(args):
+        return "catalog_child_bed"
+    return "bed_standard"
+
+
+def modular_child_bed_special_guardrail_included(args: argparse.Namespace) -> bool:
+    bed_form = str(getattr(args, "bed_form", "") or "").strip()
+    access_style = str(getattr(args, "access_style", "") or "").strip()
+    guardrail_style = str(getattr(args, "guardrail_style", "") or "").strip()
+    material = str(args.material or "").strip()
+    width = parse_dimension_to_meters(args.width)
+    length = parse_dimension_to_meters(args.length)
+    if not all([bed_form, access_style, guardrail_style, material, width, length]):
+        return False
+    if material not in {"玫瑰木", "乌拉圭玫瑰木"}:
+        return False
+    if abs(length - 2.0) > 0.015 or all(abs(width - candidate) > 0.015 for candidate in (0.9, 1.2)):
+        return False
+    if bed_form == "上下床" and guardrail_style == "篱笆围栏" and access_style in {"直梯", "斜梯", "梯柜"}:
+        return True
+    if bed_form == "错层床" and guardrail_style == "城堡围栏":
+        return True
+    return False
+
+
+def modular_child_bed_access_dimensions_required(args: argparse.Namespace) -> bool:
+    return not modular_child_bed_special_guardrail_included(args)
+
+
+def modular_child_bed_guardrail_dimensions_required(args: argparse.Namespace) -> bool:
+    return not modular_child_bed_special_guardrail_included(args)
+
+
+def modular_child_bed_guardrail_style_is_known(args: argparse.Namespace) -> bool:
+    guardrail_style = str(getattr(args, "guardrail_style", "") or "").strip()
+    if not guardrail_style:
+        return False
+    return guardrail_style in MODULAR_CHILD_BED_GUARDRAIL_STYLES
+
+
+def precheck_modular_child_bed_combo(args: argparse.Namespace, responder) -> dict[str, Any]:
+    for field_name, field_label in (
+        ("front_cabinet_depth", "前排柜体进深"),
+        ("rear_cabinet_depth", "后排柜体进深"),
+    ):
+        raw_value = str(getattr(args, field_name, "") or "").strip()
+        parsed_depth = parse_dimension_to_meters(raw_value)
+        if parsed_depth is not None and parsed_depth > 0.45:
+            row_label = "前排" if field_name.startswith("front_") else "后排"
+            return responder(
+                ready=False,
+                next_required_field=field_name,
+                next_question=f"{row_label}柜体当前只支持单排进深不大于 450mm 的组合报价；你这个进深已经超出范围，当前不能直接正式报价。如果要继续，我建议先把{row_label}进深调整到 450mm 以内。",
+                reason=f"{field_label} exceeds the supported 450mm combo limit",
+            )
+
+    base_result = precheck_modular_child_bed(args, responder)
+    if not base_result.get("ready_for_formal_quote"):
+        return base_result
+
+    bed_form = str(getattr(args, "bed_form", "") or "").strip()
+    if bed_form not in {"半高床", "高架床"}:
+        return responder(
+            ready=False,
+            next_required_field="bed_form",
+            next_question="床下组合柜体这条路径当前只支持半高床或高架床，请先确认这次具体是半高床还是高架床。",
+            reason="under-bed combo pricing currently supports half loft and loft beds only",
+        )
+
+    row_specs = [
+        ("front_cabinet_length", "前排柜体长度", "床下前排柜体我还需要确认长度，请问大概做多长？"),
+        ("front_cabinet_height", "前排柜体高度", "床下前排柜体我还需要确认高度，请问大概做多高？"),
+        ("front_cabinet_mode", "前排柜体结构", "床下前排柜体我还需要确认结构，请问是无门无背板、有门无背板，还是无门有背板？"),
+        ("front_cabinet_depth", "前排柜体进深", "床下前排柜体我还需要确认进深，请问前排大概做多深？"),
+        ("rear_cabinet_length", "后排柜体长度", "床下后排柜体我还需要确认长度，请问大概做多长？"),
+        ("rear_cabinet_height", "后排柜体高度", "床下后排柜体我还需要确认高度，请问大概做多高？"),
+        ("rear_cabinet_mode", "后排柜体结构", "床下后排柜体我还需要确认结构，请问是无门无背板、有门无背板，还是无门有背板？"),
+        ("rear_cabinet_depth", "后排柜体进深", "床下后排柜体我还需要确认进深，请问后排大概做多深？"),
+    ]
+
+    has_front = any(
+        not is_blank(str(getattr(args, field, "") or "").strip())
+        for field in ("front_cabinet_length", "front_cabinet_height", "front_cabinet_depth", "front_cabinet_mode")
+    )
+    has_rear = any(
+        not is_blank(str(getattr(args, field, "") or "").strip())
+        for field in ("rear_cabinet_length", "rear_cabinet_height", "rear_cabinet_depth", "rear_cabinet_mode")
+    )
+    if not has_front and not has_rear:
+        return responder(
+            ready=False,
+            next_required_field="front_cabinet_length",
+            next_question="如果床下要一起按组合柜体报价，我还需要先确认前排柜体尺寸和结构。请先告诉我前排衣柜的长度、高度、进深，以及是无门无背板、有门无背板还是无门有背板。",
+            reason="under-bed combo pricing requires at least one cabinet row",
+        )
+
+    for field_name, field_label, question in row_specs:
+        value = str(getattr(args, field_name, "") or "").strip()
+        row_prefix = field_name.split("_", 1)[0]
+        if row_prefix == "rear" and not has_rear:
+            continue
+        if not value:
+            return responder(
+                ready=False,
+                next_required_field=field_name,
+                next_question=question,
+                reason=f"{field_label} is required for under-bed combo pricing",
+            )
+
+    front_mode = str(getattr(args, "front_cabinet_mode", "") or "").strip()
+    rear_mode = str(getattr(args, "rear_cabinet_mode", "") or "").strip()
+    if front_mode and front_mode not in UNDERBED_CABINET_MODES:
+        return responder(
+            ready=False,
+            next_required_field="front_cabinet_mode",
+            next_question="床下前排柜体当前请先对应成标准结构名称：无门无背板、有门无背板，或无门有背板。",
+            reason="front under-bed cabinet mode must map to a supported structure",
+        )
+    if has_rear and rear_mode and rear_mode not in UNDERBED_CABINET_MODES:
+        return responder(
+            ready=False,
+            next_required_field="rear_cabinet_mode",
+            next_question="床下后排柜体当前请先对应成标准结构名称：无门无背板、有门无背板，或无门有背板。",
+            reason="rear under-bed cabinet mode must map to a supported structure",
+        )
+
+    return responder(
+        ready=True,
+        next_required_field=None,
+        next_question=None,
+        reason="modular child bed combo intake has the required fields for a formal quote",
+    )
+
+
+def precheck_modular_child_bed(args: argparse.Namespace, responder) -> dict[str, Any]:
+    bed_form = str(getattr(args, "bed_form", "") or "").strip()
+    access_style = str(getattr(args, "access_style", "") or "").strip()
+    lower_bed_type = str(getattr(args, "lower_bed_type", "") or "").strip()
+    guardrail_style = str(getattr(args, "guardrail_style", "") or "").strip()
+    guardrail_length = str(getattr(args, "guardrail_length", "") or "").strip()
+    guardrail_height = str(getattr(args, "guardrail_height", "") or "").strip()
+    access_height = str(getattr(args, "access_height", "") or "").strip()
+    stair_width = str(getattr(args, "stair_width", "") or "").strip()
+    stair_depth = str(getattr(args, "stair_depth", "") or "").strip()
+
+    if not bed_form:
+        return responder(
+            ready=False,
+            next_required_field="bed_form",
+            next_question="这次如果按模块化儿童床报价，我还需要先确认床形态：上下床、半高床、高架床还是错层床？",
+            reason="modular child bed requires bed form before pricing",
+        )
+    if not access_style:
+        return responder(
+            ready=False,
+            next_required_field="access_style",
+            next_question="模块化儿童床我还需要确认上层出入方式，你想做直梯、斜梯还是梯柜？",
+            reason="modular child bed requires access style before size confirmation",
+        )
+    if is_blank(args.width):
+        return responder(
+            ready=False,
+            next_required_field="width",
+            next_question="模块化儿童床我先需要确认床垫宽度，请问是多宽？",
+            reason="modular child bed requires mattress width",
+        )
+    if is_blank(args.length):
+        return responder(
+            ready=False,
+            next_required_field="length",
+            next_question="模块化儿童床我还需要确认床垫长度，请问是多长？",
+            reason="modular child bed requires mattress length",
+        )
+    width_value = parse_dimension_to_meters(args.width)
+    if bed_form in {"半高床", "高架床"} and width_value is not None and width_value > 1.2:
+        return responder(
+            ready=False,
+            next_required_field="width",
+            next_question="这类上铺或高架床当前只支持床垫宽度不大于 1.2 米；你这个宽度已经超出范围，所以现在不能直接正式报价。如果要继续，我建议先确认是否能调整到 1.2 米以内。",
+            reason="upper-bed width exceeds the supported 1.2m limit",
+        )
+    if bed_form in {"上下床", "错层床"} and not lower_bed_type:
+        return responder(
+            ready=False,
+            next_required_field="lower_bed_type",
+            next_question="这次模块化儿童床我还需要确认下层结构，你想做架式床还是箱体床？",
+            reason="modular bunk-style beds require lower bed structure",
+        )
+    if is_blank(args.material):
+        return responder(
+            ready=False,
+            next_required_field="material",
+            next_question="模块化儿童床我还需要确认材质，你想用哪种木材？",
+            reason="modular child bed requires material",
+        )
+    if not guardrail_style:
+        return responder(
+            ready=False,
+            next_required_field="guardrail_style",
+            next_question="模块化儿童床我还需要确认围栏样式，你想做哪种围栏？例如篱笆围栏、胶囊围栏、城堡围栏。",
+            reason="modular child bed requires guardrail style",
+        )
+    if not modular_child_bed_guardrail_style_is_known(args):
+        return responder(
+            ready=False,
+            next_required_field="guardrail_style",
+            next_question="你说的这个护栏款式我这边还需要先对应到标准围栏名称。请确认是胶囊围栏、蘑菇围栏、田园围栏、篱笆围栏、圆柱围栏、方圆围栏还是城堡围栏。",
+            reason="modular child bed requires a supported standard guardrail style before pricing",
+        )
+    if modular_child_bed_guardrail_dimensions_required(args):
+        if not guardrail_length:
+            return responder(
+                ready=False,
+                next_required_field="guardrail_length",
+                next_question="这个围栏我还需要确认长度，请问围栏总长度大概多少？",
+                reason="generic modular guardrail requires length",
+            )
+        if not guardrail_height:
+            return responder(
+                ready=False,
+                next_required_field="guardrail_height",
+                next_question="这个围栏我还需要确认高度，请问围栏高度大概多少？",
+                reason="generic modular guardrail requires height",
+            )
+    if access_style in {"直梯", "斜梯"} and modular_child_bed_access_dimensions_required(args) and not access_height:
+        return responder(
+            ready=False,
+            next_required_field="access_height",
+            next_question="这个梯子我还需要确认垂直高度，请问上下床间距或实际垂直高度大概多少？",
+            reason="generic ladder pricing requires vertical height",
+        )
+    if access_style == "梯柜" and modular_child_bed_access_dimensions_required(args):
+        if not stair_width:
+            return responder(
+                ready=False,
+                next_required_field="stair_width",
+                next_question="这个梯柜我还需要确认踏步宽度，请问大概是 450-500mm，还是 500-600mm 这一档？",
+                reason="generic stair cabinet pricing requires width band",
+            )
+        if not stair_depth:
+            return responder(
+                ready=False,
+                next_required_field="stair_depth",
+                next_question="这个梯柜我还需要确认进深，请问大概做多深？",
+                reason="generic stair cabinet pricing requires depth",
+            )
+    return responder(
+        ready=True,
+        next_required_field=None,
+        next_question=None,
+        reason="modular child bed intake has the required fields for a formal quote",
+    )
+
+
 def precheck_cabinet(args: argparse.Namespace) -> dict[str, Any]:
     default_context = resolve_cabinet_default_context(args)
     explicit_product = has_explicit_product_identity(args)
@@ -1013,66 +1336,76 @@ def precheck_cabinet(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def precheck_bed(args: argparse.Namespace) -> dict[str, Any]:
+    pricing_route = bed_pricing_route(args)
+
+    def bed_response(*, ready: bool, next_required_field: str | None, next_question: str | None, reason: str) -> dict[str, Any]:
+        payload = response(
+            ready=ready,
+            category_type="bed",
+            next_required_field=next_required_field,
+            next_question=next_question,
+            reason=reason,
+        )
+        payload["pricing_route"] = pricing_route
+        return payload
+
+    if pricing_route == "modular_child_bed":
+        return precheck_modular_child_bed(args, bed_response)
+    if pricing_route == "modular_child_bed_combo":
+        return precheck_modular_child_bed_combo(args, bed_response)
+
     adult_style_question = adult_bed_style_question(args)
     if adult_style_question:
-        return response(
+        return bed_response(
             ready=False,
-            category_type="bed",
             next_required_field="series",
             next_question=adult_style_question,
             reason="generic adult bed requires explicit style before formal quote",
         )
     if needs_quote_kind_confirmation(args, "bed"):
-        return response(
+        return bed_response(
             ready=False,
-            category_type="bed",
             next_required_field="quote_kind",
             next_question=quote_kind_question("bed"),
             reason="bed requires standard-vs-custom path before size-based pricing",
         )
     if needs_child_bed_style(args):
-        return response(
+        return bed_response(
             ready=False,
-            category_type="bed",
             next_required_field="series",
             next_question="儿童床我还需要先确认床型，先不用看价格。若是上下床，请明确是挂梯款还是梯柜款（梯柜下可储物）；也可以直接告诉我具体正式款式名，例如经典挂梯上下床、经典梯柜上下床、城堡挂梯上下床（落地直梯）等。",
             reason="child bed requires style before formal quote",
         )
     if child_bed_variant_is_ambiguous(args):
-        return response(
+        return bed_response(
             ready=False,
-            category_type="bed",
             next_required_field="shape",
             next_question="这款上下床我还需要确认下床结构，你想做抽屉款、架式款还是箱体款？",
             reason="explicit child bunk bed still has multiple lower-bed structure variants",
         )
     if is_blank(args.width):
-        return response(
+        return bed_response(
             ready=False,
-            category_type="bed",
             next_required_field="width",
             next_question="床类我先需要确认床垫宽度或床宽，请问是多宽？",
             reason="bed requires width",
         )
     if is_blank(args.length):
-        return response(
+        return bed_response(
             ready=False,
-            category_type="bed",
             next_required_field="length",
             next_question="床类我还需要确认长度，请问是多长？",
             reason="bed requires length",
         )
     if is_blank(args.material):
-        return response(
+        return bed_response(
             ready=False,
-            category_type="bed",
             next_required_field="material",
             next_question="床类我还需要确认材质，你想用哪种木材？",
             reason="bed requires material",
         )
-    return response(
+    return bed_response(
         ready=True,
-        category_type="bed",
         next_required_field=None,
         next_question=None,
         reason="bed intake has the required fields for a formal quote",

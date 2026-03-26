@@ -23,7 +23,7 @@
 如果其他 OpenClaw 想直接使用这个版本，建议固定到 tag：
 
 ```bash
-git clone --branch v2026.03.23.1 --depth 1 https://github.com/drizzlep/liangqin-pricing-skill.git
+git clone --branch v2026.03.26 --depth 1 https://github.com/drizzlep/liangqin-pricing-skill.git
 ```
 
 然后把 `skill/liangqin-pricing` 同步到 OpenClaw workspace 即可。
@@ -32,19 +32,54 @@ git clone --branch v2026.03.23.1 --depth 1 https://github.com/drizzlep/liangqin-
 
 - `SKILL.md`
 - `data/current/price-index.json`
+- `data/current/modular-child-bed-price.json`
 - `references/current/rules.md`
 - `references/current/examples.md`
 
 ## 日常报价怎么运行
 
-运行链路固定为三步：
+运行链路先分三种：
+
+- 目录标准价路径：`precheck -> query_price_index -> format_quote_reply`
+- 模块化儿童床路径：`precheck -> calculate_modular_child_bed_quote -> format_quote_reply`
+- 模块化儿童床 + 床下柜路径：`precheck -> calculate_modular_child_bed_combo_quote -> format_quote_reply`
+
+目录标准价链路：
 
 1. `scripts/precheck_quote.py`
-   只判断缺什么参数、该先问什么。
+   先判断缺什么参数、该先问什么，以及当前该走哪条报价路径。
 2. `scripts/query_price_index.py`
-   只查询当前版本里的基础价格。
+   只查询当前版本里的目录基础价格。
 3. `scripts/format_quote_reply.py`
    默认会在排版前尝试套用活跃 addendum layer，再统一输出成一段正式报价；如需跳过可用 `--disable-addenda`。
+
+模块化儿童床链路：
+
+1. `scripts/precheck_quote.py`
+   如果返回 `pricing_route=modular_child_bed`，说明应走模块化儿童床路径。
+2. `scripts/calculate_modular_child_bed_quote.py`
+   按 `床形态 + 上层出入方式 + 床架/围栏/梯子模块` 做组合计价。
+3. `scripts/format_quote_reply.py`
+   统一输出正式报价。
+
+模块化儿童床 + 床下柜链路：
+
+1. `scripts/precheck_quote.py`
+   如果返回 `pricing_route=modular_child_bed_combo`，说明应走半高床/高架床床下组合柜路径。
+2. `scripts/calculate_modular_child_bed_combo_quote.py`
+   先算床体模块价，再叠加床下前后柜体投影面积价。
+3. `scripts/format_quote_reply.py`
+   统一输出正式报价。
+
+模块化儿童床运行时数据来自：
+
+- `data/current/modular-child-bed-price.json`
+
+这份数据目前由下面的脚本从 `模块儿童上下床报价.xls` 抽取生成：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/extract_modular_child_bed_data.py --input "/path/to/模块儿童上下床报价.xls" --output "~/.openclaw/skills/liangqin-pricing/data/current/modular-child-bed-price.json" --pretty
+```
 
 ## 后续调价怎么维护
 
@@ -132,10 +167,24 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/reset_quote_sessions.py --ap
 - 钉钉旧直聊/群聊会话
 - `dingtalk-connector` 产生的用户会话
 
+如果你还在飞书里用了这套 skill，建议改用这一条，把飞书旧报价会话也一起清掉：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/reset_quote_sessions.py --apply --include-feishu
+```
+
+这里的 `--include-feishu` 不区分私聊/群聊，会一并清理命中的飞书报价会话；钉钉这边默认已经覆盖私聊和群聊。
+
 如果你想一条命令同时完成“刷新版本 + 清理旧会话 + fresh session 测试”，直接运行：
 
 ```bash
 python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py --reset-quote-sessions
+```
+
+如果你要确保钉钉、飞书、私聊、群聊都尽快切到新版本，建议直接运行：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py --reset-quote-sessions --include-feishu
 ```
 
 ## 批量真实题测试
@@ -144,6 +193,12 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py --reset-
 
 ```bash
 python3 ~/.openclaw/skills/liangqin-pricing/scripts/run_openclaw_prompt_suite.py --publish-skill --reset-quote-sessions
+```
+
+如果你想在回归前把飞书旧报价会话也一起清掉：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/run_openclaw_prompt_suite.py --publish-skill --reset-quote-sessions --include-feishu
 ```
 
 默认题库在：
@@ -178,6 +233,12 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/run_openclaw_prompt_suite.py
   已归档的原始文件。
 - `scripts/update_release.py`
   统一维护入口。
+- `scripts/extract_modular_child_bed_data.py`
+  模块化儿童床 `xls` 抽取入口。
+- `scripts/calculate_modular_child_bed_quote.py`
+  模块化儿童床组合计价入口。
+- `scripts/calculate_modular_child_bed_combo_quote.py`
+  模块化儿童床 + 床下柜组合计价入口。
 - `scripts/refresh_and_test.py`
   一条命令完成“刷新 + fresh session 测试”。
 

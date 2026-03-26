@@ -11,12 +11,25 @@ from datetime import datetime
 from pathlib import Path
 
 
-DEFAULT_MESSAGE = "我要做个北美黑胡桃木流云衣柜，长1.8米，高2.2米，深670，多少钱？"
+PRESET_MESSAGES = {
+    "wardrobe-smoke": "我要做个北美黑胡桃木流云衣柜，长1.8米，高2.2米，深670，多少钱？",
+    "modular-child-bed": "做一张定制上下床，1.2米乘2米，北美白橡木，梯柜款，下层箱体床，胶囊围栏，围栏长2米高0.4米，梯柜踏步宽520，进深500，直接正式报价。",
+    "loft-double-row-wardrobe": "一张半高梯柜上铺床1.2*2米床垫尺寸的，胶囊围栏，围栏长2米高0.4米。床下前后双排衣柜，前后柜体互通形式，前后两排都深450。前面有门无背板的衣柜长2米高1.2米，后方无门有背板的衣柜也是长2米高1.2米。请帮忙看下用玫瑰木和白蜡木做的话分别是多少钱。",
+    "child-bed-rosewood-special": "做一张乌拉圭玫瑰木定制错层床，1.2米乘2米，城堡围栏，斜梯，直接正式报价。",
+    "child-bed-width-limit": "做一张定制高架床，1.35米乘2米，北美白橡木，梯柜款，胶囊围栏，围栏长2米高0.4米，梯柜踏步宽520，进深500，这种能直接正式报价吗？",
+}
+DEFAULT_PRESET = "wardrobe-smoke"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Refresh the shared skill and run a fresh-session test.")
-    parser.add_argument("--message", default=DEFAULT_MESSAGE, help="Test message. Defaults to the standard wardrobe smoke test.")
+    parser.add_argument("--message", help="Explicit test message. Overrides preset if provided.")
+    parser.add_argument(
+        "--preset",
+        choices=sorted(PRESET_MESSAGES),
+        default=DEFAULT_PRESET,
+        help="Named smoke-test preset. Defaults to wardrobe-smoke.",
+    )
     parser.add_argument("--session-id", help="Optional explicit session id. Defaults to an auto-generated fresh test id.")
     parser.add_argument("--skill-dir", default=str(Path(__file__).resolve().parent.parent), help="Skill root directory.")
     parser.add_argument("--timeout", type=int, default=120, help="Agent timeout in seconds.")
@@ -27,7 +40,18 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Reset stale Liangqin quote sessions before running the fresh-session test.",
     )
+    parser.add_argument(
+        "--include-feishu",
+        action="store_true",
+        help="When resetting quote sessions, also reset Feishu quote sessions.",
+    )
     return parser.parse_args()
+
+
+def resolve_test_message(message: str | None, preset: str) -> str:
+    if message:
+        return message
+    return PRESET_MESSAGES[preset]
 
 
 def run_step(command: list[str], *, capture: bool = False) -> subprocess.CompletedProcess[str]:
@@ -62,12 +86,20 @@ def print_header(title: str) -> None:
     print(f"\n=== {title} ===")
 
 
+def build_reset_command(scripts_dir: Path, *, include_feishu: bool) -> list[str]:
+    command = [sys.executable, str(scripts_dir / "reset_quote_sessions.py"), "--apply"]
+    if include_feishu:
+        command.append("--include-feishu")
+    return command
+
+
 def main() -> int:
     args = parse_args()
     skill_dir = Path(args.skill_dir).expanduser().resolve()
     scripts_dir = skill_dir / "scripts"
     inbox_dir = skill_dir / "sources" / "inbox"
     session_id = args.session_id or f"liangqin-test-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+    message = resolve_test_message(args.message, args.preset)
 
     if not args.no_update and has_ready_sources(inbox_dir):
         print_header("检测到 inbox 里有 xlsx + 规则文件，先更新当前版本")
@@ -82,13 +114,13 @@ def main() -> int:
 
     if args.reset_quote_sessions:
         print_header("清理旧报价会话，避免继续复用旧上下文")
-        reset = run_step([sys.executable, str(scripts_dir / "reset_quote_sessions.py"), "--apply"])
+        reset = run_step(build_reset_command(scripts_dir, include_feishu=args.include_feishu))
         if reset.returncode != 0:
             return reset.returncode
 
     print_header("开始 fresh session 测试")
     print(f"session-id: {session_id}")
-    print(f"message: {args.message}")
+    print(f"message: {message}")
 
     result = run_step(
         [
@@ -97,7 +129,7 @@ def main() -> int:
             "--session-id",
             session_id,
             "--message",
-            args.message,
+            message,
             "--json",
             "--thinking",
             args.thinking,
@@ -127,7 +159,11 @@ def main() -> int:
         print(result.stdout)
 
     print_header("后续可复用命令")
-    print(f"python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py --message '{args.message}'")
+    reset_suffix = " --reset-quote-sessions --include-feishu" if args.reset_quote_sessions and args.include_feishu else ""
+    if args.message:
+        print(f"python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py --message '{message}'{reset_suffix}")
+    else:
+        print(f"python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py --preset {args.preset}{reset_suffix}")
     return 0
 
 
