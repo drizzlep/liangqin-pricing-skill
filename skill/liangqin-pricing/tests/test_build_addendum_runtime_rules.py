@@ -364,6 +364,71 @@ class BuildAddendumRuntimeRulesTests(unittest.TestCase):
         self.assertEqual(len(payload["rules"]), 1)
         self.assertNotIn("床垫重量", payload["rules"][0]["required_fields"])
 
+    def test_build_runtime_rules_excludes_generic_only_rule_without_specific_signal(self) -> None:
+        index = {
+            "entries": [
+                {
+                    "page": 188,
+                    "domain": "door_panel",
+                    "clean_title": "柜门高度和宽度要按门型限制",
+                    "excerpt": "柜门高度、宽度、门型和开启方式需要按规则确认，材质不同会影响表现。",
+                    "tags": ["门型", "尺寸阈值"],
+                    "relevance_score": 8,
+                    "pricing_relevant": True,
+                }
+            ]
+        }
+
+        payload = MODULE.build_runtime_rules(index, layer_id="designer-p", layer_name="设计师追加规则 P")
+
+        self.assertEqual(payload["rules"], [])
+
+    def test_build_runtime_rules_adds_match_terms_summary_and_question_template(self) -> None:
+        index = {
+            "entries": [
+                {
+                    "page": 177,
+                    "domain": "door_panel",
+                    "clean_title": "其他无把手、无抠手柜门须明确备注开启方式",
+                    "excerpt": "除已说明的默认开启方式外，其他无把手、无抠手柜门都要明确备注开启方式。",
+                    "tags": ["门型", "无把手", "无抠手"],
+                    "relevance_score": 9,
+                    "pricing_relevant": True,
+                }
+            ]
+        }
+
+        payload = MODULE.build_runtime_rules(index, layer_id="designer-q", layer_name="设计师追加规则 Q")
+
+        self.assertEqual(len(payload["rules"]), 1)
+        rule = payload["rules"][0]
+        self.assertEqual(rule["evidence_level"], "hard_rule")
+        self.assertIn("开启方式", rule["required_fields"])
+        self.assertIn("无把手", rule["match_terms_specific"])
+        self.assertIn("无抠手", rule["match_terms_specific"])
+        self.assertIn("开启方式", rule["match_terms_generic"])
+        self.assertTrue(rule["user_summary"])
+        self.assertEqual(rule["question_template"], "这组柜门还需要确认开启方式。")
+
+    def test_build_runtime_rules_excludes_medium_risk_lookup_pages(self) -> None:
+        index = {
+            "entries": [
+                {
+                    "page": 203,
+                    "domain": "general",
+                    "clean_title": "拼框平开门尺寸限制快速检索表-a",
+                    "excerpt": "26 60拼框平开门尺寸限制快速检索表-a 单位：mm ≤560",
+                    "tags": ["门型", "尺寸阈值"],
+                    "relevance_score": 9,
+                    "pricing_relevant": True,
+                }
+            ]
+        }
+
+        payload = MODULE.build_runtime_rules(index, layer_id="designer-r", layer_name="设计师追加规则 R")
+
+        self.assertEqual(payload["rules"], [])
+
 
 if __name__ == "__main__":
     unittest.main()

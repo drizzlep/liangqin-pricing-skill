@@ -43,6 +43,8 @@ DOMAIN_KEYWORDS: list[tuple[str, tuple[str, ...]]] = [
 DOMAIN_COMPATIBILITY_KEYWORDS: dict[tuple[str, str], tuple[str, ...]] = {
     ("cabinet", "door_panel"): ("门", "门板", "流云", "飞瀑", "平板门", "拼框门", "玻璃门", "格栅门", "铝框"),
     ("door_panel", "cabinet"): ("柜", "柜体", "衣柜", "书柜", "餐边柜", "玄关柜", "电视柜"),
+    ("cabinet", "accessory"): ("拉手", "灯带", "开关", "插座", "轨道"),
+    ("accessory", "cabinet"): ("柜", "柜体", "衣柜", "书柜", "餐边柜", "玄关柜", "电视柜"),
 }
 
 GENERIC_TERMS = {
@@ -120,6 +122,9 @@ LOW_SIGNAL_TERMS = {
     "门板",
     "柜门",
     "柜体",
+    "拉手",
+    "灯带",
+    "开关",
 }
 
 FIELD_VALUE_PATTERNS: dict[str, tuple[str, ...]] = {
@@ -163,6 +168,79 @@ def load_payload(raw: str) -> dict[str, Any]:
 
 def normalize_text(text: str) -> str:
     return "".join(str(text).split()).lower()
+
+
+def term_matches_source(term: str, *, item_source_text: str, item_text: str) -> bool:
+    normalized_term = normalize_text(term)
+    if not normalized_term:
+        return False
+    if normalized_term == "无把手" and any(phrase in item_source_text for phrase in ("不做拉手", "不要拉手", "不装拉手")):
+        return True
+    if normalized_term == "无抠手" and any(phrase in item_source_text for phrase in ("不做抠手", "不要抠手", "不装抠手")):
+        return True
+    if term in item_source_text or normalized_term in item_text:
+        return True
+    component_terms = [signal for signal in SIGNAL_TERMS if signal in term and len(signal) >= 2]
+    if len(component_terms) >= 2 and all(component in item_source_text for component in component_terms):
+        return True
+    return False
+
+
+def derive_runtime_match_terms(rule: dict[str, Any]) -> tuple[list[str], list[str]]:
+    specific_terms = [str(term) for term in rule.get("match_terms_specific", []) if str(term).strip()]
+    generic_terms = [str(term) for term in rule.get("match_terms_generic", []) if str(term).strip()]
+    if specific_terms or generic_terms:
+        return specific_terms, generic_terms
+
+    trigger_terms = [str(term) for term in rule.get("trigger_terms", []) if str(term).strip()]
+    required_fields = [str(field) for field in rule.get("required_fields", []) if str(field).strip()]
+    specific_terms = [term for term in trigger_terms if normalize_text(term) not in LOW_SIGNAL_TERMS]
+    generic_terms = [term for term in [*trigger_terms, *required_fields] if normalize_text(term) in LOW_SIGNAL_TERMS]
+    title_detail = " ".join([str(rule.get("title", "")), str(rule.get("detail", ""))])
+    for candidate in (
+        "明装拉手",
+        "玻璃抽屉",
+        "天地铰链",
+        "手扫雷达开关",
+        "针式铰链铝框门",
+        "铝框岩板门",
+        "拱形玻璃门",
+        "藤编门",
+        "美式木门",
+        "美式玻璃门",
+        "书梯",
+        "托盘抽",
+        "岩板背板",
+        "岩板台面",
+        "床垫限位器",
+        "无把手",
+        "无抠手",
+    ):
+        if candidate in title_detail and candidate not in specific_terms:
+            specific_terms.append(candidate)
+    return specific_terms, generic_terms
+
+
+def compose_runtime_summary(match: dict[str, Any]) -> str:
+    summary = str(match.get("user_summary", "")).strip()
+    if summary:
+        return summary
+    title = str(match.get("title", "") or match.get("clean_title", "")).strip()
+    detail = str(match.get("detail", "") or match.get("excerpt", "")).strip()
+    if title and detail and title not in detail:
+        return f"{title}。{detail}".strip()
+    return detail or title
+
+
+def field_semantically_present(field: str, item_source_text: str, item_text: str, match: dict[str, Any]) -> bool:
+    if field == "门型":
+        specific_terms, _ = derive_runtime_match_terms(match)
+        return any(term_matches_source(term, item_source_text=item_source_text, item_text=item_text) for term in specific_terms)
+    if field == "材质":
+        return any(keyword in item_source_text for keyword in ("黑胡桃", "樱桃木", "白橡木", "白蜡木", "玫瑰木", "石材", "玻璃", "亚克力"))
+    if field == "开启方式":
+        return any(keyword in item_source_text for keyword in ("按弹开启", "推弹开启", "抠手开启", "拉手开启", "按弹"))
+    return False
 
 
 def build_item_source_text(item: dict[str, Any]) -> str:
@@ -303,28 +381,42 @@ def choose_runtime_matches(item: dict[str, Any], rules: list[dict[str, Any]]) ->
         trigger_terms = [str(term) for term in rule.get("trigger_terms", [])]
         required_fields = [str(field) for field in rule.get("required_fields", [])]
         tags = [str(tag) for tag in rule.get("tags", [])]
+        specific_terms, generic_terms = derive_runtime_match_terms(rule)
+        has_specific_term_match = any(
+            term_matches_source(term, item_source_text=item_source_text, item_text=item_text) for term in specific_terms
+        )
 
         rule_signals = extract_signals(" ".join([title, detail, *required_fields]), [*trigger_terms, *tags])
-        if item_signals and rule_signals and not (item_signals & rule_signals):
+        if item_signals and rule_signals and not (item_signals & rule_signals) and not has_specific_term_match:
             continue
 
-        tokens = [normalize_text(title), normalize_text(detail)]
-        normalized_terms = [normalize_text(term) for term in [*trigger_terms, *required_fields] if normalize_text(term)]
-        significant_terms = [term for term in normalized_terms if term not in {normalize_text(value) for value in LOW_SIGNAL_TERMS}]
-        if significant_terms:
-            has_term_match = any(term in item_text for term in significant_terms)
-            has_token_match = any(token and len(token) >= 6 and token[:8] in item_text for token in tokens if token)
-            if not has_term_match and not has_token_match:
+        title_token = normalize_text(title)
+        has_title_token_match = bool(title_token and len(title_token) >= 6 and title_token[:8] in item_text)
+        matched_specific_terms = [
+            term for term in specific_terms if term_matches_source(term, item_source_text=item_source_text, item_text=item_text)
+        ]
+        matched_generic_terms = [
+            term for term in generic_terms if term_matches_source(term, item_source_text=item_source_text, item_text=item_text)
+        ]
+
+        if specific_terms:
+            if not matched_specific_terms and not has_title_token_match:
                 continue
-        elif normalized_terms:
-            has_term_match = any(term in item_text for term in normalized_terms)
-            has_token_match = any(token and len(token) >= 6 and token[:8] in item_text for token in tokens if token)
-            if not has_term_match and not has_token_match:
+        elif trigger_terms:
+            fallback_terms = [term for term in trigger_terms if normalize_text(term) not in LOW_SIGNAL_TERMS]
+            if fallback_terms:
+                if not any(
+                    term_matches_source(term, item_source_text=item_source_text, item_text=item_text) for term in fallback_terms
+                ) and not has_title_token_match:
+                    continue
+            elif not has_title_token_match:
                 continue
-        elif not any(token and len(token) >= 6 and token[:8] in item_text for token in tokens if token):
+        elif not has_title_token_match:
             continue
 
         score = int(rule.get("relevance_score", 0)) * 10
+        score += len(matched_specific_terms) * 6
+        score += len(matched_generic_terms) * 2
         score += sum(3 for term in trigger_terms if term and term in item_source_text)
         score += sum(2 for term in tags if term and term not in GENERIC_TERMS and term in item_source_text)
         if title and title in item_source_text:
@@ -406,16 +498,24 @@ def infer_missing_required_fields(item: dict[str, Any], match: dict[str, Any]) -
         return []
 
     item_source_text = build_item_source_text(item)
+    item_text = normalize_text(item_source_text)
     has_unknown_marker = any(marker in item_source_text for marker in UNKNOWN_MARKERS)
 
     missing_fields: list[str] = []
     for field in required_fields:
         if field_value_present(field, item_source_text):
             continue
+        if field_semantically_present(field, item_source_text, item_text, match):
+            continue
+        if term_matches_source(field, item_source_text=item_source_text, item_text=item_text) and not has_unknown_marker:
+            continue
         if has_unknown_marker and field in item_source_text:
             missing_fields.append(field)
             continue
         if field in FIELD_VALUE_PATTERNS:
+            missing_fields.append(field)
+            continue
+        if not term_matches_source(field, item_source_text=item_source_text, item_text=item_text):
             missing_fields.append(field)
 
     if not missing_fields and len(required_fields) == 1:
@@ -437,14 +537,21 @@ def build_decision(
 ) -> dict[str, str]:
     detail = str(match.get("detail", "") or match.get("excerpt", "")).strip()
     title = str(match.get("title", "") or match.get("clean_title", "")).strip() or "追加规则"
+    summary = compose_runtime_summary(match)
     decision = {
         "layer_name": layer_name,
         "title": title,
         "detail": detail,
+        "summary": summary,
+        "evidence_level": str(match.get("evidence_level", "hard_rule")).strip() or "hard_rule",
     }
     if kind == "follow_up":
-        if required_fields:
-            decision["question"] = f"请确认{'、'.join(required_fields)}"
+        question_template = str(match.get("question_template", "")).strip()
+        if question_template:
+            decision["question"] = question_template
+            decision["question_from_template"] = "true"
+        elif required_fields:
+            decision["question"] = f"请确认{required_fields[0]}"
         else:
             decision["question"] = detail or title
     return decision
@@ -501,7 +608,7 @@ def apply_addendum_layers(payload: dict[str, Any], addenda_root: Path) -> dict[s
                 decision = build_decision(str(manifest["layer_name"]), match, kind)
                 if kind == "adjustment":
                     decisions["adjustments"].append(decision)
-                    item_adjustments.append(f"{decision['layer_name']}：{decision['title']}。{decision['detail']}".strip())
+                    item_adjustments.append(str(decision.get("summary", "")).strip() or f"{decision['title']}。{decision['detail']}".strip())
                 elif kind in {"constraint", "catalog_option"}:
                     decisions["constraints"].append(decision)
                 else:
@@ -514,6 +621,9 @@ def apply_addendum_layers(payload: dict[str, Any], addenda_root: Path) -> dict[s
             decisions["follow_up_questions"],
             key_fields=("question",),
         )
+        if decisions["constraints"]:
+            decisions["adjustments"] = []
+            item_adjustments = []
 
         if item_adjustments:
             item["addendum_adjustments"] = item_adjustments

@@ -1527,6 +1527,222 @@ class ApplyAddendumLayersTests(unittest.TestCase):
         self.assertNotIn("addendum_notes", merged)
         self.assertNotIn("addendum_adjustments", merged["items"][0])
 
+    def test_apply_layer_requires_specific_match_before_generic_terms(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            addenda_root = Path(tmpdir)
+            layer_dir = addenda_root / "designer-generic"
+            reports_dir = addenda_root / "reports"
+            reports_dir.mkdir()
+            runtime_rules_path = reports_dir / "runtime-rules.json"
+            runtime_rules_path.write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-generic",
+                        "layer_name": "设计师追加规则 Generic",
+                        "rules": [
+                            {
+                                "page": 188,
+                                "domain": "door_panel",
+                                "action_type": "constraint",
+                                "title": "美式木门尺寸限制",
+                                "detail": "单扇门宽≤560mm，无中横门高≤1700mm。",
+                                "trigger_terms": ["门型", "高度", "宽度"],
+                                "match_terms_specific": ["美式木门"],
+                                "match_terms_generic": ["门型", "高度", "宽度"],
+                                "required_fields": ["高度", "宽度", "门型"],
+                                "tags": ["门型"],
+                                "relevance_score": 9,
+                                "user_summary": "美式木门这条要按专门尺寸限制判断。",
+                                "question_template": "这组门板还需要确认具体门型。",
+                                "evidence_level": "hard_rule",
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            layer_dir.mkdir()
+            (layer_dir / "manifest.json").write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-generic",
+                        "layer_name": "设计师追加规则 Generic",
+                        "status": "ACTIVE",
+                        "artifacts": {"runtime_rules_file": str(runtime_rules_path)},
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            payload = {
+                "items": [
+                    {
+                        "product": "柜门",
+                        "confirmed": "高2.2米，宽500，不做拉手",
+                        "pricing_method": "规则咨询",
+                        "calculation_steps": [],
+                        "subtotal": "待确认",
+                    }
+                ],
+                "total": "待确认",
+            }
+
+            merged = MODULE.apply_addendum_layers(payload, addenda_root)
+
+        self.assertNotIn("addendum_decisions", merged["items"][0])
+
+    def test_apply_layer_uses_question_template_and_keeps_single_core_question(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            addenda_root = Path(tmpdir)
+            layer_dir = addenda_root / "designer-question"
+            reports_dir = addenda_root / "reports"
+            reports_dir.mkdir()
+            runtime_rules_path = reports_dir / "runtime-rules.json"
+            runtime_rules_path.write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-question",
+                        "layer_name": "设计师追加规则 Question",
+                        "rules": [
+                            {
+                                "page": 177,
+                                "domain": "door_panel",
+                                "action_type": "constraint",
+                                "title": "其他无把手、无抠手柜门须明确备注开启方式",
+                                "detail": "其他无把手、无抠手柜门都要明确备注开启方式。",
+                                "trigger_terms": ["无把手", "无抠手", "开启方式"],
+                                "match_terms_specific": ["无把手", "无抠手"],
+                                "match_terms_generic": ["开启方式"],
+                                "required_fields": ["开启方式", "开启方向"],
+                                "tags": ["门型"],
+                                "relevance_score": 9,
+                                "user_summary": "这组无把手柜门不能直接继续判断，需要先确认开启方式。",
+                                "question_template": "这组柜门还需要确认开启方式。",
+                                "evidence_level": "hard_rule",
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            layer_dir.mkdir()
+            (layer_dir / "manifest.json").write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-question",
+                        "layer_name": "设计师追加规则 Question",
+                        "status": "ACTIVE",
+                        "artifacts": {"runtime_rules_file": str(runtime_rules_path)},
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            payload = {
+                "items": [
+                    {
+                        "product": "流云门衣柜",
+                        "confirmed": "无把手，开启方向未知",
+                        "pricing_method": "规则咨询",
+                        "calculation_steps": [],
+                        "subtotal": "待确认",
+                    }
+                ],
+                "total": "待确认",
+            }
+
+            merged = MODULE.apply_addendum_layers(payload, addenda_root)
+
+        follow_ups = merged["items"][0]["addendum_decisions"]["follow_up_questions"]
+        self.assertEqual(len(follow_ups), 1)
+        self.assertEqual(follow_ups[0]["question"], "这组柜门还需要确认开启方式。")
+
+    def test_apply_layer_drops_adjustments_when_hard_constraint_already_matched(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            addenda_root = Path(tmpdir)
+            layer_dir = addenda_root / "designer-priority"
+            reports_dir = addenda_root / "reports"
+            reports_dir.mkdir()
+            runtime_rules_path = reports_dir / "runtime-rules.json"
+            runtime_rules_path.write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-priority",
+                        "layer_name": "设计师追加规则 Priority",
+                        "rules": [
+                            {
+                                "page": 125,
+                                "domain": "cabinet",
+                                "action_type": "constraint",
+                                "title": "玻璃抽屉尺寸与开启方式限制",
+                                "detail": "玻璃抽屉长度≤1040mm，长度＞600mm时中间需加底称。",
+                                "trigger_terms": ["玻璃抽屉", "抽屉"],
+                                "match_terms_specific": ["玻璃抽屉"],
+                                "match_terms_generic": ["抽屉"],
+                                "required_fields": [],
+                                "tags": ["抽屉"],
+                                "relevance_score": 9,
+                                "user_summary": "这组玻璃抽屉要先按专项尺寸限制判断。",
+                                "question_template": "",
+                                "evidence_level": "hard_rule",
+                            },
+                            {
+                                "page": 126,
+                                "domain": "cabinet",
+                                "action_type": "adjustment",
+                                "title": "抽屉长度超过600mm建议双孔长拉手",
+                                "detail": "使用明装拉手且抽面长度＞600mm时，建议双孔长拉手或2个单孔拉手。",
+                                "trigger_terms": ["抽屉", "拉手"],
+                                "match_terms_specific": ["玻璃抽屉"],
+                                "match_terms_generic": ["抽屉", "拉手"],
+                                "required_fields": [],
+                                "tags": ["抽屉", "拉手"],
+                                "relevance_score": 7,
+                                "user_summary": "如果后面做明装拉手，再补充看拉手建议。",
+                                "question_template": "",
+                                "evidence_level": "hard_rule",
+                            },
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            layer_dir.mkdir()
+            (layer_dir / "manifest.json").write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-priority",
+                        "layer_name": "设计师追加规则 Priority",
+                        "status": "ACTIVE",
+                        "artifacts": {"runtime_rules_file": str(runtime_rules_path)},
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            payload = {
+                "items": [
+                    {
+                        "product": "玻璃抽屉书柜",
+                        "confirmed": "玻璃抽屉，长度800，明装拉手",
+                        "pricing_method": "规则咨询",
+                        "calculation_steps": [],
+                        "subtotal": "待确认",
+                    }
+                ],
+                "total": "待确认",
+            }
+
+            merged = MODULE.apply_addendum_layers(payload, addenda_root)
+
+        decisions = merged["items"][0]["addendum_decisions"]
+        self.assertEqual(len(decisions["constraints"]), 1)
+        self.assertEqual(decisions["constraints"][0]["title"], "玻璃抽屉尺寸与开启方式限制")
+        self.assertEqual(decisions["adjustments"], [])
+
 
 if __name__ == "__main__":
     unittest.main()

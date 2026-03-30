@@ -1,7 +1,7 @@
 {
   "layer_id": "designer-manual-2026-03-22",
   "layer_name": "设计师追加规则 2026-03-22",
-  "generated_at": "2026-03-25T11:32:33",
+  "generated_at": "2026-03-30T19:50:24",
   "entry_count": 305,
   "status_counts": {
     "covered_existing": 53,
@@ -19,7 +19,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：尺寸阈值。关键信息：前言；良禽佳木设计师标准手册；版本20260322；ES SENG HE SE",
       "note": "复核结论认定为背景页或噪声页，继续排除在回答与报价链路之外。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 11,
@@ -30,7 +31,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：材质, 尺寸阈值。关键信息：4英寸宽2英尺长。净划面数量根据板材的尺寸而定，；NHLA分等规则；了解NHLA分等规则；普2A级中最小的板面规格为3英寸宽4英尺长，净划面的出材率的比例范围是 。最小允许净划面的",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 20,
@@ -41,7 +43,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：门型, 尺寸阈值。关键信息：2s —— — Mb Tr；N Ne i 5 —— Se A dare le |；Ts eae Sa. Was monies oe；| Tin 不吗 和 96 as | ia bes, ST) Pe 弄虽 ea:",
       "note": "复核结论认定为背景页或噪声页，继续排除在回答与报价链路之外。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 21,
@@ -52,7 +55,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 材质, 尺寸阈值。关键信息：2分别连续。该情况需提前与客户沟通确认。无备注时，默认从分段处断开连纹。；•竖向纹理门板连续：纹理方向长度≤2400mm时，同一个产品中相邻门板默认上下纹理连续（上下门板之间无横板或只有一个横板时为相邻门；板），上下门板之间有两个及以上横板时无需连纹；纹理方向＞2400mm时，上下门板纹理不连续；当同一个柜子中左右相邻门板一侧上下门板；高度和≤2400，一侧上下门板高度和＞2400，同一视角范围内视觉不统一更容易突出差异，因此默认统一采取所有门板上下均不连续的做法，",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 30,
@@ -63,7 +67,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1 | 55 Luw；1；REUSE WIAD’ Mc A MTSE IM SET °；Be hE",
       "note": "该页为明显 OCR 噪声残片，且 rules-index 已判定为非 pricing relevant，不再单独处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 30,
@@ -74,7 +79,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1 50 WWW |",
       "note": "该页为明显 OCR 噪声残片，且 rules-index 已判定为非 pricing relevant，不再单独处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 31,
@@ -85,7 +91,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：20mm圆边切角；•整装柜体的柜体结构为顶板盖侧板时，使用圆边切；角，顶板、底板以及两侧侧板均无切角，只有内部；横竖板有切角。",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 34,
@@ -96,7 +103,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 尺寸阈值。关键信息：8 00 Ww =；{；© RSIS? EEC BY BD TSE T°；SLANE SHS aot A",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 40,
@@ -107,7 +115,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 尺寸阈值。关键信息：30'0 山山 Te'0 山山；he；$10 山；+ EAM Ave. PERERA’ ISIC a E°",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 40,
@@ -118,7 +127,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：50'0 山山",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 47,
@@ -129,7 +139,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：8 Ts 加",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 47,
@@ -140,7 +151,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：8 TS:",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 47,
@@ -151,7 +163,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1 — 三|；HwWay-sy；直角圆边-窄边矮柜；凹",
       "note": "已转入知识层回答，当前作为高置信结构复盘提示，不直接入 runtime。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 48,
@@ -162,7 +175,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：4 |；|；1；li",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 48,
@@ -173,7 +187,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：8 |；BHEEMY-ByEe；直角圆边-窄边高柜；凹",
       "note": "已转入知识层回答，当前作为高置信结构复盘提示，不直接入 runtime。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 49,
@@ -184,7 +199,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：尺寸阈值。关键信息：4 ]；‘| |；= mt；My |",
       "note": "已转入知识层回答，当前作为高置信结构复盘提示，不直接入 runtime。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 49,
@@ -195,7 +211,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 尺寸阈值。关键信息：8 |；a“；; ii；BwEY-wy St",
       "note": "顶挡条 15mm 规则已进入 runtime；页面其他结构图仅作辅助解释。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 55,
@@ -206,7 +223,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：80mm，其他特殊情况可调整牙称高度，牙称高度范围50≤ H ≤250mm。；•以下介绍常见的拆装柜体结构，分别为：侧盖顶与顶盖侧柜体结构示例、超高柜体分段示例、超长柜体分段示例、超长\\超高柜体分段示例。；可由此学习常规拆装柜体各种样式的具体结构。；高度＞1700mm侧盖顶拆装柜体 高度≤1700mm顶盖侧拆装柜体常规拆装柜体-侧盖顶与顶盖侧柜体结构示例1",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 59,
@@ -217,7 +235,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 超深, 投影面积, 尺寸阈值。关键信息：5情况开放格区域层板内凹，层板外沿与门板不齐平。为提高家具结构稳定性及保；证全屋家具结构统一，推荐图1、图2设计方法，非必要不进行图3、4、5设计。；图6；分段缝对齐层板上方",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 78,
@@ -228,7 +247,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：1-15045 25 150 40DG-02 DG-06 DG-10；DSG-03 CTG-01 CTG-03；CBG-04；DSG-08 CBG-07",
       "note": "复核结论认定为背景页或噪声页，继续排除在回答与报价链路之外。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 85,
@@ -239,7 +259,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：1. 遇见书柜-上柜顶底包侧；下柜顶盖侧，侧包底；单独下柜高度≤1700mm，顶盖侧，侧包底；高度＞1700mm（不建议，非必要不设计），；侧包顶底；高度＞1700mm；（不建议，非必要不设计）",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 86,
@@ -250,7 +271,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2. 新现代风格-顶盖侧，侧包底",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 86,
@@ -261,7 +283,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：柜体。关键信息：3. 顶板飞檐-顶盖侧，侧包底；二、燕尾榫：除以上3种外的整装家具；顶底包侧（吊柜；常规支腿柜） / 顶盖侧，侧包底（落地柜）；特殊情况：",
       "note": "该条更像结构背景说明，且 rules-index 已判定为非 pricing relevant，不再单独处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 89,
@@ -272,7 +295,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：2个独立柜体 开放分组转角柜转角柜；开放整体转角柜；衣柜：≤1100mm；其他柜体：≤900mm衣柜：≤1100mm其他柜体：≤900mm",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 97,
@@ -283,7 +307,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 超深, 投影面积, 门型, 公式, 尺寸阈值。关键信息：450—500mm；•柜体圆边时，书梯滑轨安装板上下层板外侧圆边；外侧圆边；•爬梯滑轨安装板默认平板无造型，可做造型设计，选择增加造型时",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 111,
@@ -294,7 +319,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 表格, 尺寸阈值。关键信息：123：指层板或立板的板件进深柜内组件避让原则；图2-63 柜内搁板长度；a）衣柜内搁板 b）其他柜体柜内搁板a) b)•衣柜单块搁板长度须≤1000mm，如图2-63；其他柜体如书柜、储物柜、玄关柜等搁板长度须≤900mm。；图2-61 柜体结构•柜体横竖板连接的关系统一先竖后横，如图2-61。固定层板",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 127,
@@ -305,7 +331,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1200＜L≤1600D≤300 H＜900 无托称后托称*1；D≤300 H≥900；前托称*1前托称*1；后托称*1D＞300 /",
       "note": "已转入知识层回答，当前作为空区托称前后托称搭配与长度分档提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 127,
@@ -316,7 +343,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1600＜L≤1800/ H＜900 60*26（木质托称）",
       "note": "已转入知识层回答，当前作为空区托称木质托称尺寸分档提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 127,
@@ -327,7 +355,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1800＜L≤2000/ H＜900 前托称*1前托称*1；后托称*170*26（木质托称）",
       "note": "已转入知识层回答，当前作为空区托称前后托称搭配与 70*26 分档提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 127,
@@ -338,7 +367,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 表格, 尺寸阈值。关键信息：2000＜L≤2200/ H＜900 前托称*1前托称*1；后托称*180*26（木质托称）表2-6 空区托称添加规则；注：有背板空区，空区处背板需为单块独立背板，不与其他区域共用背板；LDH",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 127,
@@ -349,7 +379,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：50*26（钢管托称）",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 128,
@@ -360,7 +391,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：33层板；层板；层板；层板前",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 130,
@@ -371,7 +403,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 尺寸阈值。关键信息：3，即后；方剩余板件宽度不小于侧板宽度的1；3；•开口高度≤700mm",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 130,
@@ -382,7 +415,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：3，即后；方剩余板件宽度不小于侧板宽度的1；3；•开口高度≤250mm•柜体侧板开放形前缺口，高度较大，",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 135,
@@ -393,7 +427,8 @@
       "rule_type": "material_mapping",
       "summary": "本段主要描述材质、门型或结构之间的映射关系。 识别标签：柜体, 门型, 尺寸阈值。关键信息：11mm。；•背板宽度应控制在1100mm以内，高度2300mm以内；芯板任意一边长应≤500mm，特殊情；况可进行特殊处理（如电视柜背板）。；•背板纹理方向默认为竖纹，特殊情况可为横纹 （同一件家具所有的背板纹理方向必须",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 137,
@@ -404,7 +439,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 门型, 材质, 尺寸阈值。关键信息：9mm竖纹平板背板；（整装柜体）H＞800mmH≤800mmH＞800 横撑平板背板；H；WL•15mm竖纹平板背板(拆装柜体)",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 156,
@@ -415,7 +451,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：100mm≤抽面高度≤350mm；抽面上沿与抽侧上沿高差需≤60mm；抽屉下盖时，抽面下沿与抽侧下沿高差需≤60mm；•开启方式：可使用扣手、明装拉手、按弹开启；使用明装拉手时，抽面长度＞600mm建议使用双孔长拉手或2个单孔拉手；；•适用轨道：所有轨道；默认海蒂诗阻尼托底轨",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 158,
@@ -426,7 +463,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：120mm≤抽面高度≤350mm；抽面高度＜150mm时，抽面框架宽度为40mm；抽面上沿与抽侧上沿高差需≤60mm；抽屉下盖时，抽面下沿与抽侧下沿高差需≤60mm；•开启方式：可使用明装拉手、按弹开启；使用明装拉手时，抽面长度＞600mm建议使用双孔长拉手或2个单孔拉手；；•适用轨道：所有轨道；默认海蒂诗阻尼托底轨",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 159,
@@ -437,7 +475,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 门型, 公式, 尺寸阈值。关键信息：150mm≤抽面高度≤350mm；木抽面高度需≥80mm；；•开启方式：可使用扣手、明装拉手、按弹开启；使用明装拉手时，抽面长度＞600mm建议使用双孔长拉手或2个单孔拉手；；•适用轨道：所有轨道；默认海蒂诗阻尼托底轨；≤1040mm150mm≤H≤350mm",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 167,
@@ -448,7 +487,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：50*20mm，默认门盖拉条，如需抽屉盖拉条须备注，注意会影响抽盒高度。；（以2个抽屉悬空为例）；•外置抽屉下方如果是开放区域（没有柜门），则使；用层板",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 168,
@@ -459,7 +499,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：尺寸阈值。关键信息：150mm≤抽面高度≤350mm；抽面上沿与抽侧上沿高差需≤60mm；抽屉下盖时，抽面下沿与抽侧下沿高差需≤60mm；•开启方式：可使用明装拉手、按弹开启；使用明装拉手时，抽面长度＞600mm建议使用双孔长拉手或2个单孔拉手；；•适用轨道：所有轨道；默认海蒂诗推弹阻尼回收托底轨",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 170,
@@ -470,7 +511,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：4只承重45kg；6只承重65kg；托盘抽；•托盘抽主要用于书桌键盘抽、储物柜/餐边柜拉出平台等；；•抽面厚度：22mm",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 171,
@@ -481,7 +523,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 尺寸阈值。关键信息：20≤C≤60mm；反弹踢脚抽；•尺寸限制：H=60mm，500mm≤W≤1000mm，踢脚抽后端距墙或柜体需留有8mm(5mm按弹余量+3mm静音棉）距离；；•平板与层板之间的放鞋空区处，需根据客户家鞋类的具体情况自行判断，需在图纸上标注尺寸.",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 174,
@@ -492,7 +535,8 @@
       "rule_type": "material_mapping",
       "summary": "本段主要描述材质、门型或结构之间的映射关系。 识别标签：门型, 尺寸阈值。关键信息：780≤D≤800 750mm轨道长度与桌面尺寸关系表；不同尺寸轨道拉出长度示例；台面宽度；•可拉出台面当作书桌使用",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 174,
@@ -503,7 +547,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：400≤D≤480 350m",
       "note": "该页残片更像章节衔接或 OCR 碎片，不作为独立规则处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 174,
@@ -514,7 +559,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：480≤D≤580 450mm",
       "note": "该页残片更像章节衔接或 OCR 碎片，不作为独立规则处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 174,
@@ -525,7 +571,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：580≤D≤680 550mm",
       "note": "该页残片更像章节衔接或 OCR 碎片，不作为独立规则处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 174,
@@ -536,7 +583,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：680≤D≤780 650mm",
       "note": "该页残片更像章节衔接或 OCR 碎片，不作为独立规则处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 176,
@@ -547,7 +595,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：7.2 平开门；铰；链；所",
       "note": "该页更像平开门章节标题残片，后续具体规则已由相邻 runtime 和知识层条目覆盖。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 177,
@@ -558,7 +607,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：公式。关键信息：1.门板长宽比例不易过大，比例过大时，会使铰链负荷过大而造成铰链螺丝脱落或门板下沉。示例图及公式可见图3-2。",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 177,
@@ -569,7 +619,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：柜体。关键信息：2.柜门数量为单数的柜体，需附图说明柜门开启方向，以便生产。",
       "note": "已转入知识层回答，当前作为奇数柜门图纸需标开启方向提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 177,
@@ -580,7 +631,8 @@
       "rule_type": "material_mapping",
       "summary": "本段主要描述材质、门型或结构之间的映射关系。 识别标签：门型。关键信息：3.除已说明的默认开启方式（如流云门默认为按弹开启），其他无把手、无抠手柜门，除说明开启方向外，须明确备注开启方式。；柜门开启示例图：右上门板从空区；处开启，无需把手或抠手。；图3-2",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 179,
@@ -591,7 +643,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：510单位：mm；≤2300；≤2300≤2300；平板平开门尺寸限制快速检索表",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 180,
@@ -602,7 +655,8 @@
       "rule_type": "material_mapping",
       "summary": "本段主要描述材质、门型或结构之间的映射关系。 识别标签：门型, 尺寸阈值。关键信息：60mm≤深≤100mm；W≤450mm；外观无中缝；•尺寸限制：300mm≤单小块门板长度≤500mm，单小块门板宽度",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 180,
@@ -613,7 +667,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：450＜W≤600mm；外观有中缝",
       "note": "已转入知识层回答，当前作为单小块门板有无中缝时宽度分界提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 183,
@@ -624,7 +679,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：门型, 尺寸阈值。关键信息：10的整数倍，此时差值最小。；单小块门板长度；单；小",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 185,
@@ -635,7 +691,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：230/270/310/350/390/430/470/510mm。圆环内为镂空状，无法；安装玻璃；圆环位置上下可调，圆环上下距边要求≥160mm；•适用铰链：所有铰链均适用。内嵌门铰链称宽度需≥100mm，外；盖门铰链称需≥80mm ；柜内拉篮等避让铰链宽度至少80mm.",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 188,
@@ -646,7 +703,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：门型, 尺寸阈值。关键信息：60mm≤柜深≤100mm；上方右侧图 下方右侧图；金属条位置左侧图；•应用场景",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 191,
@@ -657,7 +715,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：305≤h≤2700 305≤h≤2200180≤W≤500；铝框平开门尺寸限制快速检索表；针；式",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 191,
@@ -668,7 +727,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：22 22 26 26单位：mm",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 191,
@@ -679,7 +739,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：180≤W≤560",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 192,
@@ -690,7 +751,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：180≤W≤500",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 192,
@@ -701,7 +763,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：305≤h≤3000；36mm；36mm22mm；铝框平开门尺寸限制快速检索表",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 193,
@@ -712,7 +775,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：22 55单位：mm",
       "note": "该页碎片尺寸信息已由常规铰链铝框门 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 193,
@@ -723,7 +787,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：300≤W≤500",
       "note": "该页碎片尺寸信息已由常规铰链铝框门 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 193,
@@ -734,7 +799,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：300≤h≤2700；常规铰链铝框门；•尺寸限制：305mm≤高度≤2700mm，180mm≤宽度≤560mm；•门板厚度：22mm",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 194,
@@ -745,7 +811,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：30mm，不可安装于其他位置。；•适用铰链：天地铰链、90°平行铰链不可用。内嵌门铰链称宽度需；≥100mm，外盖门铰链称需≥80mm ；柜内拉篮等避让铰链宽度至少80mm.；天地铰链铝框门",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 195,
@@ -756,7 +823,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 门型, 材质, 尺寸阈值。关键信息：20mm，抽屉盖6mm，抽屉面板厚度为26mm，如图3-52-c.；因门厚不一，设计类似于图3-53结构的铝框门使用天地铰链时，其他门型；需对齐门厚，平板门纹理连续超过0.9m时需加价，详见《报价原则》；天地铰链铝框门柜体如长度超长，断开形式只能立板通断；",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 201,
@@ -767,7 +835,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1.抽屉上下左右都是内嵌的情况，抽面 22 厚(美式抽屉除外)",
       "note": "已转入知识层回答，当前作为抽面厚度与盖法搭配提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 201,
@@ -778,7 +847,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2.有 26 厚门板和 22mm 抽屉的情况，抽面全盖层板",
       "note": "已转入知识层回答，当前作为抽面厚度与盖法搭配提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 201,
@@ -789,7 +859,8 @@
       "rule_type": "material_mapping",
       "summary": "本段主要描述材质、门型或结构之间的映射关系。 识别标签：门型。关键信息：3.有 26 厚门板和抽屉都是外盖的情况，抽面改为 26 厚；拼框木门 拼框玻璃门 真格栅门 新古典格栅门；经；典",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 202,
@@ -800,7 +871,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1500拼框平开门尺寸限制快速检索表-a；单位：mm；≤560；≤2200",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 202,
@@ -811,7 +883,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：26 门高＞1500 26门高＞150026门高＞",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 202,
@@ -822,7 +895,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：22 门高≤1500",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 202,
@@ -833,7 +907,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：6022门高≤1500",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 202,
@@ -844,7 +919,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：6022门高；≤1500；60",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 203,
@@ -855,7 +931,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：26 60拼框平开门尺寸限制快速检索表-a；单位：mm；≤560",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 203,
@@ -866,7 +943,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2300＜H≤2600；经；典；玻",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 204,
@@ -877,7 +955,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1500拼框平开门尺寸限制快速检索表-a；单位：mm；≤560；≤2200≤560",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 204,
@@ -888,7 +967,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：26 门高＞1500 26门高＞",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 204,
@@ -899,7 +979,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：22 门高≤1500",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 204,
@@ -910,7 +991,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：60 26 6022门高；≤1500；60",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 205,
@@ -921,7 +1003,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1500拼框平开门尺寸限制快速检索表-a；单位：mm；≤560；≤2300≤560",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 205,
@@ -932,7 +1015,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：22门高；≤1500",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 205,
@@ -943,7 +1027,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：60 26 6022门高；≤1500",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 205,
@@ -954,7 +1039,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：6022门高；≤1500；60",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 205,
@@ -965,7 +1051,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：26门高＞",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 205,
@@ -976,7 +1063,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：150026门高＞",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 205,
@@ -987,7 +1075,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1500 26门高＞",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 206,
@@ -998,7 +1087,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：26 60拼框平开门尺寸限制快速检索表-a；单位：mm；≤560",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 206,
@@ -1009,7 +1099,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2300＜H≤2600；新；古；典",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 207,
@@ -1020,7 +1111,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：22门高≤1500且无；玻璃",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 207,
@@ -1031,7 +1123,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：26门高＞1500或；带有玻璃26 门高＞1500≤560；≤2300≤560；≤2300",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 207,
@@ -1042,7 +1135,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：6022 门高≤1500；60",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 208,
@@ -1053,7 +1147,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：22 60（外露30） 22 60（外露30）≤560；≤2300；≤560；≤2300拼框平开门尺寸限制快速检索表-a",
       "note": "该页内容已由现有结构化 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 209,
@@ -1064,7 +1159,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 门型, 公式, 尺寸阈值。关键信息：26 60 26 60300≤W≤560300≤W≤560 300≤W≤560 300≤W≤560；≤1700 ≤2300；≤2200；≤2300拼框平开门尺寸限制快速检索表-a",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 213,
@@ -1075,7 +1171,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 门型, 公式, 尺寸阈值。关键信息：7 OE NT AE BX TORI IS NIRS, Mls ELON TSE. DEAS CCT LC CEES I RS LS PSS SE NEVO NOT SRN；ESS NI ICN Ms WY, ADEA SOO SS ONG, CGI, GEIS NY IE NB OR NOSIS VE SRE SION RASS；OORR RBS i AG Wye NA KURI SOAS I”；MIP EO, Meso LN ee Ee PS Se a ee",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 218,
@@ -1086,7 +1183,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 门型, 公式, 尺寸阈值。关键信息：2300＜H≤2600；新古典格栅门；•尺寸限制：单扇门宽≤560mm，门高≤2300mm；•门板厚度：门高≤1500mm且无玻璃，门厚22mm；门高＞1500mm或有玻璃，",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 222,
@@ -1097,7 +1195,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1.定期清洁和保养家具，避免灰尘和污垢的积累。",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 222,
@@ -1108,7 +1207,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：门型。关键信息：1.经年累月的使用和磨损：即使经过处理的藤编家具表面一开始是光滑的，随着时间的推移和频繁的使用，表面可能会受到摩擦和磨损，；从而导致毛刺的出现。",
       "note": "该条主要是藤编材质保养背景说明，已由现有藤面提醒规则吸收，不单独进入回答链路。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 222,
@@ -1119,7 +1219,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2.控制室内湿度和温度，尽量维持稳定的环境条件。",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 222,
@@ -1130,7 +1231,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2.湿度变化：如果环境湿度经常波动，例如干燥的季节或潮湿的气候，藤材料会收缩或膨胀，这可能导致表面出现毛刺。",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 222,
@@ -1141,7 +1243,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：门型。关键信息：3.温度变化：温度的变化也可能影响藤编家具的表面。较大的温度变化也可能导致藤材料收缩或膨胀，进而产生毛刺。；为了尽量避免藤编家具表面出现毛刺，可以采取以下措施：",
       "note": "该条主要是藤编材质保养背景说明，已由现有藤面提醒规则吸收，不单独进入回答链路。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 222,
@@ -1152,7 +1255,8 @@
       "rule_type": "material_mapping",
       "summary": "本段主要描述材质、门型或结构之间的映射关系。 识别标签：门型, 尺寸阈值。关键信息：3.避免暴露在直射阳光下，因为太阳的热量和紫外线可能对藤材产生损害。；虽然经过处理的藤面可能会出现毛刺，但通过适当的保养和合理的使用，可以延缓其出现并保持家具的美观。；在设计藤编家具时应注意藤面的天然属性并向客户详细说明使其知悉产品特性。藤编制品说明；美式木门",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 225,
@@ -1163,7 +1267,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：10mm；边框可选择无斜边，默认有，无斜边需要备注；；•尺寸限制：单门宽度W：W≤500mm；单门高度H：H≤2200mm；木框边宽60mm；设计上下翻门时：长L≤1040mm；木框边宽度W：",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 225,
@@ -1174,7 +1279,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：门型, 尺寸阈值。关键信息：40mm≤W≤60mm，默认40mm，有其他临近平开门边框为60mm时可调为60mm；；•开启方式：可推弹开启、抠手开启、拉手开启；；•黑板品牌：美国Polyvision哑光黑色搪瓷珐琅板:金属板材，零甲醛、可磁吸（可自主搭配带磁吸效果的配件使用）、可书写、；抗划痕、硬度高。",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 227,
@@ -1185,7 +1291,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1. 木轨道及五金轨道使用规则见表；木轨道五金轨道；五金无阻尼轨道五金带阻尼轨道",
       "note": "该条更像表头说明，本体规则已由后续轨道和门厚规则覆盖。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 227,
@@ -1196,7 +1303,8 @@
       "rule_type": "material_mapping",
       "summary": "本段主要描述材质、门型或结构之间的映射关系。 识别标签：柜体, 门型, 尺寸阈值。关键信息：2. 推拉门门厚；使用五金轨道，门厚统一26mm；；使用木轨道，除带格栅条玻璃门、美式门、窄边框斜边玻璃推拉门；门厚26mm，其他常规门门厚22mm。3. 层板内缩（相对于柜体外沿）：",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 227,
@@ -1207,7 +1315,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：22厚门板：直边、圆边内缩60mm，内斜边内缩65mm",
       "note": "已转入知识层回答，当前作为推拉门22厚门板内缩提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 227,
@@ -1218,7 +1327,8 @@
       "rule_type": "material_mapping",
       "summary": "本段主要描述材质、门型或结构之间的映射关系。 识别标签：门型, 尺寸阈值。关键信息：26厚门板：直边、圆边内缩70mm，内斜边内缩75mm；玻璃门：直边、圆边内缩40mm，内斜边内缩45mm；五金轨道；双轨道：直边内缩70mm，圆边内缩75mm",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 227,
@@ -1229,7 +1339,8 @@
       "rule_type": "material_mapping",
       "summary": "本段主要描述材质、门型或结构之间的映射关系。 识别标签：柜体, 门型, 尺寸阈值。关键信息：4.当柜体上下柜门均为推拉门时，中间的间隔层板根据使用的；滑轨不同有所变化，具体要求可见表；上门 下门 隔层要求；五金轨道 五金轨道 20mm层板2块",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 227,
@@ -1240,7 +1351,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：300≤门宽＜800；门高≤1200300≤门宽＜450；门高＞1200门宽≥450",
       "note": "已转入知识层回答，当前作为单小块门板尺寸提示的一部分。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 230,
@@ -1251,7 +1363,8 @@
       "rule_type": "material_mapping",
       "summary": "本段主要描述材质、门型或结构之间的映射关系。 识别标签：门型, 尺寸阈值。关键信息：3门推拉 4门推拉 4门位置调换导致的门边错开示例；拼框木推拉门 拼框玻璃推拉门 真格栅推拉门 藤编推拉门 新古典格栅推拉门美式推拉门；单扇门宽≤1200mm；门宽＞650mm需加竖撑单扇门宽≤780mm 单扇门宽≤1200mm",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 232,
@@ -1262,7 +1375,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：尺寸阈值。关键信息：300≤W≤12001200＜H≤2300单块小门板W≤600mm；— SSS SSeS =；oa Saas — = —~ aa；— —=5 一 es SS 本 — 有",
       "note": "已转入知识层回答，当前作为单小块门板尺寸提示的一部分。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 233,
@@ -1273,7 +1387,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：7 \\ : i wit；we | .；i |；| | ka",
       "note": "该页为明显 OCR 噪声残片，且 rules-index 已判定为非 pricing relevant，不再单独处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 233,
@@ -1284,7 +1399,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1 ~ ————；oa Be ya al Fy |；Ri Wh | | he | | :；有 ee il la | ta ;",
       "note": "该页为明显 OCR 噪声残片，且 rules-index 已判定为非 pricing relevant，不再单独处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 234,
@@ -1295,7 +1411,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 投影面积, 门型, 尺寸阈值。关键信息：4 1 四|；ss SSS eos een —；| 上 |；|) sii ia - | | | s",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 249,
@@ -1306,7 +1423,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：60mm以下不能做居中圆扣手。；上翻回收展板门 平板上翻门 拼框上翻门；上翻回收展板门；•上翻回收展板门包括平板上翻回收展板门和简美上翻回收展板门；两门各尺寸限制信息一致，区别在于前挡条样式；",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 251,
@@ -1317,7 +1435,8 @@
       "rule_type": "material_mapping",
       "summary": "本段主要描述材质、门型或结构之间的映射关系。 识别标签：投影面积, 门型, 尺寸阈值。关键信息：4 Mad；下翻门（安全阻尼器）；•门板面积（㎡）*门高H≤0.2；•开启方式：可抠手开启、五金拉手开启",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 251,
@@ -1328,7 +1447,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：3e0 um",
       "note": "该条为下翻门页面中的 OCR 噪声残片，不再单独处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 251,
@@ -1339,7 +1459,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：50 ww；abu \\T wu；F 8 el RCL] eZ",
       "note": "该条为下翻门页面中的 OCR 噪声残片，不再单独处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 251,
@@ -1350,7 +1471,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：372 un；slaw 5ag ww | |",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 251,
@@ -1361,7 +1483,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：310 wu a；|；se",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 251,
@@ -1372,7 +1495,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：32 ws；TS ww；SOU；- q5 ww",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 253,
@@ -1383,7 +1507,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 尺寸阈值。关键信息：7.8 小型折叠门；•单扇门重量需≤15kg；•开启方式：可铣型拉手开启、五金拉手开启；•尺寸限制：250mm≤门宽≤500mm，门高≤1500mm",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 255,
@@ -1394,7 +1519,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2个。；•额外收费的金属拉手在其信息说明中列出，未列；出的金属拉手无需额外收费；已列出的标准木拉；手无需额外收费，本册中未列出的其他样式木拉",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 256,
@@ -1405,7 +1531,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：180儿童木质拉手-用于儿童房家具；•型号：M-TTQ；•名称：甜甜圈拉手；•规格尺寸：",
       "note": "已转入知识层回答，当前作为儿童木质拉手常见款式提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 256,
@@ -1416,7 +1543,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：120-160•型号：M-YD；•名称：云朵拉手；•规格尺寸：；长度",
       "note": "已转入知识层回答，当前作为儿童木质拉手常见款式提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 256,
@@ -1427,7 +1555,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：120•型号：M-SYC；•名称：四叶草拉手；•规格尺寸：；长度",
       "note": "已转入知识层回答，当前作为儿童木质拉手常见款式提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 257,
@@ -1438,7 +1567,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：80儿童木质拉手-用于儿童房家具；•型号：JS-FX；•名称：方形金属拉手；•规格尺寸：",
       "note": "该条已明显串入后续金属拉手页 OCR 噪声，不单独作为儿童木质拉手规则处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 257,
@@ -1449,7 +1579,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：80•型号：M-YX；•名称：圆形拉手；•规格尺寸：；直径",
       "note": "已转入知识层回答，当前作为儿童木质拉手常见款式提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 257,
@@ -1460,7 +1591,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：80•型号：M-XX；•名称：小熊拉手；•规格尺寸：；长度",
       "note": "已转入知识层回答，当前作为儿童木质拉手常见款式提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 257,
@@ -1471,7 +1603,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：80•型号：M-XY；•名称：小鱼拉手；•规格尺寸：；长度",
       "note": "已转入知识层回答，当前作为儿童木质拉手常见款式提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 262,
@@ -1482,7 +1615,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 门型, 材质, 尺寸阈值。关键信息：140/160/180/200/220/240等20的整数倍数值；在抽屉上使用该3种；样式凹槽拉手时，为方便使用，扣手长度需≥80mm。；•抽屉上使用半圆凹槽拉手、半圆对凹槽拉手时，设计时应注意扣手；长度应超过抽屉长度的一半。",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 273,
@@ -1493,7 +1627,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：材质, 尺寸阈值。关键信息：1\" ii bl | tae mL th 册 ll il | aa | | Im fag eh = i | | il 几；| a；[seat |；欧茶",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 282,
@@ -1504,7 +1639,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：尺寸阈值。关键信息：20 GIA Wee IUfGUW69A6' 92 GAYS 92 QIUCWG WOOUPE LOMIUa ILO | | Dig ae why；Chauulua PESCpE2 S|OUA (WE BISCK Cosar Ie PLES—U;SKIUG’ 1he PUALE Suq | ke as；cnlintsl cys Fh6 mundns eceusiA pow pS Basu bese po pus SS ‘ enti；(V6 BIIKSU bsuluanle IU Enkobe' MP 9 loua PIZCOLA OL acbarschnke guq ‘ ‘ a Sete",
       "note": "该页为明显 OCR 噪声残片，且 rules-index 已判定为非 pricing relevant，不再单独处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 282,
@@ -1515,7 +1651,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2bECIEICVLION ,；SUQ GAe-Carcuiud' : 1；bre wiviwwaes ebscee’ jpe G9 esse me Bnlasu9u zfou6 12 biecione i 3",
       "note": "该页为明显 OCR 噪声残片，且 rules-index 已判定为非 pricing relevant，不再单独处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 283,
@@ -1526,7 +1663,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：尺寸阈值。关键信息：6xbkeazz6z (UG [LNG PESNFA AMAIFP LUIVILUS] PISCK AAG pellsAs FUSE SI] KIUG2 P |；Ifa blelu' pag fbe Moulq ceu cowubere MIfb LOL pegnfX Ynkokg BISCK |；|；VARA SS EES TL ww BDB Ae” i (Eta)",
       "note": "该页为明显 OCR 噪声残片，且 rules-index 已判定为非 pricing relevant，不再单独处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 284,
@@ -1537,7 +1675,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2bECIEICV LIOU / wis — ks |",
       "note": "复核结论认定为背景页或噪声页，继续排除在回答与报价链路之外。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 284,
@@ -1548,7 +1687,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 尺寸阈值。关键信息：2onj2 QGWwouztisf2 [Pe Lwgl]e2fIcG' UGIGELIC SUG GXfLIOLGIUSLA . i —e re ZZ ] | - A；Uu6f9lIIC PEXENLG2 LG Clhiz2-cLozzeq ‘ |¢ cabinie2 beobjs pesise guq / . ast ~ => if | | 一 日 人；FIK6 9 LSA OL q9MU 9ckozz (UG zkKN zf9lu6q MIFH IUK ue MDIF6 guq 机 j ~~ 4 Ss. | =；一~ RE r 1 = |",
       "note": "复核结论认定为背景页或噪声页，继续排除在回答与报价链路之外。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 284,
@@ -1559,7 +1699,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：3 VA X . ™；人/ /；DBSWAOBC-A-$E iw Ma sw | .",
       "note": "复核结论认定为背景页或噪声页，继续排除在回答与报价链路之外。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 289,
@@ -1570,7 +1711,8 @@
       "rule_type": "material_mapping",
       "summary": "本段主要描述材质、门型或结构之间的映射关系。 识别标签：材质, 尺寸阈值。关键信息：24v驱动款可隔门板手扫雷达开关；•产品编号：05.640.0011；•该开关为有线开关，控制方式为暗装手扫或者明装触摸；；•可隔门板/石材板，将感应头隐藏在柜子内部，手在外端扫即可控制灯光开启和关闭；",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 290,
@@ -1581,7 +1723,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：24v驱动款可隔门板手扫雷达开关；•安装位置及使用方式指引；可底装放置在岩板或台面；下方上从上方手扫开启",
       "note": "已转入知识层回答，当前作为手扫雷达开关安装方式提示，不直接入 runtime。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 291,
@@ -1592,7 +1735,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：12mm集控人体红外感应开关(插拔头)05.63.0012；",
       "note": "已转入知识层回答，当前作为集控感应开关系列与使用差异提示，不直接入 runtime。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 291,
@@ -1603,7 +1747,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：12mm集控感应开关（插拔头）系列：共三款；•产品编号：12mm集控手扫感应开关(插头)05.62.0012；",
       "note": "已转入知识层回答，当前作为集控感应开关系列与使用差异提示，不直接入 runtime。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 291,
@@ -1614,7 +1759,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：12mm集控触模感应开关(插拔头)05.65.0012；；•可选明装（底座）/暗装（开孔嵌入）；；•适用于所有型号的单色温灯带;不可调节色温；手扫和触摸开关可以调节亮度，人体红外开关不可调节亮度。；•产品颜色：太狼灰",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 296,
@@ -1625,7 +1771,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1.呼叫小爱同学；回答：在",
       "note": "这页主要是米家或语音配网教程，当前不进入报价或规则咨询链路。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 296,
@@ -1636,7 +1783,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1.小爱音箱：灯带接到电源上后，呼叫小爱同学，通过与小爱同学对话发出指令，实现灯带的配对，；以下是对话过程，红色字体为需要下达的指令，白色字体为小爱同学回答",
       "note": "这页主要是米家或语音配网教程，当前不进入报价或规则咨询链路。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 296,
@@ -1647,7 +1795,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2.发现设备；回答：稍等一下，正在帮你发现设备；发现一个设备情景mesh三色灯VRS系列，；是否需要连接3.连接",
       "note": "这页主要是米家或语音配网教程，当前不进入报价或规则咨询链路。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 296,
@@ -1658,7 +1807,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：4.连接成功，现在可以前往米家设置设备；所在房间和名字啦",
       "note": "这页主要是米家或语音配网教程，当前不进入报价或规则咨询链路。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 296,
@@ -1669,7 +1819,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：5.弹出设置界面，设置好即可通过语音；进行操控：开关灯/色温/亮度等（在连接的过程中灯带灯光会闪烁提醒）；米家控制盒灯带开关:配对教程",
       "note": "这页主要是米家或语音配网教程，当前不进入报价或规则咨询链路。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 297,
@@ -1680,7 +1831,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1.打开米家APP，；点击首页右上角“+”；选择添加设备2.完成，创建好房间后 3.下一步，进入连接状态 4.界面显示连接中 5.连接成功后就可以手动控；制灯带开关灯/色温/亮度等",
       "note": "这页主要是手机 APP 配网教程，当前不进入报价或规则咨询链路。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 297,
@@ -1691,7 +1843,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2.手机米家APP：音箱连接后，手机APP会直接显示该设备，下面演示如何直接用米家APP配对灯带设备，通过手机操控灯带数值。",
       "note": "这页主要是手机 APP 配网教程，当前不进入报价或规则咨询链路。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 299,
@@ -1702,7 +1855,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 尺寸阈值。关键信息：5 LOBSIINE ‘；ww LiL) anaemia | | :；—= | ) + - SIS “ie；SCRE ee BEDE 3S : BOA RE",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 310,
@@ -1713,7 +1867,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 门型, 尺寸阈值。关键信息：3种进线方式,涵盖大部分安装场景；有效避免因进线位置不同，导致轨道无法安装；逆时针旋转；灯灭断电",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 316,
@@ -1724,7 +1879,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：39mm30mm33mm24mm•无刹车；1.5mm；25mm；25mm",
       "note": "该页当前仅剩尺寸噪声碎片，且 rules-index 已判定为非 pricing relevant，不再单独处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 318,
@@ -1735,7 +1891,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 尺寸阈值。关键信息：162) BETA TUBES AA TSI) =；EWI! ENGITCOOUNRIEBIER (GIETNE’ HN’ RIG’ RAB’ BEMIE’ see；RRA Se ES —— 3S 32 (2 ee CERES)；•无背板柜体需要安装拉条用膨胀螺丝与墙体固定",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 324,
@@ -1746,7 +1903,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：3 SYEUM SVREBVSMLTS SVB BML；y SYP AVREMEP SL BVM；T BPS S (Vv) BA:；。 (Cp Stee 。 eam",
       "note": "该页为明显 OCR 噪声残片，且 rules-index 已判定为非 pricing relevant，不再单独处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 326,
@@ -1757,7 +1915,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：110° 110°",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 326,
@@ -1768,7 +1927,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：95° 95°；海蒂诗大角度铰链；全盖、半盖、内嵌；开启角度：165°/120°",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 327,
@@ -1779,7 +1939,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：95°；海蒂诗铝框门铰链；全盖、半盖、内嵌；开启角度：95°",
       "note": "已转入知识层回答，当前作为海蒂诗铝框门铰链开启角度与盖法提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 328,
@@ -1790,7 +1951,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：120°165°",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 328,
@@ -1801,7 +1963,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：95° 95°",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 328,
@@ -1812,7 +1975,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：柜体。关键信息：95°；特殊情况：根据门板情况会使用默认铰链，若想使用海蒂诗165°铰链需要上传图纸并备注：柜体的安装位置图纸以及备注哪扇门需要更换大角度铰链",
       "note": "已转入知识层回答，当前作为 165° 大角度铰链上传图纸与备注要求提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 329,
@@ -1823,7 +1987,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 尺寸阈值。关键信息：165°铰链开启 默认铰链开启柜体离床铺很近，柜门单开一侧衣服拿取不太方便；默认铰链开启 165°铰链开启；aly tee；有 1e2. RUE",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 329,
@@ -1834,7 +1999,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：165°",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 329,
@@ -1845,7 +2011,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：95°",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 341,
@@ -1856,7 +2023,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：门型。关键信息：1. 通用要求；a)设计儿童床时，所有外露边角应为圆边圆角；；b)儿童床上涉及的抽屉，设计时优先使用扣手，如使用其他拉手，应选择“儿童拉手”分类内产品；；c)床体任何部位请勿设计挂钩、装饰图形等突出物体；",
       "note": "已转入知识层回答，当前作为儿童床通用安全设计提醒。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 341,
@@ -1867,7 +2035,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2.注意事项；应告知客户以下注意事项：；a)上层床不适合6岁及以下的人群使用，因有跌伤的危险。；b)请勿在产品的任何部分附加或悬挂任何不适合用于床的物品，例如，但不限于绳索、绳子、钩子、皮带和袋子。因使用不当，产品可",
       "note": "已转入知识层回答，当前作为上层床使用提醒与客户告知事项提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 341,
@@ -1878,7 +2047,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 尺寸阈值。关键信息：3.围栏；a)除标准模块中已有的围栏、孔洞、开口设计，请勿随意设计其他样式，如有需求请填写至需求表格；；b)请勿设计可开启的围栏及其他部件，所有部件需满足在使用工具的情况下，产品及其零部件才能被拆卸；；c)定制尺寸，围栏栏杆间隙应满足：不小于60mm且小于75mm，多个间隙值可用时，取根数最少；",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 344,
@@ -1889,7 +2059,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：4.进出通道；a)上层床应有进出通道（如梯子、楼梯等）；b)梯子最上层脚踏板或者楼梯最上层梯柜上表面与围栏出入口或限制床褥最大厚度的永久性标记线（选两者中较高者）间的距离应不大于",
       "note": "已转入知识层回答，当前作为儿童高架床进出通道安全限制提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 344,
@@ -1900,7 +2071,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：500mm，或者与没有缺口的安全栏板顶部距离不大于500mm。；c)进出通道与相邻床架刚性部件间的距离应：小于7mm；或不小于12mm，小于25mm；或不小于60mm，小于75mm；或不小于200mm。",
       "note": "已转入知识层回答，当前作为儿童高架床通道间隙与围栏距离口径提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 344,
@@ -1911,7 +2083,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：4.1 挂梯；标准尺寸使用标准挂梯，定制尺寸时，应满足以下要求：；a)应与床架相连，垂直或向上层床倾斜安装；；b)地面到第一级踏脚板上表面的距离应不大于400mm；",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 348,
@@ -1922,7 +2095,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：柜体, 尺寸阈值。关键信息：600mm需分为2个抽屉；；450-600mm；f)踏脚板的上表面前边缘应在一直线上，允差为±20mm；；g)步深应不小于200mm，不大于475mm，最上层进出平台深",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 355,
@@ -1933,7 +2107,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：25mm 或 60≤L＜75mm 或 L≥200mm；挂梯落地、错落差值变化时，挂梯始终位于上床右侧，位置变动时，上床床腿距离下床床腿的距离L；应满足同上要求；；挂梯落于下床；挂梯落地L",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 357,
@@ -1944,7 +2119,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1.1 边缘、尖端及外角；设计儿童房家具时，外露边角应为圆边圆角。；不应有危险外角，其角的圆半径应不小于10mm，或圆弧长不小于15mm，尤其注意桌类、柜类产品四角圆弧设计；；家具危险外角示意图",
       "note": "已转入知识层回答，当前作为儿童家具外露边角圆角安全口径提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 358,
@@ -1955,7 +2131,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1.2 突出物；设计儿童家具时优先使用扣手，使用其他拉手，应选择“儿童拉手”分类内产品；",
       "note": "已转入知识层回答，当前作为儿童家具拉手安全口径提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 358,
@@ -1966,7 +2143,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：门型。关键信息：1.3 孔、间隙及开口；请勿将藤编、网布等网织物应用于家具任何可触及区域；",
       "note": "已转入知识层回答，当前作为儿童家具可触及区域禁用藤编网布提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 358,
@@ -1977,7 +2155,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1.4 垂直开启的翻门、翻板；请勿在儿童家具中设计可回收上下翻门、随意停上下翻门；",
       "note": "已转入知识层回答，当前作为儿童家具翻门翻板安全提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 358,
@@ -1988,7 +2167,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1.5 玻璃部件；除距离地面高度和其他站立面高度1600mm以上的区域外，儿童家具不应使用玻璃部件；",
       "note": "已转入知识层回答，当前作为儿童家具玻璃使用高度限制提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 358,
@@ -1999,7 +2179,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：门型, 尺寸阈值。关键信息：1.6 稳定性；高桌台（产品总高度超过1000mm，配有书架或类似结构的桌台类产品，如书桌柜）及高度大于600mm的柜架类产品，需要添加防倾倒装置；；上表面离地高度不小于 600 mm床铺声明；上下床/高架床，上铺宽度均不能超过1.2M，为单人床尺寸，超过1.2M宽的高层产品定仅允许定制置物架，且置物架不提供休息功能，儿童",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 362,
@@ -2010,7 +2191,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：60mm≤L≤75mm。；•带举升器的箱体床默认安装床垫限位器，限位器规格为：",
       "note": "已转入知识层回答，当前作为箱体床床垫限位器规格与默认安装提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 363,
@@ -2021,7 +2203,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：材质, 公式, 尺寸阈值。关键信息：50*80*260mm（黑色）；尾翻箱体床限位器安装于床头方向，；尾翻床床垫宽度＜1500mm时安装1个，床垫宽度≥1500mm时；安装2个；侧翻箱体床限位器安装于侧面（与锁扣相反方；向），安装2个。",
       "note": "已转入知识层回答，当前作为尾翻/侧翻箱体床床垫限位器安装方向与数量提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 366,
@@ -2032,7 +2215,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1.尺寸；双层床上床及高架床床宽应≤1200mm（床垫尺寸）；*高架床指床铺面（排骨架）的上表面离地高度≥600mm的床类产品；双层床上下床铺面之间净空距离建议不小于1100mm",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 366,
@@ -2043,7 +2227,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2.进出通道；进出通道要求同儿童家具要求，见3.6《儿童房家具设计要求》",
       "note": "该条只是回引儿童家具进出通道要求，已由儿童床进出通道知识层口径覆盖。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 367,
@@ -2054,7 +2239,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：3.安全栏板；a）独立双层床/高架床的上层铺面应设置安全栏板，仅允许在进出床铺面一侧留有进出缺口，其余部分应全部封闭。当特殊定制与其他柜体组合；的双层床/高架床，与柜体连接的一侧可无安全栏板，其他三面应设置安全栏板，床体应与柜体固定。；特殊定制一侧靠墙的双层床/高架床，与墙体连接的一侧可无安全栏板，其他三面应设置安全栏板，床体应与承重墙面固定。",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 369,
@@ -2065,7 +2251,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1.内空要求H≥196mm；内空长度L≥950mm；内空长度L≤600mm时可使用榻榻米盖板；内空长度600＜L＜950mm；时不可做可开启床屉板。",
       "note": "已转入知识层回答，当前作为小蜻蜓举升器安装空间与内空要求提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 369,
@@ -2076,7 +2263,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2.床垫重量应≤50kg，设计时需考虑客户家床垫重量，如床垫超重可使用两套750N举升器，下单时需备注。；床垫尺寸限制W≤1800、L≤2000，当W＞1800时默认使用两套750N举升器，需要单独收费，详见报价原则。",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 369,
@@ -2087,7 +2275,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：3.床不得空载(不放床垫)关闭时间过长。",
       "note": "已转入知识层回答，当前作为小蜻蜓举升器使用提醒提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 369,
@@ -2098,7 +2287,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：4.不同力值气弹簧使用规范寄对应挡位见下表，出厂默认挡位：500N-1挡、750N-2挡、950N-3挡小蜻蜓举升器；所有箱体床，包括符合安装要求的侧翻床、儿童床，均使用SUSPA小蜻蜓举升器；注意事项：",
       "note": "已转入知识层回答，当前作为小蜻蜓举升器默认挡位提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 370,
@@ -2109,7 +2299,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1.内空要求H≥196mm；内空长度L≥950mm；内空长度L≤600mm时可使用榻榻米盖板；内空长度600＜L＜950mm；时不可做可开启床屉板。",
       "note": "已转入知识层回答，当前作为小蜻蜓举升器安装空间与内空要求提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 370,
@@ -2120,7 +2311,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2.使用一套举升器时床垫重量应≤50kg，设计时需考虑客户家床垫重量，当床垫重量＞50kg时，应使用两套",
       "note": "该条已由现有床垫重量与 750N 举升器 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 370,
@@ -2131,7 +2323,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：3.床不得空载(不放床垫)关闭时间过长。",
       "note": "已转入知识层回答，当前作为小蜻蜓举升器使用提醒提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 370,
@@ -2142,7 +2335,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：4.不同力值气弹簧使用规范寄对应挡位见下表，出厂默认挡位：500N-1挡、750N-2挡、950N-3挡小蜻蜓举升器；安装位置1：适用于箱体内部有两块隔板的情况；；安装位置2：适用于箱体内部只有1块隔板或没有隔板的；；≥450mm",
       "note": "已转入知识层回答，当前作为小蜻蜓举升器默认挡位提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 370,
@@ -2153,7 +2347,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：750N举升器，下单时需备注床垫重量以及举升器数量。；床垫尺寸限制W≤1800、L≤2000，当W＞1800时默认使用两套750N举升器，需要单独收费，详见报价原则。",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 374,
@@ -2164,7 +2359,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1.宽度≤1450mm时，排骨架数量为单；块。",
       "note": "已转入知识层回答，当前作为床类排骨架单双块口径提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 374,
@@ -2175,7 +2371,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1.宽度＞1450mm时，排骨架数量为双；块。",
       "note": "已转入知识层回答，当前作为床类排骨架单双块口径提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 374,
@@ -2186,7 +2383,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1.宽度＞1450mm时，排骨架数量为双；块。",
       "note": "已转入知识层回答，当前作为床类排骨架单双块口径提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 374,
@@ -2197,7 +2395,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2.排骨条均为80mm宽",
       "note": "已转入知识层回答，当前作为床类排骨条宽度提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 374,
@@ -2208,7 +2407,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2.排骨条均为80mm宽",
       "note": "已转入知识层回答，当前作为床类排骨条宽度提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 374,
@@ -2219,7 +2419,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2.排骨条均为80mm宽",
       "note": "已转入知识层回答，当前作为床类排骨条宽度提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 374,
@@ -2230,7 +2431,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：3.排骨架间隙为15-25mm；主要适用于尾翻箱体床等排骨架；榻榻米结构；•榻榻米（无屉版）",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 374,
@@ -2241,7 +2443,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：3.排骨架间隙为15-25mm；主要适用于架式床、儿童床、侧翻床、；尾翻床等双块排骨架",
       "note": "该条已由现有排骨架间隙 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 374,
@@ -2252,7 +2455,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：3.排骨架间隙为15-25mm；主要适用于架式床和侧翻床等双块排骨架",
       "note": "该条已由现有排骨架间隙 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 378,
@@ -2263,7 +2467,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：30/30mm，如中边框宽度90mm，则分段缝左右边宽45/45mm。榻榻米超长解决方案；榻榻米盖板；•榻榻米盖板边框厚度26mm，芯板平装11mm；•边框宽度50mm",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 389,
@@ -2274,7 +2479,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：尺寸阈值。关键信息：700≤W≤900600标准屉柜高度=300mm罗胖桌系列；CZ-01 罗胖餐桌/SZ-01 罗胖书桌/CZ-08 罗胖带屉餐桌桌腿及桌面厚度规格",
       "note": "已转入知识层回答，当前作为罗胖带屉桌屉柜宽度、深度与标准高度口径提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 389,
@@ -2285,7 +2491,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1200≤L＜1400400",
       "note": "已转入知识层回答，当前作为罗胖带屉桌屉柜宽度分档口径的一部分。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 389,
@@ -2296,7 +2503,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1400≤L＜1600450",
       "note": "已转入知识层回答，当前作为罗胖带屉桌屉柜宽度分档口径的一部分。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 389,
@@ -2307,7 +2515,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1600≤L＜1800500",
       "note": "已转入知识层回答，当前作为罗胖带屉桌屉柜宽度分档口径的一部分。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 389,
@@ -2318,7 +2527,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：600≤W＜700520",
       "note": "已转入知识层回答，当前作为罗胖带屉桌屉柜深度分档口径的一部分。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 389,
@@ -2329,7 +2539,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1100＜L＜1800L-180；L≥1800 L-220；屉柜宽度屉柜深度屉柜高度；桌面长度L屉柜宽度",
       "note": "已转入知识层回答，当前作为罗胖带屉桌屉柜总长与桌面长度对应口径提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 389,
@@ -2340,7 +2551,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1200*700*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 389,
@@ -2351,7 +2563,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1400*750*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 389,
@@ -2362,7 +2575,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1600*800*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 389,
@@ -2373,7 +2587,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1800*900*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 389,
@@ -2384,7 +2599,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1200*600*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 389,
@@ -2395,7 +2611,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1400*600*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 389,
@@ -2406,7 +2623,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1600*700*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 389,
@@ -2417,7 +2635,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1800*800*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 389,
@@ -2428,7 +2647,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1600*800*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 389,
@@ -2439,7 +2659,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1800*900*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 389,
@@ -2450,7 +2671,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1800≤L≤2000600；桌面宽度W屉柜深度",
       "note": "已转入知识层回答，当前作为罗胖带屉桌屉柜深度与桌面宽度对应口径提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 389,
@@ -2461,7 +2683,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2000*900*780；订制款：；长度≤2000mm；宽度≤900mmSZ-01 罗胖书桌",
       "note": "已转入知识层回答，当前作为罗胖桌系列订制尺寸上限提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 389,
@@ -2472,7 +2695,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2000*800*780；订制款：；长度≤2000mm；宽度≤900mm",
       "note": "已转入知识层回答，当前作为罗胖桌系列订制尺寸上限提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 389,
@@ -2483,7 +2707,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2000*900*780；订制款：；长度≤2000mm；宽度≤900mm",
       "note": "已转入知识层回答，当前作为罗胖桌系列订制尺寸上限提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 390,
@@ -2494,7 +2719,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：8 I a ¥ we Nu’ & by LOX gum；二 一- Z I TOQUI；上；Cs-04 BHSM\\eN-0) 合肝书谨\\CS-08 BHLESSHSEY SO BEWE",
       "note": "该页原 OCR 标题噪声较重，但核心内容已补充为知识层回答，用于罗胖系列尺寸标注与支腿默认差值的人话解释。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 390,
@@ -2505,7 +2731,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：40 如；(| ERS ARE OW；Ps es, ¥ B\\e E 20uu’ ¥ be TOOK TOoWM；一 LE STgoomm",
       "note": "该条为明显 OCR 噪声碎片，页面有效信息已由罗胖系列尺寸标注知识项吸收。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 390,
@@ -2516,7 +2743,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：4800 ‘ss；-一 fu 2 |；K 十 EDSARE: HE；° ___ b*~| ] ¥ eK wr ¥ pRsoxsoum",
       "note": "该条为明显 OCR 噪声碎片，页面有效信息已由罗胖系列尺寸标注知识项吸收。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 390,
@@ -2527,7 +2755,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：7 c || BOSARE: 3将",
       "note": "该条为明显 OCR 噪声碎片，页面有效信息已由罗胖系列尺寸标注知识项吸收。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 394,
@@ -2538,7 +2767,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1200≤L＜140060 35 150 70 90 10 70",
       "note": "该条属于斜腿桌系列尺寸表碎片，已由同页 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 394,
@@ -2549,7 +2779,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1400≤L≤160060 35 170 90 90 10 80",
       "note": "该条属于斜腿桌系列尺寸表碎片，已由同页 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 394,
@@ -2560,7 +2791,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1600＜L≤210070 40 200 120 90 10 902000*900*780",
       "note": "该条属于斜腿桌系列尺寸表碎片，已由同页 runtime 规则覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 394,
@@ -2571,7 +2803,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1800*900*780订制款：；长度≤2100mm；宽度≤900mm；L尺寸要求 S上腿径X下腿径ZS左右上边距ZX左右下边距QS前后上边距QX前后下边距H横称高度",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 394,
@@ -2582,7 +2815,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2100*900*780斜腿桌系列；CZ-06 简美大桌；标准款：",
       "note": "该条更像斜腿桌系列标准款标题，核心尺寸规则已由同页 runtime 覆盖。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 394,
@@ -2593,7 +2827,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1600*800*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 395,
@@ -2604,7 +2839,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1600*800*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 395,
@@ -2615,7 +2851,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1800*900*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 395,
@@ -2626,7 +2863,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2000*900*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 395,
@@ -2637,7 +2875,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2100*900*780；订制款：；长度≤2100mm；宽度≤900mm",
       "note": "已转入知识层回答，当前作为简美大桌订制尺寸上限提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 396,
@@ -2648,7 +2887,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2100＜L≤2200100经典双屉书桌；前屉板；桌长＜800时可取消；SZ-05 经典儿童多屉书桌；标准款：",
       "note": "该条属于带屉书桌尺寸表表头碎片，核心结构提醒已由现有知识层条目吸收。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 396,
@@ -2659,7 +2899,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1200≤L＜140070",
       "note": "该条属于带屉书桌横称分档表碎片，当前不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 396,
@@ -2670,7 +2911,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1400≤L≤160080",
       "note": "该条属于带屉书桌横称分档表碎片，当前不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 396,
@@ -2681,7 +2923,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1600＜L≤210090",
       "note": "该条属于带屉书桌横称分档表碎片，当前不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 396,
@@ -2692,7 +2935,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1600*700*780；带抽屉桌桌长≥1400mm时，桌面下有钢管，桌下抽屉内部使用空间减少25mm；订制款：；长度≤1600mm，宽度≤800mm",
       "note": "已转入知识层回答，当前作为带抽屉桌长尺寸时钢管占位与抽屉净空减少 25mm 的结构提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 396,
@@ -2703,7 +2947,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1200*600*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 396,
@@ -2714,7 +2959,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1400*600*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 397,
@@ -2725,7 +2971,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2100＜T≤2200100经典儿童多屉书桌；H；T；SZ-07 定制并立书桌",
       "note": "已转入知识层回答，当前作为定制并立书桌长尺寸时分段、拆装与搬运提醒。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 397,
@@ -2736,7 +2983,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1200≤T＜140070",
       "note": "该条属于并立书桌横称分档表碎片，核心长尺寸和拆装提示已由知识层条目吸收。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 397,
@@ -2747,7 +2995,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1400≤T≤160080",
       "note": "该条属于并立书桌横称分档表碎片，核心长尺寸和拆装提示已由知识层条目吸收。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 397,
@@ -2758,7 +3007,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1600＜T≤210090",
       "note": "该条属于并立书桌横称分档表碎片，核心长尺寸和拆装提示已由知识层条目吸收。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 397,
@@ -2769,7 +3019,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：尺寸阈值。关键信息：1800*600*780；带屉订制款：；T=桌长L-屉柜宽度W≤1600mm；宽度≤600mm",
       "note": "已转入知识层回答，当前作为带屉订制桌的钢管占位与抽屉净空减少 25mm 的结构提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 397,
@@ -2780,7 +3031,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1200*600*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 397,
@@ -2791,7 +3043,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1400*600*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 397,
@@ -2802,7 +3055,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1600*600*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 398,
@@ -2813,7 +3067,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2100＜L≤2200100定制并立书桌；SZ-14 漂流岛 SZ-14 漂流岛Y；标准款：",
       "note": "已转入知识层回答，当前作为定制并立书桌无屉款上限、横称高度与屉柜移位口径提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 398,
@@ -2824,7 +3079,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1200≤L＜140070",
       "note": "已转入知识层回答，当前作为定制并立书桌无屉款横称高度口径的一部分。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 398,
@@ -2835,7 +3091,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1400≤L≤160080",
       "note": "已转入知识层回答，当前作为定制并立书桌无屉款横称高度口径的一部分。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 398,
@@ -2846,7 +3103,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1600＜L≤210090",
       "note": "已转入知识层回答，当前作为定制并立书桌无屉款横称高度口径的一部分。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 399,
@@ -2857,7 +3115,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：材质, 尺寸阈值。关键信息：2400*1000*780SZ-17 长滩岛/长滩岛Y；仅可做樱桃木/黑胡桃木；桌面及桌腿厚度均为45mm；支腿可选木支腿/亚克力支腿",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 399,
@@ -2868,7 +3127,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2000*900*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 399,
@@ -2879,7 +3139,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2200*900*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 399,
@@ -2890,7 +3151,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2400*900*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 399,
@@ -2901,7 +3163,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2000*900*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 399,
@@ -2912,7 +3175,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2200*900*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 399,
@@ -2923,7 +3187,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2400*900*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 399,
@@ -2934,7 +3199,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：材质, 尺寸阈值。关键信息：2400*1000*780；超长定制款：桌长超过2400可进行分段定制，分段处需增加支腿，支腿尺寸不变；中支腿位于分缝处中心，左右支腿参照标准品左右距边SZ-14 漂流岛/漂流岛Y；仅可做樱桃木/黑胡桃木；桌面及桌腿厚度均为45mm",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 401,
@@ -2945,7 +3211,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1200≤L＜140070",
       "note": "该条已被定制无腿书桌与并立书桌横称高度知识层口径覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 401,
@@ -2956,7 +3223,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1400≤L≤160080",
       "note": "该条已被定制无腿书桌与并立书桌横称高度知识层口径覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 401,
@@ -2967,7 +3235,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1600＜L≤210090",
       "note": "该条已被定制无腿书桌与并立书桌横称高度知识层口径覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 401,
@@ -2978,7 +3247,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2100＜L≤2200100；无屉定制款：；桌台长L≤2200mm；宽度≤600mm",
       "note": "已转入知识层回答，当前作为定制无腿书桌固定方式、带屉/无屉边界与尺寸限制提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 402,
@@ -2989,7 +3259,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：5.升降桌需使用电源，设计时需考虑电源，控制盒带有3.3m长（弹簧拉伸；后）弹簧电源线，黑色，插头为10A三孔。；为保证使用安全，设计阶段请明确告知客户预留插座，如客户家中插座与；家具位置相距较远，务必与客户沟通并建议其自购插线板。不可做任何现",
       "note": "已转入知识层回答，当前作为升降桌电源、插座预留与现场接线边界提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 402,
@@ -3000,7 +3271,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：55mm1040≤L≤2240；CZ-09 罗胖高屉餐桌；双面抽屉；标准款：",
       "note": "该条属于现有价目表已收录的正式产品行，当前不再作为新增 PDF 缺口单独处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 403,
@@ -3011,7 +3283,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2000*800*780；双面抽屉标准款：",
       "note": "该条更像标准款标题残片，不单独进入回答链路。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 403,
@@ -3022,7 +3295,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1600*800*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 403,
@@ -3033,7 +3307,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1800*900*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 403,
@@ -3044,7 +3319,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1000*1000*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 403,
@@ -3055,7 +3331,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1200*1200*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 403,
@@ -3066,7 +3343,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1200*600*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 403,
@@ -3077,7 +3355,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1400*600*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 403,
@@ -3088,7 +3367,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1400*600*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 403,
@@ -3099,7 +3379,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1600*700*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 403,
@@ -3110,7 +3391,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1800*800*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 403,
@@ -3121,7 +3403,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1600*800*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 403,
@@ -3132,7 +3415,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1800*900*780",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 403,
@@ -3143,7 +3427,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：2000*900*780；订制款：；长度≤2000mm；宽度≤900mm其他桌",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 403,
@@ -3154,7 +3439,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2000*900*780；订制款：；长度≤2000mm；宽度≤900mm",
       "note": "该条与“其他桌”订制尺寸上限 runtime 口径重复，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 403,
@@ -3165,7 +3451,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1400*1400*780；订制款：；桌面直径≤1400mmSZ-10 简美书桌；标准款：",
       "note": "已转入知识层回答，当前作为经典圆餐桌订制直径上限提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 403,
@@ -3176,7 +3463,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1600*700*780；订制款：；长度≤1600mm；桌长≥1400mm时，",
       "note": "该条已由现有书桌长尺寸钢管占位与抽屉净空减少 25mm 的知识层口径覆盖，不再单独作为新增缺口处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 404,
@@ -3187,7 +3475,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1.订制可改桌面边角;",
       "note": "已转入知识层回答，当前作为挂墙桌订制边角可改与整体订制注意事项提示。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "knowledge"
     },
     {
       "page": 404,
@@ -3198,7 +3487,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：1200*400*146 1600*400*146；高度调节脚，可用于支腿高度不一的订制桌类。使用时需在图纸；中标注并备注。；调节脚安装后底部有胶垫，调节脚尺寸：",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 404,
@@ -3209,7 +3499,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：2.桌面厚度不可更改，仅可调整抽屉尺寸，抽屉高度最小110mm；",
       "note": "已进入运行时追加规则，action_type=constraint",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 404,
@@ -3220,7 +3511,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：3.若作为书桌或梳妆台等需考虑桌下容腿空间，柜体下沿距地建；议≥580mm。；订制款：；长度：400≤L≤2400",
       "note": "容腿空间与尺寸阈值仍保留 runtime；同时补充知识层用于挂墙桌固定方式、隐藏支架与订制提醒的人话回答。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 404,
@@ -3231,7 +3523,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：600*400*146 1000*400*146",
       "note": "当前更像背景介绍、知识说明或弱相关内容，暂不进入报价逻辑",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 406,
@@ -3242,7 +3535,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：445mm400mmYZ-01 罗胖椅；450mm750mm；一；— ; «a Pa",
       "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 407,
@@ -3253,7 +3547,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：668mm480mm500mm550mmYZ-02 新Y椅；580mm；470mm；450mm",
       "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 408,
@@ -3264,7 +3559,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：470mmYZ-03 高背罗胖椅；545mm；600mm；430mm",
       "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 409,
@@ -3275,7 +3571,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：585mmYZ-05 广岛椅；580mm；520mm 470mm780mm；680mm",
       "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 410,
@@ -3286,7 +3583,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：500mm180mmYZ-06 主咖大座；YZ-07 主咖巨大座；860mm 600mm685mm；50mm90mm630mm",
       "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 412,
@@ -3297,7 +3595,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：655mmYZ-08 江口椅；620mm；1120mm；480mm",
       "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 412,
@@ -3308,7 +3607,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：230U册；AX-08 STO",
       "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 413,
@@ -3319,7 +3619,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：562mmYZ-09 蝙蝠椅；450mm；1084mm；480mm",
       "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 416,
@@ -3330,7 +3631,8 @@
       "rule_type": "dimension_threshold",
       "summary": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：3, !；As- FEMEM HL；YZ-13 金属靠背椅；460mm",
       "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 416,
@@ -3341,7 +3643,8 @@
       "rule_type": "narrative_rule",
       "summary": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：3,；名",
       "note": "该页主要是椅类成品尺寸展示，不作为工艺、报价或结构规则处理。",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "none"
     },
     {
       "page": 417,
@@ -3352,7 +3655,8 @@
       "rule_type": "formula",
       "summary": "本段主要给出报价公式或计算关系，可作为程序规则表达式来源。 识别标签：门型, 尺寸阈值。关键信息：450mm786mm160mmYZ-14 吧椅；YZ-15 新罗胖椅；465mm；465mm",
       "note": "已进入运行时追加规则，action_type=adjustment",
-      "source": "pdf_coverage_audit"
+      "source": "pdf_coverage_audit",
+      "publish_target": "runtime"
     },
     {
       "page": 288,
@@ -3363,7 +3667,13 @@
       "rule_type": "narrative_rule",
       "summary": "本页可稳定提炼为下单与图纸备注提示：优先选用有线开关、需考虑走线位置、开关默认外露式、需备注开关名称与安装位置、分区控制或单区域多个开关需额外收费。",
       "note": "已转入知识层回答，当前作为高置信备注与收费提示，不直接入 runtime。",
-      "source": "manual_review"
+      "source": "manual_review",
+      "publish_target": "knowledge"
     }
-  ]
+  ],
+  "publish_target_counts": {
+    "knowledge": 70,
+    "none": 155,
+    "runtime": 80
+  }
 }

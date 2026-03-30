@@ -1466,6 +1466,227 @@ class QueryAddendumGuidanceTests(unittest.TestCase):
         self.assertIn("圣勃朗鱼肚白", payload["suggested_reply"])
         self.assertIn("劳伦特黑金", payload["suggested_reply"])
 
+    def test_query_guidance_uses_question_template_instead_of_raw_detail(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            addenda_root = Path(tmpdir)
+            layer_dir = addenda_root / "designer-template"
+            reports_dir = addenda_root / "reports"
+            reports_dir.mkdir()
+            runtime_rules_path = reports_dir / "runtime-rules.json"
+            runtime_rules_path.write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-template",
+                        "layer_name": "设计师追加规则 Template",
+                        "rules": [
+                            {
+                                "page": 177,
+                                "domain": "door_panel",
+                                "action_type": "constraint",
+                                "title": "其他无把手、无抠手柜门须明确备注开启方式",
+                                "detail": "其他无把手、无抠手柜门都要明确备注开启方式，且原始图纸里还混着很多无关说明。",
+                                "trigger_terms": ["无把手", "无抠手", "开启方式"],
+                                "match_terms_specific": ["无把手", "无抠手"],
+                                "match_terms_generic": ["开启方式"],
+                                "required_fields": ["开启方式"],
+                                "tags": ["门型"],
+                                "relevance_score": 9,
+                                "user_summary": "这组无把手柜门不能直接继续判断，需要先确认开启方式。",
+                                "question_template": "这组柜门还需要确认开启方式。",
+                                "evidence_level": "hard_rule",
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            layer_dir.mkdir()
+            (layer_dir / "manifest.json").write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-template",
+                        "layer_name": "设计师追加规则 Template",
+                        "status": "ACTIVE",
+                        "artifacts": {"runtime_rules_file": str(runtime_rules_path)},
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            payload = MODULE.query_guidance(
+                "这组流云门衣柜不做拉手和抠手，先按规则告诉我还缺什么。",
+                addenda_root,
+            )
+
+        self.assertEqual(payload["recommended_reply_mode"], "follow_up")
+        self.assertEqual(payload["follow_up_questions"][0]["question"], "这组柜门还需要确认开启方式。")
+        self.assertEqual(payload["suggested_reply"], "这组柜门还需要确认开启方式。")
+
+    def test_query_guidance_prefers_knowledge_for_explanatory_installation_question(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            addenda_root = Path(tmpdir)
+            layer_dir = addenda_root / "designer-switch"
+            reports_dir = addenda_root / "reports"
+            reports_dir.mkdir()
+            runtime_rules_path = reports_dir / "runtime-rules.json"
+            knowledge_layer_path = reports_dir / "knowledge-layer.json"
+            runtime_rules_path.write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-switch",
+                        "layer_name": "设计师追加规则 Switch",
+                        "rules": [
+                            {
+                                "page": 290,
+                                "domain": "accessory",
+                                "action_type": "constraint",
+                                "title": "手扫雷达开关适用灯带范围",
+                                "detail": "可隔门板手扫雷达开关适用于单色温灯带。",
+                                "trigger_terms": ["手扫雷达开关", "灯带"],
+                                "match_terms_specific": ["手扫雷达开关"],
+                                "match_terms_generic": ["灯带"],
+                                "required_fields": [],
+                                "tags": ["开关", "灯带"],
+                                "relevance_score": 8,
+                                "user_summary": "这款开关要先确认是不是单色温灯带。",
+                                "question_template": "",
+                                "evidence_level": "hard_rule",
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            knowledge_layer_path.write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-switch",
+                        "layer_name": "设计师追加规则 Switch",
+                        "entries": [
+                            {
+                                "topic": "可隔门板手扫雷达开关安装方式提示",
+                                "answerable_summary": "常见做法有底装在岩板或台面下方、侧装在侧板内侧；如果正面明装，可以按触摸开关理解。",
+                                "evidence_level": "high_confidence_review",
+                                "trigger_terms": ["手扫雷达开关", "安装", "底装", "侧装", "触摸开关"],
+                                "do_not_overclaim": "目前更适合作为安装提示，不要当成所有现场都必须照搬的硬规则。",
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            layer_dir.mkdir()
+            (layer_dir / "manifest.json").write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-switch",
+                        "layer_name": "设计师追加规则 Switch",
+                        "status": "ACTIVE",
+                        "artifacts": {
+                            "runtime_rules_file": str(runtime_rules_path),
+                            "knowledge_layer_file": str(knowledge_layer_path),
+                        },
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            payload = MODULE.query_guidance(
+                "可隔门板手扫雷达开关一般怎么安装，能不能底装或者侧装？",
+                addenda_root,
+            )
+
+        self.assertEqual(payload["recommended_reply_mode"], "rule_explanation")
+        self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertIn("底装", payload["suggested_reply"])
+        self.assertIn("侧装", payload["suggested_reply"])
+
+    def test_query_guidance_prefers_runtime_for_pricing_gap_question_even_when_knowledge_exists(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            addenda_root = Path(tmpdir)
+            layer_dir = addenda_root / "designer-switch"
+            reports_dir = addenda_root / "reports"
+            reports_dir.mkdir()
+            runtime_rules_path = reports_dir / "runtime-rules.json"
+            knowledge_layer_path = reports_dir / "knowledge-layer.json"
+            runtime_rules_path.write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-switch",
+                        "layer_name": "设计师追加规则 Switch",
+                        "rules": [
+                            {
+                                "page": 290,
+                                "domain": "accessory",
+                                "action_type": "adjustment",
+                                "title": "手扫雷达开关适用灯带范围",
+                                "detail": "可隔门板手扫雷达开关适用于单色温灯带。",
+                                "trigger_terms": ["手扫雷达开关", "灯带"],
+                                "match_terms_specific": ["手扫雷达开关"],
+                                "match_terms_generic": ["灯带"],
+                                "required_fields": ["灯带类型"],
+                                "tags": ["开关", "灯带"],
+                                "relevance_score": 8,
+                                "user_summary": "这条规则要先确认灯带类型，确定后才能继续判断。",
+                                "question_template": "这边还需要先确认灯带类型。",
+                                "evidence_level": "hard_rule",
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            knowledge_layer_path.write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-switch",
+                        "layer_name": "设计师追加规则 Switch",
+                        "entries": [
+                            {
+                                "topic": "可隔门板手扫雷达开关安装方式提示",
+                                "answerable_summary": "常见做法有底装和侧装。",
+                                "evidence_level": "high_confidence_review",
+                                "trigger_terms": ["手扫雷达开关", "安装", "底装", "侧装"],
+                                "do_not_overclaim": "目前更适合作为安装提示。",
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            layer_dir.mkdir()
+            (layer_dir / "manifest.json").write_text(
+                json.dumps(
+                    {
+                        "layer_id": "designer-switch",
+                        "layer_name": "设计师追加规则 Switch",
+                        "status": "ACTIVE",
+                        "artifacts": {
+                            "runtime_rules_file": str(runtime_rules_path),
+                            "knowledge_layer_file": str(knowledge_layer_path),
+                        },
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            payload = MODULE.query_guidance(
+                "我这个柜体要配手扫雷达开关，先按规则告诉我还缺什么，能不能继续往下报？",
+                addenda_root,
+            )
+
+        self.assertEqual(payload["recommended_reply_mode"], "follow_up")
+        self.assertEqual(payload["follow_up_questions"][0]["question"], "这边还需要先确认灯带类型。")
+        self.assertEqual(payload["suggested_reply"], "这边还需要先确认灯带类型。")
+
 
 if __name__ == "__main__":
     unittest.main()

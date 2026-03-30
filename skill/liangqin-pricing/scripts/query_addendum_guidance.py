@@ -418,10 +418,20 @@ def load_active_knowledge_sources(addenda_root: Path) -> list[dict[str, Any]]:
         knowledge_sources.append(
             {
                 "manifest": manifest,
-                "entries": payload.get("entries", []),
+                "entries": [normalize_knowledge_entry(entry) for entry in payload.get("entries", []) if isinstance(entry, dict)],
             }
         )
     return knowledge_sources
+
+
+def normalize_knowledge_entry(entry: dict[str, Any]) -> dict[str, Any]:
+    normalized = dict(entry)
+    evidence_level = str(normalized.get("evidence_level", "high_confidence_review")).strip() or "high_confidence_review"
+    if evidence_level != "hard_rule" and not str(normalized.get("do_not_overclaim", "")).strip():
+        normalized["do_not_overclaim"] = "目前只能作为提示理解，不能直接当成已经完全程序化的硬规则；没有明确证据的部分就直接说不知道。"
+    if evidence_level == "high_confidence_review" and not str(normalized.get("answer_lead", "")).strip():
+        normalized["answer_lead"] = "这块目前有比较明确的结构口径，但更适合作为提示来理解。"
+    return normalized
 
 
 def choose_knowledge_match(text: str, knowledge_sources: list[dict[str, Any]]) -> dict[str, Any] | None:
@@ -492,11 +502,70 @@ def naturalize_runtime_detail(detail: str) -> str:
     replacements = (
         ("柜体中，", "柜体里，"),
         ("最少需要留出", "至少预留"),
+        ("最少留出", "至少预留"),
         ("需明确备注", "要明确备注"),
     )
     for source, target in replacements:
         text = text.replace(source, target)
     return text
+
+
+def is_pricing_gap_query(text: str) -> bool:
+    query = str(text)
+    return any(
+        keyword in query
+        for keyword in (
+            "多少钱",
+            "报价",
+            "正式报价",
+            "参考价",
+            "还缺什么",
+            "缺什么",
+            "先按规则告诉我",
+            "能不能报",
+            "能报",
+            "往下报",
+        )
+    )
+
+
+def is_explanatory_query(text: str) -> bool:
+    query = str(text)
+    if is_pricing_gap_query(query):
+        return False
+    return any(
+        keyword in query
+        for keyword in (
+            "怎么安装",
+            "怎么做",
+            "有没有要求",
+            "有什么要求",
+            "要求是什么",
+            "注意什么",
+            "一般怎么",
+            "一般多少",
+            "有什么区别",
+            "是多少",
+            "多大",
+            "还是",
+            "默认做",
+            "应该对齐",
+            "固定要求",
+            "底装",
+            "侧装",
+        )
+    )
+
+
+def decision_summary(decision: dict[str, Any]) -> str:
+    summary = str(decision.get("summary", "")).strip()
+    if summary:
+        return naturalize_runtime_detail(summary)
+    title = str(decision.get("title", "")).strip()
+    detail = naturalize_runtime_detail(str(decision.get("detail", "")).strip())
+    if title and detail and title not in detail:
+        return f"{title}。{detail}".strip()
+    return detail or title
 
 
 def build_natural_runtime_answer(
@@ -508,30 +577,18 @@ def build_natural_runtime_answer(
 ) -> tuple[str, str, str]:
     if reply_mode == "follow_up" and follow_ups:
         question = str(follow_ups[0].get("question", "")).strip()
-        supporting_entries = [*constraints, *adjustments]
-        if supporting_entries:
-            support_title = str(supporting_entries[0].get("title", "")).strip()
-            support_detail = naturalize_runtime_detail(str(supporting_entries[0].get("detail", "")).strip())
-            confidence_note = "；".join(part for part in [support_title, support_detail] if part)
-        else:
+        if str(follow_ups[0].get("question_from_template", "")).strip().lower() == "true":
             confidence_note = ""
+        else:
+            supporting_entries = [*constraints, *adjustments]
+            confidence_note = decision_summary(supporting_entries[0]) if supporting_entries else ""
         return question, "needs_confirmation", confidence_note
     if constraints:
-        title = str(constraints[0].get("title", "")).strip()
-        detail = naturalize_runtime_detail(str(constraints[0].get("detail", "")).strip())
-        if title and title not in detail:
-            summary = f"这个场景有明确要求。{title}。{detail}".strip()
-        else:
-            summary = f"这个场景有明确要求。{detail}".strip()
-        return summary, "hard_rule", ""
+        summary = decision_summary(constraints[0])
+        return f"这个场景有明确要求。{summary}".strip(), "hard_rule", ""
     if adjustments:
-        title = str(adjustments[0].get("title", "")).strip()
-        detail = naturalize_runtime_detail(str(adjustments[0].get("detail", "")).strip())
-        if title and title not in detail:
-            summary = f"这块有明确的补充规则。{title}，{detail}".strip()
-        else:
-            summary = f"这块有明确的补充规则。{detail}".strip()
-        return summary, "hard_rule", ""
+        summary = decision_summary(adjustments[0])
+        return f"这块有明确的补充规则。{summary}".strip(), "hard_rule", ""
     return "", "needs_confirmation", ""
 
 
@@ -561,6 +618,8 @@ def build_natural_knowledge_answer(match: dict[str, Any]) -> tuple[str, str, str
 def query_guidance(text: str, addenda_root: Path) -> dict[str, Any]:
     probe_payload = build_probe_payload(text)
     probe_item = probe_payload["items"][0]
+    pricing_gap_query = is_pricing_gap_query(text)
+    explanatory_query = is_explanatory_query(text)
     merged = apply_addendum_layers(probe_payload, addenda_root)
     item = (merged.get("items") or [{}])[0]
     decisions = item.get("addendum_decisions") or {}
@@ -605,19 +664,27 @@ def query_guidance(text: str, addenda_root: Path) -> dict[str, Any]:
     constraints = filter_by_focus(constraints, focus_terms, fallback_to_original=not strict_focus)
     adjustments = filter_by_focus(adjustments, focus_terms, fallback_to_original=not strict_focus)
 
-    knowledge_match = None
-    if not follow_ups:
-        knowledge_match = choose_knowledge_match(text, load_active_knowledge_sources(addenda_root))
-        if knowledge_match and (not constraints and not adjustments):
+    knowledge_match = choose_knowledge_match(text, load_active_knowledge_sources(addenda_root))
+    if knowledge_match:
+        if pricing_gap_query and follow_ups:
+            knowledge_match = None
+        elif pricing_gap_query and (constraints or adjustments):
+            knowledge_match = None
+        elif not follow_ups and (not constraints and not adjustments):
             constraints = []
             adjustments = []
             follow_ups = []
-        elif knowledge_match and strict_focus:
+        elif explanatory_query or strict_focus:
             runtime_focus_score = score_runtime_focus([*constraints, *adjustments], focus_terms, text)
-            if int(knowledge_match.get("score", 0)) > runtime_focus_score:
+            if int(knowledge_match.get("score", 0)) >= runtime_focus_score:
                 constraints = []
                 adjustments = []
                 follow_ups = []
+        else:
+            knowledge_match = None
+
+    if explanatory_query and (constraints or adjustments or knowledge_match):
+        follow_ups = []
 
     if follow_ups:
         reply_mode = "follow_up"

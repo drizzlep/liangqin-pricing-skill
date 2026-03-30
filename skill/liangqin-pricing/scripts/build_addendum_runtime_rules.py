@@ -61,6 +61,47 @@ SIGNAL_TERMS = [
     "操作空区",
 ]
 
+LOW_SIGNAL_TERMS = {
+    "门型",
+    "材质",
+    "长度",
+    "高度",
+    "宽度",
+    "进深",
+    "投影面积",
+    "开启方式",
+    "拉手",
+    "抽屉",
+    "抽面",
+    "层板",
+    "背板",
+    "门板",
+    "柜门",
+    "柜体",
+    "灯带",
+    "开关",
+}
+
+MEDIUM_RISK_DENYLIST: dict[int, tuple[str, ...]] = {
+    78: ("DG-02", "圆直腿", "圆斜腿"),
+    203: ("快速检索表", "拼框平开门尺寸限制"),
+    206: ("快速检索表", "拼框平开门尺寸限制"),
+    207: ("快速检索表", "拼框平开门尺寸限制", "门高＞1500"),
+    208: ("快速检索表", "拼框平开门", "≤2300"),
+}
+
+HIGH_SIGNAL_KEYWORDS = tuple(term for term in SIGNAL_TERMS if term not in LOW_SIGNAL_TERMS) + (
+    "连纹",
+    "断开连纹",
+    "空区高度",
+    "超出侧板面积",
+    "岩板背板",
+    "岩板台面",
+    "床垫限位器",
+    "顶挡条",
+    "牙称",
+)
+
 FIELD_KEYWORDS: list[tuple[str, tuple[str, ...]]] = [
     ("床垫重量", ("床垫重量", "超重", "举升器")),
     ("开启方式", ("开启方式", "开启方向", "按弹开启", "推弹开启", "抠手开启", "拉手开启", "无把手", "无抠手")),
@@ -319,11 +360,15 @@ def runtime_noise_score(
     return score
 
 
-def should_include_runtime_rule(rule: dict[str, object]) -> bool:
+def should_include_runtime_rule(rule: dict[str, object], *, entry: dict[str, object] | None = None) -> bool:
     title = str(rule.get("title", ""))
     detail = str(rule.get("detail", ""))
     domain = str(rule.get("domain", "general"))
     relevance_score = int(rule.get("relevance_score", 0))
+    if not list(rule.get("match_terms_specific", [])):
+        return False
+    if entry is not None and is_medium_risk_denylisted(entry, title=title, detail=detail):
+        return False
     return runtime_noise_score(
         title=title,
         detail=detail,
@@ -350,28 +395,124 @@ def infer_required_fields(text: str) -> list[str]:
     return required_fields
 
 
-def extract_trigger_terms(title: str, detail: str, tags: list[str], required_fields: list[str]) -> list[str]:
+def looks_like_product_signal(term: str) -> bool:
+    normalized = normalize_text(term)
+    if not normalized:
+        return False
+    if any(keyword in normalized for keyword in ("不能", "不可", "默认", "需", "应", "备注", "收费", "加价", "使用", "安装")):
+        return False
+    if any(
+        normalized.endswith(suffix) and len(normalized) > len(suffix)
+        for suffix in ("柜体", "开口", "缺口", "开放格", "分段缝", "牙称", "顶盖侧", "侧盖顶")
+    ):
+        return True
+    return bool(
+        re.fullmatch(
+            r"[^\s。；•，,:：]{2,40}(?:开关|拉手|扣手|圆扣手|铰链|门板|柜门|玻璃门|藤编门|铝框门|格栅门|拼框门|平板门|推拉门|上翻门|展板门|木门|背板|抽屉|举升器|灯带|榻榻米|床|轨道)",
+            normalized,
+        )
+    )
+
+
+def is_specific_phrase(term: str) -> bool:
+    normalized = normalize_text(term)
+    if not normalized or normalized in GENERIC_TERMS or normalized in LOW_SIGNAL_TERMS:
+        return False
+    if looks_like_product_signal(normalized):
+        return True
+    if any(keyword in term for keyword in HIGH_SIGNAL_KEYWORDS):
+        return True
+    if (
+        len(normalized) >= 4
+        and not any(marker in term for marker in ("、", "，", "。", "；"))
+        and any(base in term for base in LOW_SIGNAL_TERMS)
+        and not any(generic in term for generic in ("高度", "宽度", "长度", "材质", "门型", "开启方式"))
+    ):
+        return True
+    return False
+
+
+def split_match_terms(title: str, detail: str, tags: list[str], required_fields: list[str]) -> tuple[list[str], list[str]]:
     combined = " ".join([title, detail, *tags, *required_fields])
-    trigger_terms: list[str] = []
+    specific_terms: list[str] = []
+    generic_terms: list[str] = []
     seen: set[str] = set()
 
-    def add(term: str) -> None:
+    def add(term: str, *, specific: bool) -> None:
         normalized = normalize_text(term)
         if not normalized or normalized in seen:
             return
         seen.add(normalized)
-        trigger_terms.append(normalized)
+        if specific:
+            specific_terms.append(normalized)
+        else:
+            generic_terms.append(normalized)
 
     for field_name in required_fields:
-        add(field_name)
+        add(field_name, specific=field_name not in LOW_SIGNAL_TERMS)
     for tag in tags:
         normalized_tag = normalize_text(tag)
-        if normalized_tag and normalized_tag not in GENERIC_TERMS and len(normalized_tag) >= 2:
-            add(normalized_tag)
+        if not normalized_tag or len(normalized_tag) < 2:
+            continue
+        add(normalized_tag, specific=is_specific_phrase(normalized_tag))
     for term in SIGNAL_TERMS:
         if term in combined:
-            add(term)
-    return trigger_terms
+            add(term, specific=is_specific_phrase(term))
+    for match in PRODUCT_TITLE_PATTERN.findall(f"{title} {detail}"):
+        add(match, specific=is_specific_phrase(match))
+    for match in INSTALLATION_TITLE_PATTERN.findall(f"{title} {detail}"):
+        add(match, specific=True)
+    stripped_title = strip_leading_marker(title)
+    if stripped_title:
+        add(stripped_title, specific=is_specific_phrase(stripped_title))
+
+    return specific_terms, generic_terms
+
+
+def extract_trigger_terms(title: str, detail: str, tags: list[str], required_fields: list[str]) -> list[str]:
+    specific_terms, generic_terms = split_match_terms(title, detail, tags, required_fields)
+    return [*specific_terms, *generic_terms]
+
+
+def build_user_summary(*, title: str, detail: str, action_type: str) -> str:
+    clean_title = strip_leading_marker(normalize_text(title))
+    clean_detail = strip_leading_marker(normalize_text(detail))
+    if action_type == "catalog_option":
+        return clean_detail or clean_title
+    if not clean_detail:
+        return clean_title
+    if clean_title and clean_title in clean_detail:
+        return clean_detail
+    if clean_title:
+        return f"{clean_title}。{clean_detail}".strip()
+    return clean_detail
+
+
+def build_question_template(*, title: str, detail: str, required_fields: list[str], domain: str) -> str:
+    if not required_fields:
+        return ""
+    field_name = required_fields[0]
+    combined = f"{title} {detail}"
+    if domain == "door_panel" or any(keyword in combined for keyword in ("柜门", "门板", "无把手", "无抠手", "流云门", "飞瀑门")):
+        return f"这组柜门还需要确认{field_name}。"
+    return f"请确认{field_name}"
+
+
+def is_medium_risk_denylisted(entry: dict[str, object], *, title: str, detail: str) -> bool:
+    page = int(entry.get("page", 0) or 0)
+    denylist_fragments = MEDIUM_RISK_DENYLIST.get(page)
+    if not denylist_fragments:
+        return False
+    combined = " ".join(
+        [
+            str(entry.get("clean_title", "")),
+            str(entry.get("heading", "")),
+            str(entry.get("excerpt", "")),
+            title,
+            detail,
+        ]
+    )
+    return any(fragment in combined for fragment in denylist_fragments)
 
 
 def build_runtime_rule(entry: dict[str, object]) -> dict[str, object]:
@@ -381,16 +522,22 @@ def build_runtime_rule(entry: dict[str, object]) -> dict[str, object]:
     title = preferred_runtime_title(detail, domain) or choose_runtime_title(str(entry.get("clean_title", "")), detail, tags)
     combined_text = " ".join([title, detail, *tags])
     response_kind = str(entry.get("response_kind", "")).strip()
+    action_type = classify_action_type(combined_text, response_kind=response_kind)
     required_fields = infer_required_fields(combined_text)
+    match_terms_specific, match_terms_generic = split_match_terms(title, detail, tags, required_fields)
     trigger_terms = extract_trigger_terms(title, detail, tags, required_fields)
+    user_summary = build_user_summary(title=title, detail=detail, action_type=action_type)
+    question_template = build_question_template(title=title, detail=detail, required_fields=required_fields, domain=domain)
 
     return {
         "page": int(entry.get("page", 1)),
         "domain": domain,
-        "action_type": classify_action_type(combined_text, response_kind=response_kind),
+        "action_type": action_type,
         "title": title,
         "detail": detail,
         "trigger_terms": trigger_terms,
+        "match_terms_specific": match_terms_specific,
+        "match_terms_generic": match_terms_generic,
         "required_fields": required_fields,
         "tags": tags,
         "confidence": float(entry.get("confidence", 0.0)),
@@ -398,6 +545,9 @@ def build_runtime_rule(entry: dict[str, object]) -> dict[str, object]:
         "source_heading": str(entry.get("heading", "")),
         "normalized_rule": str(entry.get("normalized_rule", "")),
         "response_kind": response_kind,
+        "user_summary": user_summary,
+        "question_template": question_template,
+        "evidence_level": "hard_rule",
     }
 
 
@@ -410,7 +560,7 @@ def build_runtime_rules(index: dict[str, object], *, layer_id: str, layer_name: 
         if not bool(entry.get("pricing_relevant", False)) and not bool(entry.get("runtime_relevant", False)):
             continue
         rule = build_runtime_rule(entry)
-        if should_include_runtime_rule(rule):
+        if should_include_runtime_rule(rule, entry=entry):
             rules.append(rule)
     rules.sort(key=lambda rule: (-int(rule.get("relevance_score", 0)), int(rule.get("page", 0)), str(rule.get("title", ""))))
 
