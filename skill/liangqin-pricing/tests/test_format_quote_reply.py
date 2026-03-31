@@ -1,9 +1,11 @@
 import importlib.util
+import io
 import json
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 SCRIPT_PATH = Path(__file__).resolve().parents[1] / "scripts" / "format_quote_reply.py"
@@ -15,6 +17,89 @@ SPEC.loader.exec_module(MODULE)
 
 
 class FormatQuoteReplyTests(unittest.TestCase):
+    def test_validate_output_contract_accepts_well_formed_formal_quote(self) -> None:
+        rendered = "\n".join(
+            [
+                "产品：流云衣柜",
+                "已确认：北美黑胡桃木，1.8m*2.2m*0.6m",
+                "这次按投影面积计价。",
+                "计算过程：",
+                "- 基础价格 = 1.8 × 2.2 × 8680 = 34372.8",
+                "小计：34372.8元",
+                "",
+                "正式报价：34372.8元",
+            ]
+        )
+
+        validation = MODULE.validate_output_contract(rendered, reference=False)
+
+        self.assertTrue(validation["passed"])
+        self.assertTrue(validation["assertions"]["output_contract_pass"]["passed"])
+
+    def test_render_rejects_internal_process_leak_in_formal_quote(self) -> None:
+        payload = {
+            "items": [
+                {
+                    "product": "流云衣柜",
+                    "confirmed": "北美黑胡桃木，1.8m*2.2m*0.6m",
+                    "pricing_method": "投影面积计价",
+                    "calculation_steps": ["基础价格 = 1.8 * 2.2 * 8680 = 34372.8"],
+                    "subtotal": "34372.8元",
+                }
+            ],
+            "total": "34372.8元",
+            "note": "我先运行预检再继续。",
+        }
+
+        with self.assertRaises(SystemExit):
+            MODULE.render(payload)
+
+    def test_main_appends_quote_card_prompt_and_writes_bundle_when_context_present(self) -> None:
+        payload = {
+            "items": [
+                {
+                    "product": "流云衣柜",
+                    "confirmed": "北美黑胡桃木，1.8m*2.2m*0.6m，纹理连续",
+                    "pricing_method": "投影面积计价",
+                    "calculation_steps": ["基础价格 = 1.8 * 2.2 * 8680 = 34372.8"],
+                    "subtotal": "34372.8元",
+                }
+            ],
+            "total": "34372.8元",
+        }
+        context_json = json.dumps(
+            {
+                "message_id": "om_x100b53cafe",
+                "sender_id": "ou_123456",
+                "sender": "ou_123456",
+                "timestamp": "Sun 2026-03-29 10:26 GMT+8",
+            },
+            ensure_ascii=False,
+        )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            argv = [
+                "format_quote_reply.py",
+                "--input-json",
+                json.dumps(payload, ensure_ascii=False),
+                "--disable-addenda",
+                "--context-json",
+                context_json,
+                "--channel",
+                "feishu",
+                "--bundle-root",
+                tmpdir,
+            ]
+            with mock.patch.object(sys, "argv", argv), mock.patch("sys.stdout", new_callable=io.StringIO) as stdout:
+                MODULE.main()
+
+            rendered = stdout.getvalue()
+            bundle_files = list(Path(tmpdir).rglob("latest.json"))
+
+        self.assertIn("正式报价：34372.8元", rendered)
+        self.assertIn("如果你需要，我可以把这次报价整理成一张图片发到当前会话。你回复“生成图片”就可以。", rendered)
+        self.assertEqual(len(bundle_files), 1)
+
     def test_prepare_payload_applies_active_addendum_layers(self) -> None:
         payload = {
             "items": [
@@ -102,6 +187,25 @@ class FormatQuoteReplyTests(unittest.TestCase):
         self.assertNotIn("追加规则1：", rendered)
         self.assertIn("补充：按当前规则可正式报价；已套用设计师追加规则：手册 A", rendered)
         self.assertNotIn("计价方式：", rendered)
+
+    def test_render_does_not_duplicate_pricing_method_prefix(self) -> None:
+        payload = {
+            "items": [
+                {
+                    "product": "流云衣柜",
+                    "confirmed": "北美黑胡桃木，1.8m*2.2m*0.6m",
+                    "pricing_method": "按投影面积计价",
+                    "calculation_steps": ["基础价格 = 1.8 * 2.2 * 8680 = 34372.8"],
+                    "subtotal": "34372.8元",
+                }
+            ],
+            "total": "34372.8元",
+        }
+
+        rendered = MODULE.render(payload)
+
+        self.assertIn("这次按投影面积计价。", rendered)
+        self.assertNotIn("这次按按投影面积计价。", rendered)
 
     def test_render_reads_structured_addendum_decisions(self) -> None:
         payload = {

@@ -1,0 +1,371 @@
+html,
+body {
+  width: 1080px;
+  height: 1920px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, rgba(220, 208, 192, 0.88), transparent 34%),
+    radial-gradient(circle at 84% 14%, rgba(156, 127, 102, 0.16), transparent 20%),
+    linear-gradient(180deg, #f2e9de 0%, #ece1d3 100%);
+  color: var(--dna-color-ink-800);
+  font-family: var(--dna-font-body);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0, rgba(255, 255, 255, 0.12) 1px, transparent 1px, transparent 12%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 28%);
+  mask: linear-gradient(180deg, rgba(0, 0, 0, 0.28), transparent 38%);
+  opacity: 0.42;
+}
+
+.quote-card-export-page {
+  position: relative;
+  width: 1080px;
+  height: 1920px;
+}
+
+.quote-card-export {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 72px;
+  display: grid;
+  grid-template-rows: 168px 1fr;
+  gap: 0;
+}
+
+.quote-card-export__hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 32px 32px 0 0;
+  border: 1px solid rgba(216, 208, 196, 0.78);
+  border-bottom: 0;
+  background:
+    linear-gradient(90deg, rgba(255, 252, 247, 0.12) 0 1px, transparent 1px 12px),
+    radial-gradient(circle at 18% 22%, rgba(255, 250, 243, 0.42), transparent 22%),
+    radial-gradient(circle at 82% 28%, rgba(139, 106, 78, 0.16), transparent 18%),
+    linear-gradient(135deg, rgba(228, 217, 203, 0.98), rgba(210, 191, 169, 0.94));
+}
+
+.quote-card-export__hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(35, 31, 28, 0.2), transparent 40%, rgba(255, 255, 255, 0.24));
+}
+
+.quote-card-export__hero--image {
+  background: linear-gradient(135deg, rgba(228, 217, 203, 0.92), rgba(210, 191, 169, 0.88));
+}
+
+.quote-card-export__hero-media {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  opacity: 0.72;
+  filter: saturate(0.84) contrast(0.96);
+}
+
+.quote-card-export__hero-top {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  padding: 34px 38px 26px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.quote-card-export__logo-frame {
+  display: block;
+  width: 120px;
+  height: 38px;
+  overflow: hidden;
+}
+
+.quote-card-export__logo-frame img {
+  width: 180px;
+  height: 180px;
+  margin-left: -30px;
+  margin-top: -74px;
+  display: block;
+  filter: saturate(0.9) brightness(0.94);
+}
+
+.quote-card-export__badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: rgba(255, 252, 248, 0.8);
+  border: 1px solid rgba(255, 252, 248, 0.92);
+  color: var(--dna-color-accent);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.quote-card-export__body {
+  border: 1px solid rgba(216, 208, 196, 0.78);
+  border-radius: 0 0 32px 32px;
+  background: linear-gradient(180deg, rgba(255, 252, 248, 0.98), rgba(255, 250, 244, 0.95));
+  box-shadow: var(--dna-shadow-medium);
+  padding: 48px 46px 44px;
+  display: grid;
+  grid-template-rows: auto auto auto 1fr;
+  gap: 28px;
+}
+
+.quote-card-export__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: end;
+}
+
+.quote-card-export__overline {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--dna-color-accent);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.quote-card-export__overline::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+}
+
+.quote-card-export__title-block h1 {
+  margin: 16px 0 0;
+  color: var(--dna-color-ink-900);
+  font-family: var(--dna-font-heading);
+  font-size: 62px;
+  line-height: 1.08;
+  font-weight: 200;
+  letter-spacing: -0.02em;
+  text-wrap: pretty;
+}
+
+.quote-card-export__amount {
+  display: grid;
+  gap: 10px;
+  text-align: right;
+  justify-items: end;
+}
+
+.quote-card-export__amount span,
+.quote-card-export__section-head span:last-child {
+  color: var(--dna-color-ink-500);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.quote-card-export__amount strong {
+  color: var(--dna-color-ink-900);
+  font-family: var(--dna-font-heading);
+  font-size: 82px;
+  line-height: 0.92;
+  font-weight: 200;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.quote-card-export__section {
+  display: grid;
+  gap: 16px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(216, 208, 196, 0.74);
+}
+
+.quote-card-export__section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.quote-card-export__section-head span:first-child {
+  color: var(--dna-color-ink-500);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.quote-card-export__confirmed {
+  margin: 0;
+  color: var(--dna-color-ink-700);
+  font-size: 24px;
+  line-height: 1.72;
+}
+
+.quote-card-export__rows,
+.quote-card-export__basis,
+.quote-card-export__notes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+
+.quote-card-export__rows {
+  gap: 14px;
+}
+
+.quote-card-export__basis {
+  gap: 12px;
+}
+
+.quote-card-export__notes {
+  gap: 8px;
+}
+
+.quote-card-export__detail-cards {
+  display: grid;
+  gap: 14px;
+}
+
+.quote-card-export__row,
+.quote-card-export__basis-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: start;
+  padding-top: 14px;
+  border-top: 1px solid rgba(216, 208, 196, 0.56);
+}
+
+.quote-card-export__row:first-child,
+.quote-card-export__basis-item:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.quote-card-export__row-main {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.quote-card-export__row-main strong,
+.quote-card-export__basis-item strong {
+  color: var(--dna-color-ink-900);
+  font-size: 24px;
+  line-height: 1.44;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.quote-card-export__row-main span,
+.quote-card-export__basis-item span {
+  color: var(--dna-color-ink-500);
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.quote-card-export__row-amount {
+  color: var(--dna-color-ink-900);
+  font-family: var(--dna-font-heading);
+  font-size: 42px;
+  line-height: 0.98;
+  font-weight: 200;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.quote-card-export__notes li {
+  color: var(--dna-color-ink-700);
+  font-size: 22px;
+  line-height: 1.68;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.quote-card-export__detail-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px 20px 20px;
+  border-radius: 22px;
+  background: rgba(255, 250, 244, 0.78);
+  border: 1px solid rgba(216, 208, 196, 0.62);
+}
+
+.quote-card-export__detail-card-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: start;
+}
+
+.quote-card-export__detail-card-title {
+  display: grid;
+  gap: 6px;
+}
+
+.quote-card-export__detail-card-title strong {
+  color: var(--dna-color-ink-900);
+  font-size: 24px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.quote-card-export__detail-card-title span {
+  color: var(--dna-color-ink-500);
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.quote-card-export__detail-card-amount {
+  color: var(--dna-color-ink-900);
+  font-family: var(--dna-font-heading);
+  font-size: 40px;
+  line-height: 0.98;
+  font-weight: 200;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.quote-card-export__detail-card-lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.quote-card-export__detail-card-lines li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(216, 208, 196, 0.44);
+  color: var(--dna-color-ink-700);
+  font-size: 21px;
+  line-height: 1.58;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.quote-card-export__detail-card-lines li:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.quote-card-export__section--notes {
+  align-content: start;
+}

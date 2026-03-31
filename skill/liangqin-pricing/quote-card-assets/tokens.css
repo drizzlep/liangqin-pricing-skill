@@ -1,0 +1,44 @@
+@font-face {
+  font-family: "Swei Sugar";
+  src: url("./assets/fonts/SweiSugarCJKtc-ExtraLight.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 200;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "OPPO Sans 4.0";
+  src: url("./assets/fonts/OPPO-Sans-4.0.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  --dna-color-bg: #f8f5f0;
+  --dna-color-surface: #f2eee8;
+  --dna-color-surface-elevated: #fffcf8;
+  --dna-color-ink-900: #1f1d1b;
+  --dna-color-ink-800: #2b2926;
+  --dna-color-ink-700: #4b4640;
+  --dna-color-ink-600: #6a635b;
+  --dna-color-ink-500: #888075;
+  --dna-color-line: #d8d0c4;
+  --dna-color-accent: #8b6a4e;
+
+  --dna-font-heading: "Swei Sugar", "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+  --dna-font-body: "OPPO Sans 4.0", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+
+  --dna-shadow-low: 0 12px 28px rgba(31, 29, 27, 0.05);
+  --dna-shadow-medium: 0 28px 72px rgba(31, 29, 27, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
