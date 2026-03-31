@@ -87,7 +87,36 @@ unzip liangqin-pricing-openclaw-YYYYMMDD.zip -d ~/.openclaw/skills
 python3 ~/.openclaw/skills/liangqin-pricing/scripts/publish_skill.py
 ```
 
-## 8. 最后记住一句话
+## 8. 如果环境开了联网搜索，要额外记住什么
+
+良禽相关问题，应该优先按 skill 自带资料回答。
+
+如果资料里没有明确写到，就应该直接说：
+
+- `现有良禽资料未明确`
+  或
+- `当前不能替你确认`
+
+不要把联网搜索结果、行业常识、品牌百科，直接说成“良禽资料里就是这样”。
+
+特别是这些问题要小心：
+
+- `国产五金 / 进口五金`
+- `BLUM / 百隆`
+- `海蒂诗 / DTC`
+- `五金品牌对比`
+
+## 9. 装完以后，最值得补测哪一题
+
+你可以直接补测这句：
+
+```text
+良禽佳木可以选国产五金和进口五金吗？良禽有BLUM的五金，是什么啊？
+```
+
+如果回复里出现 `BLUMOTION`、`CLIP top`、`TANDEMBOX`、`SERVO-DRIVE`、`阻尼铰链`、`抽屉导轨` 这些内容，通常说明它把外部行业知识混进来了。
+
+## 10. 最后记住一句话
 
 这个安装包本身已经带了当前可用的报价数据。
 
@@ -95,3 +124,4 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/publish_skill.py
 
 - `没有原始 Excel / Doc，也能直接报价`
 - `只有以后要自己更新版本，才需要新的 Excel / Doc`
+- `资料没写到就说未明确，不要拿联网搜索补成良禽结论`

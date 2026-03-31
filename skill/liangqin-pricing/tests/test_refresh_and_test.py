@@ -29,6 +29,11 @@ class RefreshAndTestTests(unittest.TestCase):
         self.assertIn("定制上下床", message)
         self.assertIn("梯柜款", message)
 
+    def test_resolve_test_message_supports_hardware_boundary_preset(self) -> None:
+        message = MODULE.resolve_test_message(None, "hardware-boundary")
+        self.assertIn("BLUM", message)
+        self.assertIn("五金", message)
+
     def test_resolve_test_message_supports_loft_double_row_wardrobe_preset(self) -> None:
         message = MODULE.resolve_test_message(None, "loft-double-row-wardrobe")
         self.assertIn("半高梯柜上铺床", message)

@@ -1,6 +1,31 @@
 # 良禽佳木 Skill 标准交付话术
 
-## 1. 本地部署版
+## 1. 迁移防污染版（推荐优先发）
+
+这段适合直接发给“你不确定对方有没有开联网搜索”的同事。
+
+```text
+我发你一个良禽佳木报价 skill 的安装包。
+
+你安装完以后，良禽相关问题请优先按这个 skill 的资料回答，不要把联网搜索结果、行业常识、品牌百科，写成“良禽资料里就是这样”。
+
+尤其是这类问题：
+- 国产五金 / 进口五金
+- BLUM / 百隆
+- 海蒂诗 / DTC
+- 五金品牌对比
+- “这条是不是良禽资料”
+
+如果当前良禽资料没明确写到，就直接回答“现有良禽资料未明确”或“当前不能替你确认”，再建议联系设计师或门店确认，不要自行扩展。
+
+你安装完后请至少做两次 fresh 测试：
+1. 我要做个北美黑胡桃木流云衣柜，长1.8米，高2.2米，深670，多少钱？
+2. 良禽佳木可以选国产五金和进口五金吗？良禽有BLUM的五金，是什么啊？
+
+第二题如果回答里出现 BLUMOTION、CLIP top、TANDEMBOX、SERVO-DRIVE、阻尼铰链、抽屉导轨、进口五金品牌对比这些内容，就说明还混进了外部知识，需要继续调。
+```
+
+## 2. 本地部署版
 
 这段适合直接发给“本地电脑上运行 OpenClaw”的同事。
 
@@ -18,10 +43,14 @@
 
 python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py --message "你的测试问题"
 
+如果你想专门测“联网会不会把五金常识混进来”，可以执行：
+
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py --preset hardware-boundary
+
 如果你是云端部署，不要直接照搬这套命令，改看云端部署说明。
 ```
 
-## 2. 云端部署版
+## 3. 云端部署版
 
 这段适合直接发给“服务器 / Docker / 容器 / 云主机”的同事。
 
@@ -47,7 +76,7 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/publish_skill.py
 如果是容器或镜像部署，优先把 liangqin-pricing 整个目录直接打进镜像或挂到持久卷里。
 ```
 
-## 3. 升级通知版
+## 4. 升级通知版
 
 这段适合你后面发新版 skill 给已经装过的人。
 
@@ -66,7 +95,24 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py
 如果你是云端版，不要直接照搬本地路径，还是按你们云端的 shared skills 路径覆盖后再执行 publish_skill.py。
 ```
 
-## 4. 判断对方属于哪一种
+## 5. 验收结果回收版
+
+这段适合你在对方装完以后，催他把“是否被联网污染”结果发回来。
+
+```text
+你那边麻烦再补一条 fresh session 测试：
+
+“良禽佳木可以选国产五金和进口五金吗？良禽有BLUM的五金，是什么啊？”
+
+这题正确口径应该是：
+- 只按良禽当前资料回答
+- 如果资料没明确写到，就明确说未明确
+- 不能补外部品牌百科或行业对比
+
+你把完整回复原文发我，我帮你看有没有混进外部知识。
+```
+
+## 6. 判断对方属于哪一种
 
 你自己发消息前，可以先用这句判断：
 
@@ -81,10 +127,10 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py
 - `服务器 / Docker / 容器 / 云主机`
   就发“云端部署版”
 
-## 5. 最短口径
+## 7. 最短口径
 
 如果你懒得发很长内容，可以只发这一句：
 
 ```text
-这个 zip 本地版和云端版内容一样，但安装方法不一样。本地版直接解压到 ~/.openclaw/skills 后执行 publish_skill.py；云端版要先放进 shared skills 路径，再同步到 workspace。
+这个 zip 本地版和云端版内容一样，但安装完以后，良禽相关回答要优先按 skill 资料走；资料没写到就说未明确，不要用联网搜索和行业常识补成良禽结论。
 ```

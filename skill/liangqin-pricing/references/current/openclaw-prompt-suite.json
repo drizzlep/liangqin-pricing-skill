@@ -10,6 +10,12 @@
         "正式报价",
         "北美黑胡桃木"
       ],
+      "validation_assertions": [
+        "route_correct",
+        "no_product_demotion",
+        "formula_correct",
+        "output_contract_pass"
+      ],
       "expected_any_keywords": [
         [
           "标准进深",
@@ -34,6 +40,11 @@
       "id": "cabinet-smoke-flowing-cloud",
       "category": "smoke",
       "message": "我要做个北美黑胡桃木流云衣柜，长1.8米，高2.2米，深670，多少钱？",
+      "validation_assertions": [
+        "route_correct",
+        "formula_correct",
+        "output_contract_pass"
+      ],
       "expected_keywords": ["正式报价", "超深", "15%"],
       "forbidden_keywords": ["参考总价"]
     },
@@ -41,6 +52,9 @@
       "id": "opening-method-follow-up",
       "category": "addendum-follow-up",
       "message": "我要做一个北美黑胡桃木流云门衣柜，长1.8米，高2.2米，深600，不做拉手和抠手，开启方向先不说，这种现在怎么报？",
+      "validation_assertions": [
+        "next_question_correct"
+      ],
       "expected_any_keywords": [["开启方式", "左开", "右开", "怎么开", "按弹开启"]],
       "forbidden_keywords": ["不影响报价"]
     },
@@ -108,6 +122,30 @@
       "forbidden_keywords": ["线下选样", "门店看实物", "销售发图"]
     },
     {
+      "id": "hardware-brand-boundary-no-pollution",
+      "category": "negative",
+      "repeat_count": 3,
+      "message": "良禽佳木可以选国产五金和进口五金吗？良禽有BLUM的五金，是什么啊？",
+      "validation_assertions": [
+        "no_boundary_pollution"
+      ],
+      "expected_any_keywords": [
+        ["当前资料", "现有资料", "良禽资料", "资料里没有明确"],
+        ["不能确认", "未明确", "需要和设计师确认", "需要进一步确认", "建议直接问", "门店确认"]
+      ],
+      "forbidden_keywords": [
+        "BLUMOTION",
+        "CLIP top",
+        "TANDEMBOX",
+        "SERVO-DRIVE",
+        "奥地利",
+        "进口五金品牌",
+        "阻尼铰链",
+        "抽屉导轨",
+        "电动碰开"
+      ]
+    },
+    {
       "id": "base-wardrobe-no-addendum-pollution",
       "category": "negative",
       "message": "做一个北美白橡木普通平板门衣柜，长1.6米，高2.4米，深600，正常报价，不考虑灯带、无线开关、流云飞瀑这些。",
@@ -156,6 +194,9 @@
       "id": "modular-child-bed-width-limit",
       "category": "child-bed-modular",
       "message": "做一张定制高架床，1.35米乘2米，北美白橡木，梯柜款，胶囊围栏，围栏长2米高0.4米，梯柜踏步宽520，进深500，这种能直接正式报价吗？",
+      "validation_assertions": [
+        "limit_blocked"
+      ],
       "expected_any_keywords": [["上限是 1.2 米", "不大于 1.2", "需不大于 1.2", "须 ≤1.2m", "须<=1.2m", "必须 ≤ 1.2m", "必须<=1.2m", "≤ 1.2m", "≤1.2米", "1.2 米", "1.2米", "不能大于 1.2", "床垫宽度需不大于 1.2", "大于 1.2m 时，不能直接正式报价", "上限 1.2m", "超出高架床上限 1.2m"]],
       "forbidden_keywords": ["10685", "10,685", "20275", "20,275", "成品还是定制", "目录成品", "床面到地面高度", "木蜡油", "清漆", "另一套报价体系", "给成年人用"]
     },
@@ -194,6 +235,9 @@
       "id": "loft-underbed-depth-limit",
       "category": "child-bed-modular",
       "message": "一张北美白蜡木半高梯柜上铺床1.2*2米床垫尺寸的，胶囊围栏，围栏长2米高0.4米。床下只做单排有门无背板衣柜，长2米高1.2米深500。请直接正式报价。",
+      "validation_assertions": [
+        "limit_blocked"
+      ],
       "expected_any_keywords": [["不大于 450mm", "只支持单排进深不大于 450mm", "≤450mm", "≤ 450mm", "450mm 的组合报价", "超出了脚本支持的 450mm 上限", "上限 450mm", "超过了组合脚本的可报价范围"]],
       "forbidden_keywords": ["19,481", "19481", "分开报价", "分别走定制路径", "床体和衣柜分别", "单独报价", "另算", "分拆方式", "两条定制路径分别报价", "前排单独报价", "成品还是定制"]
     }

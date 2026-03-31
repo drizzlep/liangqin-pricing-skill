@@ -54,6 +54,7 @@ git clone --branch <release-tag> --depth 1 https://github.com/drizzlep/liangqin-
    只查询当前版本里的目录基础价格。
 3. `scripts/format_quote_reply.py`
    默认会在排版前尝试套用活跃 addendum layer，再统一输出成一段正式报价；如需跳过可用 `--disable-addenda`。
+   如果同时传入当前消息的 `Conversation info JSON + channel`，还会额外缓存会话级 bundle，并在尾部补一句“如需生成图片，回复生成图片即可”。
 
 模块化儿童床链路：
 
@@ -155,6 +156,12 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py
 python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py --message "你的测试问题"
 ```
 
+如果你想专门验证“是否会把五金行业知识混进良禽口径”，直接运行：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py --preset hardware-boundary
+```
+
 如果你发现小龙虾、钉钉还像在回答旧版本，通常不是规则没改成功，而是旧会话还在复用上下文。
 
 先执行这一条：
@@ -217,6 +224,58 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/run_openclaw_prompt_suite.py
 python3 ~/.openclaw/skills/liangqin-pricing/scripts/run_openclaw_prompt_suite.py --case-id opening-method-follow-up --case-id bed-mattress-weight-follow-up
 ```
 
+如果你想把整套题目默认重复多跑几次，检查 OpenClaw 是否存在随机漂移：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/run_openclaw_prompt_suite.py --repeat-each 3
+```
+
+如果只是想盯住“外部五金知识会不会混进良禽口径”这一题，直接运行：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/run_openclaw_prompt_suite.py --publish-skill --reset-quote-sessions --case-id hardware-brand-boundary-no-pollution --max-retries 0
+```
+
+这题在题库里已经默认 `repeat_count=3`，只要 3 次里有 1 次出现 `BLUMOTION / CLIP top / TANDEMBOX / SERVO-DRIVE / 阻尼铰链 / 抽屉导轨`，就算没通过。
+
+## 报价图联动 v1
+
+现在这套 skill 支持：
+
+- 先正常输出完整文字报价
+- 再提示用户“回复生成图片”
+- 用户明确回复后，读取当前会话最新 bundle，渲染 1 张 `1080 x 1920` JPG 并发回当前会话
+
+日常用法：
+
+1. 生成文字报价时，优先带上当前消息里的 `Conversation info` JSON 和当前渠道：
+
+```bash
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/format_quote_reply.py --input-json '...' --context-json '{...}' --channel feishu
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/format_quote_reply.py --input-json '...' --context-json '{...}' --channel dingtalk-connector
+```
+
+2. 用户下一轮明确说“生成图片 / 发图 / 发报价卡”时：
+
+```bash
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/generate_quote_card_reply.py --context-json '{...}' --channel feishu
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/generate_quote_card_reply.py --context-json '{...}' --channel dingtalk-connector
+```
+
+3. 如果用户已经开始新报价问题，先清掉旧 bundle：
+
+```bash
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/clear_quote_result_bundle.py --context-json '{...}' --channel feishu
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/clear_quote_result_bundle.py --context-json '{...}' --channel dingtalk-connector
+```
+
+产物会落到：
+
+- `~/.openclaw/media/quote-cards/<conversation-id>/<timestamp>/quote-card.html`
+- `~/.openclaw/media/quote-cards/<conversation-id>/<timestamp>/quote-card.json`
+- `~/.openclaw/media/quote-cards/<conversation-id>/<timestamp>/quote-result-bundle.json`
+- `~/.openclaw/media/quote-cards/<conversation-id>/<timestamp>/quote-card.jpg`
+
 ## 目录说明
 
 - `SKILL.md`
@@ -243,6 +302,8 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/run_openclaw_prompt_suite.py
   模块化儿童床 + 床下柜组合计价入口。
 - `scripts/refresh_and_test.py`
   一条命令完成“刷新 + fresh session 测试”。
+- `scripts/generate_quote_card_reply.py`
+  读取当前会话 bundle，输出图片回复。
 
 ## 内部工具
 

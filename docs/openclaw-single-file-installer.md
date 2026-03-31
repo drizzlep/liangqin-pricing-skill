@@ -54,6 +54,12 @@ bash scripts/build_single_file_installer.sh
 请运行 /绝对路径/liangqin-pricing-installer-YYYYMMDD.sh，并用“我要做个北美黑胡桃木流云衣柜，长1.8米，高2.2米，深670，多少钱？”做一次 fresh 测试。
 ```
 
+如果你担心对方环境开了联网搜索，更推荐直接用这版：
+
+```text
+请运行 /绝对路径/liangqin-pricing-installer-YYYYMMDD.sh，把良禽佳木报价 skill 安装到 shared skills，并同步到 workspace。安装完成后，良禽相关问题只能按 liangqin-pricing 当前资料回答；资料没明确写到，就直接说“现有良禽资料未明确”或“当前不能替你确认”，不要把联网搜索结果和行业常识写成良禽资料。然后用“良禽佳木可以选国产五金和进口五金吗？良禽有BLUM的五金，是什么啊？”做一次 fresh 测试，并把完整结果告诉我。
+```
+
 ## 5. 这个单文件安装器默认会做什么
 
 默认会自动完成：
@@ -62,6 +68,12 @@ bash scripts/build_single_file_installer.sh
 2. 安装到 `~/.openclaw/skills/liangqin-pricing`
 3. 发布到 `~/.openclaw/workspace/skills/liangqin-pricing`
 4. 跑一次 fresh 测试
+
+如果你要专门验收“是否混入外部五金知识”，安装后建议再手动补测一次：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py --preset hardware-boundary
+```
 
 ## 6. 如果不想自动测试
 

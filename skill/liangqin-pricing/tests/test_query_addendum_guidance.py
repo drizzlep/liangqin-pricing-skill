@@ -16,6 +16,34 @@ SPEC.loader.exec_module(MODULE)
 
 
 class QueryAddendumGuidanceTests(unittest.TestCase):
+    def test_query_guidance_returns_boundary_reply_for_hardware_brand_question(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            payload = MODULE.query_guidance(
+                "良禽佳木可以选国产五金和进口五金吗？良禽有BLUM的五金，是什么啊？",
+                Path(tmpdir),
+            )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["recommended_reply_mode"], "rule_explanation")
+        self.assertEqual(payload["answer_style"], "natural_rule_explanation")
+        self.assertIn("现有良禽资料", payload["suggested_reply"])
+        self.assertIn("未明确", payload["suggested_reply"])
+        self.assertIn("设计师或门店确认", payload["suggested_reply"])
+        self.assertNotIn("BLUMOTION", payload["suggested_reply"])
+        self.assertNotIn("CLIP top", payload["suggested_reply"])
+
+    def test_query_guidance_returns_boundary_reply_for_source_attribution_question(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            payload = MODULE.query_guidance(
+                "你刚才说的五金配置，这条到底是良禽资料，还是行业常识？资料来源是哪里？",
+                Path(tmpdir),
+            )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["recommended_reply_mode"], "rule_explanation")
+        self.assertIn("不能算良禽资料结论", payload["suggested_reply"])
+        self.assertIn("现有良禽资料", payload["suggested_reply"])
+
     def test_query_guidance_adds_natural_answer_for_runtime_constraint(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             addenda_root = Path(tmpdir)

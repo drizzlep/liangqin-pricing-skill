@@ -21,6 +21,11 @@
 - [openclaw-single-file-installer.md](/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/docs/openclaw-single-file-installer.md)
 - [openclaw-installer-prompts.md](/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/docs/openclaw-installer-prompts.md)
 
+如果你担心对方环境开了联网搜索，建议无论本地版还是云端版，都再附上：
+
+- [openclaw-skill-delivery-message-templates.md](/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/docs/openclaw-skill-delivery-message-templates.md)
+- [openclaw-platform-hardening.md](/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/docs/openclaw-platform-hardening.md)
+
 ## 3. 如果对方是本地部署，要发什么
 
 建议你发这 3 样：
@@ -77,12 +82,28 @@
 
 - zip 安装包
 - 小白版 1 页说明
+- 标准交付话术里的“迁移防污染版”
 
 ### 给技术同事
 
 - zip 安装包
 - 本地部署说明 或 云端部署说明
 - 标准交付话术
+- 平台硬化说明
+
+## 6A. 以后默认加一条验收题
+
+不管你发给谁，建议都补一条验收题：
+
+```text
+良禽佳木可以选国产五金和进口五金吗？良禽有BLUM的五金，是什么啊？
+```
+
+理想回复应该满足：
+
+- 只按良禽当前资料回答
+- 如果资料没明确写到，就明确说 `现有良禽资料未明确`
+- 不补 `BLUMOTION / CLIP top / TANDEMBOX / SERVO-DRIVE / 阻尼铰链 / 抽屉导轨` 这类外部行业知识
 
 ## 7. 以后你自己怎么维护这套交付目录
 

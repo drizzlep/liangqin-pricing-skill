@@ -158,6 +158,28 @@ FOCUS_TERMS = (
     "80*26",
 )
 
+BOUNDARY_HARDWARE_TERMS = (
+    "国产五金",
+    "进口五金",
+    "BLUM",
+    "百隆",
+    "海蒂诗",
+    "DTC",
+    "悍高",
+    "五金品牌对比",
+    "五金档次",
+    "五金型号",
+)
+
+BOUNDARY_SOURCE_TERMS = (
+    "良禽资料",
+    "行业常识",
+    "资料来源",
+    "来源是哪里",
+    "是不是良禽资料",
+    "算不算良禽资料",
+)
+
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Query active addendum guidance for a natural-language message.")
@@ -557,6 +579,27 @@ def is_explanatory_query(text: str) -> bool:
     )
 
 
+def detect_boundary_guardrail(text: str) -> tuple[str, str] | None:
+    query = str(text)
+    has_liangqin_context = any(term in query for term in ("良禽", "良禽佳木"))
+    asks_hardware_boundary = has_liangqin_context and any(term in query for term in BOUNDARY_HARDWARE_TERMS)
+    asks_source_boundary = any(term in query for term in BOUNDARY_SOURCE_TERMS)
+
+    if asks_source_boundary:
+        return (
+            "如果这条内容不是当前良禽资料里明确写到的，就不能算良禽资料结论。现有良禽资料未明确的部分，我不能替你按行业常识往下补；如果你要准确口径，建议直接和设计师或门店确认。",
+            "source_boundary",
+        )
+
+    if asks_hardware_boundary:
+        return (
+            "现有良禽资料对良禽是否支持国产五金或进口五金、以及 BLUM 这类品牌配置都未明确。这里我不能替你按行业常识往下确认；如果你要准确口径，建议直接和设计师或门店确认。",
+            "source_boundary",
+        )
+
+    return None
+
+
 def decision_summary(decision: dict[str, Any]) -> str:
     summary = str(decision.get("summary", "")).strip()
     if summary:
@@ -616,6 +659,23 @@ def build_natural_knowledge_answer(match: dict[str, Any]) -> tuple[str, str, str
 
 
 def query_guidance(text: str, addenda_root: Path) -> dict[str, Any]:
+    boundary_guardrail = detect_boundary_guardrail(text)
+    if boundary_guardrail:
+        suggested_reply, evidence_level = boundary_guardrail
+        return {
+            "matched": True,
+            "recommended_reply_mode": "rule_explanation",
+            "follow_up_questions": [],
+            "constraints": [],
+            "adjustments": [],
+            "addendum_notes": [],
+            "answer_style": "natural_rule_explanation",
+            "answer_summary": suggested_reply,
+            "evidence_level": evidence_level,
+            "confidence_note": "",
+            "suggested_reply": suggested_reply,
+        }
+
     probe_payload = build_probe_payload(text)
     probe_item = probe_payload["items"][0]
     pricing_gap_query = is_pricing_gap_query(text)

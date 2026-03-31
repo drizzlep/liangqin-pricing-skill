@@ -1,11 +1,23 @@
 ---
 name: liangqin-pricing
-description: "Use when user asks about Liangqin furniture pricing, custom wardrobe/bookcase/bed/table quotes, reference estimates, configurable product options such as materials/colors/patterns, designer-manual rule explanations, or maintenance actions such as importing a new price workbook, importing new pricing rules, updating current data, or checking the current release. Prefer this shared skill when Liangqin product answers need to remain reusable across OpenClaw environments."
+description: "Use when user asks about 良禽/良禽佳木 pricing, product options, rule explanations, or source-bound answers, especially messages like '良禽佳木可以选国产五金和进口五金吗', 'BLUM/百隆是什么', or '这条是良禽资料还是行业常识/资料来源是哪里', and when the reply must stay within Liangqin materials instead of generic web or industry knowledge. Also use for maintaining the current Liangqin price/rule release."
 ---
 
 # 良禽佳木定制报价顾问
 
 ## Core Rules
+
+### Trigger Examples
+
+- 如果用户问：
+  - `良禽佳木可以选国产五金和进口五金吗？良禽有BLUM的五金，是什么啊？`
+  - `你刚才说的这条到底是良禽资料，还是行业常识？资料来源是哪里？`
+- 也必须命中这个 skill
+- 这两类都不是开放式品牌科普题，而是 `良禽资料边界题`
+- 回复原则只有一个：
+  - 当前资料明确写到的，才能按良禽口径回答
+  - 当前资料没明确写到的，就直接说 `现有良禽资料未明确` / `不能算良禽资料结论`
+  - 不要扩成五金品牌百科、行业对比、搜索整理
 
 - 对外材质名称必须统一成正式名称：
   - `北美黑胡桃木`
@@ -13,6 +25,16 @@ description: "Use when user asks about Liangqin furniture pricing, custom wardro
   - `北美白橡木`
   - `北美白蜡木`
   - `乌拉圭玫瑰木`
+- 所有对外结论都只能基于当前 skill 内置资料、当前激活版本数据、设计师追加规则、知识层，以及脚本返回结果。
+- 资料里没有明确写到的内容，必须直接说 `当前良禽资料里没有明确写到 / 我现在不能替你确认`，不要拿通用行业知识、品牌常识、联网搜索结果补成“良禽就是这样”。
+- 对 `国产五金 / 进口五金 / BLUM / 百隆 / 海蒂诗 / DTC / 五金型号 / 五金档次 / 五金品牌对比` 这类问题：
+  - 只有当前资料明确写到时，才能按资料回答
+  - 如果当前资料没有明确写到，只能说明 `现有良禽资料未明确`，并建议让设计师或门店进一步确认
+  - 严禁补充品牌目录、产品系列、体验描述、行业对比表
+- 如果用户追问 `你这段是良禽资料，还是行业常识 / 资料来源是哪里`：
+  - 只能如实说是否来自当前良禽资料
+  - 如果不是当前资料明确写到，就直接承认 `这条不能算良禽资料结论`
+  - 不要把外部知识伪装成良禽内部口径
 - 正式报价前，只追问真正影响价格的关键参数。
 - 只要用户说的是 `经典护栏款 / 经典护栏 / 护栏经典款`，在映射成标准围栏名称前：
   - 严禁正式报价
@@ -239,7 +261,7 @@ python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/detect_special_cab
   - 先只追问冰箱净高或上柜高度
   - 不要先拿普通柜体单价直接正式报价
 
-3A. 如果用户当前是在问 `规则怎么判断 / 还缺什么信息 / 能不能用 / 要几个 / 是否需要补差`，且明显可能命中设计师追加规则，先运行：
+3A. 如果用户当前是在问 `规则怎么判断 / 还缺什么信息 / 能不能用 / 要几个 / 是否需要补差`，或者是在问 `国产/进口五金`、`BLUM/百隆`、`海蒂诗/DTC`、`这条是不是良禽资料 / 资料来源是哪里` 这类来源边界问题，先运行：
 
 ```bash
 python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/query_addendum_guidance.py --text "用户原话"
@@ -256,8 +278,12 @@ python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/query_addendum_gui
 - 如果返回 `recommended_reply_mode=rule_explanation`
   - 如果同时返回 `suggested_reply`
     - 优先按这段组织回复
-  - 直接按返回的 `constraints / adjustments` 解释
+  - 直接按返回的 `constraints / adjustments` 或边界口径解释
   - 不要再混入其他未命中的配件规则
+- 对 `国产五金 / 进口五金 / BLUM / 百隆 / 海蒂诗 / DTC / 五金品牌对比 / 资料来源 / 行业常识` 这类问题：
+  - 如果脚本已经返回 `现有良禽资料未明确`、`不能算良禽资料结论` 这类边界口径
+  - 优先按返回内容直接回复
+  - 不要再补品牌百科、产品系列、体验描述、行业对比
 - 对 `床垫重量 / 750N举升器` 这类问题：
   - 先看这个脚本结果
   - 不要跳过脚本直接自由发挥
@@ -503,8 +529,53 @@ python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/calculate_bed_quot
 10. 数字确认后，运行：
 
 ```bash
-python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/format_quote_reply.py --input-json '...'
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/format_quote_reply.py --input-json '...' --context-json '{当前消息里的 Conversation info JSON}' --channel feishu
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/format_quote_reply.py --input-json '...' --context-json '{当前消息里的 Conversation info JSON}' --channel dingtalk-connector
 ```
+
+使用方式：
+
+- `--context-json` 固定传当前轮用户消息里的 `Conversation info` 那段 JSON。
+- `--channel` 固定传当前会话渠道：
+  - 飞书传 `feishu`
+  - 钉钉传 `dingtalk-connector`
+- 这样脚本会自动：
+  - 输出完整文字报价
+  - 缓存当前会话最新 `quote_result_bundle`
+  - 在文字尾部补一句“如需生成图片，回复生成图片即可”
+
+## 报价图二次确认
+
+- 如果用户这轮明确是在要上一条报价的图片版，例如：
+  - `生成图片`
+  - `发图`
+  - `发报价卡`
+  - `做成图片`
+- 直接运行：
+
+```bash
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/generate_quote_card_reply.py --context-json '{当前消息里的 Conversation info JSON}' --channel feishu
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/generate_quote_card_reply.py --context-json '{当前消息里的 Conversation info JSON}' --channel dingtalk-connector
+```
+
+规则：
+
+- 这个脚本会读取当前会话最新 bundle，输出 1 条简短文字，并额外打印 `MEDIA:...jpg`
+- OpenClaw 会把 `MEDIA:` 解析成当前会话的图片发送
+- 如果当前会话没有可用 bundle，脚本会直接返回清晰提示，不要自己硬猜上一条报价
+- 参考报价也允许出图，但图上必须显式标 `参考报价（仅供参考）`
+- 多产品也允许出图，但只压成 1 张汇总 JPG，完整细则仍以文字报价为准
+
+## 旧 bundle 失效
+
+- 如果用户已经进入新一轮报价问题，而不是在要上一条报价图，先清掉当前会话旧 bundle，再继续新的报价追问或计算：
+
+```bash
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/clear_quote_result_bundle.py --context-json '{当前消息里的 Conversation info JSON}' --channel feishu
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/clear_quote_result_bundle.py --context-json '{当前消息里的 Conversation info JSON}' --channel dingtalk-connector
+```
+
+- 不要在“新报价问题”和“生成图片请求”之间混用旧 bundle。
 
 ## 常见场景
 
@@ -618,5 +689,8 @@ python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/refresh_and_test.p
 - 门板补差脚本：`scripts/calculate_door_panel_adjustment.py`
 - 岩板加价脚本：`scripts/calculate_rock_slab_price.py`
 - 玫瑰木折减脚本：`scripts/calculate_hidden_rosewood_discount.py`
+- bundle 清理：`scripts/clear_quote_result_bundle.py`
+- 报价图回复：`scripts/generate_quote_card_reply.py`
+- 报价图渲染：`scripts/quote_card_renderer.py`
 - 统一更新入口：`scripts/update_release.py`
 - 刷新并测试：`scripts/refresh_and_test.py`

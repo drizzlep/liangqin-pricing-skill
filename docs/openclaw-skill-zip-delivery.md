@@ -88,6 +88,22 @@ bash scripts/package_openclaw_skill.sh /你的输出目录
 - 如果对方能直接在自己的电脑终端里操作 `~/.openclaw/skills/`，就看“本地部署版”
 - 如果对方是在服务器、容器、云主机、平台环境里运行 OpenClaw，就看“云端部署版”
 
+## 4A. 发 zip 时必须一起带上的防污染口径
+
+如果对方环境可能开了联网搜索，建议你发 zip 时永远再补这一句：
+
+```text
+良禽相关回答只能按 liangqin-pricing 当前资料来答；资料没明确写到，就直接说“现有良禽资料未明确”或“当前不能替你确认”，不要把联网搜索结果、行业常识、品牌百科补成良禽结论。
+```
+
+尤其下面这些问法，最容易被外部知识污染：
+
+- `国产五金 / 进口五金`
+- `BLUM / 百隆`
+- `海蒂诗 / DTC`
+- `五金品牌对比`
+- `这条是不是良禽资料`
+
 ## 5. 发给别人怎么安装
 
 把 zip 发给对方后，让对方执行下面 4 步：
@@ -127,6 +143,17 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py
 ```bash
 python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py --message "我要做个北美黑胡桃木流云衣柜，长1.8米，高2.2米，深670，多少钱？"
 ```
+
+如果你想专门验证“会不会把五金行业知识混进良禽口径”，再补跑这一条：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py --preset hardware-boundary
+```
+
+这题的合格标准是：
+
+- 能明确说 `现有良禽资料未明确`、`当前不能替你确认`、`建议联系设计师或门店确认`
+- 不能出现 `BLUMOTION`、`CLIP top`、`TANDEMBOX`、`SERVO-DRIVE`、`阻尼铰链`、`抽屉导轨` 这类外部行业知识
 
 上面这一套，更适合“本地部署版”。
 
