@@ -104,10 +104,17 @@ class PrecheckQuoteTests(unittest.TestCase):
                 )
                 result = MODULE.precheck_cabinet(args)
                 self.assertTrue(result["ready_for_formal_quote"])
+                self.assertEqual(result["quote_decision"], "formal_quote")
                 self.assertIsNone(result["next_required_field"])
                 self.assertEqual(result["default_quote_profile"]["name"], anchor_name)
                 self.assertEqual(result["default_quote_profile"]["assumed_depth"], default_depth)
                 self.assertEqual(result["default_quote_profile"]["assumed_has_door"], default_has_door)
+
+    def test_generic_cabinet_ready_for_estimate_returns_reference_quote_decision(self) -> None:
+        args = self.make_args(category="衣柜", length="1.8", height="2.2", material="北美黑胡桃木", approximate_only=True)
+        result = MODULE.precheck_cabinet(args)
+        self.assertTrue(result["ready_for_formal_quote"])
+        self.assertEqual(result["quote_decision"], "reference_quote")
 
     def test_generic_bookcase_with_explicit_depth_still_uses_default_open_profile(self) -> None:
         args = self.make_args(category="书柜", length="2", depth="0.35", height="2.4", material="北美樱桃木")
@@ -228,9 +235,25 @@ class PrecheckQuoteTests(unittest.TestCase):
         result = MODULE.precheck_bed(args)
         self.assertFalse(result["ready_for_formal_quote"])
         self.assertEqual(result["pricing_route"], "modular_child_bed_combo")
+        self.assertEqual(result["quote_decision"], "ask_follow_up")
         self.assertEqual(result["next_required_field"], "front_cabinet_depth")
         self.assertIn("前排", result["next_question"])
         self.assertIn("进深", result["next_question"])
+
+    def test_modular_child_bed_width_limit_returns_hard_block_decision(self) -> None:
+        args = self.make_args(
+            category="高架床",
+            quote_kind="custom",
+            bed_form="高架床",
+            access_style="梯柜",
+            width="1.35",
+            length="2",
+            material="北美白橡木",
+        )
+        result = MODULE.precheck_bed(args)
+        self.assertFalse(result["ready_for_formal_quote"])
+        self.assertEqual(result["quote_decision"], "hard_block")
+        self.assertIn("不能直接正式报价", result["next_question"])
 
     def test_half_loft_with_underbed_double_row_cabinets_is_ready_when_combo_fields_complete(self) -> None:
         args = self.make_args(

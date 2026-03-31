@@ -898,13 +898,20 @@ def response(
     reason: str,
     assumed_defaults: list[dict[str, str]] | None = None,
     default_quote_profile: dict[str, Any] | None = None,
+    approximate_only: bool = False,
+    hard_block: bool = False,
 ) -> dict[str, Any]:
+    if ready:
+        quote_decision = "reference_quote" if approximate_only else "formal_quote"
+    else:
+        quote_decision = "hard_block" if hard_block else "ask_follow_up"
     payload = {
         "ready_for_formal_quote": ready,
         "category_type": category_type,
         "next_required_field": next_required_field,
         "next_question": next_question,
         "reason": reason,
+        "quote_decision": quote_decision,
     }
     if assumed_defaults:
         payload["assumed_defaults"] = assumed_defaults
@@ -1005,6 +1012,7 @@ def precheck_modular_child_bed_combo(args: argparse.Namespace, responder) -> dic
                 next_required_field=field_name,
                 next_question=f"{row_label}柜体当前只支持单排进深不大于 450mm 的组合报价；你这个进深已经超出范围，当前不能直接正式报价。如果要继续，我建议先把{row_label}进深调整到 450mm 以内。",
                 reason=f"{field_label} exceeds the supported 450mm combo limit",
+                hard_block=True,
             )
 
     base_result = precheck_modular_child_bed(args, responder)
@@ -1131,6 +1139,7 @@ def precheck_modular_child_bed(args: argparse.Namespace, responder) -> dict[str,
             next_required_field="width",
             next_question="这类上铺或高架床当前只支持床垫宽度不大于 1.2 米；你这个宽度已经超出范围，所以现在不能直接正式报价。如果要继续，我建议先确认是否能调整到 1.2 米以内。",
             reason="upper-bed width exceeds the supported 1.2m limit",
+            hard_block=True,
         )
     if bed_form in {"上下床", "错层床"} and not lower_bed_type:
         return responder(
@@ -1231,6 +1240,7 @@ def precheck_cabinet(args: argparse.Namespace) -> dict[str, Any]:
             next_required_field=None,
             next_question=None,
             reason="cabinet explicit product matches a unique standard catalog variant",
+            approximate_only=bool(getattr(args, "approximate_only", False)),
         )
     if is_blank(args.length):
         return response(
@@ -1250,6 +1260,7 @@ def precheck_cabinet(args: argparse.Namespace) -> dict[str, Any]:
                 reason="generic cabinet quote can use the category default baseline profile",
                 assumed_defaults=default_context["assumed_defaults"],
                 default_quote_profile=default_context["default_quote_profile"],
+                approximate_only=bool(getattr(args, "approximate_only", False)),
             )
         return response(
             ready=False,
@@ -1283,6 +1294,7 @@ def precheck_cabinet(args: argparse.Namespace) -> dict[str, Any]:
             reason="generic cabinet quote can use the category default baseline profile",
             assumed_defaults=default_context["assumed_defaults"],
             default_quote_profile=default_context["default_quote_profile"],
+            approximate_only=bool(getattr(args, "approximate_only", False)),
         )
     if is_diamond_cabinet_request(args) and is_blank(args.shape):
         return response(
@@ -1332,19 +1344,29 @@ def precheck_cabinet(args: argparse.Namespace) -> dict[str, Any]:
         reason="cabinet intake has the required fields for a formal quote",
         assumed_defaults=default_context["assumed_defaults"] if default_context else None,
         default_quote_profile=default_context["default_quote_profile"] if default_context else None,
+        approximate_only=bool(getattr(args, "approximate_only", False)),
     )
 
 
 def precheck_bed(args: argparse.Namespace) -> dict[str, Any]:
     pricing_route = bed_pricing_route(args)
 
-    def bed_response(*, ready: bool, next_required_field: str | None, next_question: str | None, reason: str) -> dict[str, Any]:
+    def bed_response(
+        *,
+        ready: bool,
+        next_required_field: str | None,
+        next_question: str | None,
+        reason: str,
+        hard_block: bool = False,
+    ) -> dict[str, Any]:
         payload = response(
             ready=ready,
             category_type="bed",
             next_required_field=next_required_field,
             next_question=next_question,
             reason=reason,
+            approximate_only=bool(getattr(args, "approximate_only", False)),
+            hard_block=hard_block,
         )
         payload["pricing_route"] = pricing_route
         return payload
@@ -1451,6 +1473,7 @@ def precheck_tatami(args: argparse.Namespace) -> dict[str, Any]:
         next_required_field=None,
         next_question=None,
         reason="tatami intake has the required fields for a formal quote",
+        approximate_only=bool(getattr(args, "approximate_only", False)),
     )
 
 
@@ -1501,6 +1524,7 @@ def precheck_table(args: argparse.Namespace) -> dict[str, Any]:
         next_required_field=None,
         next_question=None,
         reason="table intake has the required fields for a formal quote",
+        approximate_only=bool(getattr(args, "approximate_only", False)),
     )
 
 
@@ -1524,6 +1548,7 @@ def precheck_generic(args: argparse.Namespace) -> dict[str, Any]:
         next_required_field=None,
         next_question=None,
         reason="generic intake has the required fields for further pricing",
+        approximate_only=bool(getattr(args, "approximate_only", False)),
     )
 
 
