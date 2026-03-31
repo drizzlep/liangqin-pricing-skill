@@ -202,6 +202,7 @@ class UpdateAddendumLayerTests(unittest.TestCase):
 
     def test_finalize_coverage_ledger_assigns_unique_publish_targets(self) -> None:
         payload = {
+            "generated_at": "2026-03-31T12:34:56",
             "entries": [
                 {"page": 10, "topic": "A", "status": "runtime_hard_rule"},
                 {"page": 11, "topic": "B", "status": "knowledge_ready"},
@@ -224,6 +225,16 @@ class UpdateAddendumLayerTests(unittest.TestCase):
         self.assertEqual(finalized["publish_target_counts"]["knowledge"], 1)
         self.assertEqual(finalized["publish_target_counts"]["none"], 1)
         self.assertEqual(finalized["publish_target_counts"]["manual_review"], 3)
+        self.assertEqual(finalized["entries"][0]["rule_layer_status"], "runtime")
+        self.assertEqual(finalized["entries"][1]["rule_layer_status"], "knowledge")
+        self.assertEqual(finalized["entries"][2]["rule_layer_status"], "excluded")
+        self.assertEqual(finalized["entries"][3]["rule_layer_status"], "manual_review")
+        self.assertEqual(finalized["entries"][0]["evidence_source"], "coverage_ledger")
+        self.assertEqual(finalized["entries"][0]["risk_level"], "low")
+        self.assertEqual(finalized["entries"][1]["risk_level"], "medium")
+        self.assertEqual(finalized["entries"][3]["risk_level"], "high")
+        self.assertEqual(finalized["entries"][0]["reviewed_at"], "2026-03-31T12:34:56")
+        self.assertTrue(finalized["entries"][0]["promoted_by"])
 
     def test_build_published_runtime_rules_filters_by_finalized_ledger(self) -> None:
         runtime_payload = {
@@ -271,6 +282,10 @@ class UpdateAddendumLayerTests(unittest.TestCase):
         self.assertEqual(published["rule_count"], 1)
         self.assertEqual(len(published["rules"]), 1)
         self.assertEqual(published["rules"][0]["title"], "飞瀑门高度限制")
+        self.assertEqual(published["rules"][0]["rule_layer_status"], "runtime")
+        self.assertEqual(published["rules"][0]["evidence_source"], "coverage_ledger")
+        self.assertEqual(published["rules"][0]["risk_level"], "low")
+        self.assertTrue(published["rules"][0]["promoted_by"])
 
     def test_apply_runtime_rules_overrides_can_replace_all_rules(self) -> None:
         payload = {
@@ -389,6 +404,33 @@ class UpdateAddendumLayerTests(unittest.TestCase):
         self.assertIn("图纸备注提示", payload["entries"][0]["answer_lead"])
         self.assertIn("有线开关", payload["entries"][0]["answerable_summary"])
         self.assertIn("没有明确证据的部分就直接说不知道", payload["entries"][0]["do_not_overclaim"])
+
+    def test_build_published_knowledge_layer_carries_layer_metadata(self) -> None:
+        coverage_ledger = MODULE.finalize_coverage_ledger(
+            {
+                "generated_at": "2026-03-31T18:00:00",
+                "entries": [
+                    {
+                        "page": 297,
+                        "topic": "无线单面板动能开关",
+                        "summary": "适用于所有型号的单色温灯带",
+                        "status": "knowledge_ready",
+                    }
+                ],
+            }
+        )
+
+        payload = MODULE.build_published_knowledge_layer(
+            layer_id="designer-a",
+            layer_name="设计师追加规则 A",
+            coverage_ledger=coverage_ledger,
+        )
+
+        self.assertEqual(len(payload["entries"]), 1)
+        self.assertEqual(payload["entries"][0]["rule_layer_status"], "knowledge")
+        self.assertEqual(payload["entries"][0]["evidence_source"], "coverage_ledger")
+        self.assertEqual(payload["entries"][0]["risk_level"], "medium")
+        self.assertEqual(payload["entries"][0]["reviewed_at"], "2026-03-31T18:00:00")
 
     def test_apply_knowledge_layer_overrides_updates_generated_entries(self) -> None:
         payload = {

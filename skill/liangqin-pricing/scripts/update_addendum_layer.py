@@ -96,6 +96,61 @@ def resolve_publish_target(status: str) -> str:
     return "manual_review"
 
 
+def resolve_rule_layer_status(publish_target: str) -> str:
+    normalized = str(publish_target).strip().lower()
+    if normalized in {"runtime", "knowledge", "manual_review"}:
+        return normalized
+    return "excluded"
+
+
+def resolve_evidence_source(entry: dict[str, Any]) -> str:
+    for field_name in ("evidence_source", "source"):
+        value = str(entry.get(field_name, "")).strip()
+        if value:
+            return value
+    return "coverage_ledger"
+
+
+def resolve_risk_level(*, rule_layer_status: str, entry: dict[str, Any]) -> str:
+    explicit = str(entry.get("risk_level", "")).strip().lower()
+    if explicit in {"low", "medium", "high"}:
+        return explicit
+    if rule_layer_status == "runtime":
+        return "low"
+    if rule_layer_status == "knowledge":
+        return "medium"
+    if rule_layer_status == "manual_review":
+        return "high"
+    return "low"
+
+
+def resolve_promoted_by(*, rule_layer_status: str, entry: dict[str, Any]) -> str:
+    explicit = str(entry.get("promoted_by", "")).strip()
+    if explicit:
+        return explicit
+    if rule_layer_status in {"runtime", "knowledge"}:
+        return "coverage_ledger_review"
+    if rule_layer_status == "manual_review":
+        return "manual_triage"
+    return "background_filter"
+
+
+def enrich_rule_layer_metadata(entry: dict[str, Any], *, reviewed_at: str | None = None) -> dict[str, Any]:
+    normalized_entry = dict(entry)
+    publish_target = str(normalized_entry.get("publish_target", "")).strip() or resolve_publish_target(
+        str(normalized_entry.get("status", ""))
+    )
+    rule_layer_status = resolve_rule_layer_status(publish_target)
+
+    normalized_entry["publish_target"] = publish_target
+    normalized_entry["rule_layer_status"] = rule_layer_status
+    normalized_entry["evidence_source"] = resolve_evidence_source(normalized_entry)
+    normalized_entry["risk_level"] = resolve_risk_level(rule_layer_status=rule_layer_status, entry=normalized_entry)
+    normalized_entry["promoted_by"] = resolve_promoted_by(rule_layer_status=rule_layer_status, entry=normalized_entry)
+    normalized_entry["reviewed_at"] = str(normalized_entry.get("reviewed_at", "")).strip() or str(reviewed_at or "").strip()
+    return normalized_entry
+
+
 def build_publish_target_counts(entries: list[dict[str, Any]]) -> dict[str, int]:
     counts: dict[str, int] = {}
     for entry in entries:
@@ -106,12 +161,13 @@ def build_publish_target_counts(entries: list[dict[str, Any]]) -> dict[str, int]
 
 def finalize_coverage_ledger(payload: dict[str, Any]) -> dict[str, Any]:
     entries = []
+    reviewed_at = str(payload.get("generated_at", "")).strip() or None
     for entry in payload.get("entries", []):
         if not isinstance(entry, dict):
             continue
         normalized_entry = dict(entry)
         normalized_entry["publish_target"] = resolve_publish_target(str(normalized_entry.get("status", "")))
-        entries.append(normalized_entry)
+        entries.append(enrich_rule_layer_metadata(normalized_entry, reviewed_at=reviewed_at))
 
     finalized = dict(payload)
     finalized["entries"] = entries
@@ -315,11 +371,26 @@ def build_published_runtime_rules(runtime_payload: dict[str, Any], coverage_ledg
         page_entries = approved_by_page.get(page, [])
         if not page_entries:
             continue
+        matched_entry: dict[str, Any] | None = None
         if len(page_entries) == 1 and rule_count_by_page.get(page, 0) == 1:
-            published_rules.append(rule)
+            matched_entry = page_entries[0]
+        else:
+            matched_entry = next(
+                (ledger_entry for ledger_entry in page_entries if runtime_rule_matches_ledger_entry(rule, ledger_entry)),
+                None,
+            )
+        if matched_entry is None:
             continue
-        if any(runtime_rule_matches_ledger_entry(rule, ledger_entry) for ledger_entry in page_entries):
-            published_rules.append(rule)
+        published_rules.append(
+            {
+                **dict(rule),
+                "rule_layer_status": str(matched_entry.get("rule_layer_status", "")).strip() or "runtime",
+                "evidence_source": str(matched_entry.get("evidence_source", "")).strip() or "coverage_ledger",
+                "risk_level": str(matched_entry.get("risk_level", "")).strip() or "low",
+                "promoted_by": str(matched_entry.get("promoted_by", "")).strip(),
+                "reviewed_at": str(matched_entry.get("reviewed_at", "")).strip(),
+            }
+        )
 
     published_payload = dict(runtime_payload)
     published_payload["rules"] = published_rules
@@ -477,6 +548,11 @@ def build_knowledge_entry_from_ledger(entry: dict[str, Any]) -> dict[str, Any]:
         "source_pages": [page] if page else [],
         "trigger_terms": derive_knowledge_trigger_terms(entry, topic=topic, answerable_summary=answerable_summary),
         "do_not_overclaim": normalize_sentence(entry.get("note", "")).strip(),
+        "rule_layer_status": str(entry.get("rule_layer_status", "")).strip() or "knowledge",
+        "evidence_source": str(entry.get("evidence_source", "")).strip() or "coverage_ledger",
+        "risk_level": str(entry.get("risk_level", "")).strip() or "medium",
+        "promoted_by": str(entry.get("promoted_by", "")).strip(),
+        "reviewed_at": str(entry.get("reviewed_at", "")).strip(),
     }
     return normalize_knowledge_entry(knowledge_entry)
 

@@ -2,6 +2,7 @@ import importlib.util
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 SCRIPT_PATH = Path(__file__).resolve().parents[1] / "scripts" / "update_release.py"
@@ -12,6 +13,26 @@ SPEC.loader.exec_module(MODULE)
 
 
 class UpdateReleaseTests(unittest.TestCase):
+    def test_parse_args_accepts_release_gate_options(self) -> None:
+        argv = [
+            "update_release.py",
+            "--prompt-suite-report",
+            "/tmp/prompt-suite.json",
+            "--required-assertion",
+            "output_contract_pass",
+            "--runtime-noise-review",
+            "/tmp/runtime-noise.md",
+            "--max-suspicious-runtime",
+            "0",
+        ]
+        with mock.patch("sys.argv", argv):
+            args = MODULE.parse_args()
+
+        self.assertEqual(args.prompt_suite_report, "/tmp/prompt-suite.json")
+        self.assertEqual(args.required_assertion, ["output_contract_pass"])
+        self.assertEqual(args.runtime_noise_review, "/tmp/runtime-noise.md")
+        self.assertEqual(args.max_suspicious_runtime, 0)
+
     def test_pick_latest_rules_source_prefers_docx_when_available(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             inbox = Path(tmpdir)

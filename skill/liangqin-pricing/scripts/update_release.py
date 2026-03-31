@@ -28,6 +28,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--skill-dir", default=str(Path(__file__).resolve().parent.parent), help="Skill root directory.")
     parser.add_argument("--activate", action=argparse.BooleanOptionalAction, default=True, help="Activate the built version into data/current.")
     parser.add_argument("--publish", action=argparse.BooleanOptionalAction, default=True, help="Publish the shared skill into the OpenClaw workspace.")
+    parser.add_argument("--prompt-suite-report", help="Optional prompt suite report JSON used for release gating.")
+    parser.add_argument(
+        "--required-assertion",
+        action="append",
+        default=[],
+        help="Validation assertion name that must have zero failures in the prompt suite report.",
+    )
+    parser.add_argument("--runtime-noise-review", help="Optional runtime noise review report (.md/.json) used for release gating.")
+    parser.add_argument("--max-suspicious-runtime", type=int, help="Maximum allowed suspicious runtime entries when runtime noise review is provided.")
     return parser.parse_args()
 
 
@@ -158,14 +167,22 @@ def main() -> int:
         ]
     )
 
-    run_step(
-        [
-            sys.executable,
-            str(scripts_dir / "validate_release.py"),
-            "--version-dir",
-            str(version_dir),
-        ]
-    )
+    validate_command = [
+        sys.executable,
+        str(scripts_dir / "validate_release.py"),
+        "--version-dir",
+        str(version_dir),
+    ]
+    if args.prompt_suite_report:
+        validate_command.extend(["--prompt-suite-report", str(Path(args.prompt_suite_report).expanduser().resolve())])
+    for assertion_name in args.required_assertion:
+        validate_command.extend(["--required-assertion", assertion_name])
+    if args.runtime_noise_review:
+        validate_command.extend(["--runtime-noise-review", str(Path(args.runtime_noise_review).expanduser().resolve())])
+    if args.max_suspicious_runtime is not None:
+        validate_command.extend(["--max-suspicious-runtime", str(args.max_suspicious_runtime)])
+
+    run_step(validate_command)
     print(f"[5/6] 版本构建并校验通过：{version}")
 
     if args.activate:
