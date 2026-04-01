@@ -26,6 +26,10 @@ class QueryAddendumGuidanceTests(unittest.TestCase):
         self.assertTrue(payload["matched"])
         self.assertEqual(payload["recommended_reply_mode"], "rule_explanation")
         self.assertEqual(payload["answer_style"], "natural_rule_explanation")
+        self.assertEqual(payload["route"], "addendum_guidance")
+        self.assertEqual(payload["constraint_code"], "addendum_guidance.source_boundary")
+        self.assertEqual(payload["detail_level_hint"], "rule_explanation")
+        self.assertEqual(payload["missing_fields"], [])
         self.assertIn("现有良禽资料", payload["suggested_reply"])
         self.assertIn("未明确", payload["suggested_reply"])
         self.assertIn("设计师或门店确认", payload["suggested_reply"])
@@ -41,6 +45,7 @@ class QueryAddendumGuidanceTests(unittest.TestCase):
 
         self.assertTrue(payload["matched"])
         self.assertEqual(payload["recommended_reply_mode"], "rule_explanation")
+        self.assertEqual(payload["constraint_code"], "addendum_guidance.source_boundary")
         self.assertIn("不能算良禽资料结论", payload["suggested_reply"])
         self.assertIn("现有良禽资料", payload["suggested_reply"])
 
@@ -159,10 +164,23 @@ class QueryAddendumGuidanceTests(unittest.TestCase):
         self.assertTrue(payload["matched"])
         self.assertEqual(payload["answer_style"], "natural_rule_explanation")
         self.assertEqual(payload["evidence_level"], "high_confidence_review")
+        self.assertEqual(payload["detail_level_hint"], "rule_explanation")
         self.assertIn("凹槽内退尺寸约束", payload["answer_summary"])
         self.assertIn("20/8/12", payload["answer_summary"])
         self.assertIn("术语口径还没完全锁定", payload["confidence_note"])
         self.assertEqual(payload["constraints"], [])
+
+    def test_query_guidance_follow_up_exposes_structured_missing_fields(self) -> None:
+        payload = MODULE.query_guidance(
+            "我要做一个北美黑胡桃木流云门衣柜，长1.8米，高2.2米，深600，不做拉手和抠手，开启方向先不说，这种现在怎么报？",
+            ACTUAL_ADDENDA_ROOT,
+        )
+
+        self.assertTrue(payload["matched"])
+        self.assertEqual(payload["recommended_reply_mode"], "follow_up")
+        self.assertEqual(payload["question_code"], "addendum_guidance.follow_up")
+        self.assertTrue(payload["missing_fields"])
+        self.assertEqual(payload["detail_level_hint"], "single_question_follow_up")
 
     def test_query_guidance_answers_node_dimensions_from_actual_knowledge_layer(self) -> None:
         payload = MODULE.query_guidance(

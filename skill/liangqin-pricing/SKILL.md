@@ -1,11 +1,59 @@
 ---
 name: liangqin-pricing
-description: "Use when user asks about 良禽/良禽佳木 pricing, product options, rule explanations, or source-bound answers, especially messages like '良禽佳木可以选国产五金和进口五金吗', 'BLUM/百隆是什么', or '这条是良禽资料还是行业常识/资料来源是哪里', and when the reply must stay within Liangqin materials instead of generic web or industry knowledge. Also use for maintaining the current Liangqin price/rule release."
+description: "书柜/衣柜/儿童房利用/做做功课/先咨询一下/空间怎么利用 => liangqin-pricing。任何渠道命中这类定制家具咨询，都先走 Liangqin 本地报价脚本，不要回成行业通用建议、泛装修问卷或旧记忆续聊。"
 ---
 
 # 良禽佳木定制报价顾问
 
 ## Core Rules
+
+### OpenClaw Default Entry
+
+- 只要用户是在问 `良禽 / 良禽佳木` 的报价、定制、产品选择、规则、空间利用、普通用户探索式咨询，就必须命中这个 skill。
+- 对 OpenClaw 运行时，默认第一步不是自由回答，也不是先做 `memory_search`，而是优先走统一入口脚本：
+
+```bash
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/handle_quote_message.py --text "用户原话" --context-json '{...}' --channel feishu --output-mode openclaw_reply
+```
+
+- 如果当前拿不到 `context-json` 或 `channel`，也仍然优先用同一个脚本，只缺少会话接力能力，不要改成自由发挥：
+
+```bash
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/handle_quote_message.py --text "用户原话" --output-mode openclaw_reply
+```
+
+- 普通用户自然入口，例如：
+  - `我想定个书柜`
+  - `新房装修中，先做做功课`
+  - `儿童房还能怎么利用起来`
+  - `先咨询一下`
+  都应先交给 `handle_quote_message.py`，不要自己先总结方案、列长问卷或混入泛家装建议。
+
+- 在这类报价入口场景里：
+  - 不要先跑 `memory_search`
+  - 不要先回忆旧会话
+  - 不要先给泛装修建议
+  - 不要一次追问 4 到 5 个问题
+  - 除非当前会话里已有报价 flow state / bundle，否则把它当新咨询处理
+  - 即使同一个 session 里刚聊过别的房间、别的家具，或者刚走过一版泛咨询问卷，只要当前消息明显换了产品/空间/目标，也要重新进入统一入口，不要沿着旧问卷继续追问
+
+- 如果脚本返回的是普通用户引导结果：
+  - 直接按脚本结果回复
+  - 优先原样发送脚本 stdout
+  - 当前 stdout 就是最终客户可见文案，不要再自己改写成另一版
+  - 不要删掉脚本里的开场缓冲句
+  - 不要把多句压缩成只剩最后一个问题
+  - 每轮只保留一个关键问题
+  - 不要自行扩写成多项清单
+
+- 如果脚本返回的是正式报价、规则解释或客户版文案：
+  - 直接按脚本结果回复
+  - 如果 `handle_quote_message.py --output-mode openclaw_reply` 已经返回非空 stdout，就在当前轮次直接发送该 stdout 并停止
+  - 不要在脚本结果外再叠加通用建议
+  - 不要再继续调用 `precheck_quote.py`
+  - 不要再继续调用 `query_addendum_guidance.py`
+  - 不要再继续调用 `detect_modular_child_bed_rule.py`
+  - 不要再继续调用其他良禽子脚本去“验证一下”
 
 ### Trigger Examples
 
@@ -229,6 +277,25 @@ description: "Use when user asks about 良禽/良禽佳木 pricing, product opti
   - `进深＞700mm`：按 `前后两组柜体之和` 计算，不能直接按单组柜体正式报价
 
 ## 日常报价流程
+
+### 统一入口优先
+
+OpenClaw 里处理真实用户消息时，默认按这个优先级：
+
+1. 先运行 `handle_quote_message.py`
+2. 只有当你是在离线调试、人工拆查某个具体环节，才单独运行下游脚本
+
+也就是说：
+
+- 面向真实用户对话时，`handle_quote_message.py` 是默认入口
+- `detect_special_cabinet_rule.py / query_addendum_guidance.py / precheck_quote.py / query_price_index.py`
+  这些脚本主要作为统一入口内部编排的下游能力，或人工调试工具
+- 不要在 OpenClaw 主回复里跳过统一入口，直接凭印象改走某个下游脚本
+
+只有下面两种情况，才建议直接单跑下游脚本：
+
+- 你正在做开发排查，明确要验证单个脚本输出
+- 统一入口已经返回了明确的下游结果，而你只是想复核那一步
 
 1. 先判断用户说的是几个产品，逐项拆单。
 2. 抽取产品、尺寸、材质、门型、结构等参数。

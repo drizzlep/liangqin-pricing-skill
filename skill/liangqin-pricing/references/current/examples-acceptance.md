@@ -1,5 +1,47 @@
 # 验收样例
 
+## 0. 普通用户统一入口抽查
+
+这一组样例专门用来确认一件事：
+
+- 普通用户前端只有一个公开入口
+- 不管用户问法多散，`entry_mode` 都应保持 `customer_guided_discovery`
+- 差异只体现在内部 `customer_strategy`
+
+推荐先人工抽查下面 20 条：
+
+| 用户输入 | 期望 `audience_role` | 期望 `entry_mode` | 期望 `customer_strategy` | 首轮追问方向 |
+| --- | --- | --- | --- | --- |
+| `我想定个书柜。` | `customer` | `customer_guided_discovery` | `precise_need` | 先确认更偏展示还是收纳 |
+| `想做一组柜子，但还没想好怎么做。` | `customer` | `customer_guided_discovery` | `precise_need` | 先确认主要用途 |
+| `想做个衣柜，不过还没确定内部怎么分。` | `customer` | `customer_guided_discovery` | `precise_need` | 先确认主要用途 |
+| `家里想打一组柜体，先从需求聊起也行。` | `customer` | `customer_guided_discovery` | `precise_need` | 先确认用途或空间 |
+| `想给孩子房间做个床和柜子一体的。` | `customer` | `customer_guided_discovery` | `precise_need` | 先确认更偏睡眠还是收纳 |
+| `家里准备装修，先来了解下大概要多少钱。` | `customer` | `customer_guided_discovery` | `renovation_browse` | 先问想看哪个空间 |
+| `房子还在装，先看看儿童房能做些什么。` | `customer` | `customer_guided_discovery` | `renovation_browse` | 先问空间，再收用途 |
+| `新房装修中，先做做功课。` | `customer` | `customer_guided_discovery` | `renovation_browse` | 先问想先看哪个空间 |
+| `先参考一下你们这边一般怎么做。` | `customer` | `customer_guided_discovery` | `renovation_browse` | 先问空间或用途 |
+| `先逛逛，看看次卧能做哪些东西。` | `customer` | `customer_guided_discovery` | `renovation_browse` | 先问次卧更偏收纳还是睡眠 |
+| `我也不清楚该做什么，就是想把角落利用起来。` | `customer` | `customer_guided_discovery` | `guided_discovery` | 先问想解决什么问题 |
+| `这个房间能做点什么收纳吗？` | `customer` | `customer_guided_discovery` | `guided_discovery` | 先问空间目标 |
+| `不知道该做什么，就想多点收纳。` | `customer` | `customer_guided_discovery` | `guided_discovery` | 先问最想解决哪类问题 |
+| `儿童房还能怎么利用起来？` | `customer` | `customer_guided_discovery` | `guided_discovery` | 先问给谁用 |
+| `这个空间能做什么？` | `customer` | `customer_guided_discovery` | `guided_discovery` | 先问空间目标 |
+| `想做点什么，但我也说不清。` | `customer` | `customer_guided_discovery` | `guided_discovery` | 先问想优先解决什么 |
+| `先问问看。` | `customer` | `customer_guided_discovery` | `default` | 先问最想解决的问题 |
+| `想先了解一下你们这边怎么报价。` | `customer` | `customer_guided_discovery` | `renovation_browse` | 先问空间或当前阶段 |
+| `先咨询一下。` | `customer` | `customer_guided_discovery` | `default` | 先问空间或核心目标 |
+| `大概是怎么个流程？` | `customer` | `customer_guided_discovery` | `default` | 先问想看哪个空间 |
+| `我先来问一下。` | `customer` | `customer_guided_discovery` | `default` | 先问最想先解决什么 |
+
+验收要点：
+
+- 不要因为用户没有说家具名，就掉出普通用户统一入口
+- 不要因为用户说法很模糊，就回成设计师或顾问
+- 不要一上来连续追 4 到 5 个问题
+- 首轮只允许收一个最关键问题
+- 用户如果后面补充更具体信息，再逐步进入预检或正式报价
+
 ## 1. 单个柜体正式报价
 
 用户输入：

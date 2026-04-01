@@ -115,6 +115,9 @@ class PrecheckQuoteTests(unittest.TestCase):
         result = MODULE.precheck_cabinet(args)
         self.assertTrue(result["ready_for_formal_quote"])
         self.assertEqual(result["quote_decision"], "reference_quote")
+        self.assertEqual(result["route"], "cabinet")
+        self.assertEqual(result["missing_fields"], [])
+        self.assertEqual(result["detail_level_hint"], "full_quote_ready")
 
     def test_generic_bookcase_with_explicit_depth_still_uses_default_open_profile(self) -> None:
         args = self.make_args(category="书柜", length="2", depth="0.35", height="2.4", material="北美樱桃木")
@@ -253,7 +256,23 @@ class PrecheckQuoteTests(unittest.TestCase):
         result = MODULE.precheck_bed(args)
         self.assertFalse(result["ready_for_formal_quote"])
         self.assertEqual(result["quote_decision"], "hard_block")
+        self.assertEqual(result["route"], "modular_child_bed")
+        self.assertEqual(result["question_code"], "modular_child_bed.width.blocked")
+        self.assertEqual(result["constraint_code"], "modular_child_bed.upper_bed_width_limit")
+        self.assertEqual(result["missing_fields"], ["width"])
+        self.assertEqual(result["detail_level_hint"], "constraint_explanation")
         self.assertIn("不能直接正式报价", result["next_question"])
+
+    def test_cabinet_follow_up_includes_structured_question_metadata(self) -> None:
+        args = self.make_args(category="书柜", length="2", height="2.4", material="北美樱桃木", shape="带抽屉")
+        result = MODULE.precheck_cabinet(args)
+
+        self.assertFalse(result["ready_for_formal_quote"])
+        self.assertEqual(result["route"], "cabinet")
+        self.assertEqual(result["question_code"], "cabinet.depth.required")
+        self.assertEqual(result["missing_fields"], ["depth"])
+        self.assertIsNone(result["constraint_code"])
+        self.assertEqual(result["detail_level_hint"], "single_question_follow_up")
 
     def test_half_loft_with_underbed_double_row_cabinets_is_ready_when_combo_fields_complete(self) -> None:
         args = self.make_args(
@@ -310,6 +329,32 @@ class PrecheckQuoteTests(unittest.TestCase):
         self.assertFalse(result["ready_for_formal_quote"])
         self.assertEqual(result["pricing_route"], "modular_child_bed_combo")
         self.assertEqual(result["next_required_field"], "rear_cabinet_depth")
+        self.assertIn("后排", result["next_question"])
+
+    def test_half_loft_with_double_row_intent_but_no_rear_row_asks_rear_length_first(self) -> None:
+        args = self.make_args(
+            category="半高床",
+            quote_kind="custom",
+            bed_form="半高床",
+            access_style="梯柜",
+            width="1.2",
+            length="2",
+            material="北美白蜡木",
+            guardrail_style="胶囊围栏",
+            guardrail_length="2",
+            guardrail_height="0.4",
+            stair_width="0.52",
+            stair_depth="0.5",
+            front_cabinet_length="2",
+            front_cabinet_height="1.2",
+            front_cabinet_depth="0.45",
+            front_cabinet_mode="有门无背板",
+            interconnected_rows=True,
+        )
+        result = MODULE.precheck_bed(args)
+        self.assertFalse(result["ready_for_formal_quote"])
+        self.assertEqual(result["pricing_route"], "modular_child_bed_combo")
+        self.assertEqual(result["next_required_field"], "rear_cabinet_length")
         self.assertIn("后排", result["next_question"])
 
     def test_half_loft_with_invalid_front_underbed_mode_asks_for_supported_structure_name(self) -> None:

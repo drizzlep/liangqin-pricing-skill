@@ -7,8 +7,9 @@ import argparse
 import json
 import re
 import sys
-from pathlib import Path
 from typing import Any
+
+from quote_response_metadata import build_response_metadata
 
 
 DIMENSION_PAIR_PATTERN = re.compile(
@@ -68,13 +69,21 @@ def query_guidance(text: str) -> dict[str, Any]:
     normalized = str(text or "").strip()
     width_mm, length_mm = extract_dimensions_mm(normalized)
     matched = is_bed_weight_question(normalized)
-    return {
+    payload = {
         "matched": matched,
         "width_mm": width_mm,
         "length_mm": length_mm,
         "follow_up_question": "请确认床垫重量" if matched else "",
         "suggested_reply": build_suggested_reply(normalized, width_mm=width_mm, length_mm=length_mm) if matched else "",
     }
+    payload.update(
+        build_response_metadata(
+            route="bed_weight_guidance",
+            next_required_field="mattress_weight" if matched else None,
+            ready=False,
+        )
+    )
+    return payload
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -26,7 +26,10 @@ def generate_quote_card_reply(
     if not bundle or not bundle.get("eligible_for_card"):
         return {"text": quote_result_bundle.NO_BUNDLE_MESSAGE}
 
-    view_model = quote_card_adapter.adapt_quote_card_payload(bundle["prepared_payload"], hero_image=hero_image)
+    view_model = quote_card_adapter.adapt_quote_card_payload(
+        bundle.get("quote_card_payload") or bundle["prepared_payload"],
+        hero_image=hero_image,
+    )
     render = renderer or quote_card_renderer.render_quote_card_export
     export = render(view_model=view_model, bundle=bundle, output_root=media_root, hero_image=hero_image)
     return {

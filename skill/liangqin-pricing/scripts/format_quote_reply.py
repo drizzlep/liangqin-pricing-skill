@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import copy
 import json
 import re
 import sys
@@ -8,6 +9,7 @@ from typing import Any
 
 from apply_addendum_layers import apply_addendum_layers
 from material_names import formalize_text
+import quote_flow_state
 from quote_result_bundle import (
     DEFAULT_BUNDLE_ROOT,
     append_quote_card_prompt,
@@ -88,6 +90,107 @@ def prepare_payload(payload: dict[str, Any], *, addenda_root: Path, disable_adde
     if disable_addenda:
         return payload
     return apply_addendum_layers(payload, addenda_root)
+
+
+def _normalize_role(value: str | None) -> str:
+    normalized = str(value or "").strip()
+    return normalized if normalized in {"customer", "designer", "consultant"} else ""
+
+
+def _resolve_output_profile(audience_role: str | None, output_profile: str | None) -> str:
+    normalized_profile = str(output_profile or "").strip()
+    if normalized_profile in {"customer_simple", "designer_full", "consultant_dual"}:
+        return normalized_profile
+    normalized_role = _normalize_role(audience_role)
+    if normalized_role == "customer":
+        return "customer_simple"
+    if normalized_role == "designer":
+        return "designer_full"
+    if normalized_role == "consultant":
+        return "consultant_dual"
+    return "legacy"
+
+
+def _merge_note_entries(payload: dict[str, Any]) -> list[str]:
+    note = str(formalize_text(str(payload.get("note", "")).strip()) or "").strip()
+    addendum_notes = [
+        str(formalize_text(str(note_item).strip()) or "").strip()
+        for note_item in (payload.get("addendum_notes") or [])
+    ]
+    return [entry for entry in [note, *addendum_notes] if entry]
+
+
+def _customer_safe_notes(payload: dict[str, Any]) -> list[str]:
+    return [
+        entry
+        for entry in _merge_note_entries(payload)
+        if entry and not entry.startswith("已套用设计师追加规则") and entry != "按当前规则可正式报价"
+    ]
+
+
+def render_customer_simple(payload: dict[str, Any]) -> str:
+    items = payload["items"]
+    multiple = len(items) > 1
+    total_label = "参考总价（仅供参考）" if payload.get("reference") else "正式报价"
+    total_value = str(payload.get("total", "")).strip()
+    if not total_value:
+        raise SystemExit("Payload.total is required")
+
+    lines = [
+        "这次我先按你现在给到的条件，给你一个参考报价。" if payload.get("reference") else "这次可以正式报价，我先把结果给你。",
+    ]
+    for index, item in enumerate(items):
+        title = str(formalize_text(str(item.get("product", "")).strip()) or "").strip()
+        confirmed = str(formalize_text(str(item.get("confirmed", "")).strip()) or "").strip()
+        pricing_method = str(formalize_text(str(item.get("pricing_method", "")).strip()) or "").strip()
+        subtotal = str(item.get("subtotal", "")).strip()
+        if not title or not confirmed or not pricing_method or not subtotal:
+            raise SystemExit(f"Item {index + 1} is missing required fields for customer output")
+
+        label = f"产品{index + 1}" if multiple else "产品"
+        lines.append(f"{label}：{title}")
+        lines.append(f"已确认：{confirmed}")
+        lines.append(f"这次{pricing_method if pricing_method.startswith('按') else f'按{pricing_method}'}。")
+        if multiple:
+            lines.append(f"小计：{subtotal}")
+
+    lines.append(f"{total_label}：{total_value}")
+    lines.append("关键前提：先按目前已经确认的尺寸、材质和做法计算。")
+    safe_notes = _customer_safe_notes(payload)
+    if safe_notes:
+        lines.append(f"补充：{'；'.join(safe_notes)}")
+    lines.append(
+        "下一步：如果后面尺寸、门型、结构或附加项还有调整，我再按新条件更新。"
+        if not payload.get("reference")
+        else "下一步：等关键条件补齐后，我再给你正式报价。"
+    )
+    rendered = "\n".join(lines)
+    if any(phrase in rendered for phrase in INTERNAL_PROCESS_PHRASES):
+        raise SystemExit("Rendered customer output leaks internal process")
+    return rendered
+
+
+def build_customer_card_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    quote_card_payload = {
+        "items": [],
+        "total": str(payload.get("total", "")).strip(),
+    }
+    if payload.get("reference"):
+        quote_card_payload["reference"] = True
+    for item in payload.get("items", []):
+        quote_card_payload["items"].append(
+            {
+                "product": item.get("product", ""),
+                "confirmed": item.get("confirmed", ""),
+                "pricing_method": item.get("pricing_method", ""),
+                "calculation_steps": [str(step) for step in (item.get("calculation_steps") or [])[:2]],
+                "subtotal": item.get("subtotal", ""),
+            }
+        )
+    safe_notes = _customer_safe_notes(payload)
+    if safe_notes:
+        quote_card_payload["note"] = "；".join(safe_notes)
+    return quote_card_payload
 
 
 def item_lines(item: dict[str, Any], index: int, multiple: bool) -> list[str]:
@@ -175,24 +278,117 @@ def render(payload: dict[str, Any]) -> str:
     return rendered
 
 
+def render_for_output_profile(
+    payload: dict[str, Any],
+    *,
+    audience_role: str | None = None,
+    output_profile: str | None = None,
+) -> dict[str, Any]:
+    resolved_role = _normalize_role(audience_role or str(payload.get("audience_role", "")).strip())
+    resolved_profile = _resolve_output_profile(resolved_role, output_profile or str(payload.get("output_profile", "")).strip())
+
+    internal_summary_input = str(payload.get("internal_summary", "")).strip()
+    customer_forward_input = str(payload.get("customer_forward_text", "")).strip()
+
+    if resolved_profile == "customer_simple":
+        reply_text = customer_forward_input or render_customer_simple(payload)
+        internal_summary = internal_summary_input
+        customer_forward_text = reply_text
+    elif resolved_profile == "designer_full":
+        reply_text = internal_summary_input or render(payload)
+        internal_summary = reply_text
+        customer_forward_text = customer_forward_input
+    elif resolved_profile == "consultant_dual":
+        internal_summary = internal_summary_input or render(payload)
+        customer_forward_text = customer_forward_input or render_customer_simple(payload)
+        reply_text = customer_forward_text
+    else:
+        reply_text = render(payload)
+        internal_summary = internal_summary_input
+        customer_forward_text = customer_forward_input
+
+    prepared_payload = copy.deepcopy(payload)
+    if resolved_role:
+        prepared_payload["audience_role"] = resolved_role
+    if resolved_profile != "legacy":
+        prepared_payload["output_profile"] = resolved_profile
+    if internal_summary:
+        prepared_payload["internal_summary"] = internal_summary
+    if customer_forward_text:
+        prepared_payload["customer_forward_text"] = customer_forward_text
+
+    quote_card_payload = None
+    if resolved_profile in {"customer_simple", "consultant_dual"}:
+        quote_card_payload = build_customer_card_payload(payload)
+        prepared_payload["quote_card_payload"] = quote_card_payload
+
+    return {
+        "audience_role": resolved_role,
+        "output_profile": resolved_profile,
+        "reply_text": reply_text,
+        "internal_summary": internal_summary,
+        "customer_forward_text": customer_forward_text,
+        "prepared_payload": prepared_payload,
+        "quote_card_payload": quote_card_payload,
+    }
+
+
 def render_with_quote_card_follow_up(
     payload: dict[str, Any],
     *,
     context_json: str | None = None,
     channel: str | None = None,
     bundle_root: Path = DEFAULT_BUNDLE_ROOT,
+    audience_role: str | None = None,
+    output_profile: str | None = None,
+    flow_state_root: Path = quote_flow_state.DEFAULT_FLOW_STATE_ROOT,
 ) -> str:
-    reply_text = render(payload)
-    eligible_for_card = is_bundle_eligible(payload)
+    render_bundle = render_for_output_profile(
+        payload,
+        audience_role=audience_role,
+        output_profile=output_profile,
+    )
+    prepared_payload = render_bundle["prepared_payload"]
+    reply_text = render_bundle["reply_text"]
+    eligible_for_card = is_bundle_eligible(prepared_payload)
 
-    if eligible_for_card and context_json and channel:
+    if context_json and channel:
         context = resolve_conversation_context(context_json, channel=channel)
-        bundle = build_quote_result_bundle(
-            prepared_payload=payload,
-            reply_text=reply_text,
-            conversation_id=context["conversation_id"],
+        if eligible_for_card:
+            bundle = build_quote_result_bundle(
+                prepared_payload=prepared_payload,
+                reply_text=reply_text,
+                conversation_id=context["conversation_id"],
+            )
+            store_latest_quote_result_bundle(bundle, cache_root=bundle_root)
+
+        confirmed_items = [
+            {
+                "product": str(item.get("product", "")).strip(),
+                "confirmed": str(item.get("confirmed", "")).strip(),
+            }
+            for item in prepared_payload.get("items", [])
+            if isinstance(item, dict)
+        ]
+        product_names = "、".join(item["product"] for item in confirmed_items[:3] if item["product"]) or "当前报价"
+        quote_kind = "reference" if prepared_payload.get("reference") else "formal"
+        quote_flow_state.merge_quote_flow_state(
+            context["conversation_id"],
+            updates={
+                "audience_role": render_bundle["audience_role"] or "customer",
+                "confirmed_fields": {"items": confirmed_items},
+                "missing_fields": list(prepared_payload.get("missing_fields", [])),
+                "active_route": str(
+                    prepared_payload.get("pricing_route", "") or prepared_payload.get("route", "") or ""
+                ).strip(),
+                "last_quote_kind": quote_kind,
+                "last_formal_payload": prepared_payload if quote_kind == "formal" else {},
+                "internal_summary": render_bundle["internal_summary"],
+                "customer_forward_text": render_bundle["customer_forward_text"],
+                "handoff_summary": f"{product_names} 当前已生成{'参考' if quote_kind == 'reference' else '正式'}报价。",
+            },
+            cache_root=flow_state_root,
         )
-        store_latest_quote_result_bundle(bundle, cache_root=bundle_root)
 
     return append_quote_card_prompt(reply_text, eligible_for_card=eligible_for_card)
 
@@ -208,10 +404,21 @@ def main() -> None:
     parser.add_argument("--disable-addenda", action="store_true", help="Skip applying addendum layers before rendering.")
     parser.add_argument("--context-json", help="Conversation info JSON from the current OpenClaw message.")
     parser.add_argument("--channel", help="Current OpenClaw channel id, such as feishu or dingtalk-connector.")
+    parser.add_argument("--audience-role", choices=["customer", "designer", "consultant"], help="Audience role.")
+    parser.add_argument(
+        "--output-profile",
+        choices=["customer_simple", "designer_full", "consultant_dual"],
+        help="Quote output profile.",
+    )
     parser.add_argument(
         "--bundle-root",
         default=str(DEFAULT_BUNDLE_ROOT),
         help="Directory used to cache the latest quote result bundle for each conversation.",
+    )
+    parser.add_argument(
+        "--flow-state-root",
+        default=str(quote_flow_state.DEFAULT_FLOW_STATE_ROOT),
+        help="Directory used to persist quote flow state for each conversation.",
     )
     args = parser.parse_args()
 
@@ -231,6 +438,9 @@ def main() -> None:
             context_json=args.context_json,
             channel=args.channel,
             bundle_root=Path(args.bundle_root).expanduser().resolve(),
+            audience_role=args.audience_role,
+            output_profile=args.output_profile,
+            flow_state_root=Path(args.flow_state_root).expanduser().resolve(),
         )
     )
 

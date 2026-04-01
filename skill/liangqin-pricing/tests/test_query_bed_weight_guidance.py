@@ -21,6 +21,10 @@ class QueryBedWeightGuidanceTests(unittest.TestCase):
 
         self.assertTrue(payload["matched"])
         self.assertEqual(payload["follow_up_question"], "请确认床垫重量")
+        self.assertEqual(payload["route"], "bed_weight_guidance")
+        self.assertEqual(payload["question_code"], "bed_weight_guidance.mattress_weight.required")
+        self.assertEqual(payload["missing_fields"], ["mattress_weight"])
+        self.assertEqual(payload["detail_level_hint"], "single_question_follow_up")
         self.assertIn("床垫重量应≤50kg", payload["suggested_reply"])
         self.assertIn("750N举升器", payload["suggested_reply"])
         self.assertIn("只补问", payload["suggested_reply"])
@@ -45,6 +49,7 @@ class QueryBedWeightGuidanceTests(unittest.TestCase):
 
         self.assertFalse(payload["matched"])
         self.assertEqual(payload["suggested_reply"], "")
+        self.assertEqual(payload["missing_fields"], [])
 
 
 if __name__ == "__main__":

@@ -17,6 +17,59 @@ SPEC.loader.exec_module(MODULE)
 
 
 class FormatQuoteReplyTests(unittest.TestCase):
+    def test_render_customer_simple_prioritizes_conclusion_over_full_calculation(self) -> None:
+        payload = {
+            "items": [
+                {
+                    "product": "流云衣柜",
+                    "confirmed": "北美黑胡桃木，1.8m*2.2m*0.6m",
+                    "pricing_method": "投影面积计价",
+                    "calculation_steps": [
+                        "投影面积：1.8 × 2.2 = 3.96㎡",
+                        "基础价格：3.96 × 8,680 = 34,372.8 元",
+                        "超深加价：34,372.8 × 15% = 5,155.92 元",
+                    ],
+                    "subtotal": "39,529 元",
+                }
+            ],
+            "total": "39,529 元",
+        }
+
+        rendered = MODULE.render_for_output_profile(payload, audience_role="customer", output_profile="customer_simple")
+
+        self.assertIn("这次可以正式报价", rendered["reply_text"])
+        self.assertIn("正式报价：39,529 元", rendered["reply_text"])
+        self.assertIn("下一步：", rendered["reply_text"])
+        self.assertNotIn("计算过程：", rendered["reply_text"])
+        self.assertEqual(rendered["customer_forward_text"], rendered["reply_text"])
+
+    def test_render_consultant_dual_generates_internal_and_customer_versions(self) -> None:
+        payload = {
+            "items": [
+                {
+                    "product": "流云衣柜",
+                    "confirmed": "北美黑胡桃木，1.8m*2.2m*0.6m",
+                    "pricing_method": "投影面积计价",
+                    "calculation_steps": ["基础价格 = 1.8 * 2.2 * 8680 = 34372.8"],
+                    "subtotal": "34372.8元",
+                    "addendum_decisions": {
+                        "adjustments": [{"title": "纹理连续补差", "detail": "门板单价差 +900 元/㎡"}],
+                        "constraints": [],
+                        "follow_up_questions": [],
+                    },
+                }
+            ],
+            "total": "34372.8元",
+        }
+
+        rendered = MODULE.render_for_output_profile(payload, audience_role="consultant", output_profile="consultant_dual")
+
+        self.assertEqual(rendered["output_profile"], "consultant_dual")
+        self.assertIn("正式报价：34372.8元", rendered["internal_summary"])
+        self.assertIn("这次可以正式报价", rendered["customer_forward_text"])
+        self.assertNotIn("追加规则：纹理连续补差", rendered["customer_forward_text"])
+        self.assertEqual(rendered["reply_text"], rendered["customer_forward_text"])
+
     def test_validate_output_contract_accepts_well_formed_formal_quote(self) -> None:
         rendered = "\n".join(
             [
@@ -99,6 +152,59 @@ class FormatQuoteReplyTests(unittest.TestCase):
         self.assertIn("正式报价：34372.8元", rendered)
         self.assertIn("如果你需要，我可以把这次报价整理成一张图片发到当前会话。你回复“生成图片”就可以。", rendered)
         self.assertEqual(len(bundle_files), 1)
+
+    def test_main_stores_role_aware_flow_state_when_context_present(self) -> None:
+        payload = {
+            "items": [
+                {
+                    "product": "流云衣柜",
+                    "confirmed": "北美黑胡桃木，1.8m*2.2m*0.6m",
+                    "pricing_method": "投影面积计价",
+                    "calculation_steps": ["基础价格 = 1.8 * 2.2 * 8680 = 34372.8"],
+                    "subtotal": "34372.8元",
+                }
+            ],
+            "total": "34372.8元",
+        }
+        context_json = json.dumps(
+            {
+                "message_id": "om_role_store",
+                "sender_id": "ou_123456",
+                "sender": "ou_123456",
+                "timestamp": "Sun 2026-03-29 10:26 GMT+8",
+            },
+            ensure_ascii=False,
+        )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            argv = [
+                "format_quote_reply.py",
+                "--input-json",
+                json.dumps(payload, ensure_ascii=False),
+                "--disable-addenda",
+                "--context-json",
+                context_json,
+                "--channel",
+                "feishu",
+                "--audience-role",
+                "consultant",
+                "--output-profile",
+                "consultant_dual",
+                "--bundle-root",
+                str(Path(tmpdir) / "bundles"),
+                "--flow-state-root",
+                str(Path(tmpdir) / "states"),
+            ]
+            with mock.patch.object(sys, "argv", argv), mock.patch("sys.stdout", new_callable=io.StringIO):
+                MODULE.main()
+
+            state_files = list((Path(tmpdir) / "states").rglob("latest.json"))
+            self.assertEqual(len(state_files), 1)
+            saved = json.loads(state_files[0].read_text(encoding="utf-8"))
+
+        self.assertEqual(saved["audience_role"], "consultant")
+        self.assertIn("customer_forward_text", saved["summaries"])
+        self.assertIn("internal_summary", saved["summaries"])
 
     def test_prepare_payload_applies_active_addendum_layers(self) -> None:
         payload = {

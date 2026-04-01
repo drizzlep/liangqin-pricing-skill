@@ -102,7 +102,7 @@ def build_quote_result_bundle(
     created_at: str | None = None,
 ) -> dict[str, Any]:
     timestamp = created_at or datetime.now().astimezone().isoformat(timespec="seconds")
-    return {
+    bundle = {
         "prepared_payload": prepared_payload,
         "reply_text": reply_text,
         "quote_kind": determine_quote_kind(prepared_payload),
@@ -110,6 +110,23 @@ def build_quote_result_bundle(
         "eligible_for_card": is_bundle_eligible(prepared_payload),
         "created_at": timestamp,
     }
+    customer_forward_text = str(prepared_payload.get("customer_forward_text", "")).strip()
+    internal_summary = str(prepared_payload.get("internal_summary", "")).strip()
+    audience_role = str(prepared_payload.get("audience_role", "")).strip()
+    output_profile = str(prepared_payload.get("output_profile", "")).strip()
+    quote_card_payload = prepared_payload.get("quote_card_payload")
+
+    if customer_forward_text:
+        bundle["customer_forward_text"] = customer_forward_text
+    if internal_summary:
+        bundle["internal_summary"] = internal_summary
+    if audience_role:
+        bundle["audience_role"] = audience_role
+    if output_profile:
+        bundle["output_profile"] = output_profile
+    if isinstance(quote_card_payload, dict):
+        bundle["quote_card_payload"] = quote_card_payload
+    return bundle
 
 
 def append_quote_card_prompt(reply_text: str, *, eligible_for_card: bool) -> str:

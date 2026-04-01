@@ -89,6 +89,32 @@ class QuoteResultBundleTests(unittest.TestCase):
         self.assertEqual(bundle["quote_kind"], "reference")
         self.assertTrue(bundle["eligible_for_card"])
 
+    def test_build_bundle_keeps_quote_card_payload_and_customer_forward_text(self) -> None:
+        payload = dict(self.payload)
+        payload["customer_forward_text"] = "客户版正式报价：39,529 元"
+        payload["quote_card_payload"] = {
+            "items": [
+                {
+                    "product": "客户版流云衣柜",
+                    "confirmed": "白橡木，1.8×2.2×0.6",
+                    "pricing_method": "按投影面积计价",
+                    "calculation_steps": ["按当前尺寸和材质计算"],
+                    "subtotal": "39,529 元",
+                }
+            ],
+            "total": "39,529 元",
+        }
+        context = MODULE.resolve_conversation_context(self.context_json, channel="feishu")
+
+        bundle = MODULE.build_quote_result_bundle(
+            prepared_payload=payload,
+            reply_text="客户版正式报价：39,529 元",
+            conversation_id=context["conversation_id"],
+        )
+
+        self.assertIn("quote_card_payload", bundle)
+        self.assertEqual(bundle["customer_forward_text"], "客户版正式报价：39,529 元")
+
     def test_build_bundle_marks_missing_total_as_ineligible(self) -> None:
         payload = dict(self.payload)
         payload.pop("total")

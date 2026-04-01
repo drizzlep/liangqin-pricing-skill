@@ -37,6 +37,12 @@ git clone --branch <release-tag> --depth 1 https://github.com/drizzlep/liangqin-
 - `data/current/modular-child-bed-price.json`
 - `references/current/rules.md`
 - `references/current/examples.md`
+- `references/current/quote-flow-role-routing.md`
+- `references/current/quote-flow-frontend-mapping.md`
+
+如果后面要接前端工作台，或者想快速看“角色路由层 / 会话状态 / 新报价清理规则”，优先看：
+
+- `references/current/quote-flow-role-routing.md`
 
 ## 日常报价怎么运行
 
@@ -73,6 +79,134 @@ git clone --branch <release-tag> --depth 1 https://github.com/drizzlep/liangqin-
    先算床体模块价，再叠加床下前后柜体投影面积价。
 3. `scripts/format_quote_reply.py`
    统一输出正式报价。
+
+## 分角色统一入口
+
+如果你现在希望先走“一层统一入口”，再决定后面该进哪条报价链路，可以先运行：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/route_quote_request.py --text "用户当前这句话" --context-json '{...}' --channel feishu
+```
+
+这个入口会先做四件事：
+
+- 识别当前更像 `普通用户 / 设计师 / 咨询顾问`
+- 普通用户对外统一落到一个公开入口：`entry_mode=customer_guided_discovery`
+- 再在后端内部用 `customer_strategy` 区分是“需求较明确 / 装修逛看 / 模糊探索”
+- 给出建议输出 profile：`customer_simple / designer_full / consultant_dual`
+- 判断下一步优先该走哪个脚本，例如：
+  - `generate_quote_card_reply`
+  - `query_bed_weight_guidance`
+  - `query_addendum_guidance`
+  - `detect_special_cabinet_rule`
+  - `precheck_quote`
+- 如果当前明显是“新开一单”，还会提示是否该清掉上一条报价残留上下文
+
+如果你只是想单独看角色识别结果，也可以直接运行：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/classify_quote_role.py --text "用户当前这句话" --context-json '{...}' --channel feishu
+```
+
+你会看到：
+
+- `audience_role`
+- `entry_mode`
+- `customer_strategy`
+
+这里要特别注意：
+
+- `entry_mode` 是对外公开流程入口
+- `customer_strategy` 是普通用户内部引导策略
+- 前端一般只需要展示前者，后者用于解释当前为什么这样追问
+
+如果你希望直接用一个脚本把“角色识别 + 路由 + 下游执行 + 角色化输出”串起来，可以运行：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/handle_quote_message.py --text "用户当前这句话" --context-json '{...}' --channel feishu
+```
+
+这个统一编排入口目前优先覆盖四类安全路径：
+
+- 图片请求：命中“生成图片”时，直接复用当前会话最近一次完整报价 bundle 生成报价卡
+- 规则咨询：命中床垫重量、设计师追加规则、特殊柜体规则时，直接返回结构化结果和分角色文案
+- 预检追问：当你同时传入 `--precheck-args-json '{...}'` 时，会直接执行 `precheck_quote` 并返回统一结构
+- 正式输出：当你同时传入 `--quote-payload-json '{...}'` 时，会直接走 `format_quote_reply`，并自动写入会话级 bundle/state
+- 专项报价：当你同时传入 `--special-quote-json '{...}'` 时，会直接执行专项价/专项折减，再统一走正式输出
+
+如果你已经有结构化预检参数，并且希望在“预检通过后继续直接出正式报价”，可以再加：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/handle_quote_message.py \
+  --text "用户当前这句话" \
+  --context-json '{...}' \
+  --channel feishu \
+  --precheck-args-json '{...}' \
+  --execute-quote-when-ready
+```
+
+当前这一步已经接通两类正式报价执行：
+
+- 默认投影面积柜体路径：例如常规衣柜、书柜、玄关柜等默认 profile 柜体
+- 模块化儿童床路径：`modular_child_bed / modular_child_bed_combo`
+
+继续往下已经补通的路径：
+
+- 成人床标准价路径：`bed_standard`，会继续走成人床标准规则计算
+- 目录标准品单位价路径：会命中唯一标准目录记录后直接出正式报价，例如部分书桌、餐桌、标准目录款
+
+专项价入口当前已经补通：
+
+- 岩板专项价：`rock_slab_countertop / rock_slab_backboard / rock_slab_aluminum_frame_door`
+- 双面门专项价：`double_sided_door`
+- 操作空区专项价：`operation_gap`
+- 非见光玫瑰木折减：`hidden_rosewood_discount`
+
+例如：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/handle_quote_message.py \
+  --text "这个岩板台面专项价直接算进去" \
+  --context-json '{...}' \
+  --channel feishu \
+  --quote-payload-json '{...}' \
+  --special-quote-json '{"special_rule":"rock_slab_countertop","slab_length":"1.8"}'
+```
+
+现在还支持一层更轻的“会话接力”：
+
+- 如果当前会话里已经有上一轮正式报价 bundle / flow state
+- 这轮消息只是补一句专项条件，例如“这组柜子加岩板台面，岩板长度1.8，直接给新版报价”
+
+那么 `handle_quote_message.py` 会优先尝试：
+
+- 复用上一轮正式报价 payload
+- 从当前新消息里抽取专项参数
+- 直接生成新版正式报价
+
+当前会话接力已覆盖：
+
+- 岩板台面专项价
+- 双面门专项价
+- 操作空区专项价
+- 非见光玫瑰木折减
+
+当前这层仍然不改底层计价职责：
+
+- 没有 `quote_payload_json` 时，不会假装已经算完价
+- 没有 `precheck_args_json` 时，也不会伪造预检参数
+- 真正的价格计算仍然继续由 `query_price_index / calculate_modular_child_bed_quote / calculate_modular_child_bed_combo_quote` 负责
+
+如果后面要专门微调“普通用户首轮引导话术”，优先看：
+
+- `scripts/customer_guidance_templates.py`
+
+这里集中维护：
+
+- 普通用户首轮追问问题模板
+- 普通用户第二轮续问口径
+- `precise_need / renovation_browse / guided_discovery / default` 四类首轮回复文案
+- 首轮回复里的预算区间 / 接近参考报价提示
 
 模块化儿童床运行时数据来自：
 

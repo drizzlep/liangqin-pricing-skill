@@ -12,6 +12,8 @@ from math import isclose
 from pathlib import Path
 from typing import Any
 
+from quote_response_metadata import build_response_metadata
+
 
 CABINET_CATEGORIES = {
     "衣柜",
@@ -900,6 +902,11 @@ def response(
     default_quote_profile: dict[str, Any] | None = None,
     approximate_only: bool = False,
     hard_block: bool = False,
+    route: str | None = None,
+    question_code: str | None = None,
+    constraint_code: str | None = None,
+    missing_fields: list[str] | None = None,
+    detail_level_hint: str | None = None,
 ) -> dict[str, Any]:
     if ready:
         quote_decision = "reference_quote" if approximate_only else "formal_quote"
@@ -913,6 +920,18 @@ def response(
         "reason": reason,
         "quote_decision": quote_decision,
     }
+    payload.update(
+        build_response_metadata(
+            route=route or category_type,
+            next_required_field=next_required_field,
+            ready=ready,
+            hard_block=hard_block,
+            question_code=question_code,
+            missing_fields=missing_fields,
+            constraint_code=constraint_code,
+            detail_level_hint=detail_level_hint,
+        )
+    )
     if assumed_defaults:
         payload["assumed_defaults"] = assumed_defaults
     if default_quote_profile:
@@ -1013,6 +1032,7 @@ def precheck_modular_child_bed_combo(args: argparse.Namespace, responder) -> dic
                 next_question=f"{row_label}柜体当前只支持单排进深不大于 450mm 的组合报价；你这个进深已经超出范围，当前不能直接正式报价。如果要继续，我建议先把{row_label}进深调整到 450mm 以内。",
                 reason=f"{field_label} exceeds the supported 450mm combo limit",
                 hard_block=True,
+                constraint_code="modular_child_bed_combo.single_row_depth_limit",
             )
 
     base_result = precheck_modular_child_bed(args, responder)
@@ -1047,7 +1067,8 @@ def precheck_modular_child_bed_combo(args: argparse.Namespace, responder) -> dic
         not is_blank(str(getattr(args, field, "") or "").strip())
         for field in ("rear_cabinet_length", "rear_cabinet_height", "rear_cabinet_depth", "rear_cabinet_mode")
     )
-    if not has_front and not has_rear:
+    requires_rear = has_rear or bool(getattr(args, "interconnected_rows", False))
+    if not has_front and not requires_rear:
         return responder(
             ready=False,
             next_required_field="front_cabinet_length",
@@ -1058,7 +1079,7 @@ def precheck_modular_child_bed_combo(args: argparse.Namespace, responder) -> dic
     for field_name, field_label, question in row_specs:
         value = str(getattr(args, field_name, "") or "").strip()
         row_prefix = field_name.split("_", 1)[0]
-        if row_prefix == "rear" and not has_rear:
+        if row_prefix == "rear" and not requires_rear:
             continue
         if not value:
             return responder(
@@ -1140,6 +1161,7 @@ def precheck_modular_child_bed(args: argparse.Namespace, responder) -> dict[str,
             next_question="这类上铺或高架床当前只支持床垫宽度不大于 1.2 米；你这个宽度已经超出范围，所以现在不能直接正式报价。如果要继续，我建议先确认是否能调整到 1.2 米以内。",
             reason="upper-bed width exceeds the supported 1.2m limit",
             hard_block=True,
+            constraint_code="modular_child_bed.upper_bed_width_limit",
         )
     if bed_form in {"上下床", "错层床"} and not lower_bed_type:
         return responder(
@@ -1358,6 +1380,7 @@ def precheck_bed(args: argparse.Namespace) -> dict[str, Any]:
         next_question: str | None,
         reason: str,
         hard_block: bool = False,
+        constraint_code: str | None = None,
     ) -> dict[str, Any]:
         payload = response(
             ready=ready,
@@ -1367,6 +1390,8 @@ def precheck_bed(args: argparse.Namespace) -> dict[str, Any]:
             reason=reason,
             approximate_only=bool(getattr(args, "approximate_only", False)),
             hard_block=hard_block,
+            route=pricing_route,
+            constraint_code=constraint_code,
         )
         payload["pricing_route"] = pricing_route
         return payload

@@ -20,6 +20,7 @@ from apply_addendum_layers import (
     load_active_layer_manifests,
     resolve_manifest_artifact_path,
 )
+from quote_response_metadata import build_response_metadata
 
 FOCUS_TERMS = (
     "床垫重量",
@@ -662,7 +663,7 @@ def query_guidance(text: str, addenda_root: Path) -> dict[str, Any]:
     boundary_guardrail = detect_boundary_guardrail(text)
     if boundary_guardrail:
         suggested_reply, evidence_level = boundary_guardrail
-        return {
+        payload = {
             "matched": True,
             "recommended_reply_mode": "rule_explanation",
             "follow_up_questions": [],
@@ -675,6 +676,15 @@ def query_guidance(text: str, addenda_root: Path) -> dict[str, Any]:
             "confidence_note": "",
             "suggested_reply": suggested_reply,
         }
+        payload.update(
+            build_response_metadata(
+                route="addendum_guidance",
+                ready=False,
+                constraint_code="addendum_guidance.source_boundary",
+                detail_level_hint="rule_explanation",
+            )
+        )
+        return payload
 
     probe_payload = build_probe_payload(text)
     probe_item = probe_payload["items"][0]
@@ -715,6 +725,7 @@ def query_guidance(text: str, addenda_root: Path) -> dict[str, Any]:
                     "follow_up",
                     required_fields=missing_fields,
                 )
+                follow_up["required_fields"] = missing_fields
                 if all(existing.get("question") != follow_up["question"] for existing in follow_ups):
                     follow_ups.append(follow_up)
 
@@ -775,7 +786,7 @@ def query_guidance(text: str, addenda_root: Path) -> dict[str, Any]:
     if confidence_note:
         suggested_parts.append(confidence_note)
 
-    return {
+    payload = {
         "matched": bool(follow_ups or constraints or adjustments or knowledge_match),
         "recommended_reply_mode": reply_mode,
         "follow_up_questions": follow_ups,
@@ -788,6 +799,37 @@ def query_guidance(text: str, addenda_root: Path) -> dict[str, Any]:
         "confidence_note": confidence_note,
         "suggested_reply": "\n".join(suggested_parts).strip(),
     }
+    missing_fields = list(follow_ups[0].get("required_fields", [])) if follow_ups else []
+    if follow_ups and not missing_fields:
+        missing_fields = ["follow_up_detail"]
+    if reply_mode == "follow_up":
+        payload.update(
+            build_response_metadata(
+                route="addendum_guidance",
+                next_required_field=missing_fields[0] if missing_fields else None,
+                ready=False,
+                question_code="addendum_guidance.follow_up",
+                missing_fields=missing_fields,
+                detail_level_hint="single_question_follow_up",
+            )
+        )
+    elif reply_mode == "rule_explanation":
+        payload.update(
+            build_response_metadata(
+                route="addendum_guidance",
+                ready=False,
+                constraint_code="addendum_guidance.rule_explanation",
+                detail_level_hint="rule_explanation",
+            )
+        )
+    else:
+        payload.update(
+            build_response_metadata(
+                route="addendum_guidance",
+                ready=False,
+            )
+        )
+    return payload
 
 
 def main(argv: list[str] | None = None) -> int:

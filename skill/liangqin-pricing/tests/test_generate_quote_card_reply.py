@@ -63,6 +63,18 @@ class GenerateQuoteCardReplyTests(unittest.TestCase):
             media_root = Path(tmpdir) / "media"
             bundle_root.mkdir(parents=True, exist_ok=True)
             media_root.mkdir(parents=True, exist_ok=True)
+            self.bundle["quote_card_payload"] = {
+                "items": [
+                    {
+                        "product": "客户版衣柜",
+                        "confirmed": "白橡木，1.8×2.2×0.6",
+                        "pricing_method": "按投影面积计价",
+                        "calculation_steps": ["按当前尺寸和材质计算"],
+                        "subtotal": "39,529 元",
+                    }
+                ],
+                "total": "39,529 元",
+            }
 
             def fake_renderer(*, view_model, bundle, output_root, hero_image=None):
                 export_dir = output_root / "agent_main_feishu_direct_ou_123456" / "20260329T103000"
@@ -96,6 +108,7 @@ class GenerateQuoteCardReplyTests(unittest.TestCase):
         self.assertIn("整理成图片发到当前会话", reply["text"])
         self.assertTrue(reply["media_url"].endswith("quote-card.jpg"))
         self.assertTrue(reply["html_path"].endswith("quote-card.html"))
+        self.assertTrue(reply["json_path"].endswith("quote-card.json"))
 
 
 if __name__ == "__main__":

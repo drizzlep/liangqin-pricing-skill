@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+import quote_flow_state
 import quote_result_bundle
 
 
@@ -18,6 +19,11 @@ def main() -> None:
         default=str(quote_result_bundle.DEFAULT_BUNDLE_ROOT),
         help="Directory containing latest quote result bundles.",
     )
+    parser.add_argument(
+        "--flow-state-root",
+        default=str(quote_flow_state.DEFAULT_FLOW_STATE_ROOT),
+        help="Directory containing saved quote flow states.",
+    )
     args = parser.parse_args()
 
     context = quote_result_bundle.resolve_conversation_context(args.context_json, channel=args.channel)
@@ -25,7 +31,11 @@ def main() -> None:
         context["conversation_id"],
         cache_root=Path(args.bundle_root).expanduser().resolve(),
     )
-    if cleared:
-        print(f"Cleared cached quote bundle for {context['conversation_id']}")
+    cleared_state = quote_flow_state.clear_quote_flow_state(
+        context["conversation_id"],
+        cache_root=Path(args.flow_state_root).expanduser().resolve(),
+    )
+    if cleared or cleared_state:
+        print(f"Cleared cached quote context for {context['conversation_id']}")
     else:
-        print(f"No cached quote bundle for {context['conversation_id']}")
+        print(f"No cached quote context for {context['conversation_id']}")
