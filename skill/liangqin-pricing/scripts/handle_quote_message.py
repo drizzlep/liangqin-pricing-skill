@@ -23,6 +23,7 @@ import customer_guidance_templates
 import detect_special_cabinet_rule
 import format_quote_reply
 import generate_quote_card_reply
+import inquiry_intake
 from material_names import formalize_material_name, formalize_text, normalize_material_for_query
 import precheck_quote
 import query_addendum_guidance
@@ -128,6 +129,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--text", required=True, help="Current user message.")
     parser.add_argument("--context-json", help="Conversation info JSON from the current OpenClaw message.")
     parser.add_argument("--channel", help="Current channel id, such as feishu or dingtalk-connector.")
+    parser.add_argument("--product-context-json", help="Optional product context JSON for inquiry intake.")
     parser.add_argument(
         "--output-mode",
         choices=["json", "reply_text", "openclaw_reply"],
@@ -497,6 +499,31 @@ def _augment_precheck_args_from_customer_guided_context(
         return precheck_args
     augmented = dict(precheck_args)
     augmented["category"] = inferred_category
+    return augmented
+
+
+def _augment_precheck_args_from_product_context(
+    precheck_args: dict[str, Any] | None,
+    *,
+    product_context: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    if precheck_args is None and not product_context:
+        return None
+    resolved_product = inquiry_intake.resolve_product_context(product_context, text="")
+    if not resolved_product:
+        return precheck_args
+
+    augmented = dict(precheck_args or {})
+    if not str(augmented.get("category") or "").strip():
+        augmented["category"] = str(resolved_product.get("name") or resolved_product.get("sheet") or "").strip()
+    dimensions = resolved_product.get("dimensions") or {}
+    for field_name in ("length", "depth", "height", "width"):
+        if str(augmented.get(field_name) or "").strip():
+            continue
+        value = dimensions.get(field_name)
+        if value in {None, ""}:
+            continue
+        augmented[field_name] = inquiry_intake.format_dimension_value(value)
     return augmented
 
 
@@ -1027,6 +1054,221 @@ def _load_existing_quote_context(
     )
 
 
+def _effective_product_context(
+    product_context: dict[str, Any] | None,
+    *,
+    state: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    if isinstance(product_context, dict) and product_context:
+        return product_context
+    existing_context = (state or {}).get("captured_product_context")
+    if isinstance(existing_context, dict) and existing_context:
+        return existing_context
+    return None
+
+
+def _build_inquiry_text_bundle(
+    *,
+    audience_role: str,
+    reply_text: str,
+) -> dict[str, str]:
+    return _shape_role_output(
+        audience_role=audience_role,
+        professional_text=reply_text,
+        customer_text=reply_text,
+    )
+
+
+def _size_spec_inquiry_result(
+    text: str,
+    *,
+    audience_role: str,
+    product_context: dict[str, Any] | None,
+) -> dict[str, Any]:
+    resolved_product = inquiry_intake.resolve_product_context(product_context, text=text)
+    if resolved_product:
+        dimension_pairs = inquiry_intake.format_dimension_pairs(resolved_product.get("dimensions") or {})
+        if dimension_pairs:
+            product_label = str(resolved_product.get("name") or resolved_product.get("product_code") or "这款").strip() or "这款"
+            price_mentions = re.findall(r"(?<!\d)(\d{3,6})(?!\d)", str(text or ""))
+            if price_mentions:
+                price_hint = price_mentions[0]
+                reply_text = (
+                    f"如果你说的是当前这条 {price_hint} 这档，我这边先对到的目录规格是"
+                    f"{'、'.join(dimension_pairs)}。如果你还想继续往下收价格，我再帮你确认材质或是否改尺寸。"
+                )
+            else:
+                reply_text = (
+                    f"{product_label}目前对到的目录尺寸是{'、'.join(dimension_pairs)}。"
+                    "如果你还想继续往下收价格，我再帮你确认材质或是否改尺寸。"
+                )
+            text_bundle = _build_inquiry_text_bundle(audience_role=audience_role, reply_text=reply_text)
+            return {
+                **text_bundle,
+                "source_basis": "catalog_dimensions",
+                "can_answer_directly": True,
+                "next_question": "",
+                "safe_boundary_reason": "",
+                "handoff_needed": False,
+                "missing_fields": [],
+                "resolved_product_context": resolved_product,
+            }
+
+    next_question = "你先发我产品名、产品编号或者当前链接，我就能直接帮你对这款的目录尺寸。"
+    reply_text = f"可以，我先帮你对尺寸。{next_question}"
+    text_bundle = _build_inquiry_text_bundle(audience_role=audience_role, reply_text=reply_text)
+    return {
+        **text_bundle,
+        "source_basis": "product_identity_required",
+        "can_answer_directly": False,
+        "next_question": next_question,
+        "safe_boundary_reason": "",
+        "handoff_needed": False,
+        "missing_fields": ["product_context"],
+        "resolved_product_context": resolved_product or {},
+    }
+
+
+def _inquiry_category_hint(
+    text: str,
+    *,
+    product_context: dict[str, Any] | None,
+) -> str:
+    resolved_product = inquiry_intake.resolve_product_context(product_context, text=text)
+    if resolved_product:
+        sheet = str(resolved_product.get("sheet") or "").strip()
+        if sheet:
+            return sheet
+    inferred_precheck_args = _infer_precheck_args_from_text(text) or {}
+    return str(inferred_precheck_args.get("category") or "").strip()
+
+
+def _measurement_installation_inquiry_result(
+    text: str,
+    *,
+    audience_role: str,
+    product_context: dict[str, Any] | None,
+) -> dict[str, Any]:
+    category_hint = _inquiry_category_hint(text, product_context=product_context)
+    if any(keyword in category_hint for keyword in ("床", "半高床", "高架床", "上下床", "错层床")):
+        next_question = "如果你想让我继续往下收，我先只确认一个问题：床垫宽和床垫长分别是多少？"
+        reply_text = (
+            "如果你现在先量床类，优先记床垫宽、床垫长，再补可做总高和关键结构位置。"
+            f"{next_question}"
+        )
+    elif any(keyword in category_hint for keyword in ("书桌", "桌")):
+        next_question = "如果你想继续往下收，我先只确认一个问题：桌面总长大概是多少？"
+        reply_text = (
+            "如果你现在先量桌类，通常先记总长、总高和可做进深；如果旁边带柜体，再补柜体长度。"
+            f"{next_question}"
+        )
+    elif category_hint:
+        next_question = "如果你想继续往下收，我先只确认一个问题：这组大概要做多长？"
+        reply_text = (
+            "如果你现在先量柜体，通常先记 3 个数：总长、总高、可做进深。"
+            f"{next_question}"
+        )
+    else:
+        next_question = "你这次主要是在量柜体、床，还是书桌？"
+        reply_text = (
+            "如果你现在只是先量尺寸，通常先记总长、总高、可做进深；床类再补床垫宽和床垫长。"
+            f"下一步我先只确认一个问题：{next_question}"
+        )
+    text_bundle = _build_inquiry_text_bundle(audience_role=audience_role, reply_text=reply_text)
+    return {
+        **text_bundle,
+        "source_basis": "generic_measurement_guidance",
+        "can_answer_directly": True,
+        "next_question": next_question,
+        "safe_boundary_reason": "service_scope_not_committed",
+        "handoff_needed": False,
+        "missing_fields": ["measurement_anchor"],
+        "resolved_product_context": inquiry_intake.resolve_product_context(product_context, text=text) or {},
+    }
+
+
+def _lead_time_service_inquiry_result(
+    text: str,
+    *,
+    audience_role: str,
+    product_context: dict[str, Any] | None,
+) -> dict[str, Any]:
+    boundary_text = "这类定制的测量、设计、排产和安装时间，当前不能直接按固定天数给你承诺，一般都要结合城市、排产和设计确认。"
+    inferred_precheck_args = _infer_precheck_args_from_text(text) or {}
+    inferred_precheck_args = _augment_precheck_args_from_product_context(
+        inferred_precheck_args if inferred_precheck_args else None,
+        product_context=product_context,
+    ) or {}
+    next_question = "如果你想先把价格往下收，我先只确认一个关键条件：你这次具体想做哪一类产品？"
+    missing_fields = ["quote_anchor"]
+    if inferred_precheck_args:
+        precheck_result = _run_precheck(inferred_precheck_args)
+        candidate_question = str(precheck_result.get("next_question") or "").strip()
+        candidate_missing = [str(item).strip() for item in (precheck_result.get("missing_fields") or []) if str(item).strip()]
+        if candidate_question:
+            next_question = candidate_question
+            missing_fields = candidate_missing or missing_fields
+    reply_text = f"{boundary_text}如果你想先把价格往下收，我先只确认一个问题：{next_question}"
+    text_bundle = _build_inquiry_text_bundle(audience_role=audience_role, reply_text=reply_text)
+    return {
+        **text_bundle,
+        "source_basis": "safe_service_boundary",
+        "can_answer_directly": True,
+        "next_question": next_question,
+        "safe_boundary_reason": "service_facts_not_loaded",
+        "handoff_needed": False,
+        "missing_fields": missing_fields,
+        "resolved_product_context": inquiry_intake.resolve_product_context(product_context, text=text) or {},
+    }
+
+
+def _purchase_mode_inquiry_result(
+    *,
+    audience_role: str,
+    product_context: dict[str, Any] | None,
+) -> dict[str, Any]:
+    next_question = "你这次更想先看成品，还是按尺寸定制？"
+    reply_text = "这边两条都能走：目录成品/标准品和按尺寸定制，后面的报价路径不一样。下一步我先只确认一个问题：" + next_question
+    text_bundle = _build_inquiry_text_bundle(audience_role=audience_role, reply_text=reply_text)
+    return {
+        **text_bundle,
+        "source_basis": "purchase_mode_overview",
+        "can_answer_directly": True,
+        "next_question": next_question,
+        "safe_boundary_reason": "",
+        "handoff_needed": False,
+        "missing_fields": ["purchase_mode"],
+        "resolved_product_context": inquiry_intake.resolve_product_context(product_context, text=next_question) or {},
+    }
+
+
+def _build_inquiry_reply_result(
+    text: str,
+    *,
+    audience_role: str,
+    inquiry_family: str,
+    product_context: dict[str, Any] | None,
+) -> dict[str, Any]:
+    if inquiry_family == "size_spec":
+        return _size_spec_inquiry_result(text, audience_role=audience_role, product_context=product_context)
+    if inquiry_family == "measurement_installation":
+        return _measurement_installation_inquiry_result(text, audience_role=audience_role, product_context=product_context)
+    if inquiry_family == "lead_time_service":
+        return _lead_time_service_inquiry_result(text, audience_role=audience_role, product_context=product_context)
+    if inquiry_family == "purchase_mode":
+        return _purchase_mode_inquiry_result(audience_role=audience_role, product_context=product_context)
+    return {
+        **_build_inquiry_text_bundle(audience_role=audience_role, reply_text=""),
+        "source_basis": "unsupported_inquiry_family",
+        "can_answer_directly": False,
+        "next_question": "",
+        "safe_boundary_reason": "",
+        "handoff_needed": True,
+        "missing_fields": [],
+        "resolved_product_context": inquiry_intake.resolve_product_context(product_context, text=text) or {},
+    }
+
+
 def _store_flow_state(
     *,
     context_json: str | None,
@@ -1040,6 +1282,10 @@ def _store_flow_state(
     customer_forward_text: str,
     confirmed_fields: dict[str, Any] | None = None,
     handoff_summary: str = "",
+    active_inquiry_family: str = "",
+    captured_product_context: dict[str, Any] | None = None,
+    last_non_quote_reply: str = "",
+    last_safe_boundary_reason: str = "",
 ) -> str:
     context = _resolve_context(context_json, channel)
     if not context:
@@ -1056,6 +1302,10 @@ def _store_flow_state(
             "internal_summary": internal_summary,
             "customer_forward_text": customer_forward_text,
             "handoff_summary": handoff_summary,
+            "active_inquiry_family": active_inquiry_family,
+            "captured_product_context": captured_product_context or {},
+            "last_non_quote_reply": last_non_quote_reply,
+            "last_safe_boundary_reason": last_safe_boundary_reason,
         },
         cache_root=state_root,
     )
@@ -1824,6 +2074,7 @@ def handle_message(
     text: str,
     context_json: str | None = None,
     channel: str | None = None,
+    product_context: dict[str, Any] | None = None,
     role_override: str | None = None,
     precheck_args: dict[str, Any] | None = None,
     quote_payload: dict[str, Any] | None = None,
@@ -1844,10 +2095,12 @@ def handle_message(
         state_root=state_root,
         bundle_root=bundle_root,
     )
+    effective_product_context = _effective_product_context(product_context, state=existing_state)
     route_result = route_quote_request.route_message(
         text=text,
         context_json=context_json,
         channel=channel,
+        product_context=effective_product_context,
         role_override=role_override,
         state_root=state_root,
         bundle_root=bundle_root,
@@ -1893,6 +2146,7 @@ def handle_message(
         state_root=state_root,
         bundle_root=bundle_root,
     )
+    effective_product_context = _effective_product_context(product_context, state=existing_state)
     resumed_precheck_args = None
     if precheck_args is None and quote_payload is None and special_quote is None:
         resumed_precheck_args = _infer_precheck_follow_up_from_state(
@@ -1993,6 +2247,58 @@ def handle_message(
         )
 
     preferred_next_tool = str(route_result.get("preferred_next_tool", "") or "").strip()
+    inquiry_family = str(route_result.get("inquiry_family", "quote_flow") or "quote_flow").strip() or "quote_flow"
+    if preferred_next_tool == "inquiry_reply":
+        inquiry_result = _build_inquiry_reply_result(
+            text,
+            audience_role=audience_role,
+            inquiry_family=inquiry_family,
+            product_context=effective_product_context,
+        )
+        missing_fields = list(inquiry_result.get("missing_fields") or [])
+        resolved_product_context = inquiry_result.get("resolved_product_context") or effective_product_context or {}
+        conversation_id = _store_flow_state(
+            context_json=context_json,
+            channel=channel,
+            state_root=state_root,
+            audience_role=audience_role,
+            customer_strategy=customer_strategy,
+            active_route=inquiry_family,
+            missing_fields=missing_fields,
+            internal_summary=inquiry_result["internal_summary"],
+            customer_forward_text=inquiry_result["customer_forward_text"],
+            confirmed_fields={},
+            handoff_summary=inquiry_result["reply_text"],
+            active_inquiry_family=inquiry_family,
+            captured_product_context=resolved_product_context,
+            last_non_quote_reply=inquiry_result["reply_text"],
+            last_safe_boundary_reason=str(inquiry_result.get("safe_boundary_reason") or ""),
+        )
+        return {
+            "status": "completed" if inquiry_result.get("can_answer_directly") and not missing_fields else "needs_input",
+            "handled_by": "inquiry_reply",
+            "audience_role": audience_role,
+            "output_profile": output_profile,
+            "entry_mode": entry_mode,
+            "customer_strategy": customer_strategy,
+            "reply_text": inquiry_result["reply_text"],
+            "internal_summary": inquiry_result["internal_summary"],
+            "customer_forward_text": inquiry_result["customer_forward_text"],
+            "missing_fields": missing_fields,
+            "question_code": None,
+            "constraint_code": None,
+            "detail_level_hint": "single_question_follow_up" if missing_fields else "direct_answer",
+            "response_stage": "inquiry_reply",
+            "signal_summary": {},
+            "next_best_question": inquiry_result.get("next_question") or "",
+            "pricing_route": "",
+            "source_basis": inquiry_result.get("source_basis") or "",
+            "safe_boundary_reason": inquiry_result.get("safe_boundary_reason") or "",
+            "handoff_needed": bool(inquiry_result.get("handoff_needed")),
+            "route_result": route_result,
+            "downstream_result": inquiry_result,
+            "conversation_id": conversation_id or str(route_result.get("conversation_id", "")).strip(),
+        }
     if resumed_precheck_args is not None:
         precheck_args = resumed_precheck_args
         preferred_next_tool = "precheck_quote"
@@ -2011,6 +2317,7 @@ def handle_message(
             if inferred_precheck_args:
                 precheck_args = inferred_precheck_args
         precheck_args = _augment_precheck_args_from_customer_guided_context(precheck_args, state=existing_state)
+        precheck_args = _augment_precheck_args_from_product_context(precheck_args, product_context=effective_product_context)
         if audience_role == "customer" and entry_mode in CUSTOMER_GUIDED_ENTRY_MODES and _should_use_customer_guidance(
             customer_strategy=customer_strategy,
             precheck_args=precheck_args,
@@ -2037,6 +2344,8 @@ def handle_message(
                         "guided_turn_count": guidance_result["guided_turn_count"],
                     },
                     handoff_summary=guidance_result["reply_text"],
+                    active_inquiry_family="quote_flow",
+                    captured_product_context=effective_product_context or {},
                 )
                 return {
                     "status": "needs_input",
@@ -2120,6 +2429,8 @@ def handle_message(
         customer_forward_text=text_bundle["customer_forward_text"],
         confirmed_fields=precheck_args if preferred_next_tool == "precheck_quote" else {},
         handoff_summary=text_bundle["reply_text"],
+        active_inquiry_family=inquiry_family,
+        captured_product_context=effective_product_context or {},
     )
 
     return {
@@ -2152,6 +2463,7 @@ def main(argv: list[str] | None = None) -> int:
         text=args.text,
         context_json=args.context_json,
         channel=args.channel,
+        product_context=_parse_json_object(args.product_context_json, field_name="product_context_json"),
         role_override=args.role_override,
         precheck_args=_parse_json_object(args.precheck_args_json, field_name="precheck_args_json"),
         quote_payload=_parse_json_object(args.quote_payload_json, field_name="quote_payload_json"),

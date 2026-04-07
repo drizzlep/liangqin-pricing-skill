@@ -1319,6 +1319,121 @@ class HandleQuoteMessageTests(unittest.TestCase):
         self.assertTrue(result["customer_forward_text"])
         self.assertEqual(result["reply_text"], result["customer_forward_text"])
 
+    def test_size_spec_question_without_product_context_asks_for_product_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="这款没有尺寸吗",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "inquiry_reply")
+        self.assertEqual(result["route_result"]["inquiry_family"], "size_spec")
+        self.assertIn("产品名", result["reply_text"])
+        self.assertIn("产品编号", result["reply_text"])
+        self.assertEqual(result["missing_fields"], ["product_context"])
+
+    def test_size_spec_question_with_product_context_can_answer_dimensions_directly(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            state_root = Path(tmpdir) / "states"
+            bundle_root = Path(tmpdir) / "bundles"
+            result = MODULE.handle_message(
+                text="这款没有尺寸吗",
+                context_json=self.context_json,
+                channel="feishu",
+                product_context={
+                    "product_name": "穿衣镜",
+                    "product_code": "YGP-01",
+                },
+                state_root=state_root,
+                bundle_root=bundle_root,
+                disable_addenda=True,
+            )
+            latest_state = MODULE.quote_flow_state.load_quote_flow_state(self.conversation_id, cache_root=state_root)
+
+        self.assertEqual(result["handled_by"], "inquiry_reply")
+        self.assertEqual(result["route_result"]["inquiry_family"], "size_spec")
+        self.assertIn("长0.6米", result["reply_text"])
+        self.assertIn("深0.12米", result["reply_text"])
+        self.assertIn("高1.8米", result["reply_text"])
+        self.assertEqual(result["missing_fields"], [])
+        self.assertIsNotNone(latest_state)
+        self.assertEqual(latest_state["active_inquiry_family"], "size_spec")
+        self.assertEqual(latest_state["captured_product_context"]["product_code"], "YGP-01")
+
+    def test_measurement_question_returns_measurement_guidance_instead_of_guided_discovery(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="怎么量尺寸",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "inquiry_reply")
+        self.assertEqual(result["route_result"]["inquiry_family"], "measurement_installation")
+        self.assertIn("总长", result["reply_text"])
+        self.assertIn("总高", result["reply_text"])
+        self.assertIn("进深", result["reply_text"])
+        self.assertNotIn("收纳、睡觉、学习", result["reply_text"])
+
+    def test_lead_time_question_uses_safe_boundary_then_asks_price_key_field(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="半高床定制的话上门测量，设计，制作安装大概要多久，什么价格",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "inquiry_reply")
+        self.assertEqual(result["route_result"]["inquiry_family"], "lead_time_service")
+        self.assertIn("要结合城市、排产和设计确认", result["reply_text"])
+        self.assertIn("直梯、斜梯还是梯柜", result["reply_text"])
+
+    def test_size_and_price_question_with_recent_catalog_candidate_explains_matching_spec(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="这个4980的是什么尺寸的柜子？",
+                context_json=self.context_json,
+                channel="feishu",
+                product_context={
+                    "product_name": "升降桌",
+                    "recent_catalog_candidates": [
+                        {
+                            "sheet": "书桌",
+                            "product_code": "SZ-15",
+                            "name": "升降桌",
+                            "pricing_mode": "unit_price",
+                            "dimensions": {
+                                "length": 1.6,
+                                "depth": 0.7,
+                                "height": "620-1270",
+                            },
+                            "materials": {
+                                "乌拉圭玫瑰木": 4980,
+                            },
+                        }
+                    ],
+                },
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "inquiry_reply")
+        self.assertEqual(result["route_result"]["inquiry_family"], "size_spec")
+        self.assertIn("长1.6米", result["reply_text"])
+        self.assertIn("深0.7米", result["reply_text"])
+        self.assertIn("4980", result["reply_text"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -44,6 +44,10 @@ def build_quote_flow_state(
     internal_summary: str = "",
     customer_forward_text: str = "",
     handoff_summary: str = "",
+    active_inquiry_family: str = "",
+    captured_product_context: dict[str, Any] | None = None,
+    last_non_quote_reply: str = "",
+    last_safe_boundary_reason: str = "",
     created_at: str | None = None,
     updated_at: str | None = None,
 ) -> dict[str, Any]:
@@ -52,6 +56,7 @@ def build_quote_flow_state(
     normalized_missing_fields = list(missing_fields or [])
     normalized_confirmed_fields = confirmed_fields or {}
     normalized_last_formal_payload = last_formal_payload or {}
+    normalized_product_context = captured_product_context or {}
 
     return {
         "conversation_id": conversation_id,
@@ -68,6 +73,10 @@ def build_quote_flow_state(
         "internal_summary": internal_summary,
         "customer_forward_text": customer_forward_text,
         "handoff_summary": handoff_summary,
+        "active_inquiry_family": active_inquiry_family,
+        "captured_product_context": normalized_product_context,
+        "last_non_quote_reply": last_non_quote_reply,
+        "last_safe_boundary_reason": last_safe_boundary_reason,
         "role": {
             "audience_role": audience_role,
             "entry_mode": entry_mode,
@@ -81,15 +90,22 @@ def build_quote_flow_state(
         },
         "route": {
             "active_route": active_route,
+            "active_inquiry_family": active_inquiry_family,
         },
         "summaries": {
             "internal_summary": internal_summary,
             "customer_forward_text": customer_forward_text,
             "handoff_summary": handoff_summary,
+            "last_non_quote_reply": last_non_quote_reply,
         },
         "last_payload": {
             "last_quote_kind": last_quote_kind,
             "last_formal_payload": normalized_last_formal_payload,
+        },
+        "inquiry": {
+            "active_inquiry_family": active_inquiry_family,
+            "captured_product_context": normalized_product_context,
+            "last_safe_boundary_reason": last_safe_boundary_reason,
         },
         "created_at": created,
         "updated_at": updated,
@@ -100,6 +116,7 @@ def _extract_existing_state_fields(state: dict[str, Any]) -> dict[str, Any]:
     summaries = state.get("summaries") or {}
     last_payload = state.get("last_payload") or {}
     route = state.get("route") or {}
+    inquiry = state.get("inquiry") or {}
     manual_override_value = state.get("manual_override")
     if manual_override_value is None:
         normalized_manual_override = None
@@ -122,6 +139,14 @@ def _extract_existing_state_fields(state: dict[str, Any]) -> dict[str, Any]:
             state.get("customer_forward_text", summaries.get("customer_forward_text", "")) or ""
         ).strip(),
         "handoff_summary": str(state.get("handoff_summary", summaries.get("handoff_summary", "")) or "").strip(),
+        "active_inquiry_family": str(
+            state.get("active_inquiry_family", inquiry.get("active_inquiry_family", route.get("active_inquiry_family", ""))) or ""
+        ).strip(),
+        "captured_product_context": state.get("captured_product_context") or inquiry.get("captured_product_context") or {},
+        "last_non_quote_reply": str(state.get("last_non_quote_reply", summaries.get("last_non_quote_reply", "")) or "").strip(),
+        "last_safe_boundary_reason": str(
+            state.get("last_safe_boundary_reason", inquiry.get("last_safe_boundary_reason", "")) or ""
+        ).strip(),
         "created_at": str(state.get("created_at", "")).strip() or None,
     }
 
@@ -167,7 +192,12 @@ def merge_quote_flow_state(
             "internal_summary",
             "customer_forward_text",
             "handoff_summary",
+            "active_inquiry_family",
+            "last_non_quote_reply",
+            "last_safe_boundary_reason",
         }:
+            merged_fields[key] = value
+        elif key in {"captured_product_context"} and value is not None:
             merged_fields[key] = value
     merged_state = build_quote_flow_state(
         conversation_id=conversation_id,
@@ -183,6 +213,10 @@ def merge_quote_flow_state(
         internal_summary=str(merged_fields["internal_summary"] or ""),
         customer_forward_text=str(merged_fields["customer_forward_text"] or ""),
         handoff_summary=str(merged_fields["handoff_summary"] or ""),
+        active_inquiry_family=str(merged_fields["active_inquiry_family"] or ""),
+        captured_product_context=merged_fields["captured_product_context"],
+        last_non_quote_reply=str(merged_fields["last_non_quote_reply"] or ""),
+        last_safe_boundary_reason=str(merged_fields["last_safe_boundary_reason"] or ""),
         created_at=merged_fields["created_at"],
     )
     store_quote_flow_state(merged_state, cache_root=cache_root)

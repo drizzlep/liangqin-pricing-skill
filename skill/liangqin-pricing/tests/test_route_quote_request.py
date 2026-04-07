@@ -172,6 +172,36 @@ class RouteQuoteRequestTests(unittest.TestCase):
         self.assertEqual(remaining_state["summaries"]["customer_forward_text"], "")
         self.assertIsNone(remaining_bundle)
 
+    def test_routes_size_spec_question_to_inquiry_reply_without_product_context(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.route_message(
+                text="这款没有尺寸吗",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+            )
+
+        self.assertEqual(result["inquiry_family"], "size_spec")
+        self.assertEqual(result["preferred_next_tool"], "inquiry_reply")
+        self.assertFalse(result["can_answer_directly"])
+        self.assertTrue(result["needs_product_context"])
+
+    def test_routes_material_boundary_question_to_material_config_family(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.route_message(
+                text="良禽佳木可以选国产五金和进口五金吗？良禽有BLUM的五金，是什么啊？",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+            )
+
+        self.assertEqual(result["inquiry_family"], "material_config")
+        self.assertEqual(result["preferred_next_tool"], "query_addendum_guidance")
+        self.assertTrue(result["can_answer_directly"])
+        self.assertFalse(result["needs_product_context"])
+
 
 if __name__ == "__main__":
     unittest.main()

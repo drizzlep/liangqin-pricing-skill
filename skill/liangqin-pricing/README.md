@@ -39,10 +39,12 @@ git clone --branch <release-tag> --depth 1 https://github.com/drizzlep/liangqin-
 - `references/current/examples.md`
 - `references/current/quote-flow-role-routing.md`
 - `references/current/quote-flow-frontend-mapping.md`
+- `references/current/inquiry-intake-protocol.md`
 
 如果后面要接前端工作台，或者想快速看“角色路由层 / 会话状态 / 新报价清理规则”，优先看：
 
 - `references/current/quote-flow-role-routing.md`
+- `references/current/inquiry-intake-protocol.md`
 
 ## 日常报价怎么运行
 

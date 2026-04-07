@@ -11,6 +11,7 @@ from typing import Any
 
 import classify_quote_role
 import detect_special_cabinet_rule
+import inquiry_intake
 import query_addendum_guidance
 import query_bed_weight_guidance
 import quote_flow_state
@@ -66,6 +67,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--text", required=True, help="Current user message.")
     parser.add_argument("--context-json", help="Conversation info JSON from the current OpenClaw message.")
     parser.add_argument("--channel", help="Current channel id, such as feishu or dingtalk-connector.")
+    parser.add_argument("--product-context-json", help="Optional product context JSON for non-quote inquiry intake.")
     parser.add_argument(
         "--role-override",
         choices=["customer", "designer", "consultant", "auto"],
@@ -122,6 +124,7 @@ def route_message(
     text: str,
     context_json: str | None = None,
     channel: str | None = None,
+    product_context: dict[str, Any] | None = None,
     role_override: str | None = None,
     state_root: Path = quote_flow_state.DEFAULT_FLOW_STATE_ROOT,
     bundle_root: Path = quote_result_bundle.DEFAULT_BUNDLE_ROOT,
@@ -175,13 +178,26 @@ def route_message(
     audience_role = str(role_result.get("audience_role", "customer")).strip() or "customer"
     output_profile = resolve_output_profile(audience_role)
     entry_mode = str(role_result.get("entry_mode", "") or "").strip()
+    inquiry_result = inquiry_intake.classify_inquiry(
+        normalized_text,
+        product_context=product_context,
+    )
+    inquiry_family = str(inquiry_result.get("inquiry_family") or "quote_flow").strip() or "quote_flow"
+    inquiry_confidence = float(inquiry_result.get("inquiry_confidence") or 0.0)
+    can_answer_directly = bool(inquiry_result.get("can_answer_directly"))
+    needs_product_context = bool(inquiry_result.get("needs_product_context"))
+    resolved_product_context = inquiry_result.get("resolved_product_context") or {}
 
     bed_weight_result = query_bed_weight_guidance.query_guidance(normalized_text)
     addendum_result = query_addendum_guidance.query_guidance(normalized_text, addenda_root)
     special_result = detect_special_cabinet_rule.detect_rule(normalized_text)
 
     preferred_next_tool = "precheck_quote"
-    if bed_weight_result.get("matched"):
+    if inquiry_family == "material_config":
+        preferred_next_tool = "query_addendum_guidance"
+    elif inquiry_family != "quote_flow":
+        preferred_next_tool = "inquiry_reply"
+    elif bed_weight_result.get("matched"):
         preferred_next_tool = "query_bed_weight_guidance"
     elif (
         audience_role == "customer"
@@ -196,7 +212,9 @@ def route_message(
     elif special_result.get("special_rule"):
         preferred_next_tool = "detect_special_cabinet_rule"
 
-    if preferred_next_tool in {"query_addendum_guidance", "query_bed_weight_guidance"}:
+    if inquiry_family != "quote_flow":
+        detected_intent = "pre_sales_inquiry"
+    elif preferred_next_tool in {"query_addendum_guidance", "query_bed_weight_guidance"}:
         detected_intent = "quote_follow_up" if is_quote_request(normalized_text) else "rule_consultation"
     else:
         detected_intent = "quote_request" if is_quote_request(normalized_text) else "quote_request"
@@ -205,6 +223,12 @@ def route_message(
         "audience_role": audience_role,
         "output_profile": output_profile,
         "preferred_next_tool": preferred_next_tool,
+        "preferred_next_stage": "inquiry_reply" if inquiry_family != "quote_flow" else "quote_flow",
+        "inquiry_family": inquiry_family,
+        "inquiry_confidence": inquiry_confidence,
+        "can_answer_directly": can_answer_directly,
+        "needs_product_context": needs_product_context,
+        "resolved_product_context": resolved_product_context,
         "detected_intent": detected_intent,
         "should_generate_quote_card": False,
         "should_clear_previous_context": should_clear_previous_context,
@@ -219,10 +243,16 @@ def route_message(
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
+    product_context = None
+    if args.product_context_json:
+        product_context = json.loads(args.product_context_json)
+        if not isinstance(product_context, dict):
+            raise SystemExit("product_context_json must be a JSON object")
     payload = route_message(
         text=args.text,
         context_json=args.context_json,
         channel=args.channel,
+        product_context=product_context,
         role_override=args.role_override,
         state_root=Path(args.state_root).expanduser().resolve(),
         bundle_root=Path(args.bundle_root).expanduser().resolve(),
