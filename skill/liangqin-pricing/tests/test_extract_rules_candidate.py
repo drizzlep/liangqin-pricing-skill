@@ -118,6 +118,7 @@ class ExtractRulesCandidateTests(unittest.TestCase):
         self.assertEqual(payload["sections"][0]["heading"], "1.柜体")
         self.assertEqual(payload["sections"][1]["heading"], "600mm＜柜体进深≤700mm，加价15%；")
 
+    @unittest.skipIf(MODULE.PdfReader is None, "PyPDF2 not installed")
     def test_build_candidate_payload_supports_pdf_and_markdown_sidecar(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             pdf_path = Path(tmpdir) / "rules.pdf"

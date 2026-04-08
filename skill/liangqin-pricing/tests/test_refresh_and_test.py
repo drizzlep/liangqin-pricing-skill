@@ -1,7 +1,11 @@
 import importlib.util
+import io
+import subprocess
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
+from unittest import mock
 
 
 SCRIPT_PATH = Path(__file__).resolve().parents[1] / "scripts" / "refresh_and_test.py"
@@ -57,6 +61,89 @@ class RefreshAndTestTests(unittest.TestCase):
         command = MODULE.build_reset_command(Path("/tmp/skill/scripts"), include_feishu=False)
         self.assertEqual(command[-1], "--apply")
         self.assertNotIn("--include-feishu", command)
+
+    def test_build_runtime_health_command_targets_check_script(self) -> None:
+        command = MODULE.build_runtime_health_command(Path("/tmp/skill/scripts"), Path("/tmp/skill"))
+        self.assertIn("check_runtime_health.py", command[1])
+        self.assertEqual(command[-2:], ["--skill-dir", "/tmp/skill"])
+
+    def test_main_runs_runtime_health_check_before_agent(self) -> None:
+        calls: list[list[str]] = []
+
+        def fake_run_step(command: list[str], *, capture: bool = False) -> subprocess.CompletedProcess[str]:
+            calls.append(command)
+            if command[1].endswith("publish_skill.py"):
+                return subprocess.CompletedProcess(command, 0, "", "")
+            if command[1].endswith("check_runtime_health.py"):
+                return subprocess.CompletedProcess(command, 0, "运行环境诊断：ok\n", "")
+            if command[0] == "openclaw":
+                return subprocess.CompletedProcess(command, 0, '{"result":{"payloads":[{"text":"测试通过"}]}}', "")
+            raise AssertionError(f"unexpected command: {command}")
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            skill_dir = Path(tmpdir) / "skill"
+            (skill_dir / "scripts").mkdir(parents=True)
+            (skill_dir / "sources" / "inbox").mkdir(parents=True)
+            stdout = io.StringIO()
+            with mock.patch.object(MODULE, "run_step", side_effect=fake_run_step):
+                with redirect_stdout(stdout):
+                    exit_code = MODULE.main(["--skill-dir", str(skill_dir), "--timeout", "5"])
+
+        self.assertEqual(exit_code, 0)
+        self.assertTrue(any(command[1].endswith("check_runtime_health.py") for command in calls if len(command) > 1))
+        self.assertTrue(any(command[0] == "openclaw" for command in calls))
+        self.assertIn("运行环境诊断：ok", stdout.getvalue())
+
+    def test_main_stops_when_runtime_health_check_fails(self) -> None:
+        calls: list[list[str]] = []
+
+        def fake_run_step(command: list[str], *, capture: bool = False) -> subprocess.CompletedProcess[str]:
+            calls.append(command)
+            if command[1].endswith("publish_skill.py"):
+                return subprocess.CompletedProcess(command, 0, "", "")
+            if command[1].endswith("check_runtime_health.py"):
+                return subprocess.CompletedProcess(command, 1, "运行环境诊断：error\n", "")
+            raise AssertionError(f"unexpected command: {command}")
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            skill_dir = Path(tmpdir) / "skill"
+            (skill_dir / "scripts").mkdir(parents=True)
+            (skill_dir / "sources" / "inbox").mkdir(parents=True)
+            stdout = io.StringIO()
+            with mock.patch.object(MODULE, "run_step", side_effect=fake_run_step):
+                with redirect_stdout(stdout):
+                    exit_code = MODULE.main(["--skill-dir", str(skill_dir), "--timeout", "5"])
+
+        self.assertEqual(exit_code, 1)
+        self.assertTrue(any(command[1].endswith("check_runtime_health.py") for command in calls if len(command) > 1))
+        self.assertFalse(any(command[0] == "openclaw" for command in calls))
+        self.assertIn("运行环境诊断：error", stdout.getvalue())
+
+    def test_main_can_skip_runtime_health_check(self) -> None:
+        calls: list[list[str]] = []
+
+        def fake_run_step(command: list[str], *, capture: bool = False) -> subprocess.CompletedProcess[str]:
+            calls.append(command)
+            if command[1].endswith("publish_skill.py"):
+                return subprocess.CompletedProcess(command, 0, "", "")
+            if command[0] == "openclaw":
+                return subprocess.CompletedProcess(command, 0, '{"result":{"payloads":[{"text":"测试通过"}]}}', "")
+            raise AssertionError(f"unexpected command: {command}")
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            skill_dir = Path(tmpdir) / "skill"
+            (skill_dir / "scripts").mkdir(parents=True)
+            (skill_dir / "sources" / "inbox").mkdir(parents=True)
+            stdout = io.StringIO()
+            with mock.patch.object(MODULE, "run_step", side_effect=fake_run_step):
+                with redirect_stdout(stdout):
+                    exit_code = MODULE.main(
+                        ["--skill-dir", str(skill_dir), "--timeout", "5", "--skip-runtime-health-check"]
+                    )
+
+        self.assertEqual(exit_code, 0)
+        self.assertFalse(any(command[1].endswith("check_runtime_health.py") for command in calls if len(command) > 1))
+        self.assertTrue(any(command[0] == "openclaw" for command in calls))
 
 
 if __name__ == "__main__":

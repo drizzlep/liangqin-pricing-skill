@@ -234,6 +234,36 @@ class HandleQuoteMessageTests(unittest.TestCase):
         self.assertIn("主要是给谁用", result["reply_text"])
         self.assertEqual(result["question_code"], "customer.guided_discovery.user")
 
+    def test_alias_material_still_flows_to_formal_quote_path(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="我家次卧想做个北美黑胡桃衣柜，长1.8米，高2.2米，深600，直接正式报价。",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                execute_quote_when_ready=True,
+            )
+
+        self.assertEqual(result["handled_by"], "format_quote_reply")
+        self.assertEqual(result["pricing_route"], "cabinet_projection_area")
+        self.assertIn("北美黑胡桃木", result["reply_text"])
+
+    def test_special_rule_synonym_routes_to_double_sided_follow_up(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="这组双面柜门柜体怎么报？",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "detect_special_cabinet_rule")
+        self.assertEqual(result["downstream_result"]["special_rule"], "double_sided_door")
+        self.assertIn("两边分别是什么门型", result["reply_text"])
+
     def test_main_openclaw_reply_mode_prints_only_final_reply_text(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             stdout = io.StringIO()

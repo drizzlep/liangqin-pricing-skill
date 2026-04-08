@@ -71,6 +71,37 @@
 请运行 /绝对路径/liangqin-pricing-installer-YYYYMMDD.sh，把良禽佳木报价 skill 安装到当前环境的 shared skills，并同步到 workspace。安装时跳过测试，只汇报最终安装路径和同步结果。
 ```
 
+## 5A. 云端未知路径版（推荐）
+
+这段适合：
+
+- OpenClaw 跑在云端
+- 你不确定它是不是默认 `~/.openclaw`
+- 你希望它先确认真实目录，再安装，再自检
+
+直接复制给 OpenClaw：
+
+```text
+请不要假设当前环境一定是默认 ~/.openclaw 路径。
+
+请先确认这台云端 OpenClaw 实际使用的：
+1. shared skills 根目录
+2. workspace skills 根目录
+
+确认后，再运行 /绝对路径/liangqin-pricing-installer-YYYYMMDD.sh，把良禽佳木报价 skill 安装进去。如果安装器支持自定义目录，请显式传入实际 `skills root` 和 `workspace skill` 路径；不要靠默认值猜测。
+
+安装完成后，请立刻执行两步：
+
+第一步，运行环境自检：
+- python3 /最终workspace技能目录/liangqin-pricing/scripts/check_runtime_health.py
+
+第二步，fresh session 测试：
+- python3 /最终workspace技能目录/liangqin-pricing/scripts/refresh_and_test.py --skill-dir /最终workspace技能目录/liangqin-pricing
+
+如果自检失败，就不要继续 fresh session，直接把自检结果、最终安装路径、shared/workspace 实际目录告诉我。
+如果自检通过，再把 fresh session 结果一并告诉我。
+```
+
 ## 6. 验收专用版（只测防污染）
 
 如果对方已经装好了，你只想让它补一次“联网防污染”验收，直接复制这段：

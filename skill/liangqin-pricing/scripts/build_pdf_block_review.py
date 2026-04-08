@@ -20,7 +20,10 @@ from pathlib import Path
 from typing import Any
 
 from PIL import Image
-from PyPDF2 import PdfReader
+try:
+    from PyPDF2 import PdfReader
+except ModuleNotFoundError:
+    PdfReader = None
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -82,6 +85,11 @@ MANUAL_PRIORITY_PAGES = {49, 50}
 NON_BLOCKING_KNOWN_BLOCKS = {"p148-b01", "p277-b01"}
 
 _VISION_OCR_BIN: Path | None = None
+
+
+def require_pypdf2() -> None:
+    if PdfReader is None:
+        raise RuntimeError("PyPDF2 is required to build PDF block review artifacts.")
 
 VISION_OCR_SWIFT = """\
 import Foundation
@@ -1310,6 +1318,7 @@ def review_pdf(
     page_end: int | None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     references = load_reference_layers(reference_dir)
+    require_pypdf2()
     reader = PdfReader(str(pdf_path))
     final_page = min(page_end or len(reader.pages), len(reader.pages))
     page_summary_rows: list[dict[str, Any]] = []

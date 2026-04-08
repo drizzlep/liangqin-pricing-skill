@@ -199,6 +199,8 @@ def route_message(
         preferred_next_tool = "inquiry_reply"
     elif bed_weight_result.get("matched"):
         preferred_next_tool = "query_bed_weight_guidance"
+    elif special_result.get("special_rule"):
+        preferred_next_tool = "detect_special_cabinet_rule"
     elif (
         audience_role == "customer"
         and entry_mode == "customer_guided_discovery"
@@ -209,8 +211,6 @@ def route_message(
         str(addendum_result.get("recommended_reply_mode", "")).strip() == "follow_up" or not is_quote_request(normalized_text)
     ):
         preferred_next_tool = "query_addendum_guidance"
-    elif special_result.get("special_rule"):
-        preferred_next_tool = "detect_special_cabinet_rule"
 
     if inquiry_family != "quote_flow":
         detected_intent = "pre_sales_inquiry"

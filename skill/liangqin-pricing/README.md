@@ -122,6 +122,30 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/classify_quote_role.py --tex
 - `customer_strategy` 是普通用户内部引导策略
 - 前端一般只需要展示前者，后者用于解释当前为什么这样追问
 
+## 另一个机器人排障自检
+
+如果你在另一个机器人环境里看到“当前版本没有价格数据”这类提示，先不要直接相信它。
+
+先跑这个命令：
+
+```bash
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/check_runtime_health.py
+```
+
+这个自检会直接告诉你：
+
+- 当前加载的是哪份 skill 目录
+- `release.json` 是否存在
+- `price-index.json` 是否存在
+- 当前版本实际有多少条记录、多少条可查询记录
+- 是安装不完整，还是数据正常但机器人把“没查到匹配记录”误判成了“整份价格索引为空”
+
+如果你想让另一个机器人读取结构化结果，也可以改成：
+
+```bash
+python3 ~/.openclaw/workspace/skills/liangqin-pricing/scripts/check_runtime_health.py --output-mode json
+```
+
 如果你希望直接用一个脚本把“角色识别 + 路由 + 下游执行 + 角色化输出”串起来，可以运行：
 
 ```bash

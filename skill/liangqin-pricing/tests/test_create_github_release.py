@@ -6,6 +6,8 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 SCRIPT_PATH = REPO_ROOT / "scripts" / "create_github_release.py"
+if not SCRIPT_PATH.exists():
+    raise unittest.SkipTest("repo-level create_github_release.py is unavailable in this environment")
 SPEC = importlib.util.spec_from_file_location("create_github_release", SCRIPT_PATH)
 MODULE = importlib.util.module_from_spec(SPEC)
 assert SPEC and SPEC.loader

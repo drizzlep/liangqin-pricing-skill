@@ -75,6 +75,15 @@ class CalculateRockSlabPriceTests(unittest.TestCase):
                 base_subtotal=15000,
             )
 
+    def test_backboard_requires_opening_height(self) -> None:
+        with self.assertRaises(ValueError):
+            MODULE.calculate_rock_slab_price(
+                scenario="rock_slab_backboard",
+                slab_length="1.5",
+                cabinet_material="北美黑胡桃木",
+                base_subtotal=15000,
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

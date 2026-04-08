@@ -39,6 +39,16 @@ class CalculateDoorPanelAdjustmentTests(unittest.TestCase):
         self.assertEqual(result["door_unit_diff"], 900)
         self.assertEqual(result["adjusted_base_unit"], 7780)
 
+    def test_invalid_door_family_raises_value_error(self) -> None:
+        with self.assertRaises(ValueError):
+            MODULE.calculate_adjustment(
+                cabinet_material="北美白橡木",
+                target_door_material="北美黑胡桃木",
+                base_unit_price=6880,
+                cabinet_door_family="grid",
+                target_door_family="flat",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

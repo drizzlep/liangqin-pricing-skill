@@ -14,7 +14,10 @@ from pathlib import Path
 from zipfile import ZipFile
 import xml.etree.ElementTree as ET
 
-from PyPDF2 import PdfReader
+try:
+    from PyPDF2 import PdfReader
+except ModuleNotFoundError:
+    PdfReader = None
 
 
 W_NS = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
@@ -46,6 +49,11 @@ VISUAL_RULE_KEYWORDS = (
 )
 
 _PDF_RENDERER_BIN: Path | None = None
+
+
+def require_pypdf2() -> None:
+    if PdfReader is None:
+        raise RuntimeError("PyPDF2 is required to extract rules from PDF files.")
 
 SWIFT_RENDER_SCRIPT = """\
 import Foundation
@@ -393,6 +401,7 @@ def build_pdf_page_record(
 
 
 def extract_pdf_page_records(path: Path, *, ocr_min_chars: int) -> list[dict[str, object]]:
+    require_pypdf2()
     reader = PdfReader(str(path))
     records: list[dict[str, object]] = []
     for page_number, page in enumerate(reader.pages, start=1):

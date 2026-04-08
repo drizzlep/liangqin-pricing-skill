@@ -31,6 +31,23 @@ class CalculateHiddenRosewoodDiscountTests(unittest.TestCase):
         self.assertEqual(result["discount_factor"], 0.95)
         self.assertEqual(result["adjusted_unit_price"], 5586.0)
 
+    def test_alias_material_name_uses_same_discount_rule(self) -> None:
+        result = MODULE.calculate_discount(
+            exposed_material="北美白橡",
+            base_unit_price=6880,
+        )
+
+        self.assertEqual(result["exposed_material"], "北美白橡木")
+        self.assertEqual(result["discount_rate"], 0.10)
+        self.assertEqual(result["adjusted_unit_price"], 6192.0)
+
+    def test_unknown_material_raises_value_error(self) -> None:
+        with self.assertRaises(ValueError):
+            MODULE.calculate_discount(
+                exposed_material="未知木材",
+                base_unit_price=6880,
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

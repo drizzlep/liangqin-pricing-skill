@@ -76,9 +76,17 @@ bash scripts/build_single_file_installer.sh
 
 如果你只是要把 skill 迁移到另一个 OpenClaw，优先使用单文件安装器。
 
+如果对方是云端 OpenClaw，且你不确定它的技能目录是不是默认 `~/.openclaw`，不要让它直接猜默认路径。优先做法是：
+
+1. 用 GitHub Release 附件里的 zip 或单文件安装器
+2. 先确认云端实际 `shared skills` 和 `workspace skills` 路径
+3. 安装完成后先运行 `check_runtime_health.py`
+4. 自检通过后再运行 `refresh_and_test.py`
+
 相关文档：
 
 - `docs/openclaw-single-file-installer.md`
 - `docs/openclaw-installer-prompts.md`
+- `docs/github-release-workflow.md`
 - `docs/openclaw-skill-one-page-faq.md`
 - `docs/openclaw-skill-delivery-kit.md`

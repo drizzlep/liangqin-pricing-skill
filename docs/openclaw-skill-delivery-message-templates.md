@@ -76,6 +76,42 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/publish_skill.py
 如果是容器或镜像部署，优先把 liangqin-pricing 整个目录直接打进镜像或挂到持久卷里。
 ```
 
+## 3A. GitHub Release + 云端未知路径版（推荐）
+
+这段适合：
+
+- 你准备把新版直接发到 GitHub Releases
+- 对方是云端 OpenClaw
+- 你不确定对方是不是默认 `~/.openclaw`
+
+```text
+我这边已经把 liangqin-pricing 的新版发到 GitHub Release。
+
+这次版本除了报价规则增强，还补了两个排障能力：
+1. `check_runtime_health.py`：先判断当前环境是不是装完整了
+2. `refresh_and_test.py`：fresh session 前会先做运行环境自检
+
+但请不要假设你那边一定是默认 ~/.openclaw 路径。
+
+你那边请按下面顺序做：
+
+1. 先确认当前 OpenClaw 实际使用的 shared skills 根目录和 workspace skills 根目录
+2. 再安装 GitHub Release 里的 zip 或单文件安装器
+3. 如果安装器支持自定义目录，请显式传入真实路径，不要靠默认值猜
+4. 安装完成后，先运行：
+   python3 /最终workspace技能目录/liangqin-pricing/scripts/check_runtime_health.py
+5. 只有自检通过，再运行：
+   python3 /最终workspace技能目录/liangqin-pricing/scripts/refresh_and_test.py --skill-dir /最终workspace技能目录/liangqin-pricing
+
+如果自检失败，就不要继续报价测试，直接把：
+- shared skills 实际目录
+- workspace skills 实际目录
+- 最终安装路径
+- check_runtime_health.py 的完整输出
+
+发给我。
+```
+
 ## 4. 升级通知版
 
 这段适合你后面发新版 skill 给已经装过的人。

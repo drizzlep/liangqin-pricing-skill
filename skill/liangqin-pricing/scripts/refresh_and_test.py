@@ -22,7 +22,7 @@ PRESET_MESSAGES = {
 DEFAULT_PRESET = "wardrobe-smoke"
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Refresh the shared skill and run a fresh-session test.")
     parser.add_argument("--message", help="Explicit test message. Overrides preset if provided.")
     parser.add_argument(
@@ -46,7 +46,12 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="When resetting quote sessions, also reset Feishu quote sessions.",
     )
-    return parser.parse_args()
+    parser.add_argument(
+        "--skip-runtime-health-check",
+        action="store_true",
+        help="Skip check_runtime_health.py before running the fresh-session test.",
+    )
+    return parser.parse_args(argv)
 
 
 def resolve_test_message(message: str | None, preset: str) -> str:
@@ -94,8 +99,17 @@ def build_reset_command(scripts_dir: Path, *, include_feishu: bool) -> list[str]
     return command
 
 
-def main() -> int:
-    args = parse_args()
+def build_runtime_health_command(scripts_dir: Path, skill_dir: Path) -> list[str]:
+    return [
+        sys.executable,
+        str(scripts_dir / "check_runtime_health.py"),
+        "--skill-dir",
+        str(skill_dir),
+    ]
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
     skill_dir = Path(args.skill_dir).expanduser().resolve()
     scripts_dir = skill_dir / "scripts"
     inbox_dir = skill_dir / "sources" / "inbox"
@@ -118,6 +132,16 @@ def main() -> int:
         reset = run_step(build_reset_command(scripts_dir, include_feishu=args.include_feishu))
         if reset.returncode != 0:
             return reset.returncode
+
+    if not args.skip_runtime_health_check:
+        print_header("运行环境自检")
+        health = run_step(build_runtime_health_command(scripts_dir, skill_dir), capture=True)
+        if health.stdout:
+            print(health.stdout.rstrip())
+        if health.stderr:
+            print(health.stderr, file=sys.stderr)
+        if health.returncode != 0:
+            return health.returncode
 
     print_header("开始 fresh session 测试")
     print(f"session-id: {session_id}")

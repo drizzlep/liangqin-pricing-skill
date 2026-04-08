@@ -10,6 +10,20 @@ import sys
 from quote_response_metadata import build_response_metadata
 
 
+DOUBLE_SIDED_DOOR_KEYWORDS = ("双面门", "双面柜门", "双面开门", "两面开门")
+FRIDGE_CABINET_KEYWORDS = ("冰箱柜", "无底板柜", "冰箱位无底板", "无底板预留")
+HIDDEN_SURFACE_KEYWORDS = ("非见光面", "不见光面", "内侧", "柜内侧", "背面")
+ROSEWOOD_KEYWORDS = ("玫瑰木", "乌拉圭玫瑰木")
+
+
+def _contains_any(text: str, keywords: tuple[str, ...]) -> bool:
+    return any(keyword in text for keyword in keywords)
+
+
+def _looks_like_hidden_rosewood_discount(text: str) -> bool:
+    return _contains_any(text, HIDDEN_SURFACE_KEYWORDS) and _contains_any(text, ROSEWOOD_KEYWORDS)
+
+
 def detect_rule(text: str) -> dict[str, object]:
     normalized = str(text or "").strip()
     if "钻石柜" in normalized:
@@ -26,7 +40,7 @@ def detect_rule(text: str) -> dict[str, object]:
             )
         )
         return payload
-    if "冰箱柜" in normalized or "无底板柜" in normalized:
+    if _contains_any(normalized, FRIDGE_CABINET_KEYWORDS):
         payload = {
             "special_rule": "fridge_cabinet",
             "next_required_field": "fridge_opening_height",
@@ -40,7 +54,7 @@ def detect_rule(text: str) -> dict[str, object]:
             )
         )
         return payload
-    if "非见光面" in normalized and "玫瑰木" in normalized:
+    if _looks_like_hidden_rosewood_discount(normalized):
         payload = {
             "special_rule": "hidden_rosewood_discount",
             "next_required_field": None,
@@ -55,7 +69,7 @@ def detect_rule(text: str) -> dict[str, object]:
             )
         )
         return payload
-    if "双面门" in normalized:
+    if _contains_any(normalized, DOUBLE_SIDED_DOOR_KEYWORDS):
         payload = {
             "special_rule": "double_sided_door",
             "next_required_field": "door_type",

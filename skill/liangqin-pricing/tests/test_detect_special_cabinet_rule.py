@@ -30,6 +30,13 @@ class DetectSpecialCabinetRuleTests(unittest.TestCase):
         self.assertIn("两边分别", result["next_question"])
         self.assertIn("拼框/平板", result["next_question"])
 
+    def test_detects_double_sided_door_synonyms(self) -> None:
+        for text in ("两面开门这组柜体怎么报？", "双面柜门柜体怎么做？", "双面开门这条规则怎么走？"):
+            with self.subTest(text=text):
+                result = MODULE.detect_rule(text)
+                self.assertEqual(result["special_rule"], "double_sided_door")
+                self.assertEqual(result["next_required_field"], "door_type")
+
     def test_detects_operation_gap(self) -> None:
         result = MODULE.detect_rule("做个北美白橡木电视背景柜，中间留操作空区，长2.4米，高2.4米，深400，多少钱？")
         self.assertEqual(result["special_rule"], "operation_gap")
@@ -48,6 +55,23 @@ class DetectSpecialCabinetRuleTests(unittest.TestCase):
         self.assertEqual(result["special_rule"], "fridge_cabinet")
         self.assertEqual(result["next_required_field"], "fridge_opening_height")
         self.assertIn("冰箱净高", result["next_question"])
+
+    def test_detects_fridge_cabinet_synonyms(self) -> None:
+        for text in ("冰箱位无底板怎么做？", "无底板预留这个冰箱柜还缺什么参数？"):
+            with self.subTest(text=text):
+                result = MODULE.detect_rule(text)
+                self.assertEqual(result["special_rule"], "fridge_cabinet")
+                self.assertEqual(result["next_required_field"], "fridge_opening_height")
+
+    def test_hidden_rosewood_requires_rosewood_and_hidden_surface_signals(self) -> None:
+        matched = MODULE.detect_rule("见光面黑胡桃，柜内侧用玫瑰木，这条怎么算？")
+        self.assertEqual(matched["special_rule"], "hidden_rosewood_discount")
+
+        no_hidden_surface = MODULE.detect_rule("玫瑰木见光面处理怎么做？")
+        self.assertIsNone(no_hidden_surface["special_rule"])
+
+        no_rosewood = MODULE.detect_rule("非见光面材质要怎么处理？")
+        self.assertIsNone(no_rosewood["special_rule"])
 
 
 if __name__ == "__main__":
