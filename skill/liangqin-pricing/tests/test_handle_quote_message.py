@@ -71,22 +71,164 @@ class HandleQuoteMessageTests(unittest.TestCase):
         }
 
         with tempfile.TemporaryDirectory() as tmpdir:
+            state_root = Path(tmpdir) / "states"
+            bundle_root = Path(tmpdir) / "bundles"
             result = MODULE.handle_message(
                 text="帮我整理一版发客户的话术，这个正式报价直接给我。",
                 context_json=self.context_json,
                 channel="feishu",
                 quote_payload=payload,
-                state_root=Path(tmpdir) / "states",
-                bundle_root=Path(tmpdir) / "bundles",
+                state_root=state_root,
+                bundle_root=bundle_root,
                 disable_addenda=True,
             )
+            saved_state = MODULE.quote_flow_state.load_quote_flow_state(self.conversation_id, cache_root=state_root)
 
         self.assertEqual(result["handled_by"], "format_quote_reply")
         self.assertEqual(result["audience_role"], "consultant")
         self.assertEqual(result["output_profile"], "consultant_dual")
+        self.assertEqual(result["quote_stage"], "formal_quote_ready")
+        self.assertEqual(result["quote_confidence"], "high")
+        self.assertEqual(result["next_best_action"]["code"], "compare_or_generate_card")
+        self.assertEqual(result["next_best_action"]["primary_action_code"], "send_current_quote")
+        self.assertEqual(result["next_best_action"]["secondary_action_code"], "offer_compare_version")
+        self.assertEqual(result["next_best_action"]["followthrough_action_code"], "schedule_store_or_design_followup")
+        self.assertEqual(result["consultant_action_queue"][0]["code"], "send_current_quote")
+        self.assertEqual(result["consultant_action_queue"][0]["title"], "先发当前版")
+        self.assertTrue(result["consultant_action_queue"][0]["recommended"])
+        self.assertEqual(result["consultant_action_queue"][1]["code"], "offer_compare_version")
+        self.assertEqual(result["consultant_action_queue"][2]["code"], "schedule_store_or_design_followup")
+        self.assertEqual(result["consultant_action_queue"][3]["code"], "handle_price_high")
+        self.assertEqual(result["consultant_action_queue"][4]["code"], "next_touch_follow_up")
+        self.assertEqual(result["consultant_workbench"]["primary_action"]["code"], "send_current_quote")
+        self.assertEqual(result["consultant_workbench"]["action_queue"][1]["code"], "offer_compare_version")
+        self.assertEqual(result["quote_version_summary"]["current_version_label"], "当前正式版")
+        self.assertEqual(result["quote_version_summary"]["next_version_index"], "V2")
+        self.assertIn("V1 当前正式版", result["quote_version_actions"]["current_send_action"])
+        self.assertIn("V2 方案对比版", result["quote_version_actions"]["next_version_offer_action"])
+        self.assertIn("约一次沟通", result["follow_up_script_set"]["customer_followthrough_offer"])
+        self.assertIn("到店还是转深化", result["follow_up_script_set"]["consultant_followthrough_prompt"])
         self.assertIn("这次可以正式报价", result["reply_text"])
         self.assertIn("正式报价：34372.8元", result["internal_summary"])
         self.assertIn("如果你需要，我可以把这次报价整理成一张图片发到当前会话。", result["reply_text"])
+
+    def test_consultant_formal_quote_surfaces_customer_focus_in_internal_summary(self) -> None:
+        payload = {
+            "items": [
+                {
+                    "product": "流云衣柜",
+                    "confirmed": "北美黑胡桃木，1.8m*2.2m*0.6m",
+                    "pricing_method": "投影面积计价",
+                    "calculation_steps": ["基础价格 = 1.8 * 2.2 * 8680 = 34372.8"],
+                    "subtotal": "34372.8元",
+                }
+            ],
+            "total": "34372.8元",
+            "customer_priority": "budget",
+        }
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            state_root = Path(tmpdir) / "states"
+            bundle_root = Path(tmpdir) / "bundles"
+            result = MODULE.handle_message(
+                text="帮我整理一版发客户的话术，这个正式报价直接给我。",
+                context_json=self.context_json,
+                channel="feishu",
+                quote_payload=payload,
+                state_root=state_root,
+                bundle_root=bundle_root,
+                disable_addenda=True,
+            )
+            saved_state = MODULE.quote_flow_state.load_quote_flow_state(self.conversation_id, cache_root=state_root)
+
+        self.assertEqual(result["handled_by"], "format_quote_reply")
+        self.assertIn("客户当前更在意：预算控制", result["internal_summary"])
+        self.assertIn("建议跟进：先围绕预算收口", result["internal_summary"])
+        self.assertIn("建议动作：先发当前版；如客户继续压预算，再补一版降配对比。", result["internal_summary"])
+        self.assertIn("对比指令：下一版优先只减附加项或收一档门型，不改主体尺寸和核心结构。", result["internal_summary"])
+        self.assertIn("动作排序：", result["internal_summary"])
+        self.assertIn("建议先做：先发当前版。", result["internal_summary"])
+        self.assertIn("第 2 步：补预算收一档对比版。", result["internal_summary"])
+        self.assertEqual(result["consultant_handoff_plan"]["priority"], "budget")
+        self.assertEqual(result["consultant_handoff_plan"]["action_code"], "send_current_then_budget_compare")
+        self.assertEqual(result["consultant_handoff_plan"]["compare_code"], "reduce_addons_keep_structure")
+        self.assertEqual(result["consultant_handoff_plan"]["compare_version_title"], "预算收一档对比版")
+        self.assertEqual(result["consultant_handoff_plan"]["compare_variables"][0]["label"], "附加项")
+        self.assertEqual(result["consultant_handoff_plan"]["keep_fixed_fields"], ["主体尺寸", "核心结构"])
+        self.assertEqual(result["compare_plan"]["code"], "reduce_addons_keep_structure")
+        self.assertEqual(result["compare_plan"]["locked_fields"], ["主体尺寸", "核心结构"])
+        self.assertEqual(result["post_quote_stage"]["code"], "formal_quote_waiting_budget_feedback")
+        self.assertEqual(result["quote_version_summary"]["next_version_label"], "预算收一档对比版")
+        self.assertIn("继续压预算", result["quote_version_summary"]["version_transition_note"])
+        self.assertEqual(result["next_best_action"]["title"], "先发当前版，再补预算对比")
+        self.assertEqual(result["next_best_action"]["secondary_action_code"], "send_current_then_budget_compare")
+        self.assertIn("预算收一档对比版", result["next_best_action"]["text"])
+        self.assertEqual(result["next_best_action"]["followthrough_action_code"], "schedule_store_visit")
+        self.assertIn("约到店", result["next_best_action"]["followthrough_text"])
+        self.assertEqual(result["quote_version_actions"]["recommended_trigger"], "继续压预算")
+        self.assertIn("V2 预算收一档对比版", result["quote_version_actions"]["next_version_offer_action"])
+        self.assertIn("customer_compare_offer", result["follow_up_script_set"])
+        self.assertIn("约到店", result["follow_up_script_set"]["customer_followthrough_offer"])
+        self.assertIn("这轮重点不是再解释价格", result["follow_up_script_set"]["consultant_followthrough_prompt"])
+        self.assertEqual(result["consultant_quick_actions"][0]["label"], "当前发送句")
+        self.assertEqual(result["consultant_quick_actions"][1]["group"], "compare_offer")
+        self.assertEqual(result["consultant_action_queue"][0]["code"], "send_current_quote")
+        self.assertEqual(result["consultant_action_queue"][1]["code"], "send_current_then_budget_compare")
+        self.assertEqual(result["consultant_action_queue"][2]["code"], "schedule_store_visit")
+        self.assertEqual(result["consultant_action_queue"][3]["code"], "handle_cheaper_option")
+        self.assertEqual(result["consultant_action_queue"][4]["stage_code"], "formal_quote_waiting_budget_feedback")
+        self.assertIn("预算控制", result["consultant_workbench"]["header"]["summary"])
+        compare_panel = next(
+            panel for panel in result["consultant_workbench"]["info_panels"] if panel["code"] == "compare_focus"
+        )
+        self.assertIn("主体尺寸、核心结构", " ".join(compare_panel["lines"]))
+        self.assertIn("客户问能不能便宜点", result["consultant_quick_actions"][3]["label"])
+        self.assertEqual(result["objection_playbook"]["recommended_first_code"], "cheaper_option")
+        self.assertIn("不要直接打折", result["objection_playbook"]["cheaper_option"]["consultant_tactic"])
+        self.assertEqual(
+            result["objection_playbook"]["cheaper_option"]["transition_action_code"],
+            "send_current_then_budget_compare",
+        )
+        self.assertIn("约到店", result["objection_playbook"]["cheaper_option"]["followthrough_line"])
+        self.assertIsNotNone(saved_state)
+        self.assertIn("动作排序：1. 先发当前版；2. 补预算收一档对比版；3. 约到店确认。", saved_state["handoff_summary"])
+        self.assertIn("正式报价：34372.8元", result["reply_text"])
+
+    def test_formatted_quote_keeps_original_total_in_bundle_and_state(self) -> None:
+        payload = {
+            "items": [
+                {
+                    "product": "流云衣柜",
+                    "confirmed": "北美黑胡桃木，1.8m*2.2m*0.6m",
+                    "pricing_method": "投影面积计价",
+                    "calculation_steps": ["基础价格 = 1.8 * 2.2 * 8680 = 34372.8"],
+                    "subtotal": "34372.8元",
+                }
+            ],
+            "total": "34372.8元",
+        }
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            state_root = Path(tmpdir) / "states"
+            bundle_root = Path(tmpdir) / "bundles"
+            result = MODULE.handle_message(
+                text="帮我整理一版发客户的话术，这个正式报价直接给我。",
+                context_json=self.context_json,
+                channel="feishu",
+                quote_payload=payload,
+                state_root=state_root,
+                bundle_root=bundle_root,
+                disable_addenda=True,
+            )
+            saved_bundle = MODULE.quote_result_bundle.load_latest_quote_result_bundle(self.conversation_id, cache_root=bundle_root)
+            saved_state = MODULE.quote_flow_state.load_quote_flow_state(self.conversation_id, cache_root=state_root)
+
+        self.assertEqual(result["downstream_result"]["prepared_payload"]["total"], "34372.8元")
+        self.assertEqual(result["downstream_result"]["prepared_payload"]["items"][0]["subtotal"], "34372.8元")
+        self.assertEqual(saved_bundle["prepared_payload"]["total"], "34372.8元")
+        self.assertEqual(saved_bundle["prepared_payload"]["items"][0]["subtotal"], "34372.8元")
+        self.assertEqual(saved_state["last_formal_payload"]["total"], "34372.8元")
+        self.assertEqual(saved_state["last_formal_payload"]["items"][0]["subtotal"], "34372.8元")
 
     def test_generates_quote_card_when_message_requests_image(self) -> None:
         payload = {
@@ -172,6 +314,8 @@ class HandleQuoteMessageTests(unittest.TestCase):
         self.assertEqual(result["status"], "ready_for_quote")
         self.assertEqual(result["pricing_route"], "cabinet")
         self.assertEqual(result["missing_fields"], [])
+        self.assertEqual(result["conversion_intent_level"], "high")
+        self.assertEqual(result["next_best_action"]["code"], "formal_quote_ready")
         self.assertIn("可以进入正式报价", result["reply_text"])
 
     def test_customer_precise_need_returns_guided_discovery_reply_for_bookcase(self) -> None:
@@ -190,6 +334,8 @@ class HandleQuoteMessageTests(unittest.TestCase):
         self.assertEqual(result["entry_mode"], "customer_guided_discovery")
         self.assertEqual(result["customer_strategy"], "precise_need")
         self.assertEqual(result["response_stage"], "direction_confirm")
+        self.assertEqual(result["conversion_intent_level"], "medium")
+        self.assertEqual(result["next_best_action"]["code"], "confirm_solution_direction")
         self.assertIn("书柜方向", result["reply_text"])
         self.assertIn("不急着区分目录成品还是定制", result["reply_text"])
         self.assertIn("下一步我先只确认一个问题", result["reply_text"])
@@ -229,10 +375,33 @@ class HandleQuoteMessageTests(unittest.TestCase):
         self.assertEqual(result["entry_mode"], "customer_guided_discovery")
         self.assertEqual(result["customer_strategy"], "guided_discovery")
         self.assertEqual(result["response_stage"], "proposal_range")
+        self.assertEqual(result["conversion_intent_level"], "medium")
+        self.assertEqual(result["next_best_action"]["code"], "narrow_scope_before_quote")
         self.assertIn("不急着帮你定具体家具", result["reply_text"])
         self.assertIn("预算区间", result["reply_text"])
         self.assertIn("主要是给谁用", result["reply_text"])
         self.assertEqual(result["question_code"], "customer.guided_discovery.user")
+
+    def test_incomplete_precheck_returns_quote_progress_action(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text=(
+                    "一张半高梯柜上铺床1.2*2米床垫尺寸的，北美白蜡木，胶囊围栏，围栏长2米高0.4米，"
+                    "梯柜踏步宽520，进深500。床下前后双排衣柜，前后柜体互通形式，"
+                    "前面有门无背板的衣柜长2米高1.2米深450。直接正式报价。"
+                ),
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                execute_quote_when_ready=True,
+            )
+
+        self.assertEqual(result["handled_by"], "precheck_quote")
+        self.assertEqual(result["status"], "needs_input")
+        self.assertEqual(result["conversion_intent_level"], "high")
+        self.assertEqual(result["next_best_action"]["code"], "complete_key_quote_field")
+        self.assertIn("先补这一个关键条件", result["next_best_action"]["text"])
 
     def test_alias_material_still_flows_to_formal_quote_path(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -378,6 +547,54 @@ class HandleQuoteMessageTests(unittest.TestCase):
         self.assertEqual(second["guided_turn_count"], 2)
         self.assertIn("继续按书柜方向帮你往下收", second["reply_text"])
         self.assertIn("放在哪个空间", second["reply_text"])
+
+    def test_customer_guided_budget_priority_is_captured_in_signal_summary(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            state_root = Path(tmpdir) / "states"
+            bundle_root = Path(tmpdir) / "bundles"
+
+            result = MODULE.handle_message(
+                text="我想定个衣柜，先看看预算，别太贵。",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=state_root,
+                bundle_root=bundle_root,
+                disable_addenda=True,
+            )
+            saved_state = MODULE.quote_flow_state.load_quote_flow_state(self.conversation_id, cache_root=state_root)
+
+        self.assertEqual(result["handled_by"], "customer_guided_discovery")
+        self.assertIn("更省预算", result["reply_text"])
+        self.assertEqual(result["signal_summary"]["priority"], ["budget"])
+        self.assertEqual(saved_state["confirmed_fields"]["signal_summary"]["priority"], ["budget"])
+
+    def test_guided_priority_can_shape_follow_up_formal_quote_copy_without_changing_total(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            state_root = Path(tmpdir) / "states"
+            bundle_root = Path(tmpdir) / "bundles"
+
+            MODULE.handle_message(
+                text="我想定个衣柜，预算先卡紧一点，别太贵。",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=state_root,
+                bundle_root=bundle_root,
+                disable_addenda=True,
+            )
+            result = MODULE.handle_message(
+                text="樱桃木，长2米，高2.4米，深350。",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=state_root,
+                bundle_root=bundle_root,
+                disable_addenda=True,
+                execute_quote_when_ready=True,
+            )
+
+        self.assertEqual(result["handled_by"], "format_quote_reply")
+        self.assertIn("我会先按更省预算的路径", result["reply_text"])
+        self.assertIn("如果你想先把预算往下收", result["reply_text"])
+        self.assertIn("正式报价：26304元", result["reply_text"])
 
     def test_customer_guided_follow_up_can_augment_precheck_args_from_prior_product_signal(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

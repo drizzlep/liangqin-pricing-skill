@@ -21,6 +21,8 @@ class CustomerGuidanceTemplatesTests(unittest.TestCase):
         )
 
         self.assertEqual(summary["question_code"], "customer.precise_need.goal")
+        self.assertEqual(summary["conversion_intent_level"], "medium")
+        self.assertEqual(summary["next_best_action"]["code"], "confirm_solution_direction")
         self.assertIn("先按书柜方向帮你看", summary["reply_text"])
         self.assertIn("不急着区分目录成品还是定制", summary["reply_text"])
         self.assertIn("展示、收纳", summary["reply_text"])
@@ -56,6 +58,8 @@ class CustomerGuidanceTemplatesTests(unittest.TestCase):
         )
 
         self.assertEqual(summary["question_code"], "customer.guided_discovery.user")
+        self.assertEqual(summary["conversion_intent_level"], "high")
+        self.assertEqual(summary["next_best_action"]["code"], "complete_one_key_field")
         self.assertIn("这种情况很常见", summary["reply_text"])
         self.assertIn("接近可以给参考报价", summary["reply_text"])
         self.assertIn("给谁用", summary["reply_text"])

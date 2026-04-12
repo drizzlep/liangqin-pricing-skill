@@ -30,6 +30,45 @@ class QuoteCardRendererTests(unittest.TestCase):
                 "超深加价：34,372.8 × 15% = 5,155.92 元",
             ],
             "notes": ["如尺寸或材质调整，报价将同步更新。"],
+            "version_action_cards": [
+                {"title": "当前怎么发", "detail": "先发 V1 当前正式版，先把当前锁价结果发给客户。"},
+                {"title": "下一版怎么接", "detail": "如果客户继续压预算，再发 V2 预算收一档对比版。"},
+                {"title": "给客户怎么解释", "detail": "如果你想把预算再往下收，我可以先让主体结构先不动，再补你一版预算收一档对比版。"},
+            ],
+            "action_queue_cards": [
+                {
+                    "title": "建议先做 1 | 先发当前版",
+                    "lines": [
+                        "动作：先发 V1 当前正式版，先把当前锁价结果发给客户。",
+                        "时机：适合正式报价刚发出这一轮先用。",
+                    ],
+                },
+                {
+                    "title": "第 2 步 | 补预算收一档对比",
+                    "lines": [
+                        "动作：如果客户继续压预算，再发 V2 预算收一档对比版。",
+                        "时机：适合客户继续压预算时再接。",
+                    ],
+                },
+            ],
+            "quick_action_cards": [
+                {"title": "当前发送句", "detail": "这版我先发你当前正式报价；如果你想继续压预算，我可以再补一版预算收一档对比给你参考。"},
+                {"title": "推荐异议回复 | 客户问能不能便宜点", "detail": "如果你更想先控预算，我可以基于这版再补一版预算收一档对比版。"},
+            ],
+            "objection_action_cards": [
+                {
+                    "title": "优先处理 | 客户问能不能便宜点",
+                    "lines": [
+                        "怎么回：如果你更想先控预算，我可以基于这版再补一版预算收一档对比版。",
+                        "怎么接：如果你想先控预算，我可以先按同样结构补一版预算收一档对比给你。",
+                        "怎么推进：如果这版区间接受，下一步优先约到店或沟通，把预算边界一次收清。",
+                    ],
+                }
+            ],
+            "followthrough_action": {
+                "label": "约到店确认",
+                "text": "如果客户对当前区间接受，下一步优先约到店或约设计沟通，把预算边界和取舍一次收清。",
+            },
             "overflow_hint": "完整计算过程见本条文字报价。",
         }
 
@@ -41,6 +80,17 @@ class QuoteCardRendererTests(unittest.TestCase):
         self.assertIn("39,529 元", html)
         self.assertIn("已确认条件", html)
         self.assertIn("关键依据", html)
+        self.assertIn("版本建议", html)
+        self.assertIn("当前怎么发", html)
+        self.assertIn("动作排序", html)
+        self.assertIn("建议先做 1 | 先发当前版", html)
+        self.assertIn("快捷发送", html)
+        self.assertIn("当前发送句", html)
+        self.assertIn("异议承接", html)
+        self.assertIn("优先处理 | 客户问能不能便宜点", html)
+        self.assertIn("怎么推进", html)
+        self.assertIn("成交推进", html)
+        self.assertIn("约到店确认", html)
         self.assertIn("补充说明", html)
         self.assertIn("完整计算过程见本条文字报价。", html)
 

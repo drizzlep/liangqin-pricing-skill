@@ -88,6 +88,13 @@ CUSTOMER_GOAL_HINTS = ("收纳", "睡觉", "学习", "展示", "空间利用", "
 CUSTOMER_USER_HINTS = ("一个孩子", "两个孩子", "小朋友", "孩子", "大人", "全家")
 CUSTOMER_REFERENCE_HINTS = ("照片", "户型图", "草图", "现场图")
 CUSTOMER_BUDGET_HINTS = ("预算", "先看看价格", "先看价格", "大概多少钱", "先估个大概")
+CUSTOMER_PRIORITY_PATTERNS = (
+    ("budget", ("预算", "别太贵", "不要太贵", "省一点", "控制预算", "性价比", "划算")),
+    ("aesthetics", ("颜值", "好看", "效果", "高级感", "风格", "质感")),
+    ("storage", ("收纳", "能装", "储物", "分类收纳", "容量")),
+    ("space_efficiency", ("空间利用", "利用起来", "不浪费空间", "动线", "紧凑")),
+    ("eco_material", ("环保", "气味", "材质安全", "环保材质", "更环保")),
+)
 
 PRECHECK_DEFAULTS = {
     "category": "",
@@ -375,6 +382,11 @@ def _extract_customer_guided_signals(text: str) -> dict[str, list[str]]:
         "user": [keyword for keyword in CUSTOMER_USER_HINTS if keyword in normalized],
         "reference": [keyword for keyword in CUSTOMER_REFERENCE_HINTS if keyword in normalized],
         "budget": [keyword for keyword in CUSTOMER_BUDGET_HINTS if keyword in normalized],
+        "priority": [
+            normalized_label
+            for normalized_label, keywords in CUSTOMER_PRIORITY_PATTERNS
+            if any(keyword in normalized for keyword in keywords)
+        ],
         "size": [
             label
             for label, value in {
@@ -394,7 +406,7 @@ def _merge_customer_guided_signals(
     current: dict[str, list[str]] | None,
 ) -> dict[str, list[str]]:
     merged: dict[str, list[str]] = {}
-    for key in ("product", "space", "goal", "user", "reference", "budget", "size"):
+    for key in ("product", "space", "goal", "user", "reference", "budget", "priority", "size"):
         seen: list[str] = []
         for source in (previous or {}, current or {}):
             for value in source.get(key, []) or []:
@@ -464,6 +476,8 @@ def _customer_guided_text(
         "constraint_code": None,
         "detail_level_hint": "solution_plus_range" if response_stage != "direction_confirm" else "solution_direction",
         "response_stage": response_stage,
+        "conversion_intent_level": str(template_summary.get("conversion_intent_level") or "").strip(),
+        "next_best_action": template_summary.get("next_best_action") or {},
         "signal_summary": signals,
         "next_best_question": next_question,
         "missing_fields": ["customer_guided_answer"],
@@ -481,6 +495,30 @@ def _customer_guided_category_from_signals(signals: dict[str, list[str]] | None)
         if product in signal_products:
             return product
     return ""
+
+
+def _customer_priority_from_state(state: dict[str, Any] | None) -> str:
+    if not state:
+        return ""
+    confirmed_fields = state.get("confirmed_fields") or {}
+    signal_summary = confirmed_fields.get("signal_summary") or {}
+    if not isinstance(signal_summary, dict):
+        return ""
+    priority_values = [str(item).strip() for item in (signal_summary.get("priority") or []) if str(item).strip()]
+    return priority_values[0] if priority_values else ""
+
+
+def _augment_quote_payload_from_customer_context(
+    quote_payload: dict[str, Any],
+    *,
+    state: dict[str, Any] | None,
+) -> dict[str, Any]:
+    priority = _customer_priority_from_state(state)
+    if not priority or str(quote_payload.get("customer_priority") or "").strip():
+        return quote_payload
+    augmented = dict(quote_payload)
+    augmented["customer_priority"] = priority
+    return augmented
 
 
 def _augment_precheck_args_from_customer_guided_context(
@@ -1286,6 +1324,23 @@ def _store_flow_state(
     captured_product_context: dict[str, Any] | None = None,
     last_non_quote_reply: str = "",
     last_safe_boundary_reason: str = "",
+    quote_confidence: str = "",
+    quote_stage: str = "",
+    option_set: list[dict[str, Any]] | None = None,
+    budget_adjustment_suggestions: list[str] | None = None,
+    next_best_action: dict[str, Any] | None = None,
+    decision_risk_points: list[str] | None = None,
+    conversion_intent_level: str = "",
+    consultant_handoff_plan: dict[str, Any] | None = None,
+    compare_plan: dict[str, Any] | None = None,
+    follow_up_script_set: dict[str, Any] | None = None,
+    consultant_quick_actions: list[dict[str, Any]] | None = None,
+    consultant_action_queue: list[dict[str, Any]] | None = None,
+    consultant_workbench: dict[str, Any] | None = None,
+    post_quote_stage: dict[str, Any] | None = None,
+    quote_version_summary: dict[str, Any] | None = None,
+    quote_version_actions: dict[str, Any] | None = None,
+    objection_playbook: dict[str, Any] | None = None,
 ) -> str:
     context = _resolve_context(context_json, channel)
     if not context:
@@ -1306,10 +1361,89 @@ def _store_flow_state(
             "captured_product_context": captured_product_context or {},
             "last_non_quote_reply": last_non_quote_reply,
             "last_safe_boundary_reason": last_safe_boundary_reason,
+            "quote_confidence": quote_confidence,
+            "quote_stage": quote_stage,
+            "option_set": option_set or [],
+            "budget_adjustment_suggestions": budget_adjustment_suggestions or [],
+            "next_best_action": next_best_action or {},
+            "decision_risk_points": decision_risk_points or [],
+            "conversion_intent_level": conversion_intent_level,
+            "consultant_handoff_plan": consultant_handoff_plan or {},
+            "compare_plan": compare_plan or {},
+            "follow_up_script_set": follow_up_script_set or {},
+            "consultant_quick_actions": consultant_quick_actions or [],
+            "consultant_action_queue": consultant_action_queue or [],
+            "consultant_workbench": consultant_workbench or {},
+            "post_quote_stage": post_quote_stage or {},
+            "quote_version_summary": quote_version_summary or {},
+            "quote_version_actions": quote_version_actions or {},
+            "objection_playbook": objection_playbook or {},
         },
         cache_root=state_root,
     )
     return context["conversation_id"]
+
+
+def _build_progress_metadata(
+    *,
+    handled_by: str,
+    status: str,
+    downstream_result: dict[str, Any],
+) -> dict[str, Any]:
+    if handled_by == "customer_guided_discovery":
+        return {
+            "conversion_intent_level": str(downstream_result.get("conversion_intent_level") or "").strip() or "medium",
+            "next_best_action": downstream_result.get("next_best_action") or {},
+        }
+    if handled_by == "precheck_quote":
+        if status == "ready_for_quote":
+            quote_decision = str(downstream_result.get("quote_decision") or "").strip()
+            return {
+                "conversion_intent_level": "high",
+                "next_best_action": {
+                    "code": "reference_quote_ready" if quote_decision == "reference_quote" else "formal_quote_ready",
+                    "text": "关键条件已经齐了，下一步可以直接继续正式报价。"
+                    if quote_decision != "reference_quote"
+                    else "关键条件已经齐了，下一步可以先继续参考报价。",
+                },
+            }
+        next_question = str(downstream_result.get("next_question") or "").strip()
+        return {
+            "conversion_intent_level": "high",
+            "next_best_action": {
+                "code": "complete_key_quote_field",
+                "text": f"下一步先补这一个关键条件：{next_question}" if next_question else "下一步先补齐缺失的关键报价条件。",
+            },
+        }
+    if handled_by == "inquiry_reply":
+        next_question = str(downstream_result.get("next_question") or "").strip()
+        if downstream_result.get("missing_fields"):
+            return {
+                "conversion_intent_level": "low",
+                "next_best_action": {
+                    "code": "complete_inquiry_anchor",
+                    "text": f"下一步先补这个锚点信息：{next_question}" if next_question else "下一步先补一个关键锚点信息。",
+                },
+            }
+        return {
+            "conversion_intent_level": "low",
+            "next_best_action": {
+                "code": "continue_when_needed",
+                "text": "如果你想继续往报价方向收，我可以在这条基础上再补一个关键条件。",
+            },
+        }
+    next_question = str(downstream_result.get("next_question") or "").strip()
+    return {
+        "conversion_intent_level": "medium" if status == "needs_input" else "",
+        "next_best_action": (
+            {
+                "code": "clarify_then_continue",
+                "text": f"下一步先确认：{next_question}" if next_question else "下一步先确认一个关键条件。",
+            }
+            if status == "needs_input"
+            else {}
+        ),
+    }
 
 
 def _run_precheck(precheck_args: dict[str, Any]) -> dict[str, Any]:
@@ -2033,7 +2167,9 @@ def _format_quote_payload_result(
     addenda_root: Path,
     disable_addenda: bool,
     route_result: dict[str, Any],
+    existing_state: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    quote_payload = _augment_quote_payload_from_customer_context(quote_payload, state=existing_state)
     prepared_payload = format_quote_reply.prepare_payload(
         quote_payload,
         addenda_root=addenda_root,
@@ -2063,6 +2199,23 @@ def _format_quote_payload_result(
         "customer_forward_text": render_bundle["customer_forward_text"],
         "missing_fields": list(render_bundle["prepared_payload"].get("missing_fields", [])),
         "pricing_route": str(render_bundle["prepared_payload"].get("pricing_route", "")).strip(),
+        "quote_confidence": str(render_bundle["prepared_payload"].get("quote_confidence", "")).strip(),
+        "quote_stage": str(render_bundle["prepared_payload"].get("quote_stage", "")).strip(),
+        "option_set": render_bundle["prepared_payload"].get("option_set") or [],
+        "budget_adjustment_suggestions": render_bundle["prepared_payload"].get("budget_adjustment_suggestions") or [],
+        "next_best_action": render_bundle["prepared_payload"].get("next_best_action") or {},
+        "decision_risk_points": render_bundle["prepared_payload"].get("decision_risk_points") or [],
+        "conversion_intent_level": str(render_bundle["prepared_payload"].get("conversion_intent_level", "")).strip(),
+        "consultant_handoff_plan": render_bundle["prepared_payload"].get("consultant_handoff_plan") or {},
+        "compare_plan": render_bundle["prepared_payload"].get("compare_plan") or {},
+        "follow_up_script_set": render_bundle["prepared_payload"].get("follow_up_script_set") or {},
+        "consultant_quick_actions": render_bundle["prepared_payload"].get("consultant_quick_actions") or [],
+        "consultant_action_queue": render_bundle["prepared_payload"].get("consultant_action_queue") or [],
+        "consultant_workbench": render_bundle["prepared_payload"].get("consultant_workbench") or {},
+        "post_quote_stage": render_bundle["prepared_payload"].get("post_quote_stage") or {},
+        "quote_version_summary": render_bundle["prepared_payload"].get("quote_version_summary") or {},
+        "quote_version_actions": render_bundle["prepared_payload"].get("quote_version_actions") or {},
+        "objection_playbook": render_bundle["prepared_payload"].get("objection_playbook") or {},
         "route_result": route_result,
         "downstream_result": render_bundle,
         "conversation_id": str(route_result.get("conversation_id", "")).strip(),
@@ -2213,6 +2366,7 @@ def handle_message(
                 addenda_root=addenda_root,
                 disable_addenda=disable_addenda,
                 route_result=route_result,
+                existing_state=existing_state,
             )
 
     if special_quote is not None:
@@ -2230,6 +2384,7 @@ def handle_message(
             addenda_root=addenda_root,
             disable_addenda=disable_addenda,
             route_result=route_result,
+            existing_state=existing_state,
         )
 
     if quote_payload is not None:
@@ -2244,6 +2399,7 @@ def handle_message(
             addenda_root=addenda_root,
             disable_addenda=disable_addenda,
             route_result=route_result,
+            existing_state=existing_state,
         )
 
     preferred_next_tool = str(route_result.get("preferred_next_tool", "") or "").strip()
@@ -2257,6 +2413,12 @@ def handle_message(
         )
         missing_fields = list(inquiry_result.get("missing_fields") or [])
         resolved_product_context = inquiry_result.get("resolved_product_context") or effective_product_context or {}
+        inquiry_status = "completed" if inquiry_result.get("can_answer_directly") and not missing_fields else "needs_input"
+        progress_metadata = _build_progress_metadata(
+            handled_by="inquiry_reply",
+            status=inquiry_status,
+            downstream_result=inquiry_result,
+        )
         conversation_id = _store_flow_state(
             context_json=context_json,
             channel=channel,
@@ -2273,9 +2435,11 @@ def handle_message(
             captured_product_context=resolved_product_context,
             last_non_quote_reply=inquiry_result["reply_text"],
             last_safe_boundary_reason=str(inquiry_result.get("safe_boundary_reason") or ""),
+            next_best_action=progress_metadata.get("next_best_action") or {},
+            conversion_intent_level=str(progress_metadata.get("conversion_intent_level") or "").strip(),
         )
         return {
-            "status": "completed" if inquiry_result.get("can_answer_directly") and not missing_fields else "needs_input",
+            "status": inquiry_status,
             "handled_by": "inquiry_reply",
             "audience_role": audience_role,
             "output_profile": output_profile,
@@ -2295,6 +2459,8 @@ def handle_message(
             "source_basis": inquiry_result.get("source_basis") or "",
             "safe_boundary_reason": inquiry_result.get("safe_boundary_reason") or "",
             "handoff_needed": bool(inquiry_result.get("handoff_needed")),
+            "conversion_intent_level": str(progress_metadata.get("conversion_intent_level") or "").strip(),
+            "next_best_action": progress_metadata.get("next_best_action") or {},
             "route_result": route_result,
             "downstream_result": inquiry_result,
             "conversation_id": conversation_id or str(route_result.get("conversation_id", "")).strip(),
@@ -2346,6 +2512,8 @@ def handle_message(
                     handoff_summary=guidance_result["reply_text"],
                     active_inquiry_family="quote_flow",
                     captured_product_context=effective_product_context or {},
+                    next_best_action=guidance_result.get("next_best_action") or {},
+                    conversion_intent_level=str(guidance_result.get("conversion_intent_level") or "").strip(),
                 )
                 return {
                     "status": "needs_input",
@@ -2362,6 +2530,8 @@ def handle_message(
                     "constraint_code": guidance_result["constraint_code"],
                     "detail_level_hint": guidance_result["detail_level_hint"],
                     "response_stage": guidance_result["response_stage"],
+                    "conversion_intent_level": guidance_result.get("conversion_intent_level") or "",
+                    "next_best_action": guidance_result.get("next_best_action") or {},
                     "signal_summary": guidance_result["signal_summary"],
                     "next_best_question": guidance_result["next_best_question"],
                     "guided_turn_count": guidance_result["guided_turn_count"],
@@ -2404,6 +2574,7 @@ def handle_message(
                     addenda_root=addenda_root,
                     disable_addenda=disable_addenda,
                     route_result=route_result,
+                    existing_state=existing_state,
                 )
         text_bundle = _precheck_text(downstream_result, audience_role=audience_role)
     else:
@@ -2411,6 +2582,11 @@ def handle_message(
         text_bundle = _shape_role_output(audience_role=audience_role, professional_text="", customer_text="")
 
     status = _build_status(downstream_result, preferred_next_tool=preferred_next_tool)
+    progress_metadata = _build_progress_metadata(
+        handled_by=preferred_next_tool,
+        status=status,
+        downstream_result=downstream_result,
+    )
     missing_fields = list(downstream_result.get("missing_fields", []))
     active_route = str(
         downstream_result.get("pricing_route")
@@ -2431,6 +2607,8 @@ def handle_message(
         handoff_summary=text_bundle["reply_text"],
         active_inquiry_family=inquiry_family,
         captured_product_context=effective_product_context or {},
+        next_best_action=progress_metadata.get("next_best_action") or {},
+        conversion_intent_level=str(progress_metadata.get("conversion_intent_level") or "").strip(),
     )
 
     return {
@@ -2448,6 +2626,8 @@ def handle_message(
         "constraint_code": downstream_result.get("constraint_code"),
         "detail_level_hint": downstream_result.get("detail_level_hint"),
         "response_stage": downstream_result.get("response_stage"),
+        "conversion_intent_level": str(progress_metadata.get("conversion_intent_level") or "").strip(),
+        "next_best_action": progress_metadata.get("next_best_action") or {},
         "signal_summary": downstream_result.get("signal_summary"),
         "next_best_question": downstream_result.get("next_best_question"),
         "pricing_route": str(downstream_result.get("pricing_route", "")).strip(),

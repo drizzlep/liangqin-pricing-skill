@@ -12,6 +12,31 @@ import quote_card_renderer
 import quote_result_bundle
 
 
+def _resolve_card_payload(bundle: dict[str, Any]) -> dict[str, Any]:
+    quote_card_payload = bundle.get("quote_card_payload")
+    prepared_payload = bundle.get("prepared_payload") or {}
+    if not isinstance(quote_card_payload, dict):
+        return prepared_payload if isinstance(prepared_payload, dict) else {}
+    if str(bundle.get("audience_role", "")).strip() != "consultant":
+        return quote_card_payload
+
+    merged = dict(quote_card_payload)
+    if isinstance(prepared_payload, dict):
+        for key in (
+            "option_set",
+            "next_best_action",
+            "decision_risk_points",
+            "quote_version_actions",
+            "objection_playbook",
+            "consultant_action_queue",
+            "consultant_quick_actions",
+        ):
+            value = prepared_payload.get(key)
+            if value not in (None, "", [], {}):
+                merged[key] = value
+    return merged
+
+
 def generate_quote_card_reply(
     *,
     context_json: str,
@@ -26,10 +51,7 @@ def generate_quote_card_reply(
     if not bundle or not bundle.get("eligible_for_card"):
         return {"text": quote_result_bundle.NO_BUNDLE_MESSAGE}
 
-    view_model = quote_card_adapter.adapt_quote_card_payload(
-        bundle.get("quote_card_payload") or bundle["prepared_payload"],
-        hero_image=hero_image,
-    )
+    view_model = quote_card_adapter.adapt_quote_card_payload(_resolve_card_payload(bundle), hero_image=hero_image)
     render = renderer or quote_card_renderer.render_quote_card_export
     export = render(view_model=view_model, bundle=bundle, output_root=media_root, hero_image=hero_image)
     return {

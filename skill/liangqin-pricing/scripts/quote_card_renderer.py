@@ -63,6 +63,213 @@ def _render_notes_section(notes_list: list[str]) -> str:
     )
 
 
+def _render_option_section(option_cards: list[dict[str, str]]) -> str:
+    if not option_cards:
+        return ""
+    cards_markup = "".join(
+        [
+            (
+                '<article class="quote-card-export__detail-card">'
+                '<header class="quote-card-export__detail-card-head">'
+                '<div class="quote-card-export__detail-card-title">'
+                f"<strong>{escape(str(card.get('title', '')).strip())}</strong>"
+                "</div>"
+                "</header>"
+                '<ul class="quote-card-export__detail-card-lines">'
+                f"<li>{escape(str(card.get('detail', '')).strip())}</li>"
+                "</ul>"
+                "</article>"
+            )
+            for card in option_cards
+            if str(card.get("title", "")).strip() and str(card.get("detail", "")).strip()
+        ]
+    )
+    if not cards_markup:
+        return ""
+    return (
+        '<section class="quote-card-export__section">'
+        '<div class="quote-card-export__section-head">'
+        "<span>方案建议</span>"
+        "</div>"
+        f'<div class="quote-card-export__detail-cards">{cards_markup}</div>'
+        "</section>"
+    )
+
+
+def _render_version_action_section(version_action_cards: list[dict[str, str]]) -> str:
+    if not version_action_cards:
+        return ""
+    cards_markup = "".join(
+        [
+            (
+                '<article class="quote-card-export__detail-card">'
+                '<header class="quote-card-export__detail-card-head">'
+                '<div class="quote-card-export__detail-card-title">'
+                f"<strong>{escape(str(card.get('title', '')).strip())}</strong>"
+                "</div>"
+                "</header>"
+                '<ul class="quote-card-export__detail-card-lines">'
+                f"<li>{escape(str(card.get('detail', '')).strip())}</li>"
+                "</ul>"
+                "</article>"
+            )
+            for card in version_action_cards
+            if str(card.get("title", "")).strip() and str(card.get("detail", "")).strip()
+        ]
+    )
+    if not cards_markup:
+        return ""
+    return (
+        '<section class="quote-card-export__section">'
+        '<div class="quote-card-export__section-head">'
+        "<span>版本建议</span>"
+        "</div>"
+        f'<div class="quote-card-export__detail-cards">{cards_markup}</div>'
+        "</section>"
+    )
+
+
+def _render_action_queue_section(action_queue_cards: list[dict[str, Any]]) -> str:
+    if not action_queue_cards:
+        return ""
+    cards_markup = "".join(
+        [
+            (
+                '<article class="quote-card-export__detail-card">'
+                '<header class="quote-card-export__detail-card-head">'
+                '<div class="quote-card-export__detail-card-title">'
+                f"<strong>{escape(str(card.get('title', '')).strip())}</strong>"
+                "</div>"
+                "</header>"
+                '<ul class="quote-card-export__detail-card-lines">'
+                + "".join(
+                    f"<li>{escape(str(line).strip())}</li>"
+                    for line in (card.get("lines") or [])
+                    if str(line).strip()
+                )
+                + "</ul>"
+                "</article>"
+            )
+            for card in action_queue_cards
+            if str(card.get("title", "")).strip() and any(str(line).strip() for line in (card.get("lines") or []))
+        ]
+    )
+    if not cards_markup:
+        return ""
+    return (
+        '<section class="quote-card-export__section">'
+        '<div class="quote-card-export__section-head">'
+        "<span>动作排序</span>"
+        "</div>"
+        f'<div class="quote-card-export__detail-cards">{cards_markup}</div>'
+        "</section>"
+    )
+
+
+def _render_quick_action_section(quick_action_cards: list[dict[str, str]]) -> str:
+    if not quick_action_cards:
+        return ""
+    cards_markup = "".join(
+        [
+            (
+                '<article class="quote-card-export__detail-card">'
+                '<header class="quote-card-export__detail-card-head">'
+                '<div class="quote-card-export__detail-card-title">'
+                f"<strong>{escape(str(card.get('title', '')).strip())}</strong>"
+                "</div>"
+                "</header>"
+                '<ul class="quote-card-export__detail-card-lines">'
+                f"<li>{escape(str(card.get('detail', '')).strip())}</li>"
+                "</ul>"
+                "</article>"
+            )
+            for card in quick_action_cards
+            if str(card.get("title", "")).strip() and str(card.get("detail", "")).strip()
+        ]
+    )
+    if not cards_markup:
+        return ""
+    return (
+        '<section class="quote-card-export__section">'
+        '<div class="quote-card-export__section-head">'
+        "<span>快捷发送</span>"
+        "</div>"
+        f'<div class="quote-card-export__detail-cards">{cards_markup}</div>'
+        "</section>"
+    )
+
+
+def _render_objection_action_section(objection_action_cards: list[dict[str, Any]]) -> str:
+    if not objection_action_cards:
+        return ""
+    cards_markup = "".join(
+        [
+            (
+                '<article class="quote-card-export__detail-card">'
+                '<header class="quote-card-export__detail-card-head">'
+                '<div class="quote-card-export__detail-card-title">'
+                f"<strong>{escape(str(card.get('title', '')).strip())}</strong>"
+                "</div>"
+                "</header>"
+                '<ul class="quote-card-export__detail-card-lines">'
+                + "".join(
+                    f"<li>{escape(str(line).strip())}</li>"
+                    for line in (card.get("lines") or [])
+                    if str(line).strip()
+                )
+                + "</ul>"
+                "</article>"
+            )
+            for card in objection_action_cards
+            if str(card.get("title", "")).strip() and any(str(line).strip() for line in (card.get("lines") or []))
+        ]
+    )
+    if not cards_markup:
+        return ""
+    return (
+        '<section class="quote-card-export__section">'
+        '<div class="quote-card-export__section-head">'
+        "<span>异议承接</span>"
+        "</div>"
+        f'<div class="quote-card-export__detail-cards">{cards_markup}</div>'
+        "</section>"
+    )
+
+
+def _render_action_section(
+    *,
+    next_action_text: str,
+    followthrough_action: dict[str, str],
+    decision_risk_points: list[str],
+) -> str:
+    if not next_action_text and not followthrough_action and not decision_risk_points:
+        return ""
+    risk_markup = "".join([f"<li>{escape(point)}</li>" for point in decision_risk_points])
+    next_action_markup = (
+        '<div class="quote-card-export__section-head"><span>下一步建议</span></div>'
+        f'<p class="quote-card-export__confirmed">{escape(next_action_text)}</p>'
+        if next_action_text
+        else ""
+    )
+    followthrough_label = str(followthrough_action.get("label", "")).strip()
+    followthrough_text = str(followthrough_action.get("text", "")).strip()
+    followthrough_markup = (
+        '<div class="quote-card-export__section-head">'
+        f"<span>成交推进</span><span>{escape(followthrough_label)}</span>"
+        "</div>"
+        f'<p class="quote-card-export__confirmed">{escape(followthrough_text)}</p>'
+        if followthrough_label or followthrough_text
+        else ""
+    )
+    risk_section = (
+        '<div class="quote-card-export__section-head"><span>价格提醒</span></div>'
+        f'<ul class="quote-card-export__notes">{risk_markup}</ul>'
+        if risk_markup
+        else ""
+    )
+    return f'<section class="quote-card-export__section">{next_action_markup}{followthrough_markup}{risk_section}</section>'
+
+
 def _render_multi_detail_section(view_model: dict[str, Any]) -> str:
     detail_cards = view_model.get("detail_cards") or []
     if not detail_cards:
@@ -174,6 +381,14 @@ def build_quote_card_html(view_model: dict[str, Any]) -> str:
         ]
     )
     notes_list = [str(entry).strip() for entry in view_model.get("notes") or [] if str(entry).strip()]
+    option_cards = [entry for entry in (view_model.get("option_cards") or []) if isinstance(entry, dict)]
+    version_action_cards = [entry for entry in (view_model.get("version_action_cards") or []) if isinstance(entry, dict)]
+    action_queue_cards = [entry for entry in (view_model.get("action_queue_cards") or []) if isinstance(entry, dict)]
+    quick_action_cards = [entry for entry in (view_model.get("quick_action_cards") or []) if isinstance(entry, dict)]
+    objection_action_cards = [entry for entry in (view_model.get("objection_action_cards") or []) if isinstance(entry, dict)]
+    followthrough_action = view_model.get("followthrough_action") or {}
+    decision_risk_points = [str(entry).strip() for entry in view_model.get("decision_risk_points") or [] if str(entry).strip()]
+    next_action_text = str(view_model.get("next_action_text", "")).strip()
     if overflow_hint:
         notes_list.append(overflow_hint)
     is_multi_layout = len(item_rows) > 1 and bool(view_model.get("detail_cards"))
@@ -236,6 +451,12 @@ def build_quote_card_html(view_model: dict[str, Any]) -> str:
         </section>
 
         {detail_or_basis_section}
+        {_render_option_section(option_cards)}
+        {_render_version_action_section(version_action_cards)}
+        {_render_action_queue_section(action_queue_cards)}
+        {_render_quick_action_section(quick_action_cards)}
+        {_render_objection_action_section(objection_action_cards)}
+        {_render_action_section(next_action_text=next_action_text, followthrough_action=followthrough_action, decision_risk_points=decision_risk_points)}
         {notes_section}
       </section>
     </main>

@@ -16,6 +16,44 @@ GOAL_FIRST_PRODUCTS = {
     "家具",
 }
 
+PRIORITY_COPY = {
+    "budget": "我会先按更省预算的路径帮你收，优先保留真正影响使用的主体结构。",
+    "aesthetics": "我会先按效果优先的路径帮你收，重点看风格、门型和材质层次。",
+    "storage": "我会先按收纳优先的路径帮你收，重点看内部结构和容量分配。",
+    "space_efficiency": "我会先按空间利用优先的路径帮你收，重点看布局效率和动线。",
+    "eco_material": "我会先按材质安全和环保感受优先的路径帮你收，重点看材质边界。",
+}
+
+
+def _conversion_intent_level(customer_strategy: str, response_stage: str) -> str:
+    if response_stage == "reference_quote":
+        return "high"
+    if response_stage == "proposal_range":
+        return "medium"
+    if customer_strategy == "renovation_browse":
+        return "low"
+    if customer_strategy == "precise_need":
+        return "medium"
+    return "medium"
+
+
+def _next_best_action(response_stage: str, next_question: str) -> dict[str, str]:
+    normalized_question = str(next_question or "").strip()
+    if response_stage == "reference_quote":
+        return {
+            "code": "complete_one_key_field",
+            "text": f"下一步先补这一个关键条件：{normalized_question}，补齐后就能继续往参考报价或正式报价收。",
+        }
+    if response_stage == "proposal_range":
+        return {
+            "code": "narrow_scope_before_quote",
+            "text": f"下一步先把方案范围收窄：{normalized_question}",
+        }
+    return {
+        "code": "confirm_solution_direction",
+        "text": f"下一步先确认方向问题：{normalized_question}",
+    }
+
 
 def select_primary_question(customer_strategy: str, signals: dict[str, list[str]]) -> tuple[str, str]:
     if customer_strategy == "precise_need":
@@ -90,6 +128,14 @@ def _range_hint(response_stage: str) -> str:
     return ""
 
 
+def _priority_hint(signals: dict[str, list[str]]) -> str:
+    priorities = [str(item).strip() for item in (signals.get("priority") or []) if str(item).strip()]
+    for priority in priorities:
+        if priority in PRIORITY_COPY:
+            return PRIORITY_COPY[priority]
+    return ""
+
+
 def render_customer_guidance_text(
     *,
     customer_strategy: str,
@@ -100,6 +146,9 @@ def render_customer_guidance_text(
 ) -> str:
     guidance, solution = _base_copy(customer_strategy, signals, turn_index)
     lines = [guidance, solution]
+    priority_hint = _priority_hint(signals)
+    if priority_hint:
+        lines.append(priority_hint)
     range_hint = _range_hint(response_stage)
     if range_hint:
         lines.append(range_hint)
@@ -118,6 +167,8 @@ def summarize_customer_guidance_template(
     return {
         "question_code": question_code,
         "next_question": next_question,
+        "conversion_intent_level": _conversion_intent_level(customer_strategy, response_stage),
+        "next_best_action": _next_best_action(response_stage, next_question),
         "reply_text": render_customer_guidance_text(
             customer_strategy=customer_strategy,
             response_stage=response_stage,

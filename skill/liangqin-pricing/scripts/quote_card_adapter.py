@@ -15,6 +15,11 @@ MAX_SINGLE_BASIS_LINES = 4
 MAX_MULTI_BASIS_LINES = 5
 MAX_MULTI_HIGHLIGHTS_PER_CARD = 3
 MAX_NOTES = 3
+MAX_OPTION_CARDS = 3
+MAX_ACTION_QUEUE_CARDS = 5
+MAX_OBJECTION_CARDS = 3
+MAX_QUICK_ACTION_CARDS = 6
+MAX_RISK_POINTS = 3
 INTERNAL_NOTE_PATTERNS = [
     re.compile(r"^按当前规则可正式报价[。.]?$"),
     re.compile(r"^已套用设计师追加规则[:：]"),
@@ -99,6 +104,157 @@ def _build_single_item_rows(item: dict[str, Any], quote_total: str) -> list[dict
     ]
 
 
+def _build_option_cards(payload: dict[str, Any]) -> list[dict[str, str]]:
+    option_cards: list[dict[str, str]] = []
+    for entry in payload.get("option_set") or []:
+        if not isinstance(entry, dict):
+            continue
+        title = _normalize_text(entry.get("title", ""))
+        detail = _normalize_text(entry.get("description", ""))
+        if not title or not detail:
+            continue
+        option_cards.append({"title": title, "detail": detail})
+    return option_cards[:MAX_OPTION_CARDS]
+
+
+def _build_version_action_cards(payload: dict[str, Any]) -> list[dict[str, str]]:
+    actions = payload.get("quote_version_actions") or {}
+    if not isinstance(actions, dict):
+        return []
+    mapping = (
+        ("当前怎么发", "current_send_action"),
+        ("下一版怎么接", "next_version_offer_action"),
+        ("给客户怎么解释", "customer_transition_line"),
+    )
+    cards: list[dict[str, str]] = []
+    for title, key in mapping:
+        detail = _normalize_text(actions.get(key, ""))
+        if not detail:
+            continue
+        cards.append({"title": title, "detail": detail})
+    return cards[:3]
+
+
+def _build_action_queue_cards(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    queue = payload.get("consultant_action_queue") or []
+    if not isinstance(queue, list):
+        return []
+    normalized_entries: list[dict[str, Any]] = []
+    for entry in queue:
+        if not isinstance(entry, dict):
+            continue
+        title = _normalize_text(entry.get("title", ""))
+        text = _normalize_text(entry.get("text", ""))
+        if not title or not text:
+            continue
+        try:
+            rank = int(entry.get("rank"))
+        except (TypeError, ValueError):
+            rank = len(normalized_entries) + 1
+        trigger_hint = _normalize_text(entry.get("trigger_hint", ""))
+        normalized_entries.append(
+            {
+                "title": title,
+                "text": text,
+                "rank": rank,
+                "recommended": bool(entry.get("recommended")),
+                "trigger_hint": trigger_hint,
+            }
+        )
+
+    normalized_entries.sort(key=lambda item: (int(item.get("rank", 9999)), str(item.get("title", "")).strip()))
+    cards: list[dict[str, Any]] = []
+    for entry in normalized_entries[:MAX_ACTION_QUEUE_CARDS]:
+        rank = int(entry.get("rank", len(cards) + 1))
+        title = str(entry.get("title", "")).strip()
+        prefix = f"建议先做 {rank}" if bool(entry.get("recommended")) else f"第 {rank} 步"
+        lines = [f"动作：{str(entry.get('text', '')).strip()}"]
+        trigger_hint = str(entry.get("trigger_hint", "")).strip()
+        if trigger_hint:
+            lines.append(f"时机：{trigger_hint}")
+        cards.append({"title": f"{prefix} | {title}", "lines": lines[:2]})
+    return cards
+
+
+def _build_objection_action_cards(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    objection_playbook = payload.get("objection_playbook") or {}
+    if not isinstance(objection_playbook, dict):
+        return []
+    recommended_code = _normalize_text(objection_playbook.get("recommended_first_code", ""))
+    ordered_codes: list[str] = []
+    if recommended_code:
+        ordered_codes.append(recommended_code)
+    for code in ("price_high", "why_this_price", "cheaper_option", "need_time"):
+        if code not in ordered_codes:
+            ordered_codes.append(code)
+
+    cards: list[dict[str, Any]] = []
+    for code in ordered_codes:
+        entry = objection_playbook.get(code)
+        if not isinstance(entry, dict):
+            continue
+        label = _normalize_text(entry.get("label", ""))
+        if not label:
+            continue
+        lines: list[str] = []
+        customer_reply = _normalize_text(entry.get("customer_reply", ""))
+        transition_line = _normalize_text(entry.get("transition_line", ""))
+        followthrough_line = _normalize_text(entry.get("followthrough_line", ""))
+        if customer_reply:
+            lines.append(f"怎么回：{customer_reply}")
+        if transition_line:
+            lines.append(f"怎么接：{transition_line}")
+        if followthrough_line:
+            lines.append(f"怎么推进：{followthrough_line}")
+        if not lines:
+            continue
+        title = f"优先处理 | {label}" if code == recommended_code else label
+        cards.append({"title": title, "lines": lines[:3]})
+    return cards[:MAX_OBJECTION_CARDS]
+
+
+def _build_quick_action_cards(payload: dict[str, Any]) -> list[dict[str, str]]:
+    actions = payload.get("consultant_quick_actions") or []
+    if not isinstance(actions, list):
+        return []
+    cards: list[dict[str, str]] = []
+    for entry in actions:
+        if not isinstance(entry, dict):
+            continue
+        title = _normalize_text(entry.get("label", ""))
+        detail = _normalize_text(entry.get("text", ""))
+        if not title or not detail:
+            continue
+        cards.append({"title": title, "detail": detail})
+    return cards[:MAX_QUICK_ACTION_CARDS]
+
+
+def _build_next_action_text(payload: dict[str, Any]) -> str:
+    next_best_action = payload.get("next_best_action") or {}
+    if not isinstance(next_best_action, dict):
+        return ""
+    return _normalize_text(next_best_action.get("card_text", "")) or _normalize_text(next_best_action.get("text", ""))
+
+
+def _build_followthrough_action(payload: dict[str, Any]) -> dict[str, str]:
+    next_best_action = payload.get("next_best_action") or {}
+    if not isinstance(next_best_action, dict):
+        return {}
+    label = _normalize_text(next_best_action.get("followthrough_action_label", ""))
+    text = _normalize_text(next_best_action.get("followthrough_text", ""))
+    if not label and not text:
+        return {}
+    return {"label": label, "text": text}
+
+
+def _build_decision_risk_points(payload: dict[str, Any]) -> list[str]:
+    return [
+        _normalize_text(entry)
+        for entry in (payload.get("decision_risk_points") or [])[:MAX_RISK_POINTS]
+        if _normalize_text(entry)
+    ]
+
+
 def _adapt_single(payload: dict[str, Any], item: dict[str, Any], quote_badge: str, quote_total: str) -> dict[str, Any]:
     headline = _ensure_string(item, "product")
     confirmed_text = _ensure_string(item, "confirmed")
@@ -120,6 +276,14 @@ def _adapt_single(payload: dict[str, Any], item: dict[str, Any], quote_badge: st
         "item_rows": _build_single_item_rows(item, quote_total),
         "key_basis_lines": key_basis_lines,
         "notes": trimmed_notes,
+        "option_cards": _build_option_cards(payload),
+        "version_action_cards": _build_version_action_cards(payload),
+        "action_queue_cards": _build_action_queue_cards(payload),
+        "quick_action_cards": _build_quick_action_cards(payload),
+        "objection_action_cards": _build_objection_action_cards(payload),
+        "decision_risk_points": _build_decision_risk_points(payload),
+        "next_action_text": _build_next_action_text(payload),
+        "followthrough_action": _build_followthrough_action(payload),
         "overflow_hint": "完整计算过程见本条文字报价。" if overflow else "",
     }
 
@@ -217,6 +381,14 @@ def _adapt_multi(payload: dict[str, Any], items: list[dict[str, Any]], quote_bad
         "key_basis_lines": key_basis_lines,
         "detail_cards": detail_cards,
         "notes": trimmed_notes,
+        "option_cards": _build_option_cards(payload),
+        "version_action_cards": _build_version_action_cards(payload),
+        "action_queue_cards": _build_action_queue_cards(payload),
+        "quick_action_cards": _build_quick_action_cards(payload),
+        "objection_action_cards": _build_objection_action_cards(payload),
+        "decision_risk_points": _build_decision_risk_points(payload),
+        "next_action_text": _build_next_action_text(payload),
+        "followthrough_action": _build_followthrough_action(payload),
         "overflow_hint": "完整计算过程见本条文字报价。" if overflow else "",
     }
 

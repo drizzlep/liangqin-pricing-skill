@@ -126,6 +126,29 @@ def build_quote_result_bundle(
         bundle["output_profile"] = output_profile
     if isinstance(quote_card_payload, dict):
         bundle["quote_card_payload"] = quote_card_payload
+    for field_name in (
+        "quote_confidence",
+        "quote_stage",
+        "option_set",
+        "budget_adjustment_suggestions",
+        "next_best_action",
+        "decision_risk_points",
+        "conversion_intent_level",
+        "scenario_summary",
+        "consultant_handoff_plan",
+        "compare_plan",
+        "follow_up_script_set",
+        "consultant_quick_actions",
+        "consultant_action_queue",
+        "consultant_workbench",
+        "post_quote_stage",
+        "quote_version_summary",
+        "quote_version_actions",
+        "objection_playbook",
+    ):
+        value = prepared_payload.get(field_name)
+        if value not in (None, "", [], {}):
+            bundle[field_name] = value
     return bundle
 
 
