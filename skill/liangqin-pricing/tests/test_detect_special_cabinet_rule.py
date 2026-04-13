@@ -44,6 +44,26 @@ class DetectSpecialCabinetRuleTests(unittest.TestCase):
         self.assertIn("空区", result["next_question"])
         self.assertIn("宽和高", result["next_question"])
 
+    def test_detects_irregular_cutout_pipe_avoidance(self) -> None:
+        result = MODULE.detect_rule("做个北美樱桃木书柜，长2米，高2.4米，深400，要避让管道，多少钱？")
+        self.assertEqual(result["special_rule"], "irregular_cutout")
+        self.assertEqual(result["next_required_field"], "cutout_size")
+        self.assertEqual(result["question_code"], "special_cabinet_rule.cutout_size.required")
+        self.assertEqual(result["missing_fields"], ["cutout_size"])
+        self.assertEqual(result["detail_level_hint"], "single_question_follow_up")
+        self.assertIn("避让部分", result["next_question"])
+        self.assertIn("宽和高", result["next_question"])
+
+    def test_detects_card_seat_cabinet_and_asks_depth_first(self) -> None:
+        result = MODULE.detect_rule("我要做个北美黑胡桃木餐边柜卡座，长1.5米，多少钱？")
+        self.assertEqual(result["special_rule"], "card_seat_cabinet")
+        self.assertEqual(result["next_required_field"], "depth")
+        self.assertEqual(result["question_code"], "special_cabinet_rule.depth.required")
+        self.assertEqual(result["missing_fields"], ["depth"])
+        self.assertEqual(result["detail_level_hint"], "single_question_follow_up")
+        self.assertIn("卡座", result["next_question"])
+        self.assertIn("进深", result["next_question"])
+
     def test_detects_diamond_cabinet_and_returns_single_question(self) -> None:
         result = MODULE.detect_rule("做个北美白蜡木钻石柜，长1.2米，高2.4米，深400，多少钱？")
         self.assertEqual(result["special_rule"], "diamond_cabinet")

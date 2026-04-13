@@ -1,10 +1,12 @@
 import argparse
 import importlib.util
+import sys
 import unittest
 from pathlib import Path
 
 
 SCRIPT_PATH = Path(__file__).resolve().parents[1] / "scripts" / "precheck_quote.py"
+sys.path.insert(0, str(SCRIPT_PATH.parent))
 SPEC = importlib.util.spec_from_file_location("precheck_quote", SCRIPT_PATH)
 MODULE = importlib.util.module_from_spec(SPEC)
 assert SPEC and SPEC.loader
@@ -20,6 +22,7 @@ class PrecheckQuoteTests(unittest.TestCase):
             height=None,
             width=None,
             material=None,
+            variant_hint="",
             quote_kind="unknown",
             has_door="unknown",
             door_type="",
@@ -55,10 +58,29 @@ class PrecheckQuoteTests(unittest.TestCase):
         self.assertTrue(result["ready_for_formal_quote"])
         self.assertIsNone(result["next_required_field"])
 
+    def test_desk_cabinet_with_length_skips_quote_kind_and_asks_depth(self) -> None:
+        args = self.make_args(category="书桌柜", length="1.2")
+        result = MODULE.precheck_table(args)
+        self.assertFalse(result["ready_for_formal_quote"])
+        self.assertEqual(result["next_required_field"], "depth")
+        self.assertEqual(result["missing_fields"], ["depth"])
+        self.assertIn("进深", result["next_question"])
+
+    def test_explicit_desk_with_hanging_cabinet_asks_hanging_mode_before_depth(self) -> None:
+        args = self.make_args(category="经典书桌与吊柜", length="1.2", material="北美黑胡桃木")
+        result = MODULE.precheck_table(args)
+        self.assertFalse(result["ready_for_formal_quote"])
+        self.assertEqual(result["next_required_field"], "has_door")
+        self.assertEqual(result["missing_fields"], ["has_door"])
+        self.assertIn("吊柜", result["next_question"])
+        self.assertIn("开放", result["next_question"])
+        self.assertIn("带门", result["next_question"])
+
     def test_explicit_unique_standard_cabinet_product_does_not_require_dimensions(self) -> None:
         args = self.make_args(category="经典电视柜", material="北美黑胡桃木")
         result = MODULE.precheck_cabinet(args)
         self.assertTrue(result["ready_for_formal_quote"])
+        self.assertEqual(result["route"], "catalog_unit_price")
         self.assertIsNone(result["next_required_field"])
 
     def test_explicit_child_bed_with_multiple_variants_asks_lower_bed_structure(self) -> None:
@@ -68,6 +90,41 @@ class PrecheckQuoteTests(unittest.TestCase):
         self.assertEqual(result["next_required_field"], "shape")
         self.assertIn("抽屉", result["next_question"])
         self.assertIn("架式", result["next_question"])
+
+    def test_explicit_unique_standard_child_bed_does_not_require_dimensions(self) -> None:
+        args = self.make_args(category="儿童床书柜伴床", material="北美樱桃木", approximate_only=True)
+        result = MODULE.precheck_bed(args)
+        self.assertTrue(result["ready_for_formal_quote"])
+        self.assertEqual(result["pricing_route"], "catalog_child_bed")
+        self.assertEqual(result["quote_decision"], "reference_quote")
+        self.assertIsNone(result["next_required_field"])
+
+    def test_explicit_three_seat_sofa_asks_cushion_config_before_quote(self) -> None:
+        args = self.make_args(category="经典沙发", material="北美黑胡桃木", variant_hint="三人位")
+        result = MODULE.precheck_generic(args)
+        self.assertFalse(result["ready_for_formal_quote"])
+        self.assertEqual(result["next_required_field"], "variant_hint")
+        self.assertEqual(result["question_code"], "generic.sofa.cushion.required")
+        self.assertEqual(result["missing_fields"], ["variant_hint"])
+        self.assertIn("布艺垫子", result["next_question"])
+        self.assertIn("真皮垫子", result["next_question"])
+
+    def test_sofa_with_cushion_but_without_material_type_asks_fabric_or_leather(self) -> None:
+        args = self.make_args(category="经典沙发", material="北美黑胡桃木", variant_hint="三人位 沙发垫")
+        result = MODULE.precheck_generic(args)
+        self.assertFalse(result["ready_for_formal_quote"])
+        self.assertEqual(result["next_required_field"], "variant_hint")
+        self.assertEqual(result["question_code"], "generic.sofa.cushion.required")
+        self.assertEqual(result["missing_fields"], ["variant_hint"])
+        self.assertIn("布艺", result["next_question"])
+        self.assertIn("真皮", result["next_question"])
+
+    def test_explicit_standard_generic_product_routes_to_catalog_unit_price(self) -> None:
+        args = self.make_args(category="经典床头柜1", material="北美黑胡桃木")
+        result = MODULE.precheck_generic(args)
+        self.assertTrue(result["ready_for_formal_quote"])
+        self.assertEqual(result["route"], "catalog_unit_price")
+        self.assertIsNone(result["next_required_field"])
 
     def test_explicit_cabinet_with_dimension_match_asks_door_type_instead_of_quote_kind(self) -> None:
         args = self.make_args(category="经典玄关柜", length="1.2", depth="0.4", height="2.4", material="北美黑胡桃木")
@@ -148,6 +205,14 @@ class PrecheckQuoteTests(unittest.TestCase):
         self.assertEqual(result["next_required_field"], "series")
         self.assertIn("具体款式", result["next_question"])
         self.assertIn("抛物线架式床", result["next_question"])
+
+    def test_classic_bed_alias_asks_bed_style_instead_of_quote_kind(self) -> None:
+        args = self.make_args(category="经典床", material="北美黑胡桃木")
+        result = MODULE.precheck_bed(args)
+        self.assertFalse(result["ready_for_formal_quote"])
+        self.assertEqual(result["next_required_field"], "series")
+        self.assertIn("经典箱体床", result["next_question"])
+        self.assertIn("经典架式床", result["next_question"])
 
     def test_custom_child_bed_routes_to_modular_path_and_asks_bed_form(self) -> None:
         args = self.make_args(category="定制儿童床", width="1.2", length="2", material="北美樱桃木")

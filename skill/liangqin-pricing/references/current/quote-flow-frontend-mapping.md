@@ -69,6 +69,9 @@
 | `consultant_action_queue` | `handle_message` / `QuoteFlowState` | 顾问动作优先级区 | 把当前主动作、推荐对比、成交推进、异议承接、下次跟进排成有顺序的队列；前端可直接按 `rank / recommended / priority` 做“建议先做 1/2/3” |
 | `consultant_quick_actions` | `handle_message` / `QuoteFlowState` | 顾问快捷动作区 | 把 `quote_version_actions / follow_up_script_set / objection_playbook` 收敛成一组可直接复制的快捷发送句，建议直接渲染成按钮或卡片列表 |
 | `consultant_workbench` | `handle_message` / `QuoteFlowState` / 最新报价 bundle | 顾问工作台聚合区 | 已把 `action_queue / quick_action_groups / info_panels / badges / primary_action` 聚合好；前端如果不想自己拼多块字段，优先直接渲染这一份 |
+| `quote_followup_state` | `handle_message` / `QuoteFlowState` / 最新报价 bundle | 报价后动作状态区 | 记录当前报价后是 `awaiting_customer_feedback / awaiting_confirmation`，以及 `recommended_track / recommended_next_codes / next_action_code / followthrough_action_code`，适合做工作台阶段机 |
+| `quote_feedback_signal` | `handle_message` / `QuoteFlowState` / 最新报价 bundle | 客户反馈信号区 | 当前先承载 `预算 / 效果 / 收纳 / 布局 / 材质` 这类已识别重点，以及推荐异议与推进动作；后续可继续承接真实反馈回写 |
+| `quote_outcome` | `handle_message` / `QuoteFlowState` / 最新报价 bundle | 报价结果状态区 | 把当前阶段归并成 `waiting_reply / comparing / waiting_confirmation` 等结果态，并补一个 `next_target_code` 供工作台或 CRM 做后续分流 |
 | `post_quote_stage` | `handle_message` / `QuoteFlowState` | 报价后阶段条 | 标记当前处于 `正式报价待回复 / 正式报价待预算反馈 / 参考报价待确认` 等阶段 |
 | `quote_version_summary` | `handle_message` / `QuoteFlowState` | 版本摘要区 | 提供 `V1 当前版 / V2 建议对比版` 的关系、原因和切换建议 |
 | `quote_version_actions` | `handle_message` / `QuoteFlowState` | 版本动作区 / 顾问快捷发送区 | 提供“当前这版怎么发、下一版怎么接、给客户怎么解释”的动作化文案 |
@@ -138,6 +141,9 @@
 - 如果已有 `consultant_action_queue`，建议把它放在顾问工作台最上方，直接高亮 `recommended=true` 的第一动作；其余动作按 `rank` 顺序排成“接下来做什么”
 - 如果已有 `consultant_quick_actions`，建议优先直接渲染成“当前发送 / 对比邀约 / 成交推进 / 推荐异议回复 / 推荐异议承接 / 下次跟进”按钮，不要再自己从多个字段拼
 - 如果已有 `consultant_workbench`，前端可以直接按 `header / primary_action / action_queue / quick_action_groups / info_panels` 渲染完整顾问工作台；这适合第一版就把“动作编排”落成可点可复制的界面
+- 如果已有 `quote_followup_state`，建议把它作为工作台的轻量阶段机，不要再自己根据 `post_quote_stage + consultant_action_queue` 反推“现在进行到哪一步”
+- 如果已有 `quote_feedback_signal`，建议把它作为工作台顶部“客户当前反馈/关注点”标签，而不是只从长文摘要里猜
+- 如果已有 `quote_outcome`，建议同步到 CRM 或会话卡片，用来区分“待回复 / 比较中 / 待确认 / 准备推进到店或深化”
 - 如果当前是 `consultant_dual`，生成报价卡或图片预览时也可以复用 `consultant_quick_actions`，这样顾问侧导出图不只是展示结果，还能同时展示“这轮该发哪一句”
 - 如果已有 `quote_version_summary`，建议固定显示“当前是 V1 什么版，下一步建议切到 V2 什么版”，方便顾问接力和客户内部转述
 - 如果已有 `quote_version_actions`，建议直接提供“一键复制当前发送句 / 下一版邀约句 / 客户解释句”，减少顾问二次改写
@@ -314,6 +320,9 @@
 如果顾问工作台也想一期就落“报价后动作编排”，建议再加一个：
 
 - `consultant_workbench`
+- `quote_followup_state`
+- `quote_feedback_signal`
+- `quote_outcome`
 
 这样已经足够做出：
 
@@ -322,6 +331,7 @@
 - 客户版 / 内部版切换
 - 顾问双栏转发
 - 顾问动作队列与快捷发送面板
+- 报价后阶段跟进与结果打标
 
 ## 7. 推荐的前端判断顺序
 

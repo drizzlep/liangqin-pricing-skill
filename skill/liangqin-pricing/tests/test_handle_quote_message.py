@@ -102,6 +102,9 @@ class HandleQuoteMessageTests(unittest.TestCase):
         self.assertEqual(result["consultant_action_queue"][4]["code"], "next_touch_follow_up")
         self.assertEqual(result["consultant_workbench"]["primary_action"]["code"], "send_current_quote")
         self.assertEqual(result["consultant_workbench"]["action_queue"][1]["code"], "offer_compare_version")
+        self.assertEqual(result["quote_followup_state"]["status"], "awaiting_customer_feedback")
+        self.assertEqual(result["quote_feedback_signal"]["source"], "pending_customer_feedback")
+        self.assertEqual(result["quote_outcome"]["code"], "waiting_reply")
         self.assertEqual(result["quote_version_summary"]["current_version_label"], "当前正式版")
         self.assertEqual(result["quote_version_summary"]["next_version_index"], "V2")
         self.assertIn("V1 当前正式版", result["quote_version_actions"]["current_send_action"])
@@ -178,6 +181,9 @@ class HandleQuoteMessageTests(unittest.TestCase):
         self.assertEqual(result["consultant_action_queue"][3]["code"], "handle_cheaper_option")
         self.assertEqual(result["consultant_action_queue"][4]["stage_code"], "formal_quote_waiting_budget_feedback")
         self.assertIn("预算控制", result["consultant_workbench"]["header"]["summary"])
+        self.assertEqual(result["quote_followup_state"]["recommended_track"], "budget_compare")
+        self.assertEqual(result["quote_feedback_signal"]["code"], "budget")
+        self.assertEqual(result["quote_outcome"]["code"], "comparing")
         compare_panel = next(
             panel for panel in result["consultant_workbench"]["info_panels"] if panel["code"] == "compare_focus"
         )
@@ -433,6 +439,133 @@ class HandleQuoteMessageTests(unittest.TestCase):
         self.assertEqual(result["downstream_result"]["special_rule"], "double_sided_door")
         self.assertIn("两边分别是什么门型", result["reply_text"])
 
+    def test_irregular_cutout_quote_routes_to_single_core_follow_up(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="做个北美樱桃木书柜，长2米，高2.4米，深400，要避让管道，多少钱？",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "detect_special_cabinet_rule")
+        self.assertEqual(result["downstream_result"]["special_rule"], "irregular_cutout")
+        self.assertEqual(result["missing_fields"], ["cutout_size"])
+        self.assertIn("先只确认一个关键尺寸", result["reply_text"])
+        self.assertIn("避让部分", result["reply_text"])
+        self.assertNotIn("带门还是不带门", result["reply_text"])
+
+    def test_card_seat_quote_routes_to_single_depth_follow_up(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="我要做个北美黑胡桃木餐边柜卡座，长1.5米，多少钱？",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "detect_special_cabinet_rule")
+        self.assertEqual(result["downstream_result"]["special_rule"], "card_seat_cabinet")
+        self.assertEqual(result["missing_fields"], ["depth"])
+        self.assertIn("卡座", result["reply_text"])
+        self.assertIn("进深", result["reply_text"])
+        self.assertNotIn("成品/标准品", result["reply_text"])
+
+    def test_main_product_with_accessories_skips_guided_discovery_and_asks_main_length(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="一个组合餐边柜，再配轨道插座和两个五孔插座，怎么算？",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "precheck_quote")
+        self.assertEqual(result["status"], "needs_input")
+        self.assertEqual(result["pricing_route"], "cabinet")
+        self.assertEqual(result["missing_fields"], ["length"])
+        self.assertIn("大概做多长", result["reply_text"])
+        self.assertNotIn("展示", result["reply_text"])
+        self.assertNotIn("收纳", result["reply_text"])
+
+    def test_explicit_child_bed_combo_product_returns_reference_ready_without_dimension_follow_up(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="儿童房做个儿童床书柜伴床，樱桃木，先给我参考价。",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "precheck_quote")
+        self.assertEqual(result["status"], "ready_for_quote")
+        self.assertEqual(result["pricing_route"], "catalog_child_bed")
+        self.assertEqual(result["missing_fields"], [])
+        self.assertIn("可以先给你参考报价", result["reply_text"])
+        self.assertNotIn("床宽", result["reply_text"])
+
+    def test_consultant_precheck_copy_does_not_leak_internal_precheck_wording(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="你先帮我整理一版发客户的话术：北美黑胡桃衣柜，长1.8米，高2.2米，深600，先别正式报价。",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "precheck_quote")
+        self.assertNotIn("预检", result["reply_text"])
+        self.assertNotIn("预检", result["internal_summary"])
+        self.assertIn("进入正式报价", result["reply_text"])
+
+    def test_sofa_with_cushion_asks_single_material_question_before_quote(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="一个经典沙发三人位，再配沙发垫，黑胡桃木。",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "precheck_quote")
+        self.assertEqual(result["status"], "needs_input")
+        self.assertEqual(result["missing_fields"], ["variant_hint"])
+        self.assertIn("先只确认一个问题", result["next_best_action"]["text"])
+        self.assertIn("布艺", result["reply_text"])
+        self.assertIn("真皮", result["reply_text"])
+        self.assertNotIn("现在条件已经够了", result["reply_text"])
+
+    def test_desk_cabinet_with_inline_length_skips_guided_discovery_and_asks_depth(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="我要做个书桌柜，桌子1.2米，旁边再做书柜到顶。",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "precheck_quote")
+        self.assertEqual(result["status"], "needs_input")
+        self.assertEqual(result["pricing_route"], "table")
+        self.assertEqual(result["missing_fields"], ["depth"])
+        self.assertIn("进深", result["reply_text"])
+        self.assertNotIn("展示", result["reply_text"])
+        self.assertNotIn("收纳", result["reply_text"])
+
     def test_main_openclaw_reply_mode_prints_only_final_reply_text(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             stdout = io.StringIO()
@@ -668,6 +801,265 @@ class HandleQuoteMessageTests(unittest.TestCase):
         self.assertIn("正式报价：29225元", result["reply_text"])
         self.assertIn("投影面积计价", result["reply_text"])
 
+    def test_infers_cabinet_triplet_dimensions_from_compact_text(self) -> None:
+        inferred = MODULE._infer_precheck_args_from_text("做个黑胡桃流云衣柜1.8*2.2*0.6，再加灯带分两个开关区。")
+
+        self.assertEqual(inferred["category"], "流云衣柜")
+        self.assertEqual(inferred["material"], "北美黑胡桃木")
+        self.assertEqual(inferred["length"], "1.8")
+        self.assertEqual(inferred["height"], "2.2")
+        self.assertEqual(inferred["depth"], "0.6")
+
+    def test_infers_explicit_table_length_from_compact_text(self) -> None:
+        inferred = MODULE._infer_precheck_args_from_text("樱桃木罗胖餐桌 1.6 米多少钱？")
+
+        self.assertEqual(inferred["category"], "罗胖餐桌")
+        self.assertEqual(inferred["material"], "北美樱桃木")
+        self.assertEqual(inferred["length"], "1.6")
+
+    def test_cabinet_triplet_dimensions_do_not_fall_back_to_height_follow_up(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="做个黑胡桃流云衣柜1.8*2.2*0.6，再加灯带分两个开关区。",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "precheck_quote")
+        self.assertEqual(result["status"], "needs_input")
+        self.assertEqual(result["missing_fields"], ["light_strip_type"])
+        self.assertEqual(result["question_code"], "addendum_guidance.follow_up")
+        self.assertIn("灯带类型", result["reply_text"])
+        self.assertNotIn("高度", result["reply_text"])
+        self.assertNotIn("正式报价", result["reply_text"])
+
+    def test_explicit_table_with_compact_length_does_not_follow_up_for_length(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="樱桃木罗胖餐桌 1.6 米多少钱？",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "format_quote_reply")
+        self.assertEqual(result["pricing_route"], "catalog_unit_price")
+        self.assertEqual(result["status"], "completed")
+        self.assertNotIn("多长", result["reply_text"])
+        self.assertIn("正式报价：5000元", result["reply_text"])
+
+    def test_explicit_table_quote_request_auto_executes_formal_quote(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="樱桃木罗胖餐桌 1.6 米多少钱？",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "format_quote_reply")
+        self.assertEqual(result["pricing_route"], "catalog_unit_price")
+        self.assertEqual(result["status"], "completed")
+        self.assertIn("正式报价：5000元", result["reply_text"])
+
+    def test_explicit_standard_generic_product_can_execute_quote(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="我要一个黑胡桃经典床头柜1，多少钱？",
+                context_json=self.context_json,
+                channel="feishu",
+                execute_quote_when_ready=True,
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "format_quote_reply")
+        self.assertEqual(result["pricing_route"], "catalog_unit_price")
+        self.assertEqual(result["status"], "completed")
+        self.assertIn("正式报价：2580元", result["reply_text"])
+
+    def test_explicit_standard_generic_quote_request_auto_executes_formal_quote(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="我要一个黑胡桃经典床头柜1，多少钱？",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "format_quote_reply")
+        self.assertEqual(result["pricing_route"], "catalog_unit_price")
+        self.assertEqual(result["status"], "completed")
+        self.assertIn("正式报价：2580元", result["reply_text"])
+
+    def test_explicit_standard_cabinet_quote_request_auto_executes_formal_quote(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="黑胡桃经典八斗柜多少钱？",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "format_quote_reply")
+        self.assertEqual(result["pricing_route"], "catalog_unit_price")
+        self.assertEqual(result["status"], "completed")
+        self.assertIn("正式报价：12980元", result["reply_text"])
+
+    def test_explicit_standard_chair_quote_request_auto_executes_formal_quote(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="黑胡桃罗胖椅多少钱一把？",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "format_quote_reply")
+        self.assertEqual(result["pricing_route"], "catalog_unit_price")
+        self.assertEqual(result["status"], "completed")
+        self.assertIn("正式报价：1800元", result["reply_text"])
+
+    def test_dining_table_plus_chairs_uses_table_length_instead_of_length_follow_up(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="我要一个樱桃木罗胖餐桌1.8米，再配6把罗胖椅。",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "precheck_quote")
+        self.assertEqual(result["status"], "ready_for_quote")
+        self.assertEqual(result["missing_fields"], [])
+        self.assertNotIn("多长", result["reply_text"])
+
+    def test_explicit_standard_cabinet_product_can_execute_quote(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="经典电视柜，北美黑胡桃木，直接正式报价。",
+                context_json=self.context_json,
+                channel="feishu",
+                execute_quote_when_ready=True,
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "format_quote_reply")
+        self.assertEqual(result["pricing_route"], "catalog_unit_price")
+        self.assertEqual(result["status"], "completed")
+        self.assertIn("正式报价：9680元", result["reply_text"])
+
+    def test_lighting_type_follow_up_can_resume_quote_readiness(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            state_root = Path(tmpdir) / "states"
+            bundle_root = Path(tmpdir) / "bundles"
+            first = MODULE.handle_message(
+                text="做个黑胡桃流云衣柜1.8*2.2*0.6，再加灯带分两个开关区。",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=state_root,
+                bundle_root=bundle_root,
+                disable_addenda=True,
+            )
+            second = MODULE.handle_message(
+                text="单色温灯带。",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=state_root,
+                bundle_root=bundle_root,
+                disable_addenda=True,
+            )
+
+        self.assertEqual(first["missing_fields"], ["light_strip_type"])
+        self.assertEqual(second["handled_by"], "precheck_quote")
+        self.assertEqual(second["status"], "ready_for_quote")
+        self.assertEqual(second["missing_fields"], [])
+        self.assertIn("进入正式报价", second["reply_text"])
+
+    def test_explicit_child_bed_plus_desk_skips_customer_guidance_and_asks_bed_structure_first(self) -> None:
+        inferred = MODULE._infer_precheck_args_from_text("儿童房想做一个经典挂梯上下床，再加一张书桌。")
+        self.assertEqual(inferred["category"], "经典挂梯上下床")
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="儿童房想做一个经典挂梯上下床，再加一张书桌。",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "precheck_quote")
+        self.assertEqual(result["status"], "needs_input")
+        self.assertEqual(result["pricing_route"], "catalog_child_bed")
+        self.assertEqual(result["missing_fields"], ["shape"])
+        self.assertIn("下床结构", result["reply_text"])
+        self.assertIn("抽屉款", result["reply_text"])
+        self.assertIn("箱体款", result["reply_text"])
+        self.assertNotIn("展示", result["reply_text"])
+        self.assertNotIn("收纳", result["reply_text"])
+
+    def test_classic_bed_with_bedside_table_does_not_fall_back_to_quote_kind(self) -> None:
+        inferred = MODULE._infer_precheck_args_from_text("帮我算一下黑胡桃经典床1.8米和两个床头柜一共多少钱。")
+        self.assertEqual(inferred["category"], "经典床")
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="帮我算一下黑胡桃经典床1.8米和两个床头柜一共多少钱。",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "precheck_quote")
+        self.assertEqual(result["status"], "needs_input")
+        self.assertEqual(result["pricing_route"], "bed_standard")
+        self.assertEqual(result["missing_fields"], ["series"])
+        self.assertIn("经典箱体床", result["reply_text"])
+        self.assertNotIn("成品/标准品", result["reply_text"])
+
+    def test_split_combo_cabinet_with_segment_lengths_asks_depth_first(self) -> None:
+        inferred = MODULE._infer_precheck_args_from_text("我要做个组合餐边柜，0.9米高柜加1.5米矮柜，白橡木。")
+        self.assertEqual(inferred["category"], "组合餐边柜")
+        self.assertEqual(inferred["material"], "北美白橡木")
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="我要做个组合餐边柜，0.9米高柜加1.5米矮柜，白橡木。",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "precheck_quote")
+        self.assertEqual(result["status"], "needs_input")
+        self.assertEqual(result["missing_fields"], ["depth"])
+        self.assertIn("进深", result["reply_text"])
+        self.assertNotIn("多长", result["reply_text"])
+
     def test_executes_modular_child_bed_quote_when_precheck_is_ready(self) -> None:
         precheck_args = {
             "category": "定制上下床",
@@ -789,6 +1181,59 @@ class HandleQuoteMessageTests(unittest.TestCase):
         self.assertEqual(result["status"], "completed")
         self.assertIn("正式报价：5380元", result["reply_text"])
         self.assertIn("目录标准单价计价", result["reply_text"])
+
+    def test_explicit_desk_hanging_combo_asks_hanging_mode_instead_of_length(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="我要做个北美黑胡桃木经典书桌与吊柜，1.2米的，多少钱？",
+                context_json=self.context_json,
+                channel="feishu",
+                execute_quote_when_ready=True,
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "precheck_quote")
+        self.assertEqual(result["status"], "needs_input")
+        self.assertEqual(result["pricing_route"], "table")
+        self.assertEqual(result["missing_fields"], ["has_door"])
+        self.assertIn("吊柜", result["reply_text"])
+        self.assertIn("开放", result["reply_text"])
+        self.assertIn("带门", result["reply_text"])
+        self.assertNotIn("确认长度", result["reply_text"])
+
+    def test_explicit_desk_hanging_combo_follow_up_completes_quote(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            state_root = Path(tmpdir) / "states"
+            bundle_root = Path(tmpdir) / "bundles"
+            first = MODULE.handle_message(
+                text="我要做个北美黑胡桃木经典书桌与吊柜，1.2米的，多少钱？",
+                context_json=self.context_json,
+                channel="feishu",
+                execute_quote_when_ready=True,
+                state_root=state_root,
+                bundle_root=bundle_root,
+                disable_addenda=True,
+            )
+
+            second = MODULE.handle_message(
+                text="吊柜做开放。",
+                context_json=self.context_json,
+                channel="feishu",
+                execute_quote_when_ready=True,
+                state_root=state_root,
+                bundle_root=bundle_root,
+                disable_addenda=True,
+            )
+
+        self.assertEqual(first["handled_by"], "precheck_quote")
+        self.assertEqual(first["missing_fields"], ["has_door"])
+        self.assertEqual(second["handled_by"], "format_quote_reply")
+        self.assertEqual(second["pricing_route"], "catalog_unit_price")
+        self.assertEqual(second["status"], "completed")
+        self.assertIn("正式报价：14260元", second["reply_text"])
+        self.assertIn("目录标准单价计价", second["reply_text"])
 
     def test_infers_catalog_precheck_args_from_natural_language_quote(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

@@ -51,9 +51,11 @@ BED_CATEGORIES = {
 TATAMI_CATEGORIES = {"榻榻米", "榻榻米+超大抽屉", "榻榻米加超大抽屉"}
 TABLE_CATEGORIES = {"餐桌", "书桌", "桌", "茶几", "边几", "书桌柜", "转角书桌", "转角书桌柜", "儿童多屉书桌"}
 CHILD_BED_STYLE_KEYWORDS = {"经典", "城堡", "挂梯", "梯柜", "直梯", "伴床", "ins", "糖果", "积木", "组合"}
+SOFA_SEAT_LABELS = ("单人位", "双人位", "三人位")
 ADULT_BED_STYLE_QUESTIONS = {
     "架式床": "架式床我还需要先确认具体款式，比如抛物线架式床、悬浮架式床、支腿架式床；你也可以直接告诉我正式产品名。",
     "箱体床": "箱体床我还需要先确认具体款式，比如经典箱体床、悬浮箱体床、支腿箱体床；你也可以直接告诉我正式产品名。",
+    "经典床": "经典床我还需要先确认具体床型，比如经典箱体床、经典架式床、经典美式床01，或经典美式床02；你也可以直接告诉我正式产品名。",
 }
 MIXED_QUOTE_KIND_CATEGORY_KEYWORDS = {
     "衣柜",
@@ -159,6 +161,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--height", help="Known height.")
     parser.add_argument("--width", help="Known width for beds/tables.")
     parser.add_argument("--material", help="Known material.")
+    parser.add_argument("--variant-hint", default="", help="Known variant hint such as 三人位、带布艺垫子.")
     parser.add_argument(
         "--quote-kind",
         choices=["standard", "custom", "unknown"],
@@ -205,6 +208,8 @@ def normalize_category_label(category: str) -> str:
         return "tatami"
     if "书桌柜" in category or "转角书桌" in category:
         return "table"
+    if "床" in category and "床头柜" not in category:
+        return "bed"
     if "儿童床" in category or "上下床" in category or "子母床" in category or "高架床" in category or "半高床" in category or "错层床" in category:
         return "bed"
     return "generic"
@@ -297,6 +302,7 @@ def collect_source_text(args: argparse.Namespace) -> str:
             str(getattr(args, "access_style", "") or ""),
             str(getattr(args, "lower_bed_type", "") or ""),
             str(getattr(args, "guardrail_style", "") or ""),
+            str(getattr(args, "variant_hint", "") or ""),
         ]
     ).strip()
 
@@ -504,8 +510,10 @@ def find_matching_catalog_variant(args: argparse.Namespace, matched_product: dic
     if not matched_product:
         return None
 
+    sibling_records = _standard_variant_records_for_product(matched_product)
+    variant_hint = str(getattr(args, "variant_hint", "") or "").strip()
     candidates: list[dict[str, Any]] = []
-    for record in load_queryable_price_records():
+    for record in sibling_records:
         if record.get("sheet") != matched_product.get("sheet"):
             continue
         if record.get("product_code") != matched_product.get("product_code"):
@@ -513,6 +521,12 @@ def find_matching_catalog_variant(args: argparse.Namespace, matched_product: dic
         if record.get("name") != matched_product.get("name"):
             continue
         if record.get("pricing_mode") not in STANDARD_PRICING_MODES:
+            continue
+        if (
+            variant_hint
+            and str(matched_product.get("sheet") or "").strip() == "沙发"
+            and not _record_matches_sofa_variant_hint(record, sibling_records=sibling_records, variant_hint=variant_hint)
+        ):
             continue
 
         dimensions = record.get("dimensions") or {}
@@ -590,6 +604,156 @@ def has_unique_standard_catalog_variant(args: argparse.Namespace) -> bool:
     return len(candidates) == 1
 
 
+def _standard_variant_records_for_product(matched_product: dict[str, Any]) -> list[dict[str, Any]]:
+    candidates: list[dict[str, Any]] = []
+    for record in load_queryable_price_records():
+        if record.get("sheet") != matched_product.get("sheet"):
+            continue
+        if record.get("product_code") != matched_product.get("product_code"):
+            continue
+        if record.get("name") != matched_product.get("name"):
+            continue
+        if record.get("pricing_mode") not in STANDARD_PRICING_MODES:
+            continue
+        candidates.append(record)
+    return candidates
+
+
+def _extract_sofa_seat_label(text: str) -> str:
+    normalized = str(text or "").strip()
+    for label in SOFA_SEAT_LABELS:
+        if label in normalized:
+            return label
+    return ""
+
+
+def _extract_sofa_cushion_choice(text: str) -> str:
+    normalized = str(text or "").strip()
+    if not normalized:
+        return ""
+    if "不带垫" in normalized or "不要垫" in normalized:
+        return "不带垫子"
+    if "布艺" in normalized:
+        return "带布艺垫子"
+    if "真皮" in normalized:
+        return "带真皮垫子"
+    if "沙发垫" in normalized or "垫子" in normalized:
+        return "需要垫子"
+    return ""
+
+
+def _sofa_seat_label_for_record(record: dict[str, Any], sibling_records: list[dict[str, Any]]) -> str:
+    unique_lengths = sorted(
+        {
+            length
+            for length in (
+                parse_dimension_to_meters((candidate.get("dimensions") or {}).get("length"))
+                for candidate in sibling_records
+            )
+            if length is not None
+        }
+    )
+    actual_length = parse_dimension_to_meters((record.get("dimensions") or {}).get("length"))
+    if actual_length is None or len(unique_lengths) < 3:
+        return ""
+    if isclose(actual_length, unique_lengths[0], abs_tol=0.015):
+        return "单人位"
+    if isclose(actual_length, unique_lengths[1], abs_tol=0.015):
+        return "双人位"
+    if isclose(actual_length, unique_lengths[2], abs_tol=0.015):
+        return "三人位"
+    return ""
+
+
+def _record_matches_sofa_variant_hint(
+    record: dict[str, Any],
+    *,
+    sibling_records: list[dict[str, Any]],
+    variant_hint: str,
+) -> bool:
+    seat_label = _extract_sofa_seat_label(variant_hint)
+    if seat_label and _sofa_seat_label_for_record(record, sibling_records) != seat_label:
+        return False
+
+    cushion_choice = _extract_sofa_cushion_choice(variant_hint)
+    remark = str(record.get("remark") or "").strip()
+    if cushion_choice == "不带垫子":
+        return "不带垫子" in remark
+    if cushion_choice == "带布艺垫子":
+        return "布艺" in remark
+    if cushion_choice == "带真皮垫子":
+        return "真皮" in remark
+    if cushion_choice == "需要垫子":
+        return "布艺" in remark or "真皮" in remark
+    return True
+
+
+def _sofa_precheck(args: argparse.Namespace, matched_product: dict[str, Any]) -> dict[str, Any]:
+    source_text = collect_source_text(args)
+    seat_label = _extract_sofa_seat_label(source_text)
+    cushion_choice = _extract_sofa_cushion_choice(source_text)
+    sibling_records = _standard_variant_records_for_product(matched_product)
+    seat_labels = {
+        _sofa_seat_label_for_record(record, sibling_records)
+        for record in sibling_records
+        if _sofa_seat_label_for_record(record, sibling_records)
+    }
+
+    if not seat_label and len(seat_labels) > 1:
+        return response(
+            ready=False,
+            category_type="generic",
+            next_required_field="variant_hint",
+            next_question="这款沙发我还需要先确认坐位规格：你想看单人位、双人位，还是三人位？",
+            reason="sofa requires seat-count variant before formal quote",
+            route="catalog_unit_price",
+            question_code="generic.sofa.seat.required",
+            missing_fields=["variant_hint"],
+            detail_level_hint="single_question_follow_up",
+        )
+
+    seat_filtered = sibling_records
+    if seat_label:
+        seat_filtered = [
+            record
+            for record in sibling_records
+            if _sofa_seat_label_for_record(record, sibling_records) == seat_label
+        ]
+
+    if len(seat_filtered) > 1 and cushion_choice not in {"不带垫子", "带布艺垫子", "带真皮垫子"}:
+        return response(
+            ready=False,
+            category_type="generic",
+            next_required_field="variant_hint",
+            next_question="这款沙发我还需要确认垫子配置：你想看不带垫子、带布艺垫子，还是带真皮垫子？如果这次已经确定要配沙发垫，也可以直接告诉我是布艺还是真皮。",
+            reason="sofa requires cushion configuration before formal quote",
+            route="catalog_unit_price",
+            question_code="generic.sofa.cushion.required",
+            missing_fields=["variant_hint"],
+            detail_level_hint="single_question_follow_up",
+        )
+
+    if is_blank(args.material):
+        return response(
+            ready=False,
+            category_type="generic",
+            next_required_field="material",
+            next_question="这款沙发我还需要确认材质，你想用哪种木材？",
+            reason="sofa requires material before formal quote",
+            route="catalog_unit_price",
+        )
+
+    return response(
+        ready=True,
+        category_type="generic",
+        next_required_field=None,
+        next_question=None,
+        reason="sofa explicit product has enough variant information for a formal quote",
+        approximate_only=bool(getattr(args, "approximate_only", False)),
+        route="catalog_unit_price",
+    )
+
+
 def generic_cabinet_dimensions_indicate_custom(args: argparse.Namespace) -> bool:
     if has_explicit_product_identity(args):
         return False
@@ -641,6 +805,36 @@ def explicit_cabinet_variant_requires_door_type(args: argparse.Namespace) -> boo
     return len(door_types) > 1
 
 
+def is_explicit_desk_hanging_combo(args: argparse.Namespace) -> bool:
+    matched_product = infer_explicit_product_match(args)
+    if not matched_product:
+        return False
+    return "书桌与吊柜" in str(matched_product.get("name") or "").strip()
+
+
+def explicit_table_combo_requires_hanging_mode(args: argparse.Namespace) -> bool:
+    if not is_explicit_desk_hanging_combo(args):
+        return False
+    if str(getattr(args, "has_door", "unknown") or "unknown") != "unknown" or not is_blank(args.door_type):
+        return False
+    matched_product = infer_explicit_product_match(args)
+    if not matched_product:
+        return False
+    remarks = {
+        str(record.get("remark") or "").strip()
+        for record in _standard_variant_records_for_product(matched_product)
+    }
+    return {"书桌价格", "吊柜开放单价", "吊柜带门单价"} <= remarks
+
+
+def explicit_table_combo_is_ready(args: argparse.Namespace) -> bool:
+    if not is_explicit_desk_hanging_combo(args):
+        return False
+    if is_blank(args.length) or is_blank(args.material):
+        return False
+    return str(getattr(args, "has_door", "unknown") or "unknown") in {"yes", "no"}
+
+
 def is_diamond_cabinet_request(args: argparse.Namespace) -> bool:
     source_text = collect_source_text(args)
     return "钻石柜" in source_text
@@ -678,7 +872,11 @@ def needs_quote_kind_confirmation(args: argparse.Namespace, category_type: str) 
     if quote_kind != "unknown":
         return False
     category = str(args.category or "").strip()
-    if category_type in {"bed", "table"}:
+    if category_type == "table":
+        if any(keyword in category for keyword in {"书桌柜", "转角书桌柜"}) and not is_blank(args.length):
+            return False
+        return True
+    if category_type == "bed":
         return True
     if category_type == "cabinet":
         if has_cabinet_core_quote_fields(args):
@@ -1263,6 +1461,7 @@ def precheck_cabinet(args: argparse.Namespace) -> dict[str, Any]:
             next_question=None,
             reason="cabinet explicit product matches a unique standard catalog variant",
             approximate_only=bool(getattr(args, "approximate_only", False)),
+            route="catalog_unit_price",
         )
     if is_blank(args.length):
         return response(
@@ -1372,6 +1571,7 @@ def precheck_cabinet(args: argparse.Namespace) -> dict[str, Any]:
 
 def precheck_bed(args: argparse.Namespace) -> dict[str, Any]:
     pricing_route = bed_pricing_route(args)
+    explicit_product = has_explicit_product_identity(args)
 
     def bed_response(
         *,
@@ -1429,6 +1629,20 @@ def precheck_bed(args: argparse.Namespace) -> dict[str, Any]:
             next_required_field="shape",
             next_question="这款上下床我还需要确认下床结构，你想做抽屉款、架式款还是箱体款？",
             reason="explicit child bunk bed still has multiple lower-bed structure variants",
+        )
+    if pricing_route == "catalog_child_bed" and explicit_product and has_unique_standard_catalog_variant(args):
+        if is_blank(args.material):
+            return bed_response(
+                ready=False,
+                next_required_field="material",
+                next_question="这款儿童床我还需要确认材质，你想用哪种木材？",
+                reason="unique standard child bed still requires material before quote",
+            )
+        return bed_response(
+            ready=True,
+            next_required_field=None,
+            next_question=None,
+            reason="explicit unique standard child bed can quote from catalog defaults",
         )
     if is_blank(args.width):
         return bed_response(
@@ -1519,6 +1733,33 @@ def precheck_table(args: argparse.Namespace) -> dict[str, Any]:
             next_question="桌类我先需要确认长度，请问大概多长？",
             reason="table requires length",
         )
+    if explicit_table_combo_requires_hanging_mode(args):
+        return response(
+            ready=False,
+            category_type="table",
+            next_required_field="has_door",
+            next_question="这组书桌与吊柜我先只确认一个问题：上方吊柜是做开放，还是做带门？",
+            reason="desk and hanging cabinet combo requires hanging cabinet mode before quote",
+        )
+    if is_explicit_desk_hanging_combo(args):
+        if is_blank(args.material):
+            return response(
+                ready=False,
+                category_type="table",
+                next_required_field="material",
+                next_question="桌类我还需要确认材质，你想用哪种木材？",
+                reason="table requires material",
+            )
+        if explicit_table_combo_is_ready(args):
+            return response(
+                ready=True,
+                category_type="table",
+                next_required_field=None,
+                next_question=None,
+                reason="desk and hanging cabinet combo has the required fields for a formal quote",
+                approximate_only=bool(getattr(args, "approximate_only", False)),
+                route="catalog_unit_price",
+            )
     if is_blank(args.depth) and not has_matching_standard_catalog_variant(args):
         return response(
             ready=False,
@@ -1554,6 +1795,29 @@ def precheck_table(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def precheck_generic(args: argparse.Namespace) -> dict[str, Any]:
+    matched_product = infer_explicit_product_match(args)
+    if matched_product and str(matched_product.get("sheet") or "").strip() == "沙发":
+        return _sofa_precheck(args, matched_product)
+    if matched_product and has_unique_standard_catalog_variant(args):
+        if is_blank(args.material):
+            return response(
+                ready=False,
+                category_type="generic",
+                next_required_field="material",
+                next_question="我还需要确认材质，你想用哪种木材？",
+                reason="explicit standard product still requires material before quote",
+                route="catalog_unit_price",
+            )
+        return response(
+            ready=True,
+            category_type="generic",
+            next_required_field=None,
+            next_question=None,
+            reason="explicit standard product has enough information for a formal quote",
+            approximate_only=bool(getattr(args, "approximate_only", False)),
+            route="catalog_unit_price",
+        )
+
     for field, question in [
         ("category", "我先需要确认你做的是哪一类产品。"),
         ("material", "我还需要确认材质，你想用哪种木材？"),

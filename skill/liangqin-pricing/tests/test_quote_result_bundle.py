@@ -204,6 +204,37 @@ class QuoteResultBundleTests(unittest.TestCase):
                 }
             ],
         }
+        payload["quote_followup_state"] = {
+            "code": "formal_quote_waiting_budget_feedback",
+            "label": "正式报价待预算反馈",
+            "status": "awaiting_customer_feedback",
+            "current_phase": "formal_quote_followup",
+            "recommended_track": "budget_compare",
+            "current_version_status": "ready_to_send",
+            "compare_version_status": "ready_when_triggered",
+            "followthrough_status": "ready_after_acceptance",
+            "recommended_next_codes": ["send_current_quote", "send_current_then_budget_compare"],
+            "next_action_code": "send_current_quote",
+            "compare_action_code": "send_current_then_budget_compare",
+            "followthrough_action_code": "schedule_store_visit",
+            "next_version_label": "预算收一档对比版",
+        }
+        payload["quote_feedback_signal"] = {
+            "code": "budget",
+            "label": "预算控制",
+            "source": "customer_priority",
+            "is_explicit": True,
+            "recommended_objection_code": "cheaper_option",
+            "recommended_followthrough_code": "schedule_store_visit",
+        }
+        payload["quote_outcome"] = {
+            "code": "comparing",
+            "label": "正式报价进入预算比较",
+            "status": "active",
+            "result_stage": "formal_quote",
+            "next_target_code": "booked_visit",
+            "next_target_label": "约到店确认",
+        }
         payload["post_quote_stage"] = {"code": "formal_quote_waiting_budget_feedback", "label": "正式报价待预算反馈"}
         payload["quote_version_summary"] = {
             "current_version_code": "formal_base",
@@ -266,6 +297,9 @@ class QuoteResultBundleTests(unittest.TestCase):
         self.assertEqual(bundle["consultant_action_queue"][1]["rank"], 2)
         self.assertEqual(bundle["consultant_workbench"]["primary_action"]["code"], "send_current_quote")
         self.assertEqual(bundle["consultant_workbench"]["quick_action_groups"][0]["group"], "quote_send")
+        self.assertEqual(bundle["quote_followup_state"]["recommended_track"], "budget_compare")
+        self.assertEqual(bundle["quote_feedback_signal"]["code"], "budget")
+        self.assertEqual(bundle["quote_outcome"]["next_target_code"], "booked_visit")
         self.assertEqual(bundle["post_quote_stage"]["code"], "formal_quote_waiting_budget_feedback")
         self.assertEqual(bundle["quote_version_summary"]["next_version_label"], "预算收一档对比版")
         self.assertEqual(bundle["quote_version_actions"]["recommended_trigger"], "继续压预算")
