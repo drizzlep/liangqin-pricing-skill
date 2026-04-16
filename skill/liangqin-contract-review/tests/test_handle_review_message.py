@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import importlib.util
+import io
 import json
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -173,6 +175,39 @@ class HandleReviewMessageTests(unittest.TestCase):
             state_root = Path(forwarded_argv[forwarded_argv.index("--state-root") + 1])
             self.assertTrue(str(state_root).startswith(str(runtime_root.resolve())))
             self.assertIn("ding-group-001", str(state_root))
+
+    def test_text_mode_emits_precheck_status_before_review_chat(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            contract_path = root / "合同.docx"
+            runtime_root = root / "runtime"
+            write_minimal_docx(contract_path, ["甲方：客户A", "费用合计：19800元"])
+
+            original_main = HANDLE_REVIEW_MESSAGE.review_chat.main
+
+            def fake_main(argv: list[str] | None = None) -> int:
+                return 0
+
+            HANDLE_REVIEW_MESSAGE.review_chat.main = fake_main
+            try:
+                stdout = io.StringIO()
+                with redirect_stdout(stdout):
+                    exit_code = HANDLE_REVIEW_MESSAGE.main(
+                        [
+                            "--text",
+                            "审这份合同",
+                            "--input-path",
+                            str(contract_path),
+                            "--runtime-root",
+                            str(runtime_root),
+                        ]
+                    )
+            finally:
+                HANDLE_REVIEW_MESSAGE.review_chat.main = original_main
+
+            self.assertEqual(exit_code, 0)
+            self.assertIn("正在预检中", stdout.getvalue())
+            self.assertIn("报价系统做金额与字段对账", stdout.getvalue())
 
 
 if __name__ == "__main__":

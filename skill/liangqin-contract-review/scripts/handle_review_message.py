@@ -216,6 +216,28 @@ def _forward_review_chat_args(
     return forwarded
 
 
+def _emit_precheck_status(*, args: argparse.Namespace, batch_dir: Path | None) -> None:
+    if args.output_mode != "text":
+        return
+    if batch_dir is None:
+        return
+
+    manifest_path = batch_dir / "manifest.json"
+    job_count = 0
+    if manifest_path.exists():
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            job_count = len(list(manifest.get("jobs") or []))
+        except (OSError, ValueError, TypeError):
+            job_count = 0
+
+    batch_label = "这份合同" if job_count <= 1 else f"这批合同（{job_count} 份）"
+    sys.stdout.write(
+        f"已收到{batch_label}，正在预检中：先抽取关键信息，再和报价系统做金额与字段对账，请稍等。\n"
+    )
+    sys.stdout.flush()
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     runtime_root = Path(args.runtime_root).expanduser().resolve()
@@ -241,6 +263,7 @@ def main(argv: list[str] | None = None) -> int:
         batch_dir=batch_dir,
         resolved_state_root=resolved_state_root,
     )
+    _emit_precheck_status(args=args, batch_dir=batch_dir)
     return review_chat.main(forwarded_argv)
 
 

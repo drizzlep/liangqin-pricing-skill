@@ -372,8 +372,30 @@ def _build_ocr_issues(
 ) -> list[dict[str, Any]]:
     blocked_fields = list(pricing_bridge_payload.get("blocked_fields") or [])
     withheld_fields = list(pricing_bridge_payload.get("withheld_source_fields") or [])
+    strict_ocr_blocked_fields = list(pricing_bridge_payload.get("strict_ocr_blocked_fields") or [])
     if unresolved_ocr_assets <= 0 and not blocked_fields and not withheld_fields:
         return []
+
+    if strict_ocr_blocked_fields:
+        strict_labels = [FIELD_LABELS.get(field_name, field_name) for field_name in strict_ocr_blocked_fields]
+        return [
+            _build_issue(
+                issue_code="ocr_low_confidence",
+                severity="high",
+                confidence=0.9,
+                title="儿童床关键字段仍依赖 OCR，暂不建议直接对账",
+                contract_value="、".join(strict_labels),
+                pricing_value="",
+                delta_value="",
+                delta_percent="",
+                evidence_refs=[],
+                suspected_causes=[
+                    "儿童床/床下组合柜这类合同对床形态、围栏、梯柜和柜体尺寸特别敏感。",
+                    "当前这些关键字段主要来自 OCR 证据，系统先收紧为人工确认后再继续。",
+                ],
+                recommended_check="请先人工核对儿童床的床形态、尺寸、围栏/梯柜参数及床下柜体配置，再决定是否继续报价对账。",
+            )
+        ]
     return [
         _build_issue(
             issue_code="ocr_low_confidence",

@@ -97,6 +97,81 @@ class PricingBridgeTests(unittest.TestCase):
         self.assertEqual(result["precheck_args"]["depth"], "2338mm")
         self.assertNotEqual(result["precheck_result"]["next_required_field"], "depth")
 
+    def test_bridge_blocks_ocr_only_child_bed_fields_for_manual_confirmation(self) -> None:
+        result = BRIDGE.bridge_contract_to_pricing_precheck(
+            {
+                "product_category": {
+                    "value": "高架床",
+                    "confidence": 0.98,
+                    "evidence_refs": [{"source_kind": "native_preview"}],
+                },
+                "quote_kind": {
+                    "value": "custom",
+                    "confidence": 0.96,
+                    "evidence_refs": [{"source_kind": "native_preview"}],
+                },
+                "bed_form": {
+                    "value": "高架床",
+                    "confidence": 0.95,
+                    "evidence_refs": [{"source_kind": "ocr_markdown"}],
+                },
+                "access_style": {
+                    "value": "梯柜",
+                    "confidence": 0.95,
+                    "evidence_refs": [{"source_kind": "ocr_markdown"}],
+                },
+                "guardrail_style": {
+                    "value": "胶囊围栏",
+                    "confidence": 0.95,
+                    "evidence_refs": [{"source_kind": "ocr_markdown"}],
+                },
+                "guardrail_length": {
+                    "value": "1800mm",
+                    "confidence": 0.95,
+                    "evidence_refs": [{"source_kind": "ocr_markdown"}],
+                },
+                "guardrail_height": {
+                    "value": "320mm",
+                    "confidence": 0.95,
+                    "evidence_refs": [{"source_kind": "ocr_markdown"}],
+                },
+                "stair_width": {
+                    "value": "500mm",
+                    "confidence": 0.95,
+                    "evidence_refs": [{"source_kind": "ocr_markdown"}],
+                },
+                "stair_depth": {
+                    "value": "900mm",
+                    "confidence": 0.95,
+                    "evidence_refs": [{"source_kind": "ocr_markdown"}],
+                },
+                "width": {
+                    "value": "1080mm",
+                    "confidence": 0.95,
+                    "evidence_refs": [{"source_kind": "ocr_markdown"}],
+                },
+                "length": {
+                    "value": "3045mm",
+                    "confidence": 0.95,
+                    "evidence_refs": [{"source_kind": "ocr_markdown"}],
+                },
+                "wood_material": {
+                    "value": "北美白橡木",
+                    "confidence": 0.95,
+                    "evidence_refs": [{"source_kind": "ocr_markdown"}],
+                },
+            }
+        )
+
+        self.assertEqual(result["status"], "manual_confirmation_required")
+        self.assertIn("bed_form", result["blocked_fields"])
+        self.assertIn("guardrail_style", result["strict_ocr_blocked_fields"])
+        self.assertIn("stair_depth", result["strict_ocr_blocked_fields"])
+        override_fields = {item["target_field"] for item in result["confidence_overrides"]}
+        self.assertIn("bed_form", override_fields)
+        self.assertIn("width", override_fields)
+        self.assertIsNone(result["precheck_result"])
+
 
 if __name__ == "__main__":
     unittest.main()

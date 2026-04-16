@@ -218,6 +218,31 @@ class ReviewIssuesTests(unittest.TestCase):
         self.assertIn("折后", calc_issue["recommended_check"])
         self.assertEqual(payload["review_card"]["priority"], "p0")
 
+    def test_raises_high_priority_ocr_issue_for_child_bed_strict_fields(self) -> None:
+        payload = REVIEW_ISSUES.build_review_analysis(
+            contract_audit_payload={
+                "financials": {"contract_total": {"value": "34523元"}},
+                "field_conflicts": [],
+                "special_notes": [],
+            },
+            pricing_bridge_payload={
+                "status": "manual_confirmation_required",
+                "reason": "sensitive_fields_below_confidence_threshold",
+                "precheck_result": None,
+                "blocked_fields": ["bed_form", "stair_depth"],
+                "withheld_source_fields": ["bed_form", "stair_depth"],
+                "strict_ocr_blocked_fields": ["bed_form", "stair_depth"],
+            },
+            formal_quote_payload={"status": "skipped", "reason": "formal_quote_not_ready"},
+            pricing_compare_payload={"status": "skipped", "match_band": "unavailable"},
+        )
+
+        ocr_issue = next(item for item in payload["issues"] if item["issue_code"] == "ocr_low_confidence")
+        self.assertEqual(ocr_issue["severity"], "high")
+        self.assertIn("儿童床", ocr_issue["title"])
+        self.assertIn("梯柜参数", ocr_issue["recommended_check"])
+        self.assertEqual(payload["review_card"]["priority"], "p1")
+
 
 if __name__ == "__main__":
     unittest.main()
