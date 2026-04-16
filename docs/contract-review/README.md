@@ -100,6 +100,11 @@ python3 apps/contract-review/cli/manual_batch.py --batch-dir /absolute/path/to/b
 python3 apps/contract-review/cli/manual_batch.py --batch-dir /absolute/path/to/batch --dry-run --output-mode json
 ```
 
+如果你现在已经准备开始做“发布前真实验收”，直接看：
+
+- `docs/contract-review/release-acceptance.md`
+- `apps/contract-review/templates/acceptance-ground-truth.example.csv`
+
 ## 当前运行时输出
 
 默认输出到：
