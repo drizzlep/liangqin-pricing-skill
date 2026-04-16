@@ -1,0 +1,18 @@
+{
+  "source_type": "manual_batch",
+  "source_channel": "manual",
+  "source_batch_id": "batch-2026-04-14-a",
+  "requested_actions": ["audit", "replay"],
+  "operator": "admin",
+  "received_at": "2026-04-14T10:30:00+08:00",
+  "notes": "首轮样本，混合型合同。",
+  "jobs": [
+    {
+      "job_key": "case-001",
+      "paths": [
+        "raw/case-001/20260399009北京市京东国补-子木202605闹闹振宇2.docx",
+        "raw/case-001/20260399009北京市京东国补-子木202605闹闹振宇2-图纸.pdf"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "liangqin-contract-pricing"
+version = "0.1.0"
+description = "Liangqin Ji Mu formal contract pricing audit companion skill."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "paddleocr",
+  "PyPDF2",
+]
+
+[tool.setuptools]
+include-package-data = true

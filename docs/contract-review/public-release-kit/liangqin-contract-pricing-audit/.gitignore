@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.venv/
+.env
+runtime/
+tmp/
+dist/
+build/
+*.log
+examples/batch-demo/raw/*
+!examples/batch-demo/raw/.gitkeep

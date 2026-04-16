@@ -1,0 +1,33 @@
+{
+  "job_id": "demo-batch-a-001",
+  "batch_id": "demo-batch-a",
+  "group_key": "case-001",
+  "source_type": "manual_batch",
+  "source_channel": "manual",
+  "requested_actions": ["audit", "replay"],
+  "assets": [
+    {
+      "asset_id": "asset-001",
+      "source_path": "/absolute/path/to/raw/case-001/contract.docx",
+      "relative_path": "raw/case-001/contract.docx",
+      "file_name": "contract.docx",
+      "extension": ".docx",
+      "media_kind": "document",
+      "role_hint": "primary_contract",
+      "text_preview": "甲方：…… 乙方：良禽佳木演示主体 ……",
+      "text_extract_method": "docx_text",
+      "metadata": {
+        "size_bytes": 12345
+      }
+    }
+  ],
+  "metadata": {
+    "operator": "demo-user",
+    "received_at": "2026-04-14T10:30:00+08:00",
+    "notes": "首轮样本，混合型合同。",
+    "group_metadata": {
+      "mode": "subdir_bundle"
+    }
+  },
+  "created_at": "2026-04-14T10:31:00+08:00"
+}

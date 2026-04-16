@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install minimal deps
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Validate release skeleton
+        run: |
+          test -f README.md
+          test -f SKILL.md
+          test -f VERSION
+          test -f LICENSE
+          test -f docs/install.md
+          test -f docs/release-checklist.md
+          test -f references/dependency-contract.md
+          test -f references/batch-folder-spec.md
+          test -f references/output-spec.md
+          test -f scripts/check_dependencies.sh
+          test -f scripts/run_contract_pricing_audit.sh
+
+      - name: Run tests when app code exists
+        run: |
+          if [ -d apps/contract-review/tests ] && [ -n "${LIANGQIN_PRICING_SKILL_DIR:-}" ] && [ -d "${LIANGQIN_PRICING_SKILL_DIR}" ]; then
+            python -m unittest discover -s apps/contract-review/tests
+          else
+            echo "Runtime tests skipped: liangqin-pricing dependency is not configured in public CI."
+          fi

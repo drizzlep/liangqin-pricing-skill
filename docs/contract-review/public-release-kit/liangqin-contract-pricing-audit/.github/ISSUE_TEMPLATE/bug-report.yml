@@ -1,0 +1,34 @@
+name: Bug report
+description: 报告一个公开仓库可复现的问题
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        提交前请确认不要粘贴真实客户合同、敏感价格数据或未脱敏输出。
+  - type: textarea
+    id: summary
+    attributes:
+      label: 问题描述
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: 复现步骤
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期结果
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际结果
+  - type: textarea
+    id: env
+    attributes:
+      label: 环境信息
+      description: Python 版本、PaddleOCR 版本、是否已配置 liangqin-pricing
