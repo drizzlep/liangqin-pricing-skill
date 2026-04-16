@@ -10,6 +10,7 @@ from typing import Any
 from attachment_section import extract_attachment_pricing_section
 from product_code_utils import count_unique_product_codes
 from job_models import ReviewJob, SourceAsset
+from ocr_layout_parser import load_ocr_layout_analysis
 from template_learning import find_template_profile
 
 
@@ -218,9 +219,13 @@ def normalize_job_fields(job: ReviewJob, *, template_runtime_root: Path | None =
 def _build_text_sources(assets: list[SourceAsset]) -> list[dict[str, Any]]:
     sources: list[dict[str, Any]] = []
     for asset in assets:
-        if not str(asset.text_preview or "").strip():
+        ocr_layout = load_ocr_layout_analysis((asset.metadata or {}).get("ocr_json_path"))
+        raw_text = str(asset.text_preview or "").strip()
+        if not raw_text and ocr_layout.get("combined_text"):
+            raw_text = str(ocr_layout.get("combined_text") or "").strip()
+        if not raw_text:
             continue
-        normalized_text = extract_attachment_pricing_section(str(asset.text_preview).strip())
+        normalized_text = extract_attachment_pricing_section(raw_text)
         sources.append(
             {
                 "asset_id": asset.asset_id,
@@ -230,6 +235,7 @@ def _build_text_sources(assets: list[SourceAsset]) -> list[dict[str, Any]]:
                 "source_kind": _infer_source_kind(asset),
                 "media_kind": str(asset.media_kind or "").strip(),
                 "role_hint": str(asset.role_hint or "").strip(),
+                "ocr_layout": ocr_layout,
             }
         )
     return sources
@@ -331,12 +337,16 @@ def _score_child_bed_drawing_source(source: dict[str, Any]) -> dict[str, Any]:
     normalized_text = _normalize_text(text)
     file_name = str(source.get("file_name") or "")
     normalized_file_name = _normalize_text(file_name)
+    ocr_layout = source.get("ocr_layout") or {}
     mm_values = re.findall(r"([0-9]+(?:\.[0-9]+)?)\s*(?:mm|毫米)", text, flags=re.IGNORECASE)
-    dimension_count = len(mm_values)
+    layout_dimension_count = int(ocr_layout.get("dimension_count") or 0)
+    layout_field_count = len(ocr_layout.get("field_candidates") or {})
+    dimension_count = max(len(mm_values), layout_dimension_count)
     structure_hit_count = sum(
         1 for keyword in CHILD_BED_STRUCTURE_KEYWORDS if keyword and keyword in normalized_text
     )
     score = min(dimension_count, 12) * 2 + min(structure_hit_count, 4) * 3
+    score += min(layout_field_count, 6) * 2
     if str(source.get("role_hint") or "").strip() == "visual_attachment":
         score += 5
     if str(source.get("source_kind") or "").strip().startswith("ocr"):
@@ -666,6 +676,10 @@ def _extract_dimension(
     text_sources: list[dict[str, str]],
     aggregate_text: str,
 ) -> dict[str, Any] | None:
+    layout_candidate = _find_dimension_from_ocr_layout(target_field, text_sources)
+    if layout_candidate is not None:
+        return layout_candidate
+
     for pattern in LABELED_PATTERNS.get(target_field, ()):
         match = re.search(pattern, aggregate_text, flags=re.IGNORECASE)
         if match:
@@ -801,6 +815,7 @@ def _build_field_payload(
     confidence: float,
     source: dict[str, str] | None,
     evidence_text: str,
+    evidence_meta: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     payload = {
         "key": key,
@@ -809,16 +824,55 @@ def _build_field_payload(
         "evidence_refs": [],
     }
     if source is not None:
-        payload["evidence_refs"].append(
-            {
-                "asset_id": source["asset_id"],
-                "file_name": source["file_name"],
-                "text_extract_method": source["text_extract_method"],
-                "source_kind": source.get("source_kind", ""),
-                "snippet": evidence_text,
-            }
-        )
+        evidence_ref = {
+            "asset_id": source["asset_id"],
+            "file_name": source["file_name"],
+            "text_extract_method": source["text_extract_method"],
+            "source_kind": source.get("source_kind", ""),
+            "snippet": evidence_text,
+        }
+        if evidence_meta:
+            evidence_ref.update(evidence_meta)
+        payload["evidence_refs"].append(evidence_ref)
     return payload
+
+
+def _find_dimension_from_ocr_layout(
+    target_field: str,
+    text_sources: list[dict[str, str]],
+) -> dict[str, Any] | None:
+    best_source: dict[str, Any] | None = None
+    best_candidate: dict[str, Any] | None = None
+    for source in text_sources:
+        ocr_layout = source.get("ocr_layout") or {}
+        field_candidates = ocr_layout.get("field_candidates") or {}
+        candidate = field_candidates.get(target_field)
+        if not isinstance(candidate, dict):
+            continue
+        if best_candidate is None or float(candidate.get("score") or 0.0) > float(best_candidate.get("score") or 0.0):
+            best_source = source
+            best_candidate = candidate
+
+    if best_source is None or best_candidate is None:
+        return None
+
+    label = str(best_candidate.get("label") or "").strip()
+    value = str(best_candidate.get("value") or "").strip()
+    evidence_text = " ".join(item for item in (label, value) if item).strip() or value
+    return _build_field_payload(
+        key=target_field,
+        value=value,
+        confidence=0.97 if str(best_candidate.get("match_type") or "") == "inline_label" else 0.95,
+        source=best_source,
+        evidence_text=evidence_text,
+        evidence_meta={
+            "evidence_type": "ocr_layout",
+            "page_no": best_candidate.get("page_no"),
+            "bbox": best_candidate.get("bbox"),
+            "label_text": best_candidate.get("label_text"),
+            "layout_match_type": best_candidate.get("match_type"),
+        },
+    )
 
 
 def _merge_field(fields: dict[str, Any], payload: dict[str, Any] | None) -> None:

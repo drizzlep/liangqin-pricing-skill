@@ -470,6 +470,148 @@ class FieldNormalizerTests(unittest.TestCase):
         self.assertIn("width", child_bed_analysis["main_drawing_field_hits"])
         self.assertFalse(child_bed_analysis["requires_primary_drawing_review"])
 
+    def test_normalizer_can_use_ocr_layout_json_for_primary_child_bed_dimensions(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            output_dir = root / "normalized" / "ocr" / "asset-main-drawing"
+            page_dir = output_dir / "page-001"
+            page_dir.mkdir(parents=True)
+
+            summary_path = output_dir / "summary.json"
+            page_json_path = page_dir / "result.json"
+            summary_path.write_text(
+                json.dumps(
+                    {
+                        "asset_id": "asset-main-drawing",
+                        "backend": "paddleocr",
+                        "status": "succeeded",
+                        "source_path": str(root / "大尺寸图.png"),
+                        "page_count": 1,
+                        "markdown_path": str(output_dir / "combined.md"),
+                        "pages": [
+                            {
+                                "page_no": 1,
+                                "json_path": str(page_json_path),
+                                "markdown_dir": str(page_dir),
+                                "markdown_text_length": 0,
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            page_json_path.write_text(
+                json.dumps(
+                    {
+                        "input_path": str(root / "大尺寸图.png"),
+                        "page_index": 0,
+                        "model_settings": {"use_doc_preprocessor": False},
+                        "overall_ocr_res": {
+                            "rec_texts": [
+                                "床形态",
+                                "高架床",
+                                "上层出入方式",
+                                "梯柜",
+                                "床垫宽度",
+                                "1080mm",
+                                "床垫长度",
+                                "2096mm",
+                                "梯柜踏步宽度",
+                                "500mm",
+                                "梯柜进深",
+                                "900mm",
+                                "围栏高度",
+                                "400mm",
+                                "总高",
+                                "2715mm",
+                            ],
+                            "rec_boxes": [
+                                [80, 60, 180, 95],
+                                [200, 58, 320, 97],
+                                [80, 110, 220, 145],
+                                [240, 108, 340, 147],
+                                [80, 190, 240, 225],
+                                [260, 188, 360, 227],
+                                [80, 250, 240, 285],
+                                [260, 248, 360, 287],
+                                [80, 320, 280, 355],
+                                [300, 318, 390, 357],
+                                [80, 380, 240, 415],
+                                [260, 378, 350, 417],
+                                [460, 200, 580, 235],
+                                [600, 198, 690, 237],
+                                [460, 270, 540, 305],
+                                [560, 268, 660, 307],
+                            ],
+                            "rec_scores": [0.99] * 16,
+                            "rec_polys": [],
+                            "dt_polys": [],
+                            "text_det_params": {},
+                            "text_type": "general",
+                            "text_rec_score_thresh": 0,
+                            "return_word_box": False,
+                        },
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            job = JOB_MODELS.ReviewJob(
+                job_id="job-child-bed-layout-001",
+                batch_id="batch-child-bed",
+                group_key="case-child-bed-layout",
+                source_type="manual_batch",
+                source_channel="manual",
+                requested_actions=["audit", "replay"],
+                assets=[
+                    JOB_MODELS.SourceAsset(
+                        asset_id="asset-contract",
+                        source_path="/tmp/fake-contract.docx",
+                        relative_path="raw/case-child-bed-layout/合同.docx",
+                        file_name="合同.docx",
+                        extension=".docx",
+                        media_kind="document",
+                        role_hint="primary_contract",
+                        text_preview="产品名称：高架床\n本单按定制执行\n材质：北美白橡木\n",
+                        text_extract_method="docx_text",
+                    ),
+                    JOB_MODELS.SourceAsset(
+                        asset_id="asset-main-drawing",
+                        source_path=str(root / "大尺寸图.png"),
+                        relative_path="raw/case-child-bed-layout/大尺寸图.png",
+                        file_name="大尺寸图.png",
+                        extension=".png",
+                        media_kind="image",
+                        role_hint="visual_attachment",
+                        text_preview=(
+                            "大尺寸图\n"
+                            "床形态：高架床\n"
+                            "上层出入方式：梯柜\n"
+                            "1080mm 2096mm 500mm 900mm 400mm 2715mm\n"
+                        ),
+                        text_extract_method="paddleocr_pp_structurev3",
+                        metadata={"ocr_status": "succeeded", "ocr_json_path": str(summary_path)},
+                    ),
+                ],
+            )
+
+            normalized = FIELD_NORMALIZER.normalize_job_fields(job)
+            fields = normalized["fields"]
+            child_bed_analysis = normalized["child_bed_analysis"]
+
+        self.assertEqual(fields["width"]["value"], "1080mm")
+        self.assertEqual(fields["length"]["value"], "2096mm")
+        self.assertEqual(fields["stair_width"]["value"], "500mm")
+        self.assertEqual(fields["stair_depth"]["value"], "900mm")
+        self.assertEqual(fields["height"]["value"], "2715mm")
+        self.assertEqual(fields["width"]["evidence_refs"][0]["asset_id"], "asset-main-drawing")
+        self.assertEqual(fields["width"]["evidence_refs"][0]["evidence_type"], "ocr_layout")
+        self.assertIn("width", child_bed_analysis["main_drawing_field_hits"])
+        self.assertIn("length", child_bed_analysis["main_drawing_field_hits"])
+        self.assertFalse(child_bed_analysis["requires_primary_drawing_review"])
+
     def test_normalizer_extracts_half_loft_combo_fields(self) -> None:
         job = JOB_MODELS.ReviewJob(
             job_id="job-combo-001",
