@@ -39,6 +39,21 @@
 
 ## 样本目录规范
 
+如果想先把目录骨架一键搭出来，可以直接执行：
+
+```bash
+python3 apps/contract-review/cli/init_acceptance_batch.py \
+  --batch-dir /absolute/path/to/acceptance-batch-2026-04-16
+```
+
+它会自动创建：
+
+- `manifest.json`
+- `raw/case-001-normal/`
+- `raw/case-002-calc-error/`
+- `raw/case-003-quote-conflict/`
+- 同级的 `acceptance-ground-truth.csv`
+
 推荐直接建一个验收批次目录，例如：
 
 ```text
@@ -107,6 +122,11 @@ bash apps/contract-review/scripts/run_acceptance_batch.sh \
   --ocr-backend disabled
 ```
 
+如果批次目录旁边已经有 `acceptance-ground-truth.csv`，脚本会自动额外生成：
+
+- `runtime/batches/<batch-id>/acceptance-report.md`
+- `runtime/batches/<batch-id>/acceptance-report.json`
+
 ## 重点看什么
 
 跑完之后，先只看这几个文件：
@@ -117,6 +137,8 @@ bash apps/contract-review/scripts/run_acceptance_batch.sh \
   - 看高风险合同排序是否合理
 - `runtime/batches/<batch-id>/pricing-compare-diagnosis.md`
   - 看系统给的差异归因是否像人话
+- `runtime/batches/<batch-id>/acceptance-report.md`
+  - 看漏报、误报、主核对动作命中率，判断是否达到发布线
 - `runtime/jobs/<job-id>/output/review.md`
   - 抽查单份合同的审单卡
 

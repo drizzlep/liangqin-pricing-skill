@@ -37,8 +37,21 @@ python3 "$APP_DIR/cli/manual_batch.py" \
   --runtime-root "$RUNTIME_ROOT" \
   --ocr-backend "$OCR_BACKEND"
 
+GROUND_TRUTH_PATH="$(cd "$(dirname "$BATCH_DIR")" && pwd)/acceptance-ground-truth.csv"
+if [[ -f "$GROUND_TRUTH_PATH" ]]; then
+  python3 "$APP_DIR/cli/acceptance_report.py" \
+    --batch-dir "$BATCH_DIR" \
+    --runtime-root "$RUNTIME_ROOT" \
+    --ground-truth-path "$GROUND_TRUTH_PATH"
+else
+  echo "未发现验收标注文件，已跳过验收评分：$GROUND_TRUTH_PATH"
+fi
+
 echo
 echo "验收批次已运行完成。建议优先查看："
 echo "- $RUNTIME_ROOT/batches/$(basename "$BATCH_DIR")/batch-dashboard.md"
 echo "- $RUNTIME_ROOT/batches/$(basename "$BATCH_DIR")/manual-review-queue.md"
 echo "- $RUNTIME_ROOT/batches/$(basename "$BATCH_DIR")/pricing-compare-diagnosis.md"
+if [[ -f "$GROUND_TRUTH_PATH" ]]; then
+  echo "- $RUNTIME_ROOT/batches/$(basename "$BATCH_DIR")/acceptance-report.md"
+fi

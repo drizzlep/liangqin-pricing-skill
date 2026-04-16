@@ -116,6 +116,27 @@ bash apps/contract-review/scripts/run_acceptance_batch.sh \
   --batch-dir /absolute/path/to/acceptance-batch
 ```
 
+如果还没开始整理历史合同，可以先一键初始化验收目录：
+
+```bash
+python3 apps/contract-review/cli/init_acceptance_batch.py \
+  --batch-dir /absolute/path/to/acceptance-batch
+```
+
+然后再跑：
+
+```bash
+bash apps/contract-review/scripts/run_acceptance_batch.sh \
+  --batch-dir /absolute/path/to/acceptance-batch
+```
+
+如果批次目录旁边已经放了 `acceptance-ground-truth.csv`，脚本还会自动补出：
+
+```text
+runtime/batches/<batch-id>/acceptance-report.md
+runtime/batches/<batch-id>/acceptance-report.json
+```
+
 验收说明见：
 
 ```text
