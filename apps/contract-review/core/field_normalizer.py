@@ -95,6 +95,44 @@ DOOR_TYPE_PATTERNS = {
 
 
 GENERIC_CATEGORY_VALUES = {"床", "桌", "柜", "柜体", "书柜", "衣柜", "玄关柜", "餐边柜", "架式床", "箱体床"}
+CHILD_BED_KEYWORDS = ("儿童床", "上下床", "子母床", "高架床", "半高床", "错层床")
+CHILD_BED_DRAWING_HINTS = ("尺寸图", "大尺寸图", "图纸", "设计图", "大样", "立面", "剖面", "正视", "侧视", "主视")
+CHILD_BED_DRAWING_PENALTIES = ("效果图", "渲染图", "场景图", "透视图")
+CHILD_BED_STRUCTURE_KEYWORDS = (
+    "上下床",
+    "高架床",
+    "半高床",
+    "错层床",
+    "梯柜",
+    "直梯",
+    "斜梯",
+    "围栏",
+    "护栏",
+    "前排",
+    "后排",
+    "床下",
+    "互通",
+)
+CHILD_BED_PRIMARY_DRAWING_MIN_SCORE = 18
+CHILD_BED_PRIMARY_DRAWING_MIN_GAP = 4
+CHILD_BED_PRIMARY_DRAWING_KEY_FIELDS = (
+    "bed_form",
+    "access_style",
+    "width",
+    "length",
+    "guardrail_style",
+    "guardrail_length",
+    "guardrail_height",
+    "access_height",
+    "stair_width",
+    "stair_depth",
+    "front_cabinet_length",
+    "front_cabinet_height",
+    "front_cabinet_depth",
+    "rear_cabinet_length",
+    "rear_cabinet_height",
+    "rear_cabinet_depth",
+)
 
 
 def normalize_job_fields(job: ReviewJob, *, template_runtime_root: Path | None = None) -> dict[str, Any]:
@@ -104,7 +142,13 @@ def normalize_job_fields(job: ReviewJob, *, template_runtime_root: Path | None =
         else None
     )
     preferred_evidence_order = list((template_profile or {}).get("preferred_evidence_order") or [])
-    text_sources = _collect_text_sources(job.assets, preferred_evidence_order=preferred_evidence_order)
+    raw_text_sources = _build_text_sources(job.assets)
+    child_bed_analysis = _analyze_child_bed_drawing_sources(raw_text_sources)
+    text_sources = _sort_text_sources(
+        raw_text_sources,
+        preferred_evidence_order=preferred_evidence_order,
+        child_bed_analysis=child_bed_analysis,
+    )
     aggregate_text = "\n".join(item["text"] for item in text_sources).strip()
     inferred_fields = _infer_fields_from_pricing_text(text_sources, aggregate_text)
 
@@ -143,6 +187,7 @@ def normalize_job_fields(job: ReviewJob, *, template_runtime_root: Path | None =
     _merge_combo_row_segment_dimensions(fields, text_sources, aggregate_text)
     _merge_inferred_field_candidates(fields, inferred_fields)
     _apply_template_profile(fields, text_sources, template_profile)
+    child_bed_analysis = _finalize_child_bed_analysis(child_bed_analysis, fields=fields)
 
     payload = {
         "job_id": job.job_id,
@@ -158,6 +203,8 @@ def normalize_job_fields(job: ReviewJob, *, template_runtime_root: Path | None =
         ],
         "aggregate_text_preview": aggregate_text[:1200],
     }
+    if child_bed_analysis.get("is_child_bed"):
+        payload["child_bed_analysis"] = child_bed_analysis
     if template_profile:
         payload["template_profile"] = {
             "template_id": str(template_profile.get("template_id") or "").strip(),
@@ -168,12 +215,8 @@ def normalize_job_fields(job: ReviewJob, *, template_runtime_root: Path | None =
     return payload
 
 
-def _collect_text_sources(
-    assets: list[SourceAsset],
-    *,
-    preferred_evidence_order: list[str] | None = None,
-) -> list[dict[str, str]]:
-    sources: list[dict[str, str]] = []
+def _build_text_sources(assets: list[SourceAsset]) -> list[dict[str, Any]]:
+    sources: list[dict[str, Any]] = []
     for asset in assets:
         if not str(asset.text_preview or "").strip():
             continue
@@ -185,12 +228,171 @@ def _collect_text_sources(
                 "text": normalized_text,
                 "text_extract_method": asset.text_extract_method,
                 "source_kind": _infer_source_kind(asset),
+                "media_kind": str(asset.media_kind or "").strip(),
+                "role_hint": str(asset.role_hint or "").strip(),
             }
         )
-    if preferred_evidence_order:
-        order = {value: index for index, value in enumerate(preferred_evidence_order)}
-        sources.sort(key=lambda item: (order.get(str(item.get("source_kind") or ""), len(order)), str(item.get("asset_id") or "")))
     return sources
+
+
+def _sort_text_sources(
+    text_sources: list[dict[str, Any]],
+    *,
+    preferred_evidence_order: list[str] | None = None,
+    child_bed_analysis: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    sorted_sources = list(text_sources)
+    order = {value: index for index, value in enumerate(preferred_evidence_order or [])}
+    primary_asset_id = str((child_bed_analysis or {}).get("primary_drawing_asset_id") or "").strip()
+
+    def sort_key(item: dict[str, Any]) -> tuple[int, int, str]:
+        child_bed_rank = 0 if primary_asset_id and str(item.get("asset_id") or "").strip() == primary_asset_id else 1
+        source_rank = order.get(str(item.get("source_kind") or ""), len(order))
+        return (child_bed_rank, source_rank, str(item.get("asset_id") or ""))
+
+    sorted_sources.sort(key=sort_key)
+    return sorted_sources
+
+
+def _analyze_child_bed_drawing_sources(text_sources: list[dict[str, Any]]) -> dict[str, Any]:
+    aggregate_text = "\n".join(str(item.get("text") or "") for item in text_sources).strip()
+    is_child_bed = _looks_like_child_bed_request(aggregate_text)
+    visual_source_count = sum(1 for item in text_sources if str(item.get("role_hint") or "") == "visual_attachment")
+    analysis: dict[str, Any] = {
+        "is_child_bed": is_child_bed,
+        "visual_source_count": visual_source_count,
+        "primary_drawing_asset_id": "",
+        "primary_drawing_file_name": "",
+        "primary_drawing_score": 0,
+        "primary_drawing_confidence": "none",
+        "requires_primary_drawing_review": False,
+        "review_reason": "",
+        "review_block_fields": [],
+        "main_drawing_field_hits": [],
+    }
+    if not is_child_bed:
+        return analysis
+
+    candidate_scores = [_score_child_bed_drawing_source(item) for item in text_sources]
+    drawing_candidates = [item for item in candidate_scores if item["is_candidate"]]
+    if not drawing_candidates:
+        if visual_source_count:
+            analysis["requires_primary_drawing_review"] = True
+            analysis["review_reason"] = "child_bed_visual_drawing_not_identified"
+            analysis["review_block_fields"] = ["bed_form", "width", "length", "access_style"]
+        return analysis
+
+    drawing_candidates.sort(
+        key=lambda item: (
+            int(item["score"]),
+            int(item["dimension_count"]),
+            int(item["structure_hit_count"]),
+            str(item["asset_id"] or ""),
+        ),
+        reverse=True,
+    )
+    top = drawing_candidates[0]
+    second_score = int(drawing_candidates[1]["score"]) if len(drawing_candidates) > 1 else 0
+    score_gap = int(top["score"]) - second_score
+    confidence = (
+        "high"
+        if int(top["score"]) >= CHILD_BED_PRIMARY_DRAWING_MIN_SCORE and score_gap >= CHILD_BED_PRIMARY_DRAWING_MIN_GAP
+        else "medium"
+        if int(top["score"]) >= CHILD_BED_PRIMARY_DRAWING_MIN_SCORE
+        else "low"
+    )
+    analysis.update(
+        {
+            "primary_drawing_asset_id": str(top["asset_id"] or "").strip(),
+            "primary_drawing_file_name": str(top["file_name"] or "").strip(),
+            "primary_drawing_score": int(top["score"]),
+            "primary_drawing_confidence": confidence,
+            "drawing_candidates": [
+                {
+                    "asset_id": str(item["asset_id"] or "").strip(),
+                    "file_name": str(item["file_name"] or "").strip(),
+                    "score": int(item["score"]),
+                    "dimension_count": int(item["dimension_count"]),
+                    "structure_hit_count": int(item["structure_hit_count"]),
+                }
+                for item in drawing_candidates[:3]
+            ],
+        }
+    )
+    if confidence != "high":
+        analysis["requires_primary_drawing_review"] = True
+        analysis["review_reason"] = "child_bed_primary_drawing_not_stable"
+        analysis["review_block_fields"] = ["bed_form", "width", "length", "access_style"]
+    return analysis
+
+
+def _score_child_bed_drawing_source(source: dict[str, Any]) -> dict[str, Any]:
+    text = str(source.get("text") or "")
+    normalized_text = _normalize_text(text)
+    file_name = str(source.get("file_name") or "")
+    normalized_file_name = _normalize_text(file_name)
+    mm_values = re.findall(r"([0-9]+(?:\.[0-9]+)?)\s*(?:mm|毫米)", text, flags=re.IGNORECASE)
+    dimension_count = len(mm_values)
+    structure_hit_count = sum(
+        1 for keyword in CHILD_BED_STRUCTURE_KEYWORDS if keyword and keyword in normalized_text
+    )
+    score = min(dimension_count, 12) * 2 + min(structure_hit_count, 4) * 3
+    if str(source.get("role_hint") or "").strip() == "visual_attachment":
+        score += 5
+    if str(source.get("source_kind") or "").strip().startswith("ocr"):
+        score += 2
+    if any(hint in normalized_file_name or hint in normalized_text for hint in CHILD_BED_DRAWING_HINTS):
+        score += 6
+    if "大尺寸图" in normalized_text or "注" in normalized_text:
+        score += 4
+    if any(penalty in normalized_file_name or penalty in normalized_text for penalty in CHILD_BED_DRAWING_PENALTIES):
+        score -= 6
+
+    is_candidate = dimension_count >= 4 or score >= CHILD_BED_PRIMARY_DRAWING_MIN_SCORE
+    return {
+        "asset_id": str(source.get("asset_id") or "").strip(),
+        "file_name": file_name,
+        "score": score,
+        "dimension_count": dimension_count,
+        "structure_hit_count": structure_hit_count,
+        "is_candidate": is_candidate,
+    }
+
+
+def _finalize_child_bed_analysis(child_bed_analysis: dict[str, Any], *, fields: dict[str, Any]) -> dict[str, Any]:
+    analysis = dict(child_bed_analysis or {})
+    if not analysis.get("is_child_bed"):
+        return analysis
+
+    primary_asset_id = str(analysis.get("primary_drawing_asset_id") or "").strip()
+    if not primary_asset_id:
+        return analysis
+
+    main_drawing_field_hits: list[str] = []
+    for field_name in CHILD_BED_PRIMARY_DRAWING_KEY_FIELDS:
+        payload = fields.get(field_name)
+        if not isinstance(payload, dict):
+            continue
+        evidence_refs = [item for item in list(payload.get("evidence_refs") or []) if isinstance(item, dict)]
+        if not evidence_refs:
+            continue
+        if str(evidence_refs[0].get("asset_id") or "").strip() == primary_asset_id:
+            main_drawing_field_hits.append(field_name)
+
+    analysis["main_drawing_field_hits"] = sorted(main_drawing_field_hits)
+    if analysis.get("requires_primary_drawing_review"):
+        return analysis
+
+    missing_core_fields = [
+        field_name
+        for field_name in ("bed_form", "width", "length")
+        if field_name not in main_drawing_field_hits
+    ]
+    if len(main_drawing_field_hits) < 3 or missing_core_fields:
+        analysis["requires_primary_drawing_review"] = True
+        analysis["review_reason"] = "child_bed_primary_drawing_fields_incomplete"
+        analysis["review_block_fields"] = missing_core_fields or ["bed_form", "width", "length"]
+    return analysis
 
 
 def _infer_fields_from_pricing_text(
@@ -652,6 +854,11 @@ def _match_known_value(text: str, values: list[str]) -> str | None:
         if value and value in text:
             return value
     return None
+
+
+def _looks_like_child_bed_request(text: str) -> bool:
+    normalized = _normalize_text(text)
+    return any(keyword in normalized for keyword in CHILD_BED_KEYWORDS)
 
 
 def _looks_like_bed_combo_request(text: str) -> bool:

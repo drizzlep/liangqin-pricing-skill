@@ -108,6 +108,7 @@ def bridge_contract_to_pricing_precheck(
     *,
     min_confidence: float = DEFAULT_CONFIDENCE_THRESHOLD,
 ) -> dict[str, Any]:
+    child_bed_analysis = _resolve_child_bed_analysis(normalized_fields)
     mapping = map_contract_fields_to_precheck_args(
         normalized_fields,
         min_confidence=min_confidence,
@@ -125,6 +126,24 @@ def bridge_contract_to_pricing_precheck(
             "withheld_source_fields": mapping["withheld_source_fields"],
             "strict_ocr_blocked_fields": mapping["strict_ocr_blocked_fields"],
             "confidence_overrides": mapping["confidence_overrides"],
+            "child_bed_analysis": child_bed_analysis,
+        }
+
+    if child_bed_analysis.get("requires_primary_drawing_review"):
+        review_block_fields = [str(item).strip() for item in list(child_bed_analysis.get("review_block_fields") or []) if str(item).strip()]
+        combined_blocked_fields = sorted(set([*mapping["blocked_fields"], *review_block_fields]))
+        combined_strict_fields = sorted(set([*mapping["strict_ocr_blocked_fields"], *review_block_fields]))
+        return {
+            "status": "manual_confirmation_required",
+            "reason": "child_bed_primary_drawing_review_required",
+            "precheck_args": precheck_args,
+            "precheck_result": None,
+            "mapped_fields": mapping["mapped_fields"],
+            "blocked_fields": combined_blocked_fields,
+            "withheld_source_fields": mapping["withheld_source_fields"],
+            "strict_ocr_blocked_fields": combined_strict_fields,
+            "confidence_overrides": mapping["confidence_overrides"],
+            "child_bed_analysis": child_bed_analysis,
         }
 
     if mapping["blocked_fields"]:
@@ -138,6 +157,7 @@ def bridge_contract_to_pricing_precheck(
             "withheld_source_fields": mapping["withheld_source_fields"],
             "strict_ocr_blocked_fields": mapping["strict_ocr_blocked_fields"],
             "confidence_overrides": mapping["confidence_overrides"],
+            "child_bed_analysis": child_bed_analysis,
         }
 
     precheck_result = run_liangqin_pricing_precheck(precheck_args)
@@ -152,6 +172,7 @@ def bridge_contract_to_pricing_precheck(
         "withheld_source_fields": mapping["withheld_source_fields"],
         "strict_ocr_blocked_fields": mapping["strict_ocr_blocked_fields"],
         "confidence_overrides": mapping["confidence_overrides"],
+        "child_bed_analysis": child_bed_analysis,
     }
 
 
@@ -161,6 +182,7 @@ def map_contract_fields_to_precheck_args(
     min_confidence: float = DEFAULT_CONFIDENCE_THRESHOLD,
 ) -> dict[str, Any]:
     fields_payload = _resolve_fields_payload(normalized_fields)
+    child_bed_analysis = _resolve_child_bed_analysis(normalized_fields)
     precheck_args: dict[str, Any] = {}
     mapped_fields: dict[str, dict[str, Any]] = {}
     blocked_fields: list[str] = []
@@ -182,6 +204,7 @@ def map_contract_fields_to_precheck_args(
             target_field=target_field,
             field_payload=field_payload,
             precheck_args=precheck_args,
+            child_bed_analysis=child_bed_analysis,
         ):
             effective_confidence = min(effective_confidence, CHILD_BED_OCR_CONFIDENCE_CAP)
             if effective_confidence < confidence:
@@ -235,6 +258,13 @@ def _resolve_fields_payload(normalized_fields: dict[str, Any]) -> dict[str, Any]
     if isinstance(fields_payload, dict):
         return fields_payload
     return normalized_fields
+
+
+def _resolve_child_bed_analysis(normalized_fields: dict[str, Any]) -> dict[str, Any]:
+    payload = normalized_fields.get("child_bed_analysis")
+    if isinstance(payload, dict):
+        return payload
+    return {}
 
 
 def _pick_field_payload(fields_payload: dict[str, Any], aliases: tuple[str, ...]) -> tuple[str | None, Any]:
@@ -303,10 +333,17 @@ def _should_apply_child_bed_ocr_cap(
     target_field: str,
     field_payload: Any,
     precheck_args: dict[str, Any],
+    child_bed_analysis: dict[str, Any],
 ) -> bool:
     if target_field not in CHILD_BED_STRICT_OCR_FIELDS:
         return False
     if not _is_child_bed_context(target_field=target_field, precheck_args=precheck_args):
+        return False
+    if _is_primary_child_bed_drawing_field(
+        target_field=target_field,
+        field_payload=field_payload,
+        child_bed_analysis=child_bed_analysis,
+    ):
         return False
     return _is_ocr_only_field_payload(field_payload)
 
@@ -331,6 +368,32 @@ def _is_ocr_only_field_payload(field_payload: Any) -> bool:
     if not source_kinds:
         return False
     return all(source_kind.startswith("ocr") for source_kind in source_kinds)
+
+
+def _is_primary_child_bed_drawing_field(
+    *,
+    target_field: str,
+    field_payload: Any,
+    child_bed_analysis: dict[str, Any],
+) -> bool:
+    if not isinstance(field_payload, dict):
+        return False
+    if child_bed_analysis.get("requires_primary_drawing_review"):
+        return False
+    if str(child_bed_analysis.get("primary_drawing_confidence") or "").strip() != "high":
+        return False
+    primary_asset_id = str(child_bed_analysis.get("primary_drawing_asset_id") or "").strip()
+    if not primary_asset_id:
+        return False
+    main_drawing_field_hits = {
+        str(item).strip() for item in list(child_bed_analysis.get("main_drawing_field_hits") or []) if str(item).strip()
+    }
+    if target_field not in main_drawing_field_hits:
+        return False
+    evidence_refs = [item for item in list(field_payload.get("evidence_refs") or []) if isinstance(item, dict)]
+    if not evidence_refs:
+        return False
+    return str(evidence_refs[0].get("asset_id") or "").strip() == primary_asset_id
 
 
 def _apply_table_depth_fallback(

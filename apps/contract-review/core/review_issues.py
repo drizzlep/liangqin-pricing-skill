@@ -373,17 +373,24 @@ def _build_ocr_issues(
     blocked_fields = list(pricing_bridge_payload.get("blocked_fields") or [])
     withheld_fields = list(pricing_bridge_payload.get("withheld_source_fields") or [])
     strict_ocr_blocked_fields = list(pricing_bridge_payload.get("strict_ocr_blocked_fields") or [])
+    child_bed_analysis = pricing_bridge_payload.get("child_bed_analysis") or {}
     if unresolved_ocr_assets <= 0 and not blocked_fields and not withheld_fields:
         return []
 
     if strict_ocr_blocked_fields:
         strict_labels = [FIELD_LABELS.get(field_name, field_name) for field_name in strict_ocr_blocked_fields]
+        primary_drawing_file_name = str(child_bed_analysis.get("primary_drawing_file_name") or "").strip()
+        drawing_cause = (
+            f"系统已识别主尺寸图：{primary_drawing_file_name}，但主图关键字段仍不够稳定。"
+            if primary_drawing_file_name
+            else "当前还没稳定锁定儿童床主尺寸图，其他视角图不适合直接驱动报价。"
+        )
         return [
             _build_issue(
                 issue_code="ocr_low_confidence",
                 severity="high",
                 confidence=0.9,
-                title="儿童床关键字段仍依赖 OCR，暂不建议直接对账",
+                title="儿童床主尺寸图证据还不够稳，暂不建议直接对账",
                 contract_value="、".join(strict_labels),
                 pricing_value="",
                 delta_value="",
@@ -391,9 +398,9 @@ def _build_ocr_issues(
                 evidence_refs=[],
                 suspected_causes=[
                     "儿童床/床下组合柜这类合同对床形态、围栏、梯柜和柜体尺寸特别敏感。",
-                    "当前这些关键字段主要来自 OCR 证据，系统先收紧为人工确认后再继续。",
+                    drawing_cause,
                 ],
-                recommended_check="请先人工核对儿童床的床形态、尺寸、围栏/梯柜参数及床下柜体配置，再决定是否继续报价对账。",
+                recommended_check="请先人工核对儿童床主尺寸图上的床形态、长宽、高度、围栏/梯柜参数及床下柜体配置，再决定是否继续报价对账。",
             )
         ]
     return [

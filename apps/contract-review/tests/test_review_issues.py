@@ -227,11 +227,15 @@ class ReviewIssuesTests(unittest.TestCase):
             },
             pricing_bridge_payload={
                 "status": "manual_confirmation_required",
-                "reason": "sensitive_fields_below_confidence_threshold",
+                "reason": "child_bed_primary_drawing_review_required",
                 "precheck_result": None,
                 "blocked_fields": ["bed_form", "stair_depth"],
                 "withheld_source_fields": ["bed_form", "stair_depth"],
                 "strict_ocr_blocked_fields": ["bed_form", "stair_depth"],
+                "child_bed_analysis": {
+                    "is_child_bed": True,
+                    "primary_drawing_file_name": "大尺寸图.png",
+                },
             },
             formal_quote_payload={"status": "skipped", "reason": "formal_quote_not_ready"},
             pricing_compare_payload={"status": "skipped", "match_band": "unavailable"},
@@ -239,8 +243,9 @@ class ReviewIssuesTests(unittest.TestCase):
 
         ocr_issue = next(item for item in payload["issues"] if item["issue_code"] == "ocr_low_confidence")
         self.assertEqual(ocr_issue["severity"], "high")
-        self.assertIn("儿童床", ocr_issue["title"])
-        self.assertIn("梯柜参数", ocr_issue["recommended_check"])
+        self.assertIn("主尺寸图", ocr_issue["title"])
+        self.assertIn("主尺寸图", ocr_issue["recommended_check"])
+        self.assertIn("大尺寸图.png", "".join(ocr_issue["suspected_causes"]))
         self.assertEqual(payload["review_card"]["priority"], "p1")
 
 

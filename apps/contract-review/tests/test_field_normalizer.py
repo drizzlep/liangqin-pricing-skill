@@ -401,6 +401,75 @@ class FieldNormalizerTests(unittest.TestCase):
         self.assertEqual(normalized["fields"]["width"]["value"], "1200mm")
         self.assertEqual(normalized["template_profile"]["template_id"], "tpl-order")
 
+    def test_normalizer_prefers_primary_child_bed_drawing_over_other_views(self) -> None:
+        job = JOB_MODELS.ReviewJob(
+            job_id="job-child-bed-drawing-001",
+            batch_id="batch-child-bed",
+            group_key="case-child-bed-drawing",
+            source_type="manual_batch",
+            source_channel="manual",
+            requested_actions=["audit", "replay"],
+            assets=[
+                JOB_MODELS.SourceAsset(
+                    asset_id="asset-contract",
+                    source_path="/tmp/fake-contract.docx",
+                    relative_path="raw/case-child-bed-drawing/合同.docx",
+                    file_name="合同.docx",
+                    extension=".docx",
+                    media_kind="document",
+                    role_hint="primary_contract",
+                    text_preview="产品名称：高架床\n本单按定制执行\n材质：北美白橡木\n",
+                    text_extract_method="docx_text",
+                ),
+                JOB_MODELS.SourceAsset(
+                    asset_id="asset-render",
+                    source_path="/tmp/fake-render.png",
+                    relative_path="raw/case-child-bed-drawing/效果图.png",
+                    file_name="效果图.png",
+                    extension=".png",
+                    media_kind="image",
+                    role_hint="visual_attachment",
+                    text_preview="高架床 透视效果图 床垫宽度：1200mm",
+                    text_extract_method="paddleocr_pp_structurev3",
+                    metadata={"ocr_status": "succeeded", "ocr_markdown_path": "/tmp/fake-render.md"},
+                ),
+                JOB_MODELS.SourceAsset(
+                    asset_id="asset-main-drawing",
+                    source_path="/tmp/fake-main-drawing.png",
+                    relative_path="raw/case-child-bed-drawing/大尺寸图.png",
+                    file_name="大尺寸图.png",
+                    extension=".png",
+                    media_kind="image",
+                    role_hint="visual_attachment",
+                    text_preview=(
+                        "大尺寸图\n"
+                        "床形态：高架床\n"
+                        "上层出入方式：梯柜\n"
+                        "围栏样式：胶囊围栏\n"
+                        "床垫宽度：1080mm\n"
+                        "床垫长度：2096mm\n"
+                        "围栏高度：400mm\n"
+                        "梯柜踏步宽度：500mm\n"
+                        "梯柜进深：900mm\n"
+                        "总高：2715mm\n"
+                    ),
+                    text_extract_method="paddleocr_pp_structurev3",
+                    metadata={"ocr_status": "succeeded", "ocr_markdown_path": "/tmp/fake-main-drawing.md"},
+                ),
+            ],
+        )
+
+        normalized = FIELD_NORMALIZER.normalize_job_fields(job)
+        fields = normalized["fields"]
+        child_bed_analysis = normalized["child_bed_analysis"]
+
+        self.assertEqual(child_bed_analysis["primary_drawing_asset_id"], "asset-main-drawing")
+        self.assertEqual(fields["width"]["value"], "1080mm")
+        self.assertEqual(fields["width"]["evidence_refs"][0]["asset_id"], "asset-main-drawing")
+        self.assertEqual(fields["access_style"]["value"], "梯柜")
+        self.assertIn("width", child_bed_analysis["main_drawing_field_hits"])
+        self.assertFalse(child_bed_analysis["requires_primary_drawing_review"])
+
     def test_normalizer_extracts_half_loft_combo_fields(self) -> None:
         job = JOB_MODELS.ReviewJob(
             job_id="job-combo-001",

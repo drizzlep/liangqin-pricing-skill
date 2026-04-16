@@ -172,6 +172,100 @@ class PricingBridgeTests(unittest.TestCase):
         self.assertIn("width", override_fields)
         self.assertIsNone(result["precheck_result"])
 
+    def test_bridge_blocks_child_bed_when_primary_drawing_review_is_required(self) -> None:
+        result = BRIDGE.bridge_contract_to_pricing_precheck(
+            {
+                "fields": {
+                    "product_category": {"value": "高架床", "confidence": 0.98},
+                    "quote_kind": {"value": "custom", "confidence": 0.96},
+                    "bed_form": {"value": "高架床", "confidence": 0.96},
+                    "access_style": {"value": "梯柜", "confidence": 0.96},
+                    "guardrail_style": {"value": "胶囊围栏", "confidence": 0.96},
+                    "width": {"value": "1080mm", "confidence": 0.96},
+                    "length": {"value": "2096mm", "confidence": 0.96},
+                    "wood_material": {"value": "北美白橡木", "confidence": 0.95},
+                },
+                "child_bed_analysis": {
+                    "is_child_bed": True,
+                    "primary_drawing_asset_id": "asset-main-drawing",
+                    "primary_drawing_file_name": "大尺寸图.png",
+                    "requires_primary_drawing_review": True,
+                    "review_reason": "child_bed_primary_drawing_fields_incomplete",
+                    "review_block_fields": ["bed_form", "width", "length"],
+                },
+            }
+        )
+
+        self.assertEqual(result["status"], "manual_confirmation_required")
+        self.assertEqual(result["reason"], "child_bed_primary_drawing_review_required")
+        self.assertIn("bed_form", result["blocked_fields"])
+        self.assertIn("width", result["strict_ocr_blocked_fields"])
+        self.assertEqual(result["child_bed_analysis"]["primary_drawing_file_name"], "大尺寸图.png")
+        self.assertIsNone(result["precheck_result"])
+
+    def test_bridge_accepts_high_confidence_primary_child_bed_drawing_fields(self) -> None:
+        result = BRIDGE.bridge_contract_to_pricing_precheck(
+            {
+                "fields": {
+                    "product_category": {
+                        "value": "高架床",
+                        "confidence": 0.98,
+                        "evidence_refs": [{"asset_id": "asset-contract", "source_kind": "native_preview"}],
+                    },
+                    "quote_kind": {
+                        "value": "custom",
+                        "confidence": 0.96,
+                        "evidence_refs": [{"asset_id": "asset-contract", "source_kind": "native_preview"}],
+                    },
+                    "bed_form": {
+                        "value": "高架床",
+                        "confidence": 0.96,
+                        "evidence_refs": [{"asset_id": "asset-main-drawing", "source_kind": "ocr_markdown"}],
+                    },
+                    "access_style": {
+                        "value": "梯柜",
+                        "confidence": 0.96,
+                        "evidence_refs": [{"asset_id": "asset-main-drawing", "source_kind": "ocr_markdown"}],
+                    },
+                    "guardrail_style": {
+                        "value": "胶囊围栏",
+                        "confidence": 0.96,
+                        "evidence_refs": [{"asset_id": "asset-main-drawing", "source_kind": "ocr_markdown"}],
+                    },
+                    "width": {
+                        "value": "1080mm",
+                        "confidence": 0.96,
+                        "evidence_refs": [{"asset_id": "asset-main-drawing", "source_kind": "ocr_markdown"}],
+                    },
+                    "length": {
+                        "value": "2096mm",
+                        "confidence": 0.96,
+                        "evidence_refs": [{"asset_id": "asset-main-drawing", "source_kind": "ocr_markdown"}],
+                    },
+                    "wood_material": {
+                        "value": "北美白橡木",
+                        "confidence": 0.95,
+                        "evidence_refs": [{"asset_id": "asset-contract", "source_kind": "native_preview"}],
+                    },
+                },
+                "child_bed_analysis": {
+                    "is_child_bed": True,
+                    "primary_drawing_asset_id": "asset-main-drawing",
+                    "primary_drawing_file_name": "大尺寸图.png",
+                    "primary_drawing_confidence": "high",
+                    "requires_primary_drawing_review": False,
+                    "main_drawing_field_hits": ["bed_form", "access_style", "guardrail_style", "width", "length"],
+                    "review_block_fields": [],
+                },
+            }
+        )
+
+        self.assertEqual(result["status"], "needs_input")
+        self.assertNotIn("bed_form", result["blocked_fields"])
+        self.assertNotIn("width", result["strict_ocr_blocked_fields"])
+        self.assertEqual(result["precheck_args"]["width"], "1080mm")
+        self.assertEqual(result["precheck_result"]["next_required_field"], "guardrail_length")
+
 
 if __name__ == "__main__":
     unittest.main()
