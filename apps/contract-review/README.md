@@ -137,6 +137,8 @@ runtime/batches/<batch-id>/acceptance-report.md
 runtime/batches/<batch-id>/acceptance-report.json
 ```
 
+并且当验收报告里仍有漏报或缺失样本、`ready_to_release=false` 时，命令会直接返回非 0，作为发布闸门。
+
 验收说明见：
 
 ```text

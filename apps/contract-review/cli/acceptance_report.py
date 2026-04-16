@@ -34,6 +34,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default="text",
         help="Render a human-readable summary or the full JSON payload.",
     )
+    parser.add_argument(
+        "--fail-on-blocking",
+        action="store_true",
+        help="Return a non-zero exit code when the acceptance report is not ready_to_release.",
+    )
     return parser.parse_args(argv)
 
 
@@ -65,7 +70,15 @@ def run(argv: list[str] | None = None) -> dict[str, object]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    run(argv)
+    args = parse_args(argv)
+    payload = build_acceptance_report(
+        batch_dir=Path(args.batch_dir),
+        runtime_root=Path(args.runtime_root),
+        ground_truth_path=Path(args.ground_truth_path) if args.ground_truth_path else None,
+    )
+    _emit(payload, output_mode=args.output_mode)
+    if args.fail_on_blocking and not bool((payload.get("summary") or {}).get("ready_to_release")):
+        return 2
     return 0
 
 

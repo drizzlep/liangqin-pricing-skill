@@ -42,7 +42,8 @@ if [[ -f "$GROUND_TRUTH_PATH" ]]; then
   python3 "$APP_DIR/cli/acceptance_report.py" \
     --batch-dir "$BATCH_DIR" \
     --runtime-root "$RUNTIME_ROOT" \
-    --ground-truth-path "$GROUND_TRUTH_PATH"
+    --ground-truth-path "$GROUND_TRUTH_PATH" \
+    --fail-on-blocking
 else
   echo "未发现验收标注文件，已跳过验收评分：$GROUND_TRUTH_PATH"
 fi

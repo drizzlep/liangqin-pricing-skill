@@ -199,6 +199,130 @@ class AcceptanceReportTests(unittest.TestCase):
             self.assertFalse(quote_conflict_case["issue_match"])
             self.assertFalse(quote_conflict_case["primary_check_match"])
 
+    def test_main_returns_non_zero_when_fail_on_blocking_and_report_not_ready(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            batch_dir = root / "acceptance-batch-2026-04-18"
+            runtime_root = root / "runtime"
+            batch_output_dir = runtime_root / "batches" / batch_dir.name
+            ground_truth_path = root / "acceptance-ground-truth.csv"
+
+            write_ground_truth(
+                ground_truth_path,
+                [
+                    {
+                        "case_key": "case-001-quote-conflict",
+                        "expected_bucket": "quote_conflict",
+                        "expected_verdict": "manual_review_required",
+                        "expected_issue_codes": "quote_conflict|discount_mismatch",
+                        "expected_primary_check": "核对报价口径",
+                        "notes": "",
+                    },
+                ],
+            )
+            job_id = f"{batch_dir.name}-001"
+            job_dir = runtime_root / "jobs" / job_id
+            write_json(
+                batch_output_dir / "batch-summary.json",
+                {
+                    "batch_id": batch_dir.name,
+                    "source_type": "manual_batch",
+                    "source_channel": "manual",
+                    "job_count": 1,
+                    "jobs": [
+                        {
+                            "job_id": job_id,
+                            "group_key": "case-001-quote-conflict",
+                            "job_dir": str(job_dir),
+                            "review_path": str(job_dir / "output" / "review.md"),
+                        }
+                    ],
+                },
+            )
+            write_review_payload(
+                job_dir,
+                verdict="manual_review_required",
+                issue_codes=["quote_conflict"],
+                next_actions=["请先核对数量、折扣、增项，以及门型/材质等默认条件是否一致。"],
+            )
+
+            with contextlib.redirect_stdout(io.StringIO()):
+                exit_code = ACCEPTANCE_REPORT.main(
+                    [
+                        "--batch-dir",
+                        str(batch_dir),
+                        "--runtime-root",
+                        str(runtime_root),
+                        "--output-mode",
+                        "json",
+                        "--fail-on-blocking",
+                    ]
+                )
+
+            self.assertEqual(exit_code, 2)
+
+    def test_main_returns_zero_when_fail_on_blocking_and_report_ready(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            batch_dir = root / "acceptance-batch-2026-04-19"
+            runtime_root = root / "runtime"
+            batch_output_dir = runtime_root / "batches" / batch_dir.name
+            ground_truth_path = root / "acceptance-ground-truth.csv"
+
+            write_ground_truth(
+                ground_truth_path,
+                [
+                    {
+                        "case_key": "case-001-normal",
+                        "expected_bucket": "normal",
+                        "expected_verdict": "recommended_release",
+                        "expected_issue_codes": "",
+                        "expected_primary_check": "无",
+                        "notes": "",
+                    },
+                ],
+            )
+            job_id = f"{batch_dir.name}-001"
+            job_dir = runtime_root / "jobs" / job_id
+            write_json(
+                batch_output_dir / "batch-summary.json",
+                {
+                    "batch_id": batch_dir.name,
+                    "source_type": "manual_batch",
+                    "source_channel": "manual",
+                    "job_count": 1,
+                    "jobs": [
+                        {
+                            "job_id": job_id,
+                            "group_key": "case-001-normal",
+                            "job_dir": str(job_dir),
+                            "review_path": str(job_dir / "output" / "review.md"),
+                        }
+                    ],
+                },
+            )
+            write_review_payload(
+                job_dir,
+                verdict="recommended_release",
+                issue_codes=[],
+                next_actions=[],
+            )
+
+            with contextlib.redirect_stdout(io.StringIO()):
+                exit_code = ACCEPTANCE_REPORT.main(
+                    [
+                        "--batch-dir",
+                        str(batch_dir),
+                        "--runtime-root",
+                        str(runtime_root),
+                        "--output-mode",
+                        "json",
+                        "--fail-on-blocking",
+                    ]
+                )
+
+            self.assertEqual(exit_code, 0)
+
     def test_cli_marks_missing_and_unexpected_cases(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)

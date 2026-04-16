@@ -127,6 +127,13 @@ bash apps/contract-review/scripts/run_acceptance_batch.sh \
 - `runtime/batches/<batch-id>/acceptance-report.md`
 - `runtime/batches/<batch-id>/acceptance-report.json`
 
+并且会把 `ready_to_release` 当成命令级发布闸门：
+
+- 只要还有漏报
+- 或还有应验收但没跑出的样本
+
+脚本就会直接返回非 `0`，表示当前这版不建议发布。
+
 ## 重点看什么
 
 跑完之后，先只看这几个文件：
