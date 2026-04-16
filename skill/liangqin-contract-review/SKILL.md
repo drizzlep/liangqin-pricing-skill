@@ -22,6 +22,27 @@ python3 ~/.openclaw/workspace/skills/liangqin-contract-review/scripts/handle_rev
   --batch-dir "/absolute/path/to/batch"
 ```
 
+- 如果当前是 OpenClaw 收到的钉钉附件、本地单文件或合同目录，优先补 `--input-path`：
+
+```bash
+python3 ~/.openclaw/workspace/skills/liangqin-contract-review/scripts/handle_review_message.py \
+  --text "审这份合同" \
+  --input-path "/absolute/path/to/合同.pdf"
+```
+
+- `--input-path` 可以重复传，也可以直接给一个目录：
+  - 单个 `pdf/docx/图片`：默认当一份合同
+  - 目录：递归收集目录里的 `pdf/docx/图片`，默认一文件一合同
+  - 目录里其他类型文件会忽略
+
+- 如果当前渠道会提供 OpenClaw 会话上下文，建议同时补：
+
+```bash
+--context-json '{...}' --channel dingtalk-connector
+```
+
+这样高风险队列、`看下一份高风险合同`、`展开证据` 这些状态就能按当前钉钉会话隔离保存。
+
 ## 当前支持的交互
 
 - 新审一批合同
