@@ -2,13 +2,14 @@
 
 ## 1. 目标
 
-把当前这套 shared skill 打成一个可以直接发给其他 OpenClaw 用户使用的 zip 包。
+把当前这套良禽双 skill 打成一个可以直接发给其他 OpenClaw 用户使用的 zip 包。
 
 压缩包方案的原则是：
 
 - 对外只发一个 zip
 - 对方不需要理解内部 Python 逻辑
 - 对方只需要解压、发布、测试
+- zip 内同时包含 `liangqin-pricing` 和 `liangqin-contract-review`
 
 ## 2. 打包命令
 
@@ -18,11 +19,14 @@
 bash scripts/package_openclaw_skill.sh
 ```
 
-默认会从下面这个 shared skill 目录取内容：
+默认会从仓库里的：
 
-```bash
-~/.openclaw/skills/liangqin-pricing
-```
+- `skill/liangqin-pricing`
+- `skill/liangqin-contract-review`
+- `apps/contract-review`
+- `scripts/publish_openclaw_skills.py`
+
+一起打包。
 
 默认输出到：
 
@@ -40,18 +44,18 @@ bash scripts/package_openclaw_skill.sh /你的输出目录
 
 这个 zip 会保留真正需要交付给别人的内容：
 
-- `SKILL.md`
-- `README.md`
-- `data/current/`
-- `references/current/`
-- `references/addenda/`
-- `reports/addenda/`
-- `scripts/`
-- `sources/inbox/README.md`
+- `liangqin-pricing/`
+- `liangqin-contract-review/`
+- `scripts/publish_openclaw_skills.py`
 
 其中 `references/addenda/ + reports/addenda/` 会把当前生效的设计师追加规则清单、索引和 runtime 规则一起带上，避免“本地能答，别人安装包里没有这条追加规则”。
 
 为控制包体，交付包会自动剔除 `pdf-block-review` 里的大图裁切、页面截图、临时放大图这类纯审阅素材；真正用于回答和检索的 `manifest / rules-source / rules-index / runtime-rules / manual-review` 会保留。
+
+其中：
+
+- `liangqin-pricing/` 继续包含价格索引、规则、addenda、refresh/test 脚本
+- `liangqin-contract-review/` 会额外内嵌 `apps/contract-review` 运行时代码
 
 同时会补齐这些后续维护会用到的目录：
 
@@ -129,7 +133,7 @@ unzip liangqin-pricing-openclaw-YYYYMMDD.zip -d ~/.openclaw/skills
 ### 第三步：发布到 OpenClaw workspace
 
 ```bash
-python3 ~/.openclaw/skills/liangqin-pricing/scripts/publish_skill.py
+python3 ~/.openclaw/skills/scripts/publish_openclaw_skills.py --source-root ~/.openclaw/skills
 ```
 
 ### 第四步：做一次 fresh 测试
@@ -171,11 +175,11 @@ bash scripts/package_openclaw_skill.sh
 ```
 
 3. 把新生成的 zip 发给对方
-4. 对方覆盖原来的 `~/.openclaw/skills/liangqin-pricing`
+4. 对方覆盖原来的 `~/.openclaw/skills/liangqin-pricing` 和 `~/.openclaw/skills/liangqin-contract-review`
 5. 对方重新执行：
 
 ```bash
-python3 ~/.openclaw/skills/liangqin-pricing/scripts/publish_skill.py
+python3 ~/.openclaw/skills/scripts/publish_openclaw_skills.py --source-root ~/.openclaw/skills
 ```
 
 ## 7. 最推荐的发包口径
@@ -199,14 +203,18 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/refresh_and_test.py
 你可以把这套交付理解成两层：
 
 - `~/.openclaw/skills/liangqin-pricing`
-  这是 shared skill 母版
+  这是报价 shared skill 母版
+- `~/.openclaw/skills/liangqin-contract-review`
+  这是合同审核 shared skill 母版
 - `~/.openclaw/workspace/skills/liangqin-pricing`
-  这是 OpenClaw 实际运行时吃到的副本
+  这是报价运行时副本
+- `~/.openclaw/workspace/skills/liangqin-contract-review`
+  这是合同审核运行时副本
 
 所以别人安装完 zip 以后，还必须执行一次：
 
 ```bash
-python3 ~/.openclaw/skills/liangqin-pricing/scripts/publish_skill.py
+python3 ~/.openclaw/skills/scripts/publish_openclaw_skills.py --source-root ~/.openclaw/skills
 ```
 
 否则 shared skill 已经放进去了，但 workspace 里还是旧版本。

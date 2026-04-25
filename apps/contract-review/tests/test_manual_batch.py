@@ -105,6 +105,42 @@ class ManualBatchTests(unittest.TestCase):
         asset = batch_plan.jobs[0].assets[0]
         self.assertEqual(asset.relative_path, "raw/合同.pdf")
 
+    def test_build_review_jobs_keeps_manifest_symlink_relative_path_inside_batch(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir, tempfile.TemporaryDirectory() as sourcedir:
+            batch_dir = Path(tmpdir)
+            raw_dir = batch_dir / "raw" / "case-001"
+            raw_dir.mkdir(parents=True)
+            source_file = Path(sourcedir) / "合同.pdf"
+            source_file.write_text("%PDF-1.4", encoding="utf-8")
+            link_path = raw_dir / "合同.pdf"
+            link_path.symlink_to(source_file)
+            manifest = {
+                "source_type": "openclaw_attachment_batch",
+                "source_channel": "openclaw",
+                "source_batch_id": "batch-symlink",
+                "requested_actions": ["audit", "replay"],
+                "jobs": [
+                    {
+                        "job_key": "合同",
+                        "paths": ["raw/case-001/合同.pdf"],
+                    }
+                ],
+            }
+            (batch_dir / "manifest.json").write_text(
+                json.dumps(manifest, ensure_ascii=False),
+                encoding="utf-8",
+            )
+
+            original_extract = ADAPTER.extract_text_preview
+            ADAPTER.extract_text_preview = lambda path: ("第1页 合同总金额 19800元", "pdf_text_layer")
+            try:
+                batch_plan = ADAPTER.build_review_jobs(batch_dir)
+            finally:
+                ADAPTER.extract_text_preview = original_extract
+
+        asset = batch_plan.jobs[0].assets[0]
+        self.assertEqual(asset.relative_path, "raw/case-001/合同.pdf")
+
     def test_build_review_jobs_marks_primary_contract_pdf_for_ocr_even_with_native_preview(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             batch_dir = Path(tmpdir)
@@ -176,6 +212,7 @@ class ManualBatchTests(unittest.TestCase):
             pricing_compare_path = runtime_root / "jobs" / "batch-001-001" / "output" / "pricing-compare.json"
             batch_pricing_compare_path = runtime_root / "batches" / "batch-001" / "pricing-compare.json"
             batch_pricing_diagnosis_path = runtime_root / "batches" / "batch-001" / "pricing-compare-diagnosis.json"
+            batch_pricing_replay_baseline_path = runtime_root / "batches" / "batch-001" / "pricing-replay-baseline.json"
 
             self.assertTrue(batch_summary_path.exists())
             self.assertTrue(review_json_path.exists())
@@ -187,6 +224,7 @@ class ManualBatchTests(unittest.TestCase):
             self.assertTrue(pricing_compare_path.exists())
             self.assertTrue(batch_pricing_compare_path.exists())
             self.assertTrue(batch_pricing_diagnosis_path.exists())
+            self.assertTrue(batch_pricing_replay_baseline_path.exists())
 
             review_payload = json.loads(review_json_path.read_text(encoding="utf-8"))
             normalized_fields_payload = json.loads(normalized_fields_path.read_text(encoding="utf-8"))
@@ -195,6 +233,7 @@ class ManualBatchTests(unittest.TestCase):
             pricing_compare_payload = json.loads(pricing_compare_path.read_text(encoding="utf-8"))
             batch_pricing_compare_payload = json.loads(batch_pricing_compare_path.read_text(encoding="utf-8"))
             batch_pricing_diagnosis_payload = json.loads(batch_pricing_diagnosis_path.read_text(encoding="utf-8"))
+            batch_pricing_replay_baseline_payload = json.loads(batch_pricing_replay_baseline_path.read_text(encoding="utf-8"))
             self.assertEqual(summary["job_count"], 1)
             self.assertEqual(review_payload["job_id"], "batch-001-001")
             self.assertEqual(review_payload["summary"]["primary_contract_count"], 1)
@@ -217,6 +256,10 @@ class ManualBatchTests(unittest.TestCase):
             self.assertEqual(batch_pricing_compare_payload["items"][0]["job_id"], "batch-001-001")
             self.assertEqual(batch_pricing_diagnosis_payload["item_count"], 1)
             self.assertEqual(batch_pricing_diagnosis_payload["items"][0]["job_id"], "batch-001-001")
+            self.assertEqual(batch_pricing_replay_baseline_payload["batch_id"], "batch-001")
+            self.assertEqual(batch_pricing_replay_baseline_payload["job_count"], 1)
+            self.assertEqual(batch_pricing_replay_baseline_payload["items"][0]["job_id"], "batch-001-001")
+            self.assertIn("item_ledger", batch_pricing_replay_baseline_payload["items"][0])
 
     def test_cli_marks_visual_assets_as_ocr_required(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -262,6 +305,78 @@ class ManualBatchTests(unittest.TestCase):
             self.assertIn("visual_assets_present", review_payload["summary"]["risk_flags"])
             self.assertEqual(replay_payload["status"], "blocked")
             self.assertIn("OCR", replay_payload["reason"])
+
+    def test_run_review_job_keeps_native_pdf_pricing_compare_actionable_when_ocr_disabled(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            contract_path = root / "合同.pdf"
+            contract_path.write_bytes(b"%PDF-1.4 fake")
+            job_dir = root / "runtime" / "jobs" / "batch-native-pdf-001"
+            (job_dir / "output").mkdir(parents=True)
+            job = ADAPTER.ReviewJob(
+                job_id="batch-native-pdf-001",
+                batch_id="batch-native-pdf",
+                group_key="case-native-pdf",
+                source_type="manual_batch",
+                source_channel="manual",
+                requested_actions=["audit", "replay"],
+                assets=[
+                    ADAPTER.SourceAsset(
+                        asset_id="asset-001",
+                        source_path=str(contract_path),
+                        relative_path="raw/case-native-pdf/合同.pdf",
+                        file_name="合同.pdf",
+                        extension=".pdf",
+                        media_kind="document",
+                        role_hint="primary_contract",
+                        text_preview=(
+                            "甲方：客户A\n"
+                            "乙方：北京良禽佳木家居有限公司\n"
+                            "产品名称：书柜\n"
+                            "长度：2400mm\n"
+                            "进深：350mm\n"
+                            "高度：2100mm\n"
+                            "材质：北美黑胡桃木\n"
+                            "费用合计：19800元"
+                        ),
+                        text_extract_method="pdf_text_layer",
+                        metadata={"needs_ocr": True, "preview_available": True},
+                    )
+                ],
+            )
+
+            original_execute_formal_quote = REVIEW_PIPELINE.pricing_compare.execute_formal_quote
+
+            def fake_execute_formal_quote(*args, **kwargs):
+                return {
+                    "status": "completed",
+                    "reason": "formal_quote_completed",
+                    "pricing_route": "test_route",
+                    "pricing_total": "19800元",
+                    "pricing_total_value": 19800.0,
+                    "prepared_payload": {"total": "19800元"},
+                    "raw_result": {},
+                }
+
+            REVIEW_PIPELINE.pricing_compare.execute_formal_quote = fake_execute_formal_quote
+            try:
+                REVIEW_PIPELINE.run_review_job(
+                    job,
+                    job_dir=job_dir,
+                    extraction_config=REVIEW_PIPELINE.ExtractionConfig(ocr_backend="disabled"),
+                )
+            finally:
+                REVIEW_PIPELINE.pricing_compare.execute_formal_quote = original_execute_formal_quote
+
+            review_payload = json.loads((job_dir / "output" / "review.json").read_text(encoding="utf-8"))
+            replay_payload = json.loads((job_dir / "output" / "replay.json").read_text(encoding="utf-8"))
+
+            self.assertEqual(review_payload["summary"]["ocr_unresolved_asset_count"], 1)
+            self.assertNotEqual(review_payload["automation_state"], "ocr_or_vision_required")
+            self.assertNotEqual(review_payload["actionable_priority"], "blocked_by_ocr")
+            self.assertNotIn("ocr_low_confidence", review_payload["review_analysis"]["issue_codes"])
+            self.assertEqual(review_payload["pricing_compare"]["best_match_target"], "contract_total")
+            self.assertEqual(replay_payload["status"], "completed")
 
     def test_cli_generates_ready_pricing_precheck_for_modular_child_bed(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -476,6 +591,74 @@ class ManualBatchTests(unittest.TestCase):
             self.assertTrue(normalized_fields_payload["fields"]["interconnected_rows"]["value"])
             self.assertEqual(normalized_fields_payload["fields"]["rear_cabinet_mode"]["value"], "无门有背板")
             self.assertEqual(normalized_fields_payload["fields"]["rear_cabinet_length"]["value"], "1800mm")
+
+    def test_cli_uses_lightweight_approximate_quote_for_child_bed_combo_amount_check(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            batch_dir = root / "batch-combo-approx"
+            raw_dir = batch_dir / "raw" / "case-combo-approx"
+            raw_dir.mkdir(parents=True)
+            write_minimal_docx(
+                raw_dir / "合同.docx",
+                [
+                    "产品名称：高架床",
+                    "本单按定制执行",
+                    "床形态：高架床",
+                    "上层出入方式：梯柜",
+                    "围栏样式：胶囊围栏",
+                    "床垫宽度：1080mm",
+                    "床垫长度：2096mm",
+                    "材质：北美白橡木",
+                    "前排柜体长度：2096mm",
+                    "前排柜体高度：1600mm",
+                    "前排柜体进深：450mm",
+                    "前排柜体结构：有门无背板",
+                    "费用合计：32820元",
+                ],
+            )
+            manifest = {
+                "source_type": "manual_batch",
+                "source_channel": "manual",
+                "source_batch_id": "batch-combo-approx",
+                "requested_actions": ["audit", "replay"],
+            }
+            (batch_dir / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False), encoding="utf-8")
+            runtime_root = root / "runtime"
+
+            CLI.run(
+                [
+                    "--batch-dir",
+                    str(batch_dir),
+                    "--runtime-root",
+                    str(runtime_root),
+                    "--ocr-backend",
+                    "disabled",
+                    "--output-mode",
+                    "json",
+                ]
+            )
+
+            review_path = runtime_root / "jobs" / "batch-combo-approx-001" / "output" / "review.json"
+            formal_quote_path = runtime_root / "jobs" / "batch-combo-approx-001" / "output" / "formal-quote.json"
+            pricing_compare_path = runtime_root / "jobs" / "batch-combo-approx-001" / "output" / "pricing-compare.json"
+            replay_path = runtime_root / "jobs" / "batch-combo-approx-001" / "output" / "replay.json"
+
+            review_payload = json.loads(review_path.read_text(encoding="utf-8"))
+            formal_quote_payload = json.loads(formal_quote_path.read_text(encoding="utf-8"))
+            pricing_compare_payload = json.loads(pricing_compare_path.read_text(encoding="utf-8"))
+            replay_payload = json.loads(replay_path.read_text(encoding="utf-8"))
+
+            self.assertEqual(formal_quote_payload["reason"], "approximate_quote_completed")
+            self.assertTrue(str(formal_quote_payload["pricing_total"]).endswith("元"))
+            self.assertIn(
+                pricing_compare_payload["match_band"],
+                {"exact_match", "close_match", "approximate_match"},
+            )
+            self.assertLessEqual(float(pricing_compare_payload["best_match_diff_value"]), 500.0)
+            self.assertEqual(review_payload["review_card"]["verdict"], "pass_with_watch")
+            self.assertEqual(review_payload["review_analysis"]["next_question"], "")
+            self.assertIn("轻量试算", "".join(review_payload["review_card"]["next_actions"]))
+            self.assertEqual(replay_payload["status"], "completed")
 
     def test_run_review_job_marks_ocr_assets_as_ready_when_paddleocr_succeeds(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

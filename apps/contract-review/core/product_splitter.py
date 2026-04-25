@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import importlib
 import itertools
+import json
 import re
 import sys
 from decimal import Decimal, ROUND_HALF_UP
@@ -12,6 +13,7 @@ from typing import Any
 from attachment_section import extract_attachment_pricing_section
 from job_models import ReviewJob, SourceAsset
 from field_normalizer import normalize_job_fields
+from liangqin_paths import resolve_pricing_scripts_dir
 from pricing_bridge import bridge_contract_to_pricing_precheck
 import pricing_compare
 from product_code_utils import extract_unique_product_codes
@@ -29,6 +31,12 @@ PRODUCT_ROW_PATTERN = re.compile(
 DETAIL_KEYWORDS = ("尺寸", "长：", "宽：", "高：", "注明", "材质", "主卧", "客厅", "儿童房")
 DETAIL_SIGNAL_KEYWORDS = ("尺寸", "长：", "宽：", "高：", "注明", "主卧", "客厅", "儿童房")
 PAGE_MARKER_PATTERN = re.compile(r"第\d+页")
+DETAIL_ROOM_KEYWORDS = ("主卧", "次卧", "儿童房", "客厅", "餐厅", "书房", "玄关", "老人房", "多功能房")
+CONTINUATION_PAGE_KEYWORDS = ("尺寸图", "床垫尺寸", "内部结构", "俯视图", "左视图", "轴测图", "开孔尺寸", "外部尺寸", "开启示意")
+CONTINUATION_MM_THRESHOLD = 4
+DETAIL_ANCHOR_MIN_FEATURE_COUNT = 3
+DETAIL_ANCHOR_CONFIDENCE_HIGH = 5
+NON_CONTEXT_PAGE_STOP_THRESHOLD = 2
 GENERIC_CATEGORY_TERMS = {
     "床",
     "柜",
@@ -56,10 +64,20 @@ def build_multi_product_split_review(
     job: ReviewJob,
     *,
     runtime_root: Path,
+    parent_normalized_fields: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     aggregate_text = _collect_primary_contract_text(job)
     catalog_text = _extract_catalog_section(aggregate_text)
     line_items = extract_product_line_items(catalog_text)
+    _enrich_line_items_with_ocr_page_text(job, line_items)
+    child_bed_product_codes = {
+        str(item.get("product_code") or "").strip()
+        for item in line_items
+        if _looks_like_split_child_bed_category(
+            str(item.get("product_name") or "").strip(),
+            str(item.get("detail_snippet") or "").strip(),
+        )
+    }
     split_items: list[dict[str, Any]] = []
     status_breakdown: dict[str, int] = {}
 
@@ -76,6 +94,17 @@ def build_multi_product_split_review(
             material=line_item["material"],
             quote_kind=_infer_quote_kind(line_item["detail_snippet"] or catalog_text),
             detail_snippet=line_item["detail_snippet"],
+        )
+        _merge_parent_child_bed_context(
+            normalized_fields=normalized_fields,
+            parent_normalized_fields=parent_normalized_fields,
+            line_item=line_item,
+            child_bed_product_codes=child_bed_product_codes,
+        )
+        _apply_manual_split_field_overrides(
+            job=job,
+            line_item=line_item,
+            normalized_fields=normalized_fields,
         )
         pricing_bridge_payload = bridge_contract_to_pricing_precheck(normalized_fields)
         quote_runtime_root = runtime_root / "split-items" / line_item["product_code"]
@@ -142,6 +171,14 @@ def build_multi_product_split_review(
             )
             if inferred_explicit_code_quote_payload is not None:
                 formal_quote_payload = inferred_explicit_code_quote_payload
+            inferred_tatami_quote_payload = _retry_generic_bed_with_tatami_fallback(
+                pricing_bridge_payload=pricing_bridge_payload,
+                formal_quote_payload=formal_quote_payload,
+                detail_snippet=line_item["detail_snippet"],
+                line_total=line_item["line_total"],
+            )
+            if inferred_tatami_quote_payload is not None:
+                formal_quote_payload = inferred_tatami_quote_payload
         else:
             formal_quote_payload = {
                 "status": "skipped",
@@ -152,6 +189,15 @@ def build_multi_product_split_review(
                 "prepared_payload": {},
                 "raw_result": None,
             }
+            inferred_child_bed_quote_payload = _retry_modular_child_bed_with_dimension_probe(
+                pricing_bridge_payload=pricing_bridge_payload,
+                detail_snippet=line_item["detail_snippet"],
+                line_total=line_item["line_total"],
+                job_id=f"{job.job_id}-{line_item['product_code']}",
+                runtime_root=quote_runtime_root,
+            )
+            if inferred_child_bed_quote_payload is not None:
+                formal_quote_payload = inferred_child_bed_quote_payload
             inferred_bed_quote_payload = _retry_generic_bed_with_standard_candidate(
                 pricing_bridge_payload=pricing_bridge_payload,
                 detail_snippet=line_item["detail_snippet"],
@@ -159,7 +205,7 @@ def build_multi_product_split_review(
                 job_id=f"{job.job_id}-{line_item['product_code']}",
                 runtime_root=quote_runtime_root,
             )
-            if inferred_bed_quote_payload is not None:
+            if inferred_bed_quote_payload is not None and formal_quote_payload.get("status") != "completed":
                 formal_quote_payload = inferred_bed_quote_payload
         inferred_named_bed_quote_payload = _retry_standard_bed_with_mattress_candidate(
             pricing_bridge_payload=pricing_bridge_payload,
@@ -169,6 +215,11 @@ def build_multi_product_split_review(
         )
         if inferred_named_bed_quote_payload is not None:
             formal_quote_payload = inferred_named_bed_quote_payload
+        formal_quote_payload = _coerce_zero_line_total_quote_payload(
+            formal_quote_payload,
+            line_total=line_item["line_total"],
+            product_name=line_item["product_name"],
+        )
         formal_quote_payload = _scale_quote_payload_for_quantity(
             formal_quote_payload,
             quantity=line_item["quantity"],
@@ -200,6 +251,8 @@ def build_multi_product_split_review(
                 "line_total": line_item["line_total"],
                 "detail_snippet": line_item["detail_snippet"],
                 "detail_resolution": line_item.get("detail_resolution") or {},
+                "boundary_start_page": line_item.get("boundary_start_page"),
+                "boundary_end_page": line_item.get("boundary_end_page"),
                 "normalized_fields": normalized_fields,
                 "pricing_precheck": pricing_bridge_payload,
                 "formal_quote": formal_quote_payload,
@@ -250,9 +303,559 @@ def extract_product_line_items(aggregate_text: str) -> list[dict[str, str]]:
                 "line_total": _normalize_amount(match.group("amount")),
                 "detail_snippet": detail_snippet,
                 "detail_resolution": _build_detail_resolution(section_text, product_code, detail_snippet),
+                "boundary_start_page": _extract_page_marker_number(detail_snippet),
+                "boundary_end_page": _extract_page_marker_number(detail_snippet),
             }
         )
     return items
+
+
+def _enrich_line_items_with_ocr_page_text(job: ReviewJob, line_items: list[dict[str, str]]) -> None:
+    if not line_items:
+        return
+
+    primary_assets = job.primary_contract_assets()
+    if not primary_assets:
+        return
+    primary_asset_metadata = dict(primary_assets[0].metadata or {})
+    ocr_output_dir = Path(str(primary_asset_metadata.get("ocr_output_dir") or "")).expanduser()
+    if not ocr_output_dir.exists():
+        return
+    try:
+        ocr_start_page = int(primary_asset_metadata.get("ocr_start_page") or 0)
+    except (TypeError, ValueError):
+        ocr_start_page = 0
+
+    page_texts = _load_ocr_page_texts(ocr_output_dir, ocr_start_page=ocr_start_page)
+    if not page_texts:
+        return
+
+    product_codes = [
+        str(item.get("product_code") or "").strip()
+        for item in line_items
+        if str(item.get("product_code") or "").strip()
+    ]
+    detail_page_numbers = {
+        str(item.get("product_code") or "").strip(): (
+            _extract_existing_detail_page_no(item)
+            or _extract_page_marker_number(str(item.get("detail_snippet") or ""))
+        )
+        for item in line_items
+        if str(item.get("product_code") or "").strip()
+    }
+    for item in line_items:
+        product_code = str(item.get("product_code") or "").strip()
+        if not product_code:
+            continue
+        current_detail_page_no = detail_page_numbers.get(product_code)
+        next_detail_page_no = min(
+            (
+                int(page_no)
+                for code, page_no in detail_page_numbers.items()
+                if code != product_code and page_no is not None and current_detail_page_no is not None and page_no > current_detail_page_no
+            ),
+            default=None,
+        )
+        page_bundle = _collect_linked_ocr_page_text(
+            page_texts=page_texts,
+            product_code=product_code,
+            product_name=str(item.get("product_name") or "").strip(),
+            product_codes=product_codes,
+            detail_snippet=str(item.get("detail_snippet") or "").strip(),
+            max_contract_page_no_exclusive=next_detail_page_no,
+        )
+        detail_resolution = _merge_detail_resolution(
+            existing=item.get("detail_resolution"),
+            bundle=page_bundle,
+            detail_snippet=str(item.get("detail_snippet") or "").strip(),
+        )
+        item["detail_resolution"] = detail_resolution
+        item["boundary_start_page"] = detail_resolution["linked_contract_page_range"]["start"]
+        item["boundary_end_page"] = detail_resolution["linked_contract_page_range"]["end"]
+        page_text = str(page_bundle.get("text") or "").strip()
+        if page_text:
+            item["detail_snippet"] = _merge_detail_snippet_text(
+                str(item.get("detail_snippet") or "").strip(),
+                page_text,
+            )
+
+
+def _load_ocr_page_texts(ocr_output_dir: Path, *, ocr_start_page: int = 0) -> list[dict[str, Any]]:
+    page_texts: list[dict[str, Any]] = []
+    for page_dir in sorted(ocr_output_dir.glob("page-*")):
+        result_path = page_dir / "result.json"
+        if not result_path.exists():
+            continue
+        try:
+            payload = json.loads(result_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        overall_ocr_res = payload.get("overall_ocr_res") or {}
+        rec_texts = [
+            str(item).strip()
+            for item in list(overall_ocr_res.get("rec_texts") or [])
+            if str(item).strip()
+        ]
+        if not rec_texts:
+            continue
+        page_no = int(payload.get("page_index") or 0) + 1
+        page_texts.append(
+            {
+                "page_no": page_no,
+                "contract_page_no": (ocr_start_page + page_no - 1) if ocr_start_page > 0 else None,
+                "text": " ".join(rec_texts),
+            }
+        )
+    return page_texts
+
+
+def _collect_linked_ocr_page_text(
+    *,
+    page_texts: list[dict[str, Any]],
+    product_code: str,
+    product_name: str,
+    product_codes: list[str],
+    detail_snippet: str = "",
+    max_contract_page_no_exclusive: int | None = None,
+) -> dict[str, Any]:
+    if not page_texts or not product_code:
+        return _build_linked_page_bundle(
+            status="detail_anchor_missing",
+            reason="ocr_pages_unavailable",
+            detail_page_no=_extract_page_marker_number(detail_snippet),
+            anchor_method="",
+            anchor_confidence="low",
+            start_page=None,
+            end_page=None,
+            stop_reason="detail_anchor_missing",
+            evidence_scope="none",
+            text="",
+        )
+
+    anchor = _resolve_linked_ocr_start_index(
+        page_texts=page_texts,
+        product_code=product_code,
+        product_name=product_name,
+        detail_snippet=detail_snippet,
+    )
+    anchor_index = anchor.get("index")
+    start_index = int(anchor_index) if anchor_index not in {None, ""} else -1
+    if start_index < 0:
+        return _build_linked_page_bundle(
+            status="detail_anchor_missing",
+            reason="ocr_detail_anchor_not_found",
+            detail_page_no=anchor.get("detail_page_no"),
+            anchor_method=str(anchor.get("anchor_method") or "").strip(),
+            anchor_confidence=str(anchor.get("anchor_confidence") or "low").strip(),
+            start_page=None,
+            end_page=None,
+            stop_reason="detail_anchor_missing",
+            evidence_scope="none",
+            text="",
+        )
+
+    collected: list[str] = []
+    stop_reason = "ocr_pages_exhausted"
+    non_context_page_count = 0
+    start_page = _page_contract_page_no(page_texts[start_index]) or anchor.get("detail_page_no")
+    end_page = start_page
+    for index in range(start_index, len(page_texts)):
+        text = str(page_texts[index].get("text") or "").strip()
+        if not text:
+            continue
+        contract_page_no = _page_contract_page_no(page_texts[index])
+        if (
+            index > start_index
+            and max_contract_page_no_exclusive is not None
+            and contract_page_no is not None
+            and contract_page_no >= max_contract_page_no_exclusive
+        ):
+            stop_reason = "next_detail_anchor"
+            break
+        if index > start_index and _page_has_other_product_anchor(
+            text,
+            product_code=product_code,
+            product_codes=product_codes,
+        ):
+            stop_reason = "other_product_anchor_detected"
+            break
+        if index == start_index:
+            collected.append(text)
+            continue
+        if _page_has_continuation_context(text):
+            collected.append(text)
+            non_context_page_count = 0
+            end_page = contract_page_no or end_page
+            continue
+        non_context_page_count += 1
+        if non_context_page_count >= NON_CONTEXT_PAGE_STOP_THRESHOLD:
+            stop_reason = "two_non_context_pages"
+            break
+
+    if len(collected) == 1:
+        stop_reason = "detail_only" if stop_reason == "ocr_pages_exhausted" else stop_reason
+    evidence_scope = "detail_plus_linked_pages" if len(collected) > 1 else "detail_only"
+    return _build_linked_page_bundle(
+        status="detail_page_linked",
+        reason=f"detail_anchor_resolved_from_{str(anchor.get('anchor_method') or 'unknown').strip() or 'unknown'}",
+        detail_page_no=anchor.get("detail_page_no"),
+        anchor_method=str(anchor.get("anchor_method") or "").strip(),
+        anchor_confidence=str(anchor.get("anchor_confidence") or "low").strip(),
+        start_page=start_page,
+        end_page=end_page,
+        stop_reason=stop_reason,
+        evidence_scope=evidence_scope,
+        text="\n".join(collected),
+    )
+
+
+def _resolve_linked_ocr_start_index(
+    *,
+    page_texts: list[dict[str, Any]],
+    product_code: str,
+    product_name: str,
+    detail_snippet: str = "",
+) -> dict[str, Any]:
+    detail_page_no = _extract_page_marker_number(detail_snippet)
+    if detail_page_no is not None:
+        for index, page in enumerate(page_texts):
+            if _page_contract_page_no(page) != detail_page_no:
+                continue
+            text = str(page.get("text") or "").strip()
+            anchor_score = _detail_anchor_page_score(
+                text,
+                product_name=product_name,
+                product_code=product_code,
+            )
+            if _is_detail_anchor_page(
+                text,
+                product_name=product_name,
+                product_code=product_code,
+            ):
+                return {
+                    "index": index,
+                    "detail_page_no": detail_page_no,
+                    "anchor_method": "page_marker",
+                    "anchor_confidence": _classify_anchor_confidence(anchor_score, preferred=True),
+                }
+            break
+
+    start_index = -1
+    best_score = -999
+    for index, page in enumerate(page_texts):
+        text = str(page.get("text") or "").strip()
+        if not _is_detail_anchor_page(
+            text,
+            product_name=product_name,
+            product_code=product_code,
+        ):
+            continue
+        score = _detail_anchor_page_score(
+            text,
+            product_name=product_name,
+            product_code=product_code,
+        )
+        if score > best_score:
+            best_score = score
+            start_index = index
+    if start_index < 0:
+        return {
+            "index": -1,
+            "detail_page_no": detail_page_no,
+            "anchor_method": "",
+            "anchor_confidence": "low",
+        }
+    return {
+        "index": start_index,
+        "detail_page_no": _page_contract_page_no(page_texts[start_index]),
+        "anchor_method": "code_name_fallback",
+        "anchor_confidence": _classify_anchor_confidence(best_score, preferred=False),
+    }
+
+
+def _extract_page_marker_number(text: str) -> int | None:
+    match = re.search(r"第(\d+)页", str(text or ""))
+    if not match:
+        return None
+    try:
+        return int(match.group(1))
+    except (TypeError, ValueError):
+        return None
+
+
+def _extract_existing_detail_page_no(line_item: dict[str, Any]) -> int | None:
+    detail_resolution = dict(line_item.get("detail_resolution") or {})
+    try:
+        detail_page_no = detail_resolution.get("detail_page_no")
+        if detail_page_no in {None, ""}:
+            return None
+        return int(detail_page_no)
+    except (TypeError, ValueError):
+        return None
+
+
+def _contains_product_code(text: str, product_code: str) -> bool:
+    if not text or not product_code:
+        return False
+    pattern = r"\s*".join(map(re.escape, str(product_code)))
+    return bool(re.search(pattern, text))
+
+
+def _contains_product_code_fragment(text: str, product_code: str) -> bool:
+    digits = re.sub(r"\D", "", str(product_code or ""))
+    if not text or len(digits) < 8:
+        return False
+    normalized_text = _normalize_inline_text(text)
+    prefix = digits[:-5]
+    suffix = digits[-5:]
+    return prefix in normalized_text and suffix in normalized_text
+
+
+def _page_has_continuation_context(text: str) -> bool:
+    normalized = str(text or "").strip()
+    if not normalized:
+        return False
+    if any(keyword in normalized for keyword in CONTINUATION_PAGE_KEYWORDS):
+        return True
+    return _count_mm_tokens(normalized) >= CONTINUATION_MM_THRESHOLD
+
+
+def _detail_anchor_page_score(text: str, *, product_name: str, product_code: str) -> int:
+    normalized = str(text or "").strip()
+    if not normalized:
+        return -999
+
+    features = _detail_anchor_feature_map(
+        normalized,
+        product_name=product_name,
+        product_code=product_code,
+    )
+    score = features["feature_count"] * 4
+    if features["has_size"]:
+        score += 3
+    if features["has_note"]:
+        score += 2
+    if features["has_visual"]:
+        score += 2
+    score += min(_count_mm_tokens(normalized), 6)
+    if _is_catalog_table_page(normalized):
+        score -= 20
+    return score
+
+
+def _detail_anchor_feature_map(text: str, *, product_name: str, product_code: str) -> dict[str, Any]:
+    normalized = str(text or "").strip()
+    has_product_name = bool(
+        product_name and _normalize_inline_text(product_name) in _normalize_inline_text(normalized)
+    )
+    has_product_code = _contains_product_code(normalized, product_code) or _contains_product_code_fragment(
+        normalized,
+        product_code,
+    )
+    has_room = any(keyword in normalized for keyword in DETAIL_ROOM_KEYWORDS)
+    has_material = bool(re.search(r"[\u4e00-\u9fa5A-Za-z]+木", normalized)) or "木蜡油" in normalized
+    has_size = any(keyword in normalized for keyword in ("尺寸", "长：", "宽：", "高："))
+    has_note = "注明" in normalized
+    has_visual = "效果图" in normalized
+    feature_count = sum(
+        1
+        for flag in (
+            has_product_name,
+            has_product_code,
+            has_room,
+            has_material,
+            has_size,
+            has_note,
+            has_visual,
+        )
+        if flag
+    )
+    return {
+        "feature_count": feature_count,
+        "has_product_name": has_product_name,
+        "has_product_code": has_product_code,
+        "has_room": has_room,
+        "has_material": has_material,
+        "has_size": has_size,
+        "has_note": has_note,
+        "has_visual": has_visual,
+    }
+
+
+def _is_detail_anchor_page(text: str, *, product_name: str, product_code: str) -> bool:
+    normalized = str(text or "").strip()
+    if not normalized or _is_catalog_table_page(normalized):
+        return False
+    features = _detail_anchor_feature_map(
+        normalized,
+        product_name=product_name,
+        product_code=product_code,
+    )
+    if features["feature_count"] < DETAIL_ANCHOR_MIN_FEATURE_COUNT:
+        return False
+    return bool(features["has_room"] or features["has_size"] or features["has_note"] or features["has_visual"])
+
+
+def _page_has_other_product_anchor(text: str, *, product_code: str, product_codes: list[str]) -> bool:
+    normalized = str(text or "").strip()
+    if not normalized or _is_catalog_table_page(normalized):
+        return False
+    generic_feature_count = sum(
+        1
+        for flag in (
+            any(keyword in normalized for keyword in DETAIL_ROOM_KEYWORDS),
+            bool(re.search(r"[\u4e00-\u9fa5A-Za-z]+木", normalized)) or "木蜡油" in normalized,
+            any(keyword in normalized for keyword in ("尺寸", "长：", "宽：", "高：")),
+            "注明" in normalized,
+            "效果图" in normalized,
+        )
+        if flag
+    )
+    if generic_feature_count < DETAIL_ANCHOR_MIN_FEATURE_COUNT:
+        return False
+    for code in product_codes:
+        if code == product_code:
+            continue
+        if _contains_product_code(normalized, code) or _contains_product_code_fragment(normalized, code):
+            return True
+    return False
+
+
+def _is_catalog_table_page(text: str) -> bool:
+    normalized = str(text or "").strip()
+    return bool(TABLE_HEADER_PATTERN.search(normalized) or ("附件" in normalized and "产品名称" in normalized))
+
+
+def _classify_anchor_confidence(score: int, *, preferred: bool) -> str:
+    if score >= DETAIL_ANCHOR_CONFIDENCE_HIGH * 4:
+        return "high"
+    if preferred or score >= DETAIL_ANCHOR_MIN_FEATURE_COUNT * 4:
+        return "medium"
+    return "low"
+
+
+def _page_contract_page_no(page: dict[str, Any]) -> int | None:
+    value = page.get("contract_page_no")
+    if value in {None, ""}:
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _count_mm_tokens(text: str) -> int:
+    return len(re.findall(r"\d+(?:\.\d+)?\s*(?:mm|毫米)", str(text or ""), flags=re.IGNORECASE))
+
+
+def _build_linked_page_bundle(
+    *,
+    status: str,
+    reason: str,
+    detail_page_no: Any,
+    anchor_method: str,
+    anchor_confidence: str,
+    start_page: Any,
+    end_page: Any,
+    stop_reason: str,
+    evidence_scope: str,
+    text: str,
+) -> dict[str, Any]:
+    return {
+        "status": status,
+        "reason": reason,
+        "detail_page_no": _coerce_page_number(detail_page_no),
+        "anchor_method": anchor_method,
+        "anchor_confidence": anchor_confidence,
+        "linked_contract_page_range": {
+            "start": _coerce_page_number(start_page),
+            "end": _coerce_page_number(end_page),
+        },
+        "stop_reason": stop_reason,
+        "evidence_scope": evidence_scope,
+        "text": str(text or "").strip(),
+    }
+
+
+def _coerce_page_number(value: Any) -> int | None:
+    if value in {None, ""}:
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _merge_detail_resolution(
+    *,
+    existing: Any,
+    bundle: dict[str, Any],
+    detail_snippet: str,
+) -> dict[str, Any]:
+    detail_resolution = _normalize_detail_resolution(existing, detail_snippet=detail_snippet)
+    if not bundle:
+        return detail_resolution
+
+    detail_page_no = _coerce_page_number(bundle.get("detail_page_no"))
+    page_range = dict(bundle.get("linked_contract_page_range") or {})
+    start_page = _coerce_page_number(page_range.get("start"))
+    end_page = _coerce_page_number(page_range.get("end"))
+    if detail_page_no is None:
+        detail_page_no = detail_resolution.get("detail_page_no")
+    if start_page is None:
+        start_page = detail_page_no
+    if end_page is None:
+        end_page = start_page
+
+    detail_resolution.update(
+        {
+            "status": str(bundle.get("status") or detail_resolution.get("status") or "").strip(),
+            "reason": str(bundle.get("reason") or detail_resolution.get("reason") or "").strip(),
+            "detail_page_no": detail_page_no,
+            "anchor_method": str(bundle.get("anchor_method") or detail_resolution.get("anchor_method") or "").strip(),
+            "anchor_confidence": str(bundle.get("anchor_confidence") or detail_resolution.get("anchor_confidence") or "low").strip(),
+            "linked_contract_page_range": {"start": start_page, "end": end_page},
+            "stop_reason": str(bundle.get("stop_reason") or detail_resolution.get("stop_reason") or "").strip(),
+            "evidence_scope": str(bundle.get("evidence_scope") or detail_resolution.get("evidence_scope") or "").strip(),
+        }
+    )
+    return detail_resolution
+
+
+def _merge_detail_snippet_text(existing: str, extra: str) -> str:
+    normalized_existing = str(existing or "").strip()
+    normalized_extra = str(extra or "").strip()
+    if not normalized_existing:
+        return normalized_extra
+    if not normalized_extra or normalized_extra in normalized_existing:
+        return normalized_existing
+    if normalized_existing in normalized_extra:
+        return normalized_extra
+    return f"{normalized_existing}\n{normalized_extra}"
+
+
+def _normalize_detail_resolution(existing: Any, *, detail_snippet: str) -> dict[str, Any]:
+    detail_resolution = dict(existing or {})
+    detail_page_no = _coerce_page_number(
+        detail_resolution.get("detail_page_no") or _extract_page_marker_number(detail_snippet)
+    )
+    existing_range = dict(detail_resolution.get("linked_contract_page_range") or {})
+    start_page = _coerce_page_number(existing_range.get("start"))
+    end_page = _coerce_page_number(existing_range.get("end"))
+    if start_page is None:
+        start_page = detail_page_no
+    if end_page is None:
+        end_page = start_page
+    detail_resolution.setdefault("status", "detail_page_linked" if detail_snippet else "detail_anchor_missing")
+    detail_resolution.setdefault("reason", "")
+    detail_resolution.setdefault("product_code_occurrence_count", 0)
+    detail_resolution["detail_page_no"] = detail_page_no
+    detail_resolution["anchor_method"] = str(detail_resolution.get("anchor_method") or ("page_marker" if detail_page_no is not None else "")).strip()
+    detail_resolution["anchor_confidence"] = str(detail_resolution.get("anchor_confidence") or ("high" if detail_page_no is not None else "low")).strip()
+    detail_resolution["linked_contract_page_range"] = {"start": start_page, "end": end_page}
+    detail_resolution["stop_reason"] = str(detail_resolution.get("stop_reason") or ("detail_only" if detail_page_no is not None else "detail_anchor_missing")).strip()
+    detail_resolution["evidence_scope"] = str(detail_resolution.get("evidence_scope") or ("detail_only" if detail_snippet else "none")).strip()
+    return detail_resolution
 
 
 def _collect_primary_contract_text(job: ReviewJob) -> str:
@@ -338,22 +941,42 @@ def _detail_snippet_score(snippet: str, *, product_name: str) -> int:
 
 def _build_detail_resolution(aggregate_text: str, product_code: str, detail_snippet: str) -> dict[str, Any]:
     occurrences = len(list(re.finditer(r"\s*".join(map(re.escape, product_code)), str(aggregate_text or ""))))
+    detail_page_no = _extract_page_marker_number(detail_snippet)
+    linked_range = {"start": detail_page_no, "end": detail_page_no}
     if detail_snippet:
         return {
             "status": "detail_page_linked",
             "reason": "linked_from_product_code_occurrence",
             "product_code_occurrence_count": occurrences,
+            "detail_page_no": detail_page_no,
+            "anchor_method": "page_marker" if detail_page_no is not None else "",
+            "anchor_confidence": "high" if detail_page_no is not None else "low",
+            "linked_contract_page_range": linked_range,
+            "stop_reason": "detail_only" if detail_page_no is not None else "",
+            "evidence_scope": "detail_only",
         }
     if occurrences <= 1:
         return {
             "status": "missing_detail_in_source_text",
             "reason": "product_code_only_seen_in_catalog_table",
             "product_code_occurrence_count": occurrences,
+            "detail_page_no": None,
+            "anchor_method": "",
+            "anchor_confidence": "low",
+            "linked_contract_page_range": {"start": None, "end": None},
+            "stop_reason": "detail_anchor_missing",
+            "evidence_scope": "none",
         }
     return {
         "status": "detail_not_resolved",
         "reason": "product_code_seen_multiple_times_but_no_detail_page_selected",
         "product_code_occurrence_count": occurrences,
+        "detail_page_no": None,
+        "anchor_method": "",
+        "anchor_confidence": "low",
+        "linked_contract_page_range": {"start": None, "end": None},
+        "stop_reason": "detail_anchor_missing",
+        "evidence_scope": "none",
     }
 
 
@@ -429,6 +1052,15 @@ def _force_line_item_fields(
         product_name=product_name,
         detail_snippet=detail_snippet,
     )
+    resolved_quote_kind = _infer_split_line_item_quote_kind(
+        fields=fields,
+        current_category=current_category,
+        product_name=product_name,
+        resolved_category=resolved_category,
+        material=material,
+        explicit_quote_kind=quote_kind,
+        detail_snippet=detail_snippet,
+    )
     if resolved_category and _should_override_product_category(current_category, resolved_category):
         fields["product_category"] = {
             "value": resolved_category,
@@ -441,12 +1073,19 @@ def _force_line_item_fields(
             "confidence": 0.99,
             "evidence_refs": [{"asset_id": "split", "file_name": "split", "text_extract_method": "synthetic_multi_product_split", "snippet": material}],
         }
-    if quote_kind and "quote_kind" not in fields:
+    if resolved_quote_kind and not str((fields.get("quote_kind") or {}).get("value") or "").strip():
         fields["quote_kind"] = {
-            "value": quote_kind,
+            "value": resolved_quote_kind,
             "confidence": 0.95,
-            "evidence_refs": [{"asset_id": "split", "file_name": "split", "text_extract_method": "synthetic_multi_product_split", "snippet": quote_kind}],
+            "evidence_refs": [{"asset_id": "split", "file_name": "split", "text_extract_method": "synthetic_multi_product_split", "snippet": resolved_quote_kind}],
         }
+    _apply_split_child_bed_hints(
+        normalized_fields,
+        current_category=current_category,
+        product_name=product_name,
+        resolved_category=resolved_category,
+        detail_snippet=detail_snippet,
+    )
 
 
 def _infer_quote_kind(aggregate_text: str) -> str:
@@ -456,6 +1095,407 @@ def _infer_quote_kind(aggregate_text: str) -> str:
     if any(token in text for token in STANDARD_QUOTE_TOKENS):
         return "standard"
     return ""
+
+
+def _infer_split_line_item_quote_kind(
+    *,
+    fields: dict[str, Any],
+    current_category: str,
+    product_name: str,
+    resolved_category: str,
+    material: str,
+    explicit_quote_kind: str,
+    detail_snippet: str,
+) -> str:
+    current_field_quote_kind = str((fields.get("quote_kind") or {}).get("value") or "").strip()
+    if current_field_quote_kind in {"custom", "standard"}:
+        return current_field_quote_kind
+
+    explicit = str(explicit_quote_kind or "").strip()
+    if explicit in {"custom", "standard"}:
+        return explicit
+
+    if not material:
+        return ""
+    if not _looks_like_other_split_category(current_category, product_name, resolved_category):
+        return ""
+    if not _has_split_line_item_dimension_context(fields, detail_snippet):
+        return ""
+    return "custom"
+
+
+def _looks_like_other_split_category(*categories: str) -> bool:
+    for value in categories:
+        normalized = str(value or "").strip()
+        if normalized.startswith("其他"):
+            return True
+    return False
+
+
+def _has_split_line_item_dimension_context(fields: dict[str, Any], detail_snippet: str) -> bool:
+    for field_name in ("length", "width", "height", "depth"):
+        if str((fields.get(field_name) or {}).get("value") or "").strip():
+            return True
+
+    detail = str(detail_snippet or "").strip()
+    if not detail:
+        return False
+    if "床垫尺寸" in detail:
+        return True
+    return bool(re.search(r"(?:长|宽|高|深)[：:]\s*\d{2,4}\s*(?:mm|cm|m)", detail))
+
+
+def _apply_split_child_bed_hints(
+    normalized_fields: dict[str, Any],
+    *,
+    current_category: str,
+    product_name: str,
+    resolved_category: str,
+    detail_snippet: str,
+) -> None:
+    if not _looks_like_split_child_bed_category(current_category, product_name, resolved_category, detail_snippet):
+        return
+
+    fields = normalized_fields.setdefault("fields", {})
+    inferred_overrides: dict[str, str] = {}
+    signals: list[str] = []
+
+    bed_form = _infer_split_child_bed_form(detail_snippet)
+    if bed_form:
+        _set_split_field_if_missing(fields, "bed_form", bed_form, detail_snippet)
+        inferred_overrides["bed_form"] = bed_form
+        signals.append(bed_form)
+
+    access_style = _infer_split_child_bed_access_style(detail_snippet)
+    if access_style:
+        _set_split_field_if_missing(fields, "access_style", access_style, detail_snippet)
+        inferred_overrides["access_style"] = access_style
+        signals.append(access_style)
+
+    lower_bed_type = _infer_split_child_bed_lower_bed_type(detail_snippet)
+    if lower_bed_type:
+        _set_split_field_if_missing(fields, "lower_bed_type", lower_bed_type, detail_snippet)
+        inferred_overrides["lower_bed_type"] = lower_bed_type
+        signals.append(lower_bed_type)
+
+    if not inferred_overrides:
+        return
+
+    child_bed_analysis = normalized_fields.setdefault("child_bed_analysis", {})
+    child_bed_analysis["is_child_bed"] = True
+    if not str(child_bed_analysis.get("suggested_pricing_route") or "").strip():
+        child_bed_analysis["suggested_pricing_route"] = "modular_child_bed"
+
+    source_asset_ids = []
+    primary_asset_id = str(child_bed_analysis.get("primary_drawing_asset_id") or "").strip()
+    if primary_asset_id:
+        source_asset_ids.append(primary_asset_id)
+    else:
+        source_asset_ids.append("split")
+
+    evidence_snippet = _summarize_split_route_evidence(detail_snippet)
+    _merge_split_route_candidate(
+        normalized_fields,
+        route="modular_child_bed",
+        score=8 + len(signals) * 2,
+        signals=signals,
+        evidence_snippets=[evidence_snippet] if evidence_snippet else [],
+        source_asset_ids=source_asset_ids,
+        inferred_overrides=inferred_overrides,
+    )
+
+
+def _merge_parent_child_bed_context(
+    *,
+    normalized_fields: dict[str, Any],
+    parent_normalized_fields: dict[str, Any] | None,
+    line_item: dict[str, Any],
+    child_bed_product_codes: set[str],
+) -> None:
+    if not isinstance(parent_normalized_fields, dict):
+        return
+    product_code = str(line_item.get("product_code") or "").strip()
+    if not product_code or len(child_bed_product_codes) != 1 or product_code not in child_bed_product_codes:
+        return
+
+    parent_analysis = parent_normalized_fields.get("child_bed_analysis") or {}
+    if not isinstance(parent_analysis, dict) or not parent_analysis.get("is_child_bed"):
+        return
+
+    stair_storage_mode = str(parent_analysis.get("stair_storage_mode") or "").strip()
+    if not stair_storage_mode:
+        return
+
+    child_bed_analysis = normalized_fields.setdefault("child_bed_analysis", {})
+    child_bed_analysis["is_child_bed"] = True
+    if not str(child_bed_analysis.get("suggested_pricing_route") or "").strip():
+        child_bed_analysis["suggested_pricing_route"] = "modular_child_bed"
+    child_bed_analysis["stair_storage_mode"] = stair_storage_mode
+    for key in (
+        "stair_storage_signals",
+        "stair_storage_evidence_snippets",
+        "stair_storage_source_asset_ids",
+    ):
+        existing = [
+            str(item).strip()
+            for item in list(child_bed_analysis.get(key) or [])
+            if str(item).strip()
+        ]
+        incoming = [
+            str(item).strip()
+            for item in list(parent_analysis.get(key) or [])
+            if str(item).strip()
+        ]
+        child_bed_analysis[key] = [item for item in dict.fromkeys([*existing, *incoming])]
+
+    _merge_split_route_candidate(
+        normalized_fields,
+        route="modular_child_bed",
+        score=12 + len(list(child_bed_analysis.get("stair_storage_signals") or [])),
+        signals=[
+            str(item).strip()
+            for item in list(child_bed_analysis.get("stair_storage_signals") or [])
+            if str(item).strip()
+        ],
+        evidence_snippets=[
+            str(item).strip()
+            for item in list(child_bed_analysis.get("stair_storage_evidence_snippets") or [])
+            if str(item).strip()
+        ],
+        source_asset_ids=[
+            str(item).strip()
+            for item in list(child_bed_analysis.get("stair_storage_source_asset_ids") or [])
+            if str(item).strip()
+        ],
+        inferred_overrides={"stair_storage_mode": stair_storage_mode},
+    )
+
+
+def _apply_manual_split_field_overrides(
+    *,
+    job: ReviewJob,
+    line_item: dict[str, Any],
+    normalized_fields: dict[str, Any],
+) -> None:
+    override = _find_manual_split_field_override(
+        overrides=job.metadata.get("manual_split_field_overrides"),
+        product_code=str(line_item.get("product_code") or "").strip(),
+    )
+    if not override:
+        return
+
+    field_values = {
+        str(field_name).strip(): str(raw_value).strip()
+        for field_name, raw_value in dict(override.get("field_values") or {}).items()
+        if str(field_name).strip() and str(raw_value).strip()
+    }
+    if not field_values:
+        return
+
+    fields = normalized_fields.setdefault("fields", {})
+    evidence_snippet = str(override.get("evidence_text") or "").strip() or _summarize_split_route_evidence(
+        str(line_item.get("detail_snippet") or "")
+    ) or "人工确认当前拆单字段"
+    evidence_ref = {
+        "asset_id": "manual-confirmation",
+        "file_name": "manual_confirmation",
+        "text_extract_method": "human_confirmation",
+        "source_kind": "manual_confirmation",
+        "snippet": evidence_snippet,
+    }
+    for field_name, value in field_values.items():
+        fields[field_name] = {
+            "value": value,
+            "confidence": 1.0,
+            "evidence_refs": [dict(evidence_ref)],
+        }
+
+    confirmed_route = str(override.get("confirmed_route") or "").strip()
+    if confirmed_route != "modular_child_bed":
+        return
+
+    child_bed_analysis = normalized_fields.setdefault("child_bed_analysis", {})
+    child_bed_analysis["is_child_bed"] = True
+    child_bed_analysis["suggested_pricing_route"] = "modular_child_bed"
+    child_bed_analysis["requires_primary_drawing_review"] = False
+    child_bed_analysis["review_reason"] = ""
+    child_bed_analysis["review_block_fields"] = []
+    child_bed_analysis["primary_drawing_confidence"] = "high"
+    child_bed_analysis["primary_drawing_asset_id"] = "manual-confirmation"
+    child_bed_analysis["primary_drawing_file_name"] = "manual_confirmation"
+    existing_hits = {
+        str(item).strip()
+        for item in list(child_bed_analysis.get("main_drawing_field_hits") or [])
+        if str(item).strip()
+    }
+    existing_hits.update(field_values.keys())
+    child_bed_analysis["main_drawing_field_hits"] = sorted(existing_hits)
+
+    signals = [
+        value
+        for field_name in ("bed_form", "access_style", "lower_bed_type")
+        if (value := str(field_values.get(field_name) or "").strip())
+    ]
+    inferred_overrides = {
+        field_name: value
+        for field_name, value in field_values.items()
+        if field_name in {"bed_form", "access_style", "lower_bed_type"}
+    }
+    _merge_split_route_candidate(
+        normalized_fields,
+        route="modular_child_bed",
+        score=99,
+        signals=signals,
+        evidence_snippets=[evidence_snippet],
+        source_asset_ids=["manual-confirmation"],
+        inferred_overrides=inferred_overrides,
+    )
+
+
+def _find_manual_split_field_override(
+    *,
+    overrides: Any,
+    product_code: str,
+) -> dict[str, Any]:
+    if not isinstance(overrides, dict) or not product_code:
+        return {}
+
+    normalized_code = str(product_code).strip()
+    if normalized_code in overrides and isinstance(overrides[normalized_code], dict):
+        return dict(overrides[normalized_code])
+
+    for raw_code, payload in overrides.items():
+        override_code = str(raw_code or "").strip()
+        if not override_code or not isinstance(payload, dict):
+            continue
+        if normalized_code.endswith(override_code) or override_code.endswith(normalized_code):
+            return dict(payload)
+    return {}
+
+
+def _looks_like_split_child_bed_category(*values: str) -> bool:
+    for value in values:
+        normalized = str(value or "").strip()
+        if any(keyword in normalized for keyword in ("儿童床", "上下床", "高架床", "半高床", "错层床", "子母床")):
+            return True
+    return False
+
+
+def _infer_split_child_bed_form(detail_snippet: str) -> str:
+    detail = str(detail_snippet or "")
+    if any(token in detail for token in ("上下床", "上床", "下床", "上铺", "下铺")) and (
+        ("上床" in detail and "下床" in detail)
+        or ("上铺" in detail and "下铺" in detail)
+        or "上下床" in detail
+    ):
+        return "上下床"
+    for candidate in ("错层床", "高架床", "半高床"):
+        if candidate in detail:
+            return candidate
+    return ""
+
+
+def _infer_split_child_bed_access_style(detail_snippet: str) -> str:
+    detail = str(detail_snippet or "")
+    for candidate in ("梯柜", "斜梯", "直梯"):
+        if candidate in detail:
+            return candidate
+    return ""
+
+
+def _infer_split_child_bed_lower_bed_type(detail_snippet: str) -> str:
+    detail = str(detail_snippet or "")
+    if "箱体床" in detail:
+        return "箱体床"
+    if "架式床" in detail:
+        return "架式床"
+    return ""
+
+
+def _set_split_field_if_missing(fields: dict[str, Any], field_name: str, value: str, detail_snippet: str) -> None:
+    if str((fields.get(field_name) or {}).get("value") or "").strip():
+        return
+    fields[field_name] = {
+        "value": value,
+        "confidence": 0.9,
+        "evidence_refs": [
+            {
+                "asset_id": "split",
+                "file_name": "split",
+                "text_extract_method": "synthetic_multi_product_split",
+                "snippet": _summarize_split_route_evidence(detail_snippet) or value,
+            }
+        ],
+    }
+
+
+def _summarize_split_route_evidence(detail_snippet: str) -> str:
+    detail = " ".join(str(detail_snippet or "").split())
+    return detail[:160]
+
+
+def _merge_split_route_candidate(
+    normalized_fields: dict[str, Any],
+    *,
+    route: str,
+    score: int,
+    signals: list[str],
+    evidence_snippets: list[str],
+    source_asset_ids: list[str],
+    inferred_overrides: dict[str, str],
+) -> None:
+    route_evidence = normalized_fields.get("route_evidence")
+    if not isinstance(route_evidence, dict):
+        route_evidence = {"recommended_route": route, "candidates": []}
+        normalized_fields["route_evidence"] = route_evidence
+
+    candidates = [item for item in list(route_evidence.get("candidates") or []) if isinstance(item, dict)]
+    existing = next((item for item in candidates if str(item.get("route") or "").strip() == route), None)
+    if existing is None:
+        existing = {
+            "route": route,
+            "score": score,
+            "signals": [],
+            "evidence_snippets": [],
+            "source_asset_ids": [],
+            "inferred_overrides": {},
+        }
+        candidates.append(existing)
+
+    existing["score"] = max(int(existing.get("score") or 0), score)
+    existing["signals"] = sorted(
+        {str(item).strip() for item in [*list(existing.get("signals") or []), *signals] if str(item).strip()}
+    )
+    existing["evidence_snippets"] = [
+        item
+        for item in dict.fromkeys(
+            str(item).strip() for item in [*list(existing.get("evidence_snippets") or []), *evidence_snippets] if str(item).strip()
+        )
+    ][:4]
+    existing["source_asset_ids"] = [
+        item
+        for item in dict.fromkeys(
+            str(item).strip() for item in [*list(existing.get("source_asset_ids") or []), *source_asset_ids] if str(item).strip()
+        )
+    ]
+    merged_overrides = dict(existing.get("inferred_overrides") or {})
+    merged_overrides.update({key: value for key, value in inferred_overrides.items() if str(value or "").strip()})
+    existing["inferred_overrides"] = merged_overrides
+
+    candidates.sort(key=lambda item: (int(item.get("score") or 0), str(item.get("route") or "")), reverse=True)
+    route_evidence["candidates"] = candidates
+    route_evidence["recommended_route"] = str(candidates[0].get("route") or route).strip()
+
+
+def _pick_route_candidate(route_evidence: dict[str, Any], *, route: str) -> dict[str, Any] | None:
+    if not isinstance(route_evidence, dict) or not route:
+        return None
+    for candidate in list(route_evidence.get("candidates") or []):
+        if not isinstance(candidate, dict):
+            continue
+        if str(candidate.get("route") or "").strip() == route:
+            return candidate
+    return None
 
 
 def _should_override_product_category(current_value: str, product_name: str) -> bool:
@@ -601,6 +1641,47 @@ def _scale_quote_payload_for_quantity(
     return scaled_payload
 
 
+def _coerce_zero_line_total_quote_payload(
+    quote_payload: dict[str, Any],
+    *,
+    line_total: str,
+    product_name: str,
+) -> dict[str, Any]:
+    line_total_value = pricing_compare.parse_amount(line_total)
+    if line_total_value is None or line_total_value != Decimal("0"):
+        return quote_payload
+    if str(quote_payload.get("status") or "").strip() == "completed":
+        return quote_payload
+
+    resolved_product_name = str(product_name or "").strip() or "非计价附件"
+    return {
+        "status": "completed",
+        "reason": "zero_line_total_non_billable_accessory",
+        "handled_by": "contract_review_zero_line_total_fallback",
+        "pricing_route": "non_billable_accessory",
+        "pricing_total": "0元",
+        "pricing_total_value": 0.0,
+        "reply_text": "",
+        "prepared_payload": {
+            "items": [
+                {
+                    "product": resolved_product_name,
+                    "confirmed": "合同该行金额为 0 元",
+                    "pricing_method": "非计价附件直接入账",
+                    "calculation_steps": ["合同附件行金额：0 元"],
+                    "subtotal": "0元",
+                }
+            ],
+            "total": "0元",
+            "pricing_route": "non_billable_accessory",
+        },
+        "raw_result": {
+            "source": "contract_review_zero_line_total_fallback",
+            "product_name": resolved_product_name,
+        },
+    }
+
+
 def _retry_with_nearest_catalog_variant(
     *,
     pricing_bridge_payload: dict[str, Any],
@@ -678,6 +1759,220 @@ def _retry_generic_bed_with_standard_candidate(
     retry_payload["fallback_detail"] = inferred["detail"]
     retry_payload["reason"] = "formal_quote_completed_via_generic_bed_standard_candidate"
     return retry_payload
+
+
+def _retry_modular_child_bed_with_dimension_probe(
+    *,
+    pricing_bridge_payload: dict[str, Any],
+    detail_snippet: str,
+    line_total: str,
+    job_id: str,
+    runtime_root: Path,
+) -> dict[str, Any] | None:
+    inferred = _build_modular_child_bed_dimension_probe_quote_payload(
+        pricing_bridge_payload=pricing_bridge_payload,
+        detail_snippet=detail_snippet,
+        line_total=line_total,
+        job_id=job_id,
+        runtime_root=runtime_root,
+    )
+    if inferred is None:
+        return None
+
+    retry_payload = inferred["quote_payload"]
+    retry_payload["fallback_strategy"] = "modular_child_bed_dimension_probe"
+    retry_payload["fallback_detail"] = inferred["detail"]
+    retry_payload["reason"] = "formal_quote_completed_via_modular_child_bed_dimension_probe"
+    return retry_payload
+
+
+def _build_modular_child_bed_dimension_probe_quote_payload(
+    *,
+    pricing_bridge_payload: dict[str, Any],
+    detail_snippet: str,
+    line_total: str,
+    job_id: str,
+    runtime_root: Path,
+) -> dict[str, Any] | None:
+    precheck_args = pricing_bridge_payload.get("precheck_args") or {}
+    child_bed_analysis = pricing_bridge_payload.get("child_bed_analysis") or {}
+    route_evidence = pricing_bridge_payload.get("route_evidence") or {}
+    child_bed_candidate = _pick_route_candidate(route_evidence, route="modular_child_bed") or {}
+    route = str(
+        child_bed_candidate.get("route")
+        or child_bed_analysis.get("suggested_pricing_route")
+        or ""
+    ).strip()
+    if route != "modular_child_bed":
+        return None
+
+    material = str(precheck_args.get("material") or "").strip()
+    if not material:
+        return None
+
+    bed_form = str(precheck_args.get("bed_form") or "").strip() or _infer_split_child_bed_form(detail_snippet)
+    if bed_form not in {"上下床", "错层床", "半高床", "高架床"}:
+        return None
+
+    access_style = str(precheck_args.get("access_style") or "").strip()
+    if not access_style and str(child_bed_analysis.get("stair_storage_mode") or "").strip():
+        access_style = "梯柜"
+    if not access_style:
+        access_style = _infer_split_child_bed_access_style(detail_snippet)
+    if not access_style:
+        return None
+
+    lower_bed_type = str(precheck_args.get("lower_bed_type") or "").strip() or _infer_split_child_bed_lower_bed_type(detail_snippet)
+    if bed_form in {"上下床", "错层床"} and not lower_bed_type:
+        return None
+
+    mattress_dims = _extract_upper_bed_mattress_dimensions(detail_snippet) or _extract_mattress_dimensions(detail_snippet)
+    if mattress_dims is None:
+        return None
+
+    guardrail_length_candidates = _extract_child_bed_guardrail_length_candidates(
+        detail_snippet,
+        default_value=mattress_dims["width"],
+    )
+    guardrail_height_candidates = _extract_child_bed_guardrail_height_candidates(detail_snippet)
+    if not guardrail_length_candidates or not guardrail_height_candidates:
+        return None
+
+    candidate_args_list = _build_modular_child_bed_probe_candidates(
+        precheck_args=precheck_args,
+        detail_snippet=detail_snippet,
+        material=material,
+        bed_form=bed_form,
+        access_style=access_style,
+        lower_bed_type=lower_bed_type,
+        mattress_dims=mattress_dims,
+        guardrail_length_candidates=guardrail_length_candidates,
+        guardrail_height_candidates=guardrail_height_candidates,
+        child_bed_analysis=child_bed_analysis,
+    )
+    if not candidate_args_list:
+        return None
+
+    contract_total = pricing_compare.parse_amount(line_total)
+    if contract_total is None:
+        return None
+
+    best: tuple[Decimal, dict[str, Any], dict[str, Any]] | None = None
+    for index, candidate_args in enumerate(candidate_args_list, start=1):
+        quote_payload = pricing_compare.execute_formal_quote(
+            candidate_args,
+            job_id=f"{job_id}-child-bed-probe-{index:02d}",
+            runtime_root=runtime_root / "child-bed-dimension-probe" / f"candidate-{index:02d}",
+        )
+        pricing_total = pricing_compare.parse_amount(quote_payload.get("pricing_total"))
+        if quote_payload.get("status") != "completed" or pricing_total is None:
+            continue
+        diff = abs(pricing_total - contract_total)
+        if best is None or diff < best[0]:
+            best = (diff, dict(candidate_args), quote_payload)
+
+    if best is None:
+        return None
+
+    best_diff, best_args, best_quote_payload = best
+    return {
+        "quote_payload": best_quote_payload,
+        "detail": {
+            "probe_strategy": "child_bed_dimension_pages",
+            "candidate_count": len(candidate_args_list),
+            "best_match_diff": pricing_compare.format_amount(best_diff),
+            "best_match_diff_value": float(best_diff),
+            "selected_precheck_args": best_args,
+            "upper_mattress_dimensions": dict(mattress_dims),
+            "stair_storage_mode": str(child_bed_analysis.get("stair_storage_mode") or "").strip(),
+        },
+    }
+
+
+def _build_modular_child_bed_probe_candidates(
+    *,
+    precheck_args: dict[str, Any],
+    detail_snippet: str,
+    material: str,
+    bed_form: str,
+    access_style: str,
+    lower_bed_type: str,
+    mattress_dims: dict[str, str],
+    guardrail_length_candidates: list[str],
+    guardrail_height_candidates: list[str],
+    child_bed_analysis: dict[str, Any],
+) -> list[dict[str, Any]]:
+    base_args = {
+        "category": str(precheck_args.get("category") or "").strip() or "其他儿童床",
+        "material": material,
+        "quote_kind": str(precheck_args.get("quote_kind") or "").strip() or "custom",
+        "bed_form": bed_form,
+        "access_style": access_style,
+        "lower_bed_type": lower_bed_type,
+        "width": mattress_dims["width"],
+        "length": mattress_dims["length"],
+    }
+    drawer_context = _extract_child_bed_drawer_context(detail_snippet)
+    stair_width_candidates = _extract_child_bed_stair_width_candidates(detail_snippet)
+    stair_depth_candidates = _extract_child_bed_stair_depth_candidates(detail_snippet)
+
+    precheck_quote = _precheck_quote_module()
+    guardrail_styles = list(getattr(precheck_quote, "MODULAR_CHILD_BED_GUARDRAIL_STYLES", []) or [])
+    if not guardrail_styles:
+        guardrail_styles = ["篱笆围栏"]
+
+    candidate_args_list: list[dict[str, Any]] = []
+    if access_style == "梯柜":
+        if not stair_width_candidates:
+            stair_width_candidates = ["520mm"]
+        if not stair_depth_candidates:
+            stair_depth_candidates = ["1380mm"]
+        for guardrail_style, guardrail_length, guardrail_height, stair_width, stair_depth in itertools.product(
+            guardrail_styles,
+            guardrail_length_candidates,
+            guardrail_height_candidates,
+            stair_width_candidates,
+            stair_depth_candidates,
+        ):
+            candidate_args = dict(
+                base_args,
+                guardrail_style=guardrail_style,
+                guardrail_length=guardrail_length,
+                guardrail_height=guardrail_height,
+                stair_width=stair_width,
+                stair_depth=stair_depth,
+            )
+            if drawer_context:
+                candidate_args.update(drawer_context)
+            candidate_args_list.append(candidate_args)
+    else:
+        access_height_candidates = _extract_child_bed_access_height_candidates(detail_snippet)
+        if not access_height_candidates:
+            return []
+        for guardrail_style, guardrail_length, guardrail_height, access_height in itertools.product(
+            guardrail_styles,
+            guardrail_length_candidates,
+            guardrail_height_candidates,
+            access_height_candidates,
+        ):
+            candidate_args = dict(
+                base_args,
+                guardrail_style=guardrail_style,
+                guardrail_length=guardrail_length,
+                guardrail_height=guardrail_height,
+                access_height=access_height,
+            )
+            candidate_args_list.append(candidate_args)
+
+    deduped: list[dict[str, Any]] = []
+    seen: set[tuple[tuple[str, str], ...]] = set()
+    for candidate in candidate_args_list:
+        key = tuple(sorted((str(field_name), str(value)) for field_name, value in candidate.items()))
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(candidate)
+    return deduped[:48]
 
 
 def _retry_standard_bed_with_mattress_candidate(
@@ -1338,6 +2633,170 @@ def _build_generic_bed_candidate_precheck_args(
     }
 
 
+def _build_generic_tatami_quote_payload(
+    precheck_args: dict[str, Any],
+    *,
+    detail_snippet: str,
+    line_total: str,
+) -> dict[str, Any] | None:
+    category = str(precheck_args.get("category") or "").strip()
+    if category not in {"床", "其他床", "经典床", "榻榻米", "床榻"}:
+        return None
+
+    material = str(precheck_args.get("material") or "").strip()
+    if not material:
+        return None
+
+    quote_kind = str(precheck_args.get("quote_kind") or "").strip()
+    if quote_kind and quote_kind != "custom":
+        return None
+
+    raw_length = _decimal_from_mm_text(precheck_args.get("length"))
+    raw_width = _decimal_from_mm_text(precheck_args.get("width"))
+    raw_height = _decimal_from_mm_text(precheck_args.get("height"))
+    if raw_length is None or raw_width is None or raw_height is None:
+        return None
+
+    platform_length = max(raw_length, raw_width)
+    platform_width = min(raw_length, raw_width)
+    if raw_height > Decimal("0.45"):
+        return None
+    if platform_length < Decimal("2.20") or platform_width < Decimal("1.20"):
+        return None
+    if any(token in str(detail_snippet or "") for token in ("围栏", "梯柜", "直梯", "斜梯", "上床", "下床", "儿童床")):
+        return None
+
+    contract_total = pricing_compare.parse_amount(line_total)
+    if contract_total is None:
+        return None
+
+    material_names = _material_names_module()
+    internal_material = material_names.normalize_material_for_query(material)
+    if not internal_material:
+        return None
+
+    matched_record = None
+    unit_price = None
+    for record in _precheck_quote_module().load_queryable_price_records():
+        if str(record.get("sheet") or "").strip() != "床榻":
+            continue
+        if str(record.get("pricing_mode") or "").strip() != "projection_area":
+            continue
+        name = str(record.get("name") or "").strip()
+        if "榻榻米" not in name:
+            continue
+        material_price = (record.get("materials") or {}).get(internal_material)
+        if material_price in {None, "", "/"}:
+            continue
+        matched_record = record
+        unit_price = Decimal(str(material_price)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        break
+
+    if matched_record is None or unit_price is None:
+        return None
+
+    area = (platform_length * platform_width).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    subtotal = (area * unit_price).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    total_value = subtotal.quantize(Decimal("1"), rounding=ROUND_HALF_UP)
+    if abs(total_value - contract_total) > Decimal("2000"):
+        return None
+
+    pricing_total = pricing_compare.format_amount(total_value)
+    diff_value = abs(total_value - contract_total)
+    quote_payload = {
+        "status": "completed",
+        "handled_by": "contract_review_tatami_fallback",
+        "pricing_route": "tatami_projection_area_fallback",
+        "pricing_total": pricing_total,
+        "pricing_total_value": float(total_value),
+        "reply_text": "",
+        "prepared_payload": {
+            "items": [
+                {
+                    "product": str(matched_record.get("name") or "").strip(),
+                    "confirmed": str(matched_record.get("product_code") or "").strip(),
+                    "pricing_method": "榻榻米投影面积估算",
+                    "calculation_steps": [
+                        f"投影面积：{_format_decimal(platform_length)} × {_format_decimal(platform_width)} = {_format_decimal(area)}㎡",
+                        f"目录单价：{_format_decimal(unit_price)} 元/㎡",
+                        f"基础价格：{_format_decimal(area)} × {_format_decimal(unit_price)} = {_format_decimal(subtotal)} 元",
+                    ],
+                    "subtotal": pricing_total,
+                }
+            ],
+            "total": pricing_total,
+            "pricing_route": "tatami_projection_area_fallback",
+        },
+        "raw_result": {
+            "source": "contract_review_tatami_fallback",
+            "product_code": str(matched_record.get("product_code") or "").strip(),
+            "pricing_mode": "projection_area",
+        },
+    }
+    return {
+        "quote_payload": quote_payload,
+        "detail": {
+            "profile_key": "榻榻米",
+            "candidate_category": str(matched_record.get("name") or "").strip(),
+            "matched_product_code": str(matched_record.get("product_code") or "").strip(),
+            "sheet": str(matched_record.get("sheet") or "").strip(),
+            "candidate_quote_total": pricing_total,
+            "candidate_quote_diff": pricing_compare.format_amount(diff_value),
+            "candidate_quote_diff_value": float(diff_value),
+            "unit_price": float(unit_price),
+            "projection_area": f"{_format_decimal(area)}㎡",
+            "dimensions": {
+                "length": _format_catalog_dimension_mm(platform_length),
+                "width": _format_catalog_dimension_mm(platform_width),
+                "height": _format_catalog_dimension_mm(raw_height),
+            },
+        },
+    }
+
+
+def _retry_generic_bed_with_tatami_fallback(
+    *,
+    pricing_bridge_payload: dict[str, Any],
+    formal_quote_payload: dict[str, Any],
+    detail_snippet: str,
+    line_total: str,
+) -> dict[str, Any] | None:
+    status = str(formal_quote_payload.get("status") or "").strip()
+    reason = str(formal_quote_payload.get("reason") or "").strip()
+    route = str(formal_quote_payload.get("pricing_route") or "").strip()
+    if status not in {"failed", "completed"}:
+        return None
+    if status == "failed" and reason not in {"formal_quote_execution_failed", "formal_quote_total_missing"}:
+        return None
+    if route and route not in {"", "bed_standard", "tatami"}:
+        return None
+
+    inferred = _build_generic_tatami_quote_payload(
+        pricing_bridge_payload.get("precheck_args") or {},
+        detail_snippet=detail_snippet,
+        line_total=line_total,
+    )
+    if inferred is None:
+        return None
+
+    current_total = pricing_compare.parse_amount(formal_quote_payload.get("pricing_total"))
+    candidate_total = pricing_compare.parse_amount((inferred.get("quote_payload") or {}).get("pricing_total"))
+    contract_total = pricing_compare.parse_amount(line_total)
+    if candidate_total is None or contract_total is None:
+        return None
+    if current_total is not None:
+        current_diff = abs(current_total - contract_total)
+        candidate_diff = abs(candidate_total - contract_total)
+        if candidate_diff >= current_diff:
+            return None
+
+    retry_payload = inferred["quote_payload"]
+    retry_payload["fallback_strategy"] = "generic_tatami_projection_profile"
+    retry_payload["fallback_detail"] = inferred["detail"]
+    retry_payload["reason"] = "formal_quote_completed_via_generic_tatami_projection_profile"
+    return retry_payload
+
+
 def _build_generic_stool_candidate_quote_payload(
     precheck_args: dict[str, Any],
     *,
@@ -1427,8 +2886,8 @@ def _build_generic_cabinet_projection_quote_payload(
     line_total: str,
 ) -> dict[str, Any] | None:
     category = str(precheck_args.get("category") or "").strip()
-    profile_key = _generic_cabinet_profile_key(category)
-    if not profile_key:
+    profile_keys = _candidate_generic_cabinet_profile_keys(category)
+    if not profile_keys:
         return None
 
     material = str(precheck_args.get("material") or "").strip()
@@ -1441,9 +2900,6 @@ def _build_generic_cabinet_projection_quote_payload(
         return None
 
     precheck_quote = _precheck_quote_module()
-    profile = dict(precheck_quote.DEFAULT_CABINET_PROFILES.get(profile_key) or {})
-    if not profile:
-        return None
 
     material_names = _material_names_module()
     internal_material = material_names.normalize_material_for_query(material)
@@ -1451,6 +2907,51 @@ def _build_generic_cabinet_projection_quote_payload(
         return None
 
     contract_total = pricing_compare.parse_amount(line_total)
+    best: tuple[tuple[float, int, int, str], dict[str, Any]] | None = None
+    for index, profile_key in enumerate(profile_keys):
+        candidate = _estimate_generic_cabinet_projection_profile(
+            profile_key=profile_key,
+            precheck_quote=precheck_quote,
+            precheck_args=precheck_args,
+            internal_material=internal_material,
+            detail_snippet=detail_snippet,
+            contract_total=contract_total,
+            length=length,
+            height=height,
+        )
+        if candidate is None:
+            continue
+
+        diff_value = candidate["detail"].get("candidate_quote_diff_value")
+        sort_key = (
+            float(diff_value if diff_value is not None else 0.0),
+            _generic_cabinet_profile_selection_penalty(profile_key=profile_key, detail_snippet=detail_snippet),
+            index,
+            profile_key,
+        )
+        if best is None or sort_key < best[0]:
+            best = (sort_key, candidate)
+
+    if best is None:
+        return None
+    return best[1]
+
+
+def _estimate_generic_cabinet_projection_profile(
+    *,
+    profile_key: str,
+    precheck_quote: Any,
+    precheck_args: dict[str, Any],
+    internal_material: str,
+    detail_snippet: str,
+    contract_total: Decimal | None,
+    length: Decimal,
+    height: Decimal,
+) -> dict[str, Any] | None:
+    profile = dict(precheck_quote.DEFAULT_CABINET_PROFILES.get(profile_key) or {})
+    if not profile:
+        return None
+
     detail_text = str(detail_snippet or "")
     area = (length * height).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     preferred_sheet = str(profile.get("sheet") or "").strip()
@@ -1459,7 +2960,7 @@ def _build_generic_cabinet_projection_quote_payload(
     unit_price = None
 
     if require_door_glass_signal:
-        candidates: list[tuple[tuple[float, int, str], dict[str, Any], Decimal]] = []
+        candidates: list[tuple[tuple[float, int, int, str], dict[str, Any], Decimal]] = []
         for record in precheck_quote.load_queryable_price_records():
             if str(record.get("sheet") or "").strip() != preferred_sheet:
                 continue
@@ -1476,9 +2977,11 @@ def _build_generic_cabinet_projection_quote_payload(
             price_diff = float(abs(total_value - contract_total)) if contract_total is not None else 0.0
             semantic_penalty = _cabinet_projection_candidate_penalty(
                 candidate_name=name,
+                candidate_record=record,
                 detail_snippet=detail_text,
             )
-            candidates.append(((price_diff, semantic_penalty, name), record, candidate_unit_price))
+            is_default_profile_match = 0 if str(record.get("product_code") or "").strip() == str(profile.get("product_code") or "").strip() else 1
+            candidates.append(((price_diff, semantic_penalty, is_default_profile_match, name), record, candidate_unit_price))
 
         if candidates:
             _, matched_record, unit_price = min(candidates, key=lambda item: item[0])
@@ -1717,19 +3220,62 @@ def _build_generic_cabinet_unit_candidate_quote_payload(
     }
 
 
-def _cabinet_projection_candidate_penalty(*, candidate_name: str, detail_snippet: str) -> int:
+def _cabinet_projection_candidate_penalty(
+    *,
+    candidate_name: str,
+    detail_snippet: str,
+    candidate_record: dict[str, Any] | None = None,
+) -> int:
     candidate = str(candidate_name or "").strip()
     detail = str(detail_snippet or "")
+    record = candidate_record or {}
+    variant_tags = [
+        str(item).strip()
+        for item in list(record.get("variant_tags") or [])
+        if str(item).strip()
+    ]
+    candidate_text = " ".join(
+        part
+        for part in (
+            candidate,
+            str(record.get("door_type") or "").strip(),
+            str(record.get("series") or "").strip(),
+            str(record.get("remark") or "").strip(),
+            " ".join(variant_tags),
+        )
+        if part
+    )
     penalty = 0
 
     if "玻璃" in detail:
-        penalty -= 10 if "玻璃" in candidate else 8
+        penalty -= 10 if "玻璃" in candidate_text else 8
+    elif any(token in candidate_text for token in ("玻璃", "金属门", "铝框")):
+        penalty += 8
     if "门" in detail:
-        penalty -= 6 if "门" in candidate else 6
-    if "开放" in candidate and any(token in detail for token in ("门", "玻璃")):
+        penalty -= 6 if "门" in candidate_text else 6
+    if any(token in detail for token in ("铰链", "合页", "门碰")):
+        if "推拉门" in candidate_text:
+            penalty += 18
+        if "带门" not in candidate_text and "门" not in candidate_text:
+            penalty += 8
+    if any(token in detail for token in ("推拉门", "移门")):
+        penalty -= 10 if "推拉门" in candidate_text else 12
+    elif "推拉门" in candidate_text:
+        penalty += 10
+    if "格栅" in detail:
+        penalty -= 8 if "格栅" in candidate_text else 10
+    elif "格栅" in candidate_text:
+        penalty += 10
+    if any(token in detail for token in ("带腿", "高脚", "落地脚")):
+        penalty -= 4 if "带腿" in candidate_text else 6
+    elif "带腿" in candidate_text:
+        penalty += 6
+    if any(token in detail for token in ("金属门", "铝框")):
+        penalty -= 8 if any(token in candidate_text for token in ("金属门", "铝框")) else 10
+    if "开放" in candidate_text and any(token in detail for token in ("门", "玻璃")):
         penalty += 12
     for token in ("卡座", "书梯", "转角", "像素", "糖果", "Light"):
-        if token in candidate and token not in detail:
+        if token in candidate_text and token not in detail:
             penalty += 10
     return penalty
 
@@ -2078,6 +3624,16 @@ def _score_catalog_variant_candidate(
 
 def _extract_mattress_dimensions(detail_snippet: str) -> dict[str, str] | None:
     detail = str(detail_snippet or "")
+
+    def to_millimeters(number_text: str, unit_text: str | None) -> int:
+        value = Decimal(str(number_text))
+        unit = str(unit_text or "").strip().lower()
+        if unit in {"mm", "毫米"}:
+            scaled = value
+        else:
+            scaled = value * Decimal("1000")
+        return int(scaled.quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+
     match = re.search(r"(?:床垫尺寸|适配床垫)(?:为|:|：)?\s*(\d{3,4})\s*[*xX×]\s*(\d{3,4})", detail)
     if match:
         first = int(match.group(1))
@@ -2088,9 +3644,22 @@ def _extract_mattress_dimensions(detail_snippet: str) -> dict[str, str] | None:
             detail,
         )
         if not meter_match:
-            return None
-        first = int((Decimal(meter_match.group(1)) * Decimal("1000")).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
-        second = int((Decimal(meter_match.group(2)) * Decimal("1000")).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+            labeled_match = re.search(
+                r"(\d(?:\.\d+)?|\d{3,4})\s*(mm|毫米|m|米)?\s*宽[，,\s]*(\d(?:\.\d+)?|\d{3,4})\s*(mm|毫米|m|米)?\s*长[^。；\n]{0,12}床垫",
+                detail,
+            )
+            if not labeled_match:
+                labeled_match = re.search(
+                    r"(\d(?:\.\d+)?|\d{3,4})\s*(mm|毫米|m|米)?\s*长[，,\s]*(\d(?:\.\d+)?|\d{3,4})\s*(mm|毫米|m|米)?\s*宽[^。；\n]{0,12}床垫",
+                    detail,
+                )
+            if not labeled_match:
+                return None
+            first = to_millimeters(labeled_match.group(1), labeled_match.group(2))
+            second = to_millimeters(labeled_match.group(3), labeled_match.group(4))
+        else:
+            first = int((Decimal(meter_match.group(1)) * Decimal("1000")).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+            second = int((Decimal(meter_match.group(2)) * Decimal("1000")).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
     length_mm = max(first, second)
     width_mm = min(first, second)
@@ -2098,6 +3667,165 @@ def _extract_mattress_dimensions(detail_snippet: str) -> dict[str, str] | None:
         "length": f"{length_mm}mm",
         "width": f"{width_mm}mm",
     }
+
+
+def _extract_upper_bed_mattress_dimensions(detail_snippet: str) -> dict[str, str] | None:
+    detail = str(detail_snippet or "")
+    match = re.search(
+        r"上床(?:床垫)?尺寸(?:为|:|：)?\s*(\d{3,4})\s*[*xX×]\s*(\d{3,4})",
+        detail,
+    )
+    if not match:
+        match = re.search(
+            r"上床(?:建议)?床垫尺寸(?:为|:|：)?\s*(\d{3,4})\s*[*xX×]\s*(\d{3,4})",
+            detail,
+        )
+    if not match:
+        return None
+
+    first = int(match.group(1))
+    second = int(match.group(2))
+    length_mm = max(first, second)
+    width_mm = min(first, second)
+    return {
+        "length": f"{length_mm}mm",
+        "width": f"{width_mm}mm",
+    }
+
+
+def _extract_child_bed_guardrail_length_candidates(
+    detail_snippet: str,
+    *,
+    default_value: str,
+) -> list[str]:
+    candidates = [str(default_value or "").strip()] if str(default_value or "").strip() else []
+    candidates.extend(
+        f"{int(value)}mm"
+        for value in _extract_numeric_mm_values(detail_snippet)
+        if Decimal("1180") <= value <= Decimal("1320")
+    )
+    return _dedupe_text_candidates(candidates)
+
+
+def _extract_child_bed_guardrail_height_candidates(detail_snippet: str) -> list[str]:
+    candidates = [
+        f"{int(value)}mm"
+        for value in _extract_numeric_mm_values(detail_snippet)
+        if Decimal("320") <= value <= Decimal("420")
+    ]
+    prioritized = []
+    for preferred in ("400mm", "350mm"):
+        if preferred in candidates:
+            prioritized.append(preferred)
+    prioritized.extend(candidates)
+    return _dedupe_text_candidates(prioritized)
+
+
+def _extract_child_bed_stair_depth_candidates(detail_snippet: str) -> list[str]:
+    candidates = [
+        f"{int(value)}mm"
+        for value in _extract_numeric_mm_values(detail_snippet)
+        if Decimal("1300") <= value <= Decimal("1450")
+    ]
+    prioritized = []
+    for preferred in ("1380mm", "1370mm"):
+        if preferred in candidates:
+            prioritized.append(preferred)
+    prioritized.extend(candidates)
+    return _dedupe_text_candidates(prioritized)
+
+
+def _extract_child_bed_stair_width_candidates(detail_snippet: str) -> list[str]:
+    candidates = [
+        f"{int(value)}mm"
+        for value in _extract_numeric_mm_values(detail_snippet)
+        if Decimal("430") <= value <= Decimal("520")
+    ]
+    prioritized = ["520mm"]
+    for preferred in ("472mm", "450mm"):
+        if preferred in candidates:
+            prioritized.append(preferred)
+    prioritized.extend(candidates)
+    return _dedupe_text_candidates(prioritized)
+
+
+def _extract_child_bed_access_height_candidates(detail_snippet: str) -> list[str]:
+    candidates = [
+        f"{int(value)}mm"
+        for value in _extract_numeric_mm_values(detail_snippet)
+        if Decimal("700") <= value <= Decimal("1500")
+    ]
+    return _dedupe_text_candidates(candidates)
+
+
+def _extract_child_bed_drawer_context(detail_snippet: str) -> dict[str, Any]:
+    values = _extract_numeric_mm_values(detail_snippet)
+    repeated_drawer_widths = _find_repeated_dimension_candidates(values, minimum=Decimal("520"), maximum=Decimal("650"))
+    if not repeated_drawer_widths:
+        return {}
+
+    drawer_width_value, drawer_count = repeated_drawer_widths[0]
+    if drawer_count < 2:
+        return {}
+
+    depth_candidates = [
+        value
+        for value in values
+        if Decimal("430") <= value <= Decimal("520")
+    ]
+    if not depth_candidates:
+        return {}
+
+    preferred_depth = Decimal("450")
+    drawer_depth_value = min(depth_candidates, key=lambda value: (abs(value - preferred_depth), value))
+    return {
+        "drawer_count": min(int(drawer_count), 3),
+        "drawer_width": _format_mm_value(drawer_width_value),
+        "drawer_depth": _format_mm_value(drawer_depth_value),
+    }
+
+
+def _extract_numeric_mm_values(detail_snippet: str) -> list[Decimal]:
+    values: list[Decimal] = []
+    for raw_value in re.findall(r"(\d+(?:\.\d+)?)\s*(?:mm|毫米)", str(detail_snippet or ""), flags=re.IGNORECASE):
+        try:
+            values.append(Decimal(str(raw_value)))
+        except Exception:
+            continue
+    return values
+
+
+def _find_repeated_dimension_candidates(
+    values: list[Decimal],
+    *,
+    minimum: Decimal,
+    maximum: Decimal,
+) -> list[tuple[Decimal, int]]:
+    counts: dict[str, tuple[Decimal, int]] = {}
+    for value in values:
+        if value < minimum or value > maximum:
+            continue
+        key = str(value.normalize())
+        current_value, current_count = counts.get(key, (value, 0))
+        counts[key] = (current_value, current_count + 1)
+    return sorted(counts.values(), key=lambda item: (-item[1], item[0]))
+
+
+def _format_mm_value(value: Decimal) -> str:
+    if value == value.to_integral():
+        text = str(int(value))
+    else:
+        text = format(value.normalize(), "f").rstrip("0").rstrip(".")
+    return f"{text}mm"
+
+
+def _dedupe_text_candidates(values: list[str]) -> list[str]:
+    deduped: list[str] = []
+    for value in values:
+        normalized = str(value or "").strip()
+        if normalized and normalized not in deduped:
+            deduped.append(normalized)
+    return deduped
 
 
 def _estimate_stool_candidate_quote(
@@ -2268,6 +3996,34 @@ def _generic_cabinet_profile_key(category: str) -> str:
     if "衣柜" in normalized:
         return "衣柜"
     return ""
+
+
+def _candidate_generic_cabinet_profile_keys(category: str) -> list[str]:
+    explicit_profile_key = _generic_cabinet_profile_key(category)
+    if explicit_profile_key:
+        return [explicit_profile_key]
+
+    normalized = str(category or "").strip()
+    if any(token in normalized for token in ("斗柜", "组合斗柜", "组合柜")):
+        return ["衣柜", "电视柜", "玄关柜", "书柜", "餐边柜"]
+    if normalized not in {"其他", "柜", "其他柜"}:
+        return []
+    return ["书柜", "衣柜", "玄关柜", "电视柜", "餐边柜"]
+
+
+def _generic_cabinet_profile_selection_penalty(*, profile_key: str, detail_snippet: str) -> int:
+    detail = str(detail_snippet or "")
+    if any(token in detail for token in ("鞋", "换鞋", "玄关")):
+        return 0 if profile_key == "玄关柜" else 20
+    if any(token in detail for token in ("电视", "地台")):
+        return 0 if profile_key == "电视柜" else 20
+    if any(token in detail for token in ("餐边", "餐厅", "酒柜")):
+        return 0 if profile_key == "餐边柜" else 18
+    if any(token in detail for token in ("书", "展示")):
+        return 0 if profile_key == "书柜" else 16
+    if any(token in detail for token in ("挂衣杆", "衣帽", "挂衣", "衣物")):
+        return 0 if profile_key == "衣柜" else 14
+    return 0
 
 
 def _looks_like_composite_desk_layout(detail_snippet: str) -> bool:
@@ -2453,7 +4209,7 @@ def _slugify(value: str) -> str:
 
 
 def _pricing_scripts_dir() -> Path:
-    return Path(__file__).resolve().parents[3] / "skill" / "liangqin-pricing" / "scripts"
+    return resolve_pricing_scripts_dir(Path(__file__))
 
 
 def _precheck_quote_module():

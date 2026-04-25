@@ -44,6 +44,84 @@ def write_minimal_docx(path: Path, paragraphs: list[str]) -> None:
 
 
 class HandleReviewMessageTests(unittest.TestCase):
+    def test_inline_openclaw_metadata_builds_conversation_scoped_state_root_without_explicit_channel(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            contract_path = root / "合同.pdf"
+            runtime_root = root / "runtime"
+            contract_path.write_text("%PDF-1.4", encoding="utf-8")
+
+            captured: dict[str, object] = {}
+            original_main = HANDLE_REVIEW_MESSAGE.review_chat.main
+
+            def fake_main(argv: list[str] | None = None) -> int:
+                captured["argv"] = list(argv or [])
+                return 0
+
+            HANDLE_REVIEW_MESSAGE.review_chat.main = fake_main
+            try:
+                exit_code = HANDLE_REVIEW_MESSAGE.main(
+                    [
+                        "--text",
+                        (
+                            "Conversation info (untrusted metadata):\n"
+                            "```json\n"
+                            "{\n"
+                            '  "chat_id": "03676533111017629",\n'
+                            '  "message_id": "msgxvgkTNUXrudgmpBTzmICog==",\n'
+                            '  "sender_id": "03676533111017629",\n'
+                            '  "sender": "米田"\n'
+                            "}\n"
+                            "```\n\n"
+                            "Sender (untrusted metadata):\n"
+                            "```json\n"
+                            "{\n"
+                            '  "label": "米田 (03676533111017629)",\n'
+                            '  "id": "03676533111017629",\n'
+                            '  "name": "米田"\n'
+                            "}\n"
+                            "```\n\n"
+                            "用良禽佳木检查审核这份 pdf 合同"
+                        ),
+                        "--input-path",
+                        str(contract_path),
+                        "--runtime-root",
+                        str(runtime_root),
+                    ]
+                )
+            finally:
+                HANDLE_REVIEW_MESSAGE.review_chat.main = original_main
+
+            self.assertEqual(exit_code, 0)
+            forwarded_argv = list(captured["argv"])
+            self.assertIn("--state-root", forwarded_argv)
+            state_root = Path(forwarded_argv[forwarded_argv.index("--state-root") + 1])
+            self.assertTrue(str(state_root).startswith(str(runtime_root.resolve())))
+            self.assertIn("03676533111017629", str(state_root))
+            forwarded_text = forwarded_argv[forwarded_argv.index("--text") + 1]
+            self.assertNotIn("Conversation info", forwarded_text)
+            self.assertIn("审核这份 pdf 合同", forwarded_text)
+
+            batch_dir = Path(forwarded_argv[forwarded_argv.index("--batch-dir") + 1])
+            manifest = json.loads((batch_dir / "manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["source_channel"], "openclaw")
+            self.assertEqual(manifest["openclaw_context"]["context_source"], "inline_text_metadata")
+            self.assertEqual(manifest["openclaw_context"]["channel_source"], "inline_text_fallback")
+            self.assertEqual(manifest["openclaw_context"]["conversation_slug"], "03676533111017629")
+
+    def test_resolve_app_root_supports_bundled_skill_layout(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            script_path = root / "liangqin-contract-review" / "scripts" / "handle_review_message.py"
+            bundled_app_root = root / "liangqin-contract-review" / "apps" / "contract-review"
+            script_path.parent.mkdir(parents=True)
+            bundled_app_root.mkdir(parents=True)
+            script_path.write_text("# test\n", encoding="utf-8")
+
+            resolved = HANDLE_REVIEW_MESSAGE._resolve_app_root(script_path)
+
+            self.assertEqual(resolved.resolve(), bundled_app_root.resolve())
+
     def test_single_input_file_is_wrapped_into_temp_batch_before_review_chat(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -208,6 +286,35 @@ class HandleReviewMessageTests(unittest.TestCase):
             self.assertEqual(exit_code, 0)
             self.assertIn("正在预检中", stdout.getvalue())
             self.assertIn("报价系统做金额与字段对账", stdout.getvalue())
+
+    def test_fresh_review_request_without_input_does_not_fallback_to_previous_state(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            runtime_root = root / "runtime"
+
+            original_main = HANDLE_REVIEW_MESSAGE.review_chat.main
+
+            def fake_main(argv: list[str] | None = None) -> int:
+                raise AssertionError("fresh review request without attachment should not call review_chat")
+
+            HANDLE_REVIEW_MESSAGE.review_chat.main = fake_main
+            try:
+                stdout = io.StringIO()
+                with redirect_stdout(stdout):
+                    exit_code = HANDLE_REVIEW_MESSAGE.main(
+                        [
+                            "--text",
+                            "请审核这份合同",
+                            "--runtime-root",
+                            str(runtime_root),
+                        ]
+                    )
+            finally:
+                HANDLE_REVIEW_MESSAGE.review_chat.main = original_main
+
+            self.assertEqual(exit_code, 0)
+            self.assertIn("没有收到新的合同附件", stdout.getvalue())
+            self.assertIn("--input-path", stdout.getvalue())
 
 
 if __name__ == "__main__":

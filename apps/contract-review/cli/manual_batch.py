@@ -35,7 +35,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--ocr-backend",
-        choices=["disabled", "paddleocr"],
+        choices=["disabled", "paddleocr", "mineru"],
         default="paddleocr",
         help="OCR backend used for images and scanned PDFs.",
     )

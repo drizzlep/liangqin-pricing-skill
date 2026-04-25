@@ -224,6 +224,115 @@ class ExtractionRouterTests(unittest.TestCase):
             self.assertTrue(command[5].endswith("asset-001-attachment-from-page-003.pdf"))
             self.assertNotEqual(command[5], str(source_path))
 
+    def test_extract_asset_builds_compatible_page_payloads_from_mineru_output(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            source_path = root / "合同.pdf"
+            writer = PdfWriter()
+            writer.add_blank_page(width=300, height=300)
+            writer.add_blank_page(width=300, height=300)
+            writer.add_blank_page(width=300, height=300)
+            with source_path.open("wb") as handle:
+                writer.write(handle)
+            job_dir = root / "runtime" / "job-001"
+            job_dir.mkdir(parents=True)
+
+            asset = JOB_MODELS.SourceAsset(
+                asset_id="asset-001",
+                source_path=str(source_path),
+                relative_path="raw/case-001/合同.pdf",
+                file_name="合同.pdf",
+                extension=".pdf",
+                media_kind="document",
+                role_hint="primary_contract",
+                text_preview=(
+                    "第1页 1.1甲方委托乙方定制家具（详见附件《定制清单及设计图纸》）。"
+                    "第3页 附件：《定制清单及设计图纸》 产品名称 产品编号 材质 数量 费用合计（元） "
+                    "其他衣柜 20260333003003 北美樱桃木 1 36140"
+                ),
+                metadata={"needs_ocr": True},
+            )
+            config = EXTRACTION_ROUTER.ExtractionConfig(ocr_backend="mineru")
+
+            def fake_run(command, **_kwargs):
+                raw_output_dir = Path(command[4])
+                raw_output_dir.mkdir(parents=True, exist_ok=True)
+                (raw_output_dir / "合同.md").write_text("# 合同\n\n第17页 儿童房 其他衣柜\n", encoding="utf-8")
+                EXTRACTION_ROUTER.write_json(
+                    raw_output_dir / "合同_content_list.json",
+                    [
+                        {"page_idx": 0, "type": "text", "text": "儿童房 其他衣柜 20260333003003"},
+                        {"page_idx": 0, "type": "text", "text": "长：2520mm 宽：600mm 高：2735mm", "bbox": [10, 20, 100, 40]},
+                        {"page_idx": 1, "type": "table", "table_body": "<table><tr><td>右边五扇柜门使用大角度铰链</td></tr></table>"},
+                    ],
+                )
+                return subprocess.CompletedProcess(args=command, returncode=0, stdout="", stderr="")
+
+            with mock.patch.object(EXTRACTION_ROUTER, "_resolve_mineru_command", return_value=Path("/usr/local/bin/mineru")):
+                with mock.patch.object(EXTRACTION_ROUTER.subprocess, "run", side_effect=fake_run) as mock_run:
+                    record = EXTRACTION_ROUTER.extract_asset(
+                        asset,
+                        job_dir=job_dir,
+                        config=config,
+                    )
+
+            self.assertEqual(record["status"], "succeeded")
+            self.assertEqual(record["backend"], "mineru")
+            self.assertEqual(record["text_extract_method"], "mineru_pipeline_auto")
+            self.assertEqual(record["page_count"], 2)
+            self.assertEqual(record["ocr_scope"], "attachment_pages_only")
+            self.assertEqual(record["ocr_start_page"], 3)
+            command = mock_run.call_args.args[0]
+            self.assertEqual(command[0], "/usr/local/bin/mineru")
+            self.assertEqual(command[1:5], ["-p", command[2], "-o", command[4]])
+            self.assertTrue(command[2].endswith("asset-001-attachment-from-page-003.pdf"))
+
+            summary = json.loads((job_dir / "normalized" / "ocr" / asset.asset_id / "summary.json").read_text(encoding="utf-8"))
+            self.assertEqual(summary["backend"], "mineru")
+            self.assertEqual(summary["page_count"], 2)
+
+            page_payload = json.loads(
+                (job_dir / "normalized" / "ocr" / asset.asset_id / "page-001" / "result.json").read_text(encoding="utf-8")
+            )
+            self.assertIn("儿童房 其他衣柜 20260333003003", page_payload["overall_ocr_res"]["rec_texts"])
+            self.assertIn("长：2520mm 宽：600mm 高：2735mm", page_payload["overall_ocr_res"]["rec_texts"])
+            page_two_markdown = (
+                job_dir / "normalized" / "ocr" / asset.asset_id / "page-002" / "page.md"
+            ).read_text(encoding="utf-8")
+            self.assertIn("右边五扇柜门使用大角度铰链", page_two_markdown)
+
+    def test_extract_asset_returns_unavailable_when_mineru_missing(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            source_path = root / "图纸.pdf"
+            writer = PdfWriter()
+            writer.add_blank_page(width=300, height=300)
+            with source_path.open("wb") as handle:
+                writer.write(handle)
+
+            asset = JOB_MODELS.SourceAsset(
+                asset_id="asset-mineru-001",
+                source_path=str(source_path),
+                relative_path="raw/case-001/图纸.pdf",
+                file_name="图纸.pdf",
+                extension=".pdf",
+                media_kind="document",
+                role_hint="primary_contract",
+                text_preview="第1页 合同正文",
+                metadata={"needs_ocr": True},
+            )
+
+            with mock.patch.object(EXTRACTION_ROUTER, "_resolve_mineru_command", return_value=None):
+                record = EXTRACTION_ROUTER.extract_asset(
+                    asset,
+                    job_dir=root / "runtime" / "job-001",
+                    config=EXTRACTION_ROUTER.ExtractionConfig(ocr_backend="mineru"),
+                )
+
+            self.assertEqual(record["status"], "unavailable")
+            self.assertEqual(record["backend"], "mineru")
+            self.assertEqual(record["reason"], "mineru_not_installed")
+
 
 if __name__ == "__main__":
     unittest.main()

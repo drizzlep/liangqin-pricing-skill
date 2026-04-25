@@ -16,3 +16,8 @@ skill/liangqin-pricing/reports/addenda/**/pdf-block-review-*/tmp-p49-zoom/
 skill/liangqin-pricing/sources/archived/addenda/**/*.pdf
 *.pyc
 __pycache__/
+apps/contract-review/runtime/
+apps/contract-review/.cache/
+.pytest_cache/
+.venv*/
+.planning/

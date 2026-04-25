@@ -1,15 +1,20 @@
 from __future__ import annotations
 
+import html
 import importlib
+import math
 import re
 import sys
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
+import numpy as np
+from PIL import Image
 
 from attachment_section import extract_attachment_pricing_section
 from product_code_utils import count_unique_product_codes
 from job_models import ReviewJob, SourceAsset
+from liangqin_paths import resolve_pricing_scripts_dir
 from ocr_layout_parser import load_ocr_layout_analysis
 from template_learning import find_template_profile
 
@@ -134,6 +139,26 @@ CHILD_BED_PRIMARY_DRAWING_KEY_FIELDS = (
     "rear_cabinet_height",
     "rear_cabinet_depth",
 )
+UNDERBED_COMBO_SIGNAL_PATTERNS = (
+    ("双面柜", (r"床下柜子为双面柜", r"双面柜")),
+    ("活动层板", (r"活动层板", r"可调(?:节)?层板", r"层板可调")),
+    ("朝外柜", (r"朝外柜", r"该面朝外", r"面朝外")),
+    ("朝下床柜", (r"朝下床", r"该面朝下床", r"面朝下床")),
+    ("柜体互通", (r"前后双排互通", r"双排互通", r"前后互通", r"柜体互通", r"互通", r"连通")),
+)
+STAIR_STORAGE_OPEN_SIGNAL_PATTERNS = (
+    ("开放格", (r"开放格梯柜", r"梯柜.*开放格", r"左侧开放格", r"右侧开放格", r"开放格")),
+    ("无抽屉", (r"无抽屉梯柜", r"梯柜.*无抽屉", r"无抽屉", r"不带抽屉")),
+    ("书格式", (r"书架梯柜", r"书格式梯柜", r"书架式梯柜")),
+)
+STAIR_STORAGE_STANDARD_SIGNAL_PATTERNS = (
+    ("抽屉", (r"梯柜.*(?:带|有)抽屉", r"(?:带|有)抽屉.*梯柜", r"踏步.*(?:带|有)抽屉", r"台阶.*(?:带|有)抽屉")),
+)
+CABINET_ROUTE_SIGNAL_PATTERNS = (
+    ("开放书柜", (r"开放书柜", r"开放式书柜", r"无门书柜")),
+    ("开放柜", (r"开放柜", r"开放式", r"无门", r"不带门")),
+    ("带门", (r"带门",)),
+)
 
 
 def normalize_job_fields(job: ReviewJob, *, template_runtime_root: Path | None = None) -> dict[str, Any]:
@@ -188,7 +213,18 @@ def normalize_job_fields(job: ReviewJob, *, template_runtime_root: Path | None =
     _merge_combo_row_segment_dimensions(fields, text_sources, aggregate_text)
     _merge_inferred_field_candidates(fields, inferred_fields)
     _apply_template_profile(fields, text_sources, template_profile)
-    child_bed_analysis = _finalize_child_bed_analysis(child_bed_analysis, fields=fields)
+    child_bed_analysis = _finalize_child_bed_analysis(
+        child_bed_analysis,
+        fields=fields,
+        aggregate_text=aggregate_text,
+        text_sources=text_sources,
+    )
+    route_evidence = _build_route_evidence(
+        text_sources=text_sources,
+        fields=fields,
+        aggregate_text=aggregate_text,
+        child_bed_analysis=child_bed_analysis,
+    )
 
     payload = {
         "job_id": job.job_id,
@@ -204,6 +240,8 @@ def normalize_job_fields(job: ReviewJob, *, template_runtime_root: Path | None =
         ],
         "aggregate_text_preview": aggregate_text[:1200],
     }
+    if route_evidence:
+        payload["route_evidence"] = route_evidence
     if child_bed_analysis.get("is_child_bed"):
         payload["child_bed_analysis"] = child_bed_analysis
     if template_profile:
@@ -230,12 +268,15 @@ def _build_text_sources(assets: list[SourceAsset]) -> list[dict[str, Any]]:
             {
                 "asset_id": asset.asset_id,
                 "file_name": asset.file_name,
+                "source_path": str(asset.source_path or "").strip(),
                 "text": normalized_text,
                 "text_extract_method": asset.text_extract_method,
                 "source_kind": _infer_source_kind(asset),
                 "media_kind": str(asset.media_kind or "").strip(),
                 "role_hint": str(asset.role_hint or "").strip(),
                 "ocr_layout": ocr_layout,
+                "ocr_output_dir": str((asset.metadata or {}).get("ocr_output_dir") or "").strip(),
+                "ocr_markdown_path": str((asset.metadata or {}).get("ocr_markdown_path") or "").strip(),
             }
         )
     return sources
@@ -275,6 +316,8 @@ def _analyze_child_bed_drawing_sources(text_sources: list[dict[str, Any]]) -> di
         "review_reason": "",
         "review_block_fields": [],
         "main_drawing_field_hits": [],
+        "combo_candidate_signals": [],
+        "suggested_pricing_route": "",
     }
     if not is_child_bed:
         return analysis
@@ -369,10 +412,32 @@ def _score_child_bed_drawing_source(source: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _finalize_child_bed_analysis(child_bed_analysis: dict[str, Any], *, fields: dict[str, Any]) -> dict[str, Any]:
+def _finalize_child_bed_analysis(
+    child_bed_analysis: dict[str, Any],
+    *,
+    fields: dict[str, Any],
+    aggregate_text: str,
+    text_sources: list[dict[str, Any]],
+) -> dict[str, Any]:
     analysis = dict(child_bed_analysis or {})
     if not analysis.get("is_child_bed"):
         return analysis
+
+    combo_candidate_signals = _collect_underbed_combo_candidate_signals(
+        aggregate_text=aggregate_text,
+        fields=fields,
+    )
+    analysis["combo_candidate_signals"] = combo_candidate_signals
+    analysis["suggested_pricing_route"] = (
+        "modular_child_bed_combo" if combo_candidate_signals else ""
+    )
+    analysis.update(
+        _collect_child_bed_stair_storage_context(
+            text_sources=text_sources,
+            aggregate_text=aggregate_text,
+            fields=fields,
+        )
+    )
 
     primary_asset_id = str(analysis.get("primary_drawing_asset_id") or "").strip()
     if not primary_asset_id:
@@ -403,6 +468,449 @@ def _finalize_child_bed_analysis(child_bed_analysis: dict[str, Any], *, fields: 
         analysis["review_reason"] = "child_bed_primary_drawing_fields_incomplete"
         analysis["review_block_fields"] = missing_core_fields or ["bed_form", "width", "length"]
     return analysis
+
+
+def _collect_underbed_combo_candidate_signals(
+    *,
+    aggregate_text: str,
+    fields: dict[str, Any],
+) -> list[str]:
+    signals: list[str] = []
+    normalized_text = _normalize_text(aggregate_text)
+    for label, patterns in UNDERBED_COMBO_SIGNAL_PATTERNS:
+        if any(re.search(pattern, normalized_text, flags=re.IGNORECASE) for pattern in patterns):
+            signals.append(label)
+
+    if _has_underbed_combo_fields(fields):
+        signals.append("床下柜体尺寸")
+
+    deduped: list[str] = []
+    for label in signals:
+        if label and label not in deduped:
+            deduped.append(label)
+    return deduped
+
+
+def _collect_child_bed_stair_storage_context(
+    *,
+    text_sources: list[dict[str, Any]],
+    aggregate_text: str,
+    fields: dict[str, Any],
+) -> dict[str, Any]:
+    access_style = str((fields.get("access_style") or {}).get("value") or "").strip()
+    normalized_text = _normalize_text(aggregate_text)
+    allow_text_signal_scan = access_style == "梯柜" or "梯柜" in normalized_text
+
+    open_signals: list[str] = []
+    standard_signals: list[str] = []
+    evidence_snippets: list[str] = []
+    source_asset_ids: list[str] = []
+
+    if allow_text_signal_scan:
+        for label, patterns in STAIR_STORAGE_OPEN_SIGNAL_PATTERNS:
+            source_id, snippet = _find_first_signal_snippet(text_sources, patterns)
+            if not snippet:
+                continue
+            open_signals.append(label)
+            if snippet not in evidence_snippets:
+                evidence_snippets.append(snippet)
+            if source_id and source_id not in source_asset_ids:
+                source_asset_ids.append(source_id)
+
+        for label, patterns in STAIR_STORAGE_STANDARD_SIGNAL_PATTERNS:
+            source_id, snippet = _find_first_signal_snippet(text_sources, patterns)
+            if not snippet:
+                continue
+            standard_signals.append(label)
+            if snippet not in evidence_snippets:
+                evidence_snippets.append(snippet)
+            if source_id and source_id not in source_asset_ids:
+                source_asset_ids.append(source_id)
+
+    mode = ""
+    if open_signals and standard_signals:
+        mode = "mixed"
+    elif open_signals:
+        mode = "open_grid"
+    elif standard_signals:
+        mode = "standard"
+    if mode:
+        signals = open_signals + [item for item in standard_signals if item not in open_signals]
+        return {
+            "stair_storage_mode": mode,
+            "stair_storage_signals": signals,
+            "stair_storage_evidence_snippets": evidence_snippets[:4],
+            "stair_storage_source_asset_ids": source_asset_ids,
+        }
+
+    return _collect_child_bed_stair_storage_from_effect_images(
+        text_sources=text_sources,
+        aggregate_text=aggregate_text,
+    )
+
+
+def _collect_child_bed_stair_storage_from_effect_images(
+    *,
+    text_sources: list[dict[str, Any]],
+    aggregate_text: str,
+) -> dict[str, Any]:
+    best_result: dict[str, Any] | None = None
+    for source in text_sources:
+        for candidate in _iter_child_bed_effect_image_candidates(source, aggregate_text=aggregate_text):
+            image_path = Path(str(candidate.get("image_path") or "")).expanduser()
+            analysis = _infer_stair_storage_mode_from_effect_image(image_path)
+            if str(analysis.get("mode") or "").strip() != "open_grid":
+                continue
+            if best_result is None or float(analysis.get("confidence_score") or 0.0) > float(best_result["analysis"].get("confidence_score") or 0.0):
+                best_result = {
+                    "analysis": analysis,
+                    "candidate": candidate,
+                    "source": source,
+                }
+
+    if best_result is None:
+        return {}
+
+    analysis = best_result["analysis"]
+    candidate = best_result["candidate"]
+    source = best_result["source"]
+    evidence_snippet = (
+        f"视觉命中开放格梯柜：{Path(str(candidate.get('image_path') or '')).name} "
+        f"(score={float(analysis.get('confidence_score') or 0.0):.2f})"
+    )
+    return {
+        "stair_storage_mode": "open_grid",
+        "stair_storage_signals": [
+            str(item).strip()
+            for item in list(analysis.get("signals") or [])
+            if str(item).strip()
+        ],
+        "stair_storage_evidence_snippets": [evidence_snippet],
+        "stair_storage_source_asset_ids": [str(source.get("asset_id") or "").strip()],
+    }
+
+
+def _iter_child_bed_effect_image_candidates(
+    source: dict[str, Any],
+    *,
+    aggregate_text: str,
+) -> list[dict[str, Any]]:
+    ocr_output_dir = Path(str(source.get("ocr_output_dir") or "")).expanduser()
+    if not ocr_output_dir.exists():
+        return []
+
+    candidates: list[dict[str, Any]] = []
+    child_bed_page_signals = ("儿童床", "上下床", "高架床", "半高床", "错层床", "下床床垫建议尺寸")
+    for markdown_path in sorted(ocr_output_dir.glob("page-*/*.md")):
+        page_text = html.unescape(markdown_path.read_text(encoding="utf-8", errors="ignore"))
+        if "效果图" not in page_text:
+            continue
+        if not any(signal in page_text for signal in child_bed_page_signals) and not any(
+            signal in aggregate_text for signal in child_bed_page_signals
+        ):
+            continue
+
+        for image_path in _extract_markdown_image_paths(markdown_path):
+            if not image_path.exists():
+                continue
+            try:
+                with Image.open(image_path) as image:
+                    width, height = image.size
+            except OSError:
+                continue
+            candidates.append(
+                {
+                    "image_path": str(image_path),
+                    "markdown_path": str(markdown_path),
+                    "area": width * height,
+                }
+            )
+
+    candidates.sort(key=lambda item: int(item.get("area") or 0), reverse=True)
+    return candidates[:3]
+
+
+def _extract_markdown_image_paths(markdown_path: Path) -> list[Path]:
+    content = markdown_path.read_text(encoding="utf-8", errors="ignore")
+    paths: list[Path] = []
+    for raw_path in re.findall(r'<img\s+src="([^"]+)"', content, flags=re.IGNORECASE):
+        candidate = (markdown_path.parent / raw_path).resolve()
+        if candidate not in paths:
+            paths.append(candidate)
+    return paths
+
+
+def _infer_stair_storage_mode_from_effect_image(image_path: Path) -> dict[str, Any]:
+    try:
+        with Image.open(image_path) as image:
+            rgb = image.convert("RGB")
+            width, height = rgb.size
+            crop = rgb.crop(
+                (
+                    int(width * 0.00),
+                    int(height * 0.45),
+                    int(width * 0.22),
+                    int(height * 0.95),
+                )
+            )
+            arr = np.asarray(crop, dtype=np.float32) / 255.0
+    except OSError:
+        return {"mode": "", "confidence_score": 0.0, "signals": []}
+
+    if arr.size == 0:
+        return {"mode": "", "confidence_score": 0.0, "signals": []}
+
+    red = arr[:, :, 0]
+    green = arr[:, :, 1]
+    blue = arr[:, :, 2]
+    gray = arr.mean(axis=2)
+
+    wood_mask = (
+        (red > green)
+        & (green > blue * 0.8)
+        & ((red - green) > 0.04)
+        & ((red - green) < 0.35)
+        & (red > 0.24)
+        & (red < 0.9)
+    )
+    non_wood_ratio = 1.0 - float(np.mean(wood_mask))
+    gray_std = float(np.std(gray))
+    channel_diff = np.max(arr, axis=2) - np.min(arr, axis=2)
+    neutral_content_ratio = float(np.mean((channel_diff < 0.12) & (gray > 0.25) & (gray < 0.92)))
+
+    signals: list[str] = []
+    score = 0.0
+    if non_wood_ratio >= 0.40:
+        score += 1.8
+        signals.append("visual_open_cells")
+    if neutral_content_ratio >= 0.38:
+        score += 1.2
+        signals.append("visual_neutral_contents")
+    if gray_std >= 0.13:
+        score += 0.4
+        signals.append("visual_contents_variance")
+
+    return {
+        "mode": "open_grid" if score >= 3.0 else "",
+        "confidence_score": round(score, 2),
+        "signals": signals,
+        "metrics": {
+            "non_wood_ratio": round(non_wood_ratio, 3),
+            "gray_std": round(gray_std, 3),
+            "neutral_content_ratio": round(neutral_content_ratio, 3),
+        },
+    }
+
+
+def _has_underbed_combo_fields(fields: dict[str, Any]) -> bool:
+    combo_field_names = (
+        "underbed_cabinet_mode",
+        "front_cabinet_length",
+        "front_cabinet_height",
+        "front_cabinet_depth",
+        "front_cabinet_mode",
+        "rear_cabinet_length",
+        "rear_cabinet_height",
+        "rear_cabinet_depth",
+        "rear_cabinet_mode",
+        "interconnected_rows",
+    )
+    return any(field_name in fields for field_name in combo_field_names)
+
+
+def _build_route_evidence(
+    *,
+    text_sources: list[dict[str, Any]],
+    fields: dict[str, Any],
+    aggregate_text: str,
+    child_bed_analysis: dict[str, Any],
+) -> dict[str, Any] | None:
+    candidates: list[dict[str, Any]] = []
+    child_bed_candidate = _build_child_bed_route_candidate(
+        text_sources=text_sources,
+        fields=fields,
+        child_bed_analysis=child_bed_analysis,
+    )
+    if child_bed_candidate:
+        candidates.append(child_bed_candidate)
+
+    cabinet_candidate = _build_cabinet_route_candidate(
+        text_sources=text_sources,
+        fields=fields,
+        aggregate_text=aggregate_text,
+    )
+    if cabinet_candidate:
+        candidates.append(cabinet_candidate)
+
+    if not candidates:
+        return None
+    candidates.sort(key=lambda item: (int(item.get("score") or 0), str(item.get("route") or "")), reverse=True)
+    return {
+        "recommended_route": str(candidates[0].get("route") or "").strip(),
+        "candidates": candidates,
+    }
+
+
+def _build_child_bed_route_candidate(
+    *,
+    text_sources: list[dict[str, Any]],
+    fields: dict[str, Any],
+    child_bed_analysis: dict[str, Any],
+) -> dict[str, Any] | None:
+    if not child_bed_analysis.get("is_child_bed"):
+        return None
+
+    signals = [
+        str(item).strip()
+        for item in list(child_bed_analysis.get("combo_candidate_signals") or [])
+        if str(item).strip()
+    ]
+    if not signals:
+        return None
+
+    evidence_snippets: list[str] = []
+    source_asset_ids: list[str] = []
+    for label, patterns in UNDERBED_COMBO_SIGNAL_PATTERNS:
+        if label not in signals:
+            continue
+        source_id, snippet = _find_first_signal_snippet(text_sources, patterns)
+        if snippet and snippet not in evidence_snippets:
+            evidence_snippets.append(snippet)
+        if source_id and source_id not in source_asset_ids:
+            source_asset_ids.append(source_id)
+
+    if "床下柜体尺寸" in signals:
+        snippet = _summarize_underbed_combo_fields(fields)
+        if snippet and snippet not in evidence_snippets:
+            evidence_snippets.append(snippet)
+
+    primary_asset_id = str(child_bed_analysis.get("primary_drawing_asset_id") or "").strip()
+    if primary_asset_id and primary_asset_id not in source_asset_ids:
+        source_asset_ids.append(primary_asset_id)
+
+    return {
+        "route": "modular_child_bed_combo",
+        "score": 10 + len(signals) * 3,
+        "signals": signals,
+        "evidence_snippets": evidence_snippets[:4],
+        "source_asset_ids": source_asset_ids,
+        "inferred_overrides": {},
+    }
+
+
+def _build_cabinet_route_candidate(
+    *,
+    text_sources: list[dict[str, Any]],
+    fields: dict[str, Any],
+    aggregate_text: str,
+) -> dict[str, Any] | None:
+    inferred_overrides: dict[str, str] = {}
+    signals: list[str] = []
+    evidence_snippets: list[str] = []
+    source_asset_ids: list[str] = []
+
+    precheck_quote = _precheck_quote_module()
+    known_profiles = precheck_quote.DEFAULT_CABINET_PROFILES
+    current_category = str((fields.get("product_category") or {}).get("value") or "").strip()
+    category = current_category if current_category in known_profiles else ""
+    if not category:
+        for candidate in known_profiles:
+            source_id, snippet = _find_first_signal_snippet(text_sources, (candidate,))
+            if snippet:
+                category = candidate
+                inferred_overrides["category"] = candidate
+                signals.append(snippet.replace("图下注：", "").strip())
+                evidence_snippets.append(snippet)
+                if source_id:
+                    source_asset_ids.append(source_id)
+                break
+
+    for label, patterns in CABINET_ROUTE_SIGNAL_PATTERNS:
+        source_id, snippet = _find_first_signal_snippet(text_sources, patterns)
+        if not snippet:
+            continue
+        if label not in signals:
+            signals.append(label if label != "开放柜" else snippet.replace("图下注：", "").strip())
+        if snippet not in evidence_snippets:
+            evidence_snippets.append(snippet)
+        if source_id and source_id not in source_asset_ids:
+            source_asset_ids.append(source_id)
+        if label in {"开放书柜", "开放柜"} and not (fields.get("has_door") or {}).get("value"):
+            inferred_overrides["has_door"] = "no"
+        if label == "带门" and not (fields.get("has_door") or {}).get("value"):
+            inferred_overrides["has_door"] = "yes"
+
+    if not inferred_overrides.get("has_door"):
+        door_type = str((fields.get("door_type") or {}).get("value") or "").strip()
+        if door_type:
+            inferred_overrides["has_door"] = "yes"
+            inferred_overrides["door_type"] = door_type
+        else:
+            for door_type_candidate in _known_door_types():
+                source_id, snippet = _find_first_signal_snippet(text_sources, (door_type_candidate,))
+                if not snippet:
+                    continue
+                inferred_overrides["has_door"] = "yes"
+                inferred_overrides["door_type"] = door_type_candidate
+                if door_type_candidate not in signals:
+                    signals.append(door_type_candidate)
+                if snippet not in evidence_snippets:
+                    evidence_snippets.append(snippet)
+                if source_id and source_id not in source_asset_ids:
+                    source_asset_ids.append(source_id)
+                break
+
+    has_core_dimensions = bool(fields.get("length")) and bool(fields.get("height"))
+    has_material = bool(fields.get("wood_material"))
+    if not category and "category" not in inferred_overrides:
+        return None
+    if not has_core_dimensions or not has_material:
+        return None
+
+    return {
+        "route": "cabinet",
+        "score": 8 + len(signals) * 2 + int(bool(inferred_overrides)),
+        "signals": signals[:4],
+        "evidence_snippets": evidence_snippets[:4],
+        "source_asset_ids": source_asset_ids,
+        "inferred_overrides": inferred_overrides,
+    }
+
+
+def _find_first_signal_snippet(
+    text_sources: list[dict[str, Any]],
+    patterns: tuple[str, ...],
+) -> tuple[str, str]:
+    for source in text_sources:
+        text = str(source.get("text") or "")
+        for pattern in patterns:
+            match = re.search(pattern, text, flags=re.IGNORECASE)
+            if not match:
+                continue
+            return str(source.get("asset_id") or "").strip(), _extract_match_snippet(text, match)
+    return "", ""
+
+
+def _extract_match_snippet(text: str, match: re.Match[str]) -> str:
+    start = max(match.start() - 8, 0)
+    end = min(match.end() + 20, len(text))
+    return re.sub(r"\s+", " ", text[start:end]).strip(" ，,。；;\n")
+
+
+def _summarize_underbed_combo_fields(fields: dict[str, Any]) -> str:
+    parts: list[str] = []
+    for field_name in (
+        "front_cabinet_length",
+        "front_cabinet_height",
+        "front_cabinet_depth",
+        "rear_cabinet_length",
+        "rear_cabinet_height",
+        "rear_cabinet_depth",
+    ):
+        value = str((fields.get(field_name) or {}).get("value") or "").strip()
+        if value:
+            parts.append(f"{field_name}={value}")
+    return "；".join(parts[:3])
 
 
 def _infer_fields_from_pricing_text(
@@ -1097,7 +1605,7 @@ def _known_door_types() -> list[str]:
 
 @lru_cache(maxsize=1)
 def _precheck_quote_module():
-    scripts_dir = Path(__file__).resolve().parents[3] / "skill" / "liangqin-pricing" / "scripts"
+    scripts_dir = resolve_pricing_scripts_dir(Path(__file__))
     if str(scripts_dir) not in sys.path:
         sys.path.insert(0, str(scripts_dir))
     return importlib.import_module("precheck_quote")
@@ -1105,7 +1613,7 @@ def _precheck_quote_module():
 
 @lru_cache(maxsize=1)
 def _handle_quote_message_module():
-    scripts_dir = Path(__file__).resolve().parents[3] / "skill" / "liangqin-pricing" / "scripts"
+    scripts_dir = resolve_pricing_scripts_dir(Path(__file__))
     if str(scripts_dir) not in sys.path:
         sys.path.insert(0, str(scripts_dir))
     return importlib.import_module("handle_quote_message")
@@ -1113,7 +1621,7 @@ def _handle_quote_message_module():
 
 @lru_cache(maxsize=1)
 def _material_names_module():
-    scripts_dir = Path(__file__).resolve().parents[3] / "skill" / "liangqin-pricing" / "scripts"
+    scripts_dir = resolve_pricing_scripts_dir(Path(__file__))
     if str(scripts_dir) not in sys.path:
         sys.path.insert(0, str(scripts_dir))
     return importlib.import_module("material_names")

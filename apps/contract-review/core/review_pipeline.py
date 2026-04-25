@@ -19,8 +19,9 @@ from product_splitter import (
     _retry_with_explicit_catalog_code,
 )
 import pricing_compare
-from pricing_bridge import bridge_contract_to_pricing_precheck
+from pricing_bridge import bridge_contract_to_pricing_precheck, build_lightweight_amount_check_quote_payload
 from review_issues import build_review_analysis
+from reviewer_card import build_reviewer_card, render_reviewer_card_markdown
 from template_learning import build_template_profile
 
 
@@ -39,13 +40,6 @@ def _count_unique_product_codes(job: ReviewJob) -> int:
         pricing_text = extract_attachment_pricing_section(str(asset.text_preview or ""))
         codes.update(extract_unique_product_codes(pricing_text))
     return len(codes)
-
-
-def _extract_single_product_line_item(job: ReviewJob) -> dict[str, Any] | None:
-    items = extract_product_line_items(_collect_primary_contract_text(job))
-    if len(items) != 1:
-        return None
-    return items[0]
 
 
 def _best_match_diff_value(
@@ -132,6 +126,14 @@ def _derive_actionable_priority(
     if issue_codes:
         return {"actionable_priority": "monitor", "actionable_priority_score": 2}
     return {"actionable_priority": "auto_pass_candidate", "actionable_priority_score": 4}
+
+
+def _has_effective_pricing_compare(pricing_compare_payload: dict[str, Any]) -> bool:
+    if not str(pricing_compare_payload.get("pricing_total") or "").strip():
+        return False
+    if str(pricing_compare_payload.get("best_match_target") or "").strip():
+        return True
+    return int(pricing_compare_payload.get("compared_item_count") or 0) > 0
 
 
 def _render_review_markdown(review_payload: dict[str, Any], replay_payload: dict[str, Any]) -> str:
@@ -318,8 +320,17 @@ def _render_review_markdown(review_payload: dict[str, Any], replay_payload: dict
             detail_resolution = item.get("detail_resolution") or {}
             detail_status = str(detail_resolution.get("status") or "").strip()
             if detail_status:
+                page_range = detail_resolution.get("linked_contract_page_range") or {}
                 lines.append(
                     f"  detail_resolution: {detail_status} / reason={detail_resolution.get('reason', '')} / occurrences={detail_resolution.get('product_code_occurrence_count', '')}"
+                )
+                lines.append(
+                    "  detail_boundary: "
+                    f"page={detail_resolution.get('detail_page_no')} / "
+                    f"anchor={detail_resolution.get('anchor_method', '')}:{detail_resolution.get('anchor_confidence', '')} / "
+                    f"range={page_range.get('start')}->{page_range.get('end')} / "
+                    f"stop={detail_resolution.get('stop_reason', '')} / "
+                    f"scope={detail_resolution.get('evidence_scope', '')}"
                 )
             compare_payload = item.get("pricing_compare") or {}
             if compare_payload.get("pricing_total"):
@@ -440,10 +451,17 @@ def run_review_job(
         pricing_bridge_payload=pricing_bridge_payload,
     )
     unique_product_code_count = _count_unique_product_codes(job)
-    single_product_line_item = _extract_single_product_line_item(job) if unique_product_code_count == 1 else None
+    primary_contract_text = _collect_primary_contract_text(job)
+    product_line_items = extract_product_line_items(primary_contract_text)
+    has_multiple_product_line_items = len(product_line_items) > 1
+    single_product_line_item = product_line_items[0] if len(product_line_items) == 1 else None
     quote_runtime_root = job_dir / "output" / "quote-runtime"
     product_split_payload = (
-        build_multi_product_split_review(job, runtime_root=quote_runtime_root)
+        build_multi_product_split_review(
+            job,
+            runtime_root=quote_runtime_root,
+            parent_normalized_fields=normalized_fields_payload,
+        )
         if "replay" in job.requested_actions and unique_product_code_count > 1
         else {"job_id": job.job_id, "item_count": 0, "status_breakdown": {}, "items": []}
     )
@@ -458,7 +476,6 @@ def run_review_job(
             "raw_result": None,
         }
     elif "replay" in job.requested_actions and pricing_bridge_payload["status"] == "ready_for_formal_quote":
-        primary_contract_text = _collect_primary_contract_text(job)
         formal_quote_payload = pricing_compare.execute_formal_quote(
             pricing_bridge_payload.get("precheck_args") or {},
             job_id=job.job_id,
@@ -528,6 +545,22 @@ def run_review_job(
             "prepared_payload": {},
             "raw_result": None,
         }
+    if (
+        "replay" in job.requested_actions
+        and unique_product_code_count <= 1
+        and not has_multiple_product_line_items
+        and formal_quote_payload.get("status") != "completed"
+    ):
+        contract_total_text = str(
+            ((contract_audit_payload.get("financials") or {}).get("contract_total") or {}).get("value") or ""
+        ).strip()
+        approximate_quote_payload = build_lightweight_amount_check_quote_payload(
+            normalized_fields_payload,
+            pricing_bridge_payload=pricing_bridge_payload,
+            contract_total=contract_total_text,
+        )
+        if approximate_quote_payload is not None:
+            formal_quote_payload = approximate_quote_payload
     if "replay" in job.requested_actions and unique_product_code_count > 1:
         pricing_compare_payload = pricing_compare.build_multi_product_aggregate_comparison(
             contract_audit_payload=contract_audit_payload,
@@ -547,6 +580,17 @@ def run_review_job(
     unresolved_ocr_assets = [asset for asset in ocr_candidate_assets if (asset.metadata or {}).get("ocr_status") != "succeeded"]
     unavailable_ocr_assets = [asset for asset in unresolved_ocr_assets if (asset.metadata or {}).get("ocr_status") == "unavailable"]
     failed_ocr_assets = [asset for asset in unresolved_ocr_assets if (asset.metadata or {}).get("ocr_status") == "failed"]
+    has_primary_native_preview = bool(_collect_primary_contract_text(job))
+    has_effective_pricing_compare = _has_effective_pricing_compare(pricing_compare_payload)
+    ocr_blocks_replay = bool(
+        unresolved_ocr_assets
+        and (
+            visual_assets
+            or drawing_assets
+            or not has_primary_native_preview
+            or not has_effective_pricing_compare
+        )
+    )
     findings: list[dict[str, str]] = []
     risk_flags: list[str] = []
 
@@ -653,7 +697,7 @@ def run_review_job(
         if risk_flag not in risk_flags:
             risk_flags.append(risk_flag)
 
-    if "replay" in job.requested_actions and primary_contracts and unresolved_ocr_assets:
+    if "replay" in job.requested_actions and primary_contracts and ocr_blocks_replay:
         replay_payload = {
             "job_id": job.job_id,
             "status": "blocked",
@@ -693,6 +737,27 @@ def run_review_job(
                 "next_steps": [
                     "优先检查 `output/product-split.json` 里哪些品项还没进入 `compared`。",
                     "先补齐失败品项，再做整单汇总金额对比。",
+                ],
+            }
+    elif "replay" in job.requested_actions and formal_quote_payload.get("status") == "completed":
+        if formal_quote_payload.get("reason") == "approximate_quote_completed":
+            replay_payload = {
+                "job_id": job.job_id,
+                "status": "completed",
+                "reason": "当前任务已用轻量试算完成金额核对；这次主要用于判断合同金额大体是否合理，不代表正式报价字段已全部补齐。",
+                "next_steps": [
+                    "若金额基本一致，可先视为通过并留意假设项，不必继续向客户深追问。",
+                    "若金额差异明显，再回看围栏、梯柜和床下柜体参数是否录错。",
+                ],
+            }
+        else:
+            replay_payload = {
+                "job_id": job.job_id,
+                "status": "completed",
+                "reason": "当前任务已通过 liangqin-pricing 预检，并已完成一次正式报价回放与金额对比。",
+                "next_steps": [
+                    "优先查看 `output/pricing-compare.json`，确认是匹配合同总价、接近折前价，还是存在明显差异。",
+                    "若差异明显，再回看合同备注、折扣、门型和附加项是否未进入当前报价入参。",
                 ],
             }
     elif (
@@ -806,7 +871,7 @@ def run_review_job(
         },
         "automation_state": (
             "ocr_or_vision_required"
-            if unresolved_ocr_assets or (drawing_assets and not ocr_completed_assets)
+            if ocr_blocks_replay or (drawing_assets and not ocr_completed_assets)
             else "ocr_evidence_ready"
             if ocr_completed_assets
             else "ingest_scaffold_ready"
@@ -819,7 +884,7 @@ def run_review_job(
         formal_quote_payload=formal_quote_payload,
         pricing_compare_payload=pricing_compare_payload,
         single_product_line_item=single_product_line_item,
-        unresolved_ocr_assets=len(unresolved_ocr_assets),
+        unresolved_ocr_assets=len(unresolved_ocr_assets) if ocr_blocks_replay else 0,
     )
     template_profile = build_template_profile(
         job=job,
@@ -831,8 +896,15 @@ def run_review_job(
         automation_state=review_payload["automation_state"],
         review_analysis=review_analysis,
     )
+    review_payload.update(actionable_priority_payload)
     review_payload["issues"] = review_analysis["issues"]
     review_payload["review_card"] = review_analysis["review_card"]
+    reviewer_card_payload = build_reviewer_card(
+        contract_audit_payload=contract_audit_payload,
+        pricing_compare_payload=pricing_compare_payload,
+        review_analysis_payload=review_analysis,
+    )
+    review_payload["reviewer_card"] = reviewer_card_payload
     review_payload["template_profile"] = template_profile
     review_payload["review_analysis"] = {
         "issue_count": review_analysis["issue_count"],
@@ -862,10 +934,12 @@ def run_review_job(
     write_json(job_dir / "output" / "formal-quote.json", formal_quote_payload)
     write_json(job_dir / "output" / "pricing-compare.json", pricing_compare_payload)
     write_json(job_dir / "output" / "product-split.json", product_split_payload)
+    write_json(job_dir / "output" / "reviewer-card.json", reviewer_card_payload)
     write_json(job_dir / "output" / "template-profile.json", template_profile)
     write_json(job_dir / "output" / "review.json", review_payload)
     write_json(job_dir / "output" / "replay.json", replay_payload)
     write_markdown(job_dir / "output" / "review.md", _render_review_markdown(review_payload, replay_payload))
+    write_markdown(job_dir / "output" / "reviewer-card.md", render_reviewer_card_markdown(reviewer_card_payload))
     write_json(
         job_dir / "status.json",
         {

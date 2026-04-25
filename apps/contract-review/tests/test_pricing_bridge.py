@@ -1,10 +1,15 @@
 import importlib.util
+import sys
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 APP_ROOT = Path(__file__).resolve().parents[1]
+CORE_ROOT = APP_ROOT / "core"
 BRIDGE_PATH = APP_ROOT / "core" / "pricing_bridge.py"
+if str(CORE_ROOT) not in sys.path:
+    sys.path.insert(0, str(CORE_ROOT))
 
 
 def load_module(name: str, path: Path):
@@ -203,6 +208,35 @@ class PricingBridgeTests(unittest.TestCase):
         self.assertEqual(result["child_bed_analysis"]["primary_drawing_file_name"], "大尺寸图.png")
         self.assertIsNone(result["precheck_result"])
 
+    def test_bridge_does_not_block_explicit_adult_bed_with_child_bed_only_field_name_overlap(self) -> None:
+        result = BRIDGE.bridge_contract_to_pricing_precheck(
+            {
+                "fields": {
+                    "product_category": {
+                        "value": "经典箱体床",
+                        "confidence": 0.9,
+                        "evidence_refs": [{"source_kind": "ocr_unknown"}],
+                    },
+                    "lower_bed_type": {
+                        "value": "箱体床",
+                        "confidence": 0.9,
+                        "evidence_refs": [{"source_kind": "ocr_unknown"}],
+                    },
+                    "wood_material": {"value": "北美樱桃木", "confidence": 0.99},
+                    "quote_kind": {"value": "custom", "confidence": 0.87},
+                    "length": {"value": "2520 mm", "confidence": 0.95},
+                    "width": {"value": "1360 mm", "confidence": 0.95},
+                    "height": {"value": "1050 mm", "confidence": 0.95},
+                }
+            }
+        )
+
+        self.assertEqual(result["status"], "ready_for_formal_quote")
+        self.assertEqual(result["precheck_args"]["category"], "经典箱体床")
+        self.assertEqual(result["precheck_result"]["pricing_route"], "bed_standard")
+        self.assertNotIn("lower_bed_type", result["blocked_fields"])
+        self.assertEqual(result["strict_ocr_blocked_fields"], [])
+
     def test_bridge_accepts_high_confidence_primary_child_bed_drawing_fields(self) -> None:
         result = BRIDGE.bridge_contract_to_pricing_precheck(
             {
@@ -265,6 +299,212 @@ class PricingBridgeTests(unittest.TestCase):
         self.assertNotIn("width", result["strict_ocr_blocked_fields"])
         self.assertEqual(result["precheck_args"]["width"], "1080mm")
         self.assertEqual(result["precheck_result"]["next_required_field"], "guardrail_length")
+
+    def test_lightweight_amount_check_can_use_cabinet_route_evidence_from_visual_caption(self) -> None:
+        normalized_fields = {
+            "fields": {
+                "product_category": {"value": "柜体", "confidence": 0.96},
+                "length": {"value": "2000mm", "confidence": 0.95},
+                "height": {"value": "2400mm", "confidence": 0.95},
+                "wood_material": {"value": "北美樱桃木", "confidence": 0.95},
+            },
+            "route_evidence": {
+                "recommended_route": "cabinet",
+                "candidates": [
+                    {
+                        "route": "cabinet",
+                        "score": 9,
+                        "signals": ["开放书柜"],
+                        "evidence_snippets": ["图下注：开放书柜，层板可调"],
+                        "source_asset_ids": ["asset-visual"],
+                        "inferred_overrides": {
+                            "category": "书柜",
+                            "has_door": "no",
+                        },
+                    }
+                ],
+            },
+        }
+
+        result = BRIDGE.build_lightweight_amount_check_quote_payload(
+            normalized_fields,
+            pricing_bridge_payload={
+                "status": "manual_confirmation_required",
+                "reason": "category_missing_or_untrusted",
+                "precheck_args": {
+                    "category": "柜体",
+                    "length": "2000mm",
+                    "height": "2400mm",
+                    "material": "北美樱桃木",
+                },
+                "precheck_result": None,
+            },
+        )
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result["reason"], "approximate_quote_completed")
+        self.assertEqual(result["pricing_route"], "cabinet_projection_area")
+        self.assertTrue(str(result["pricing_total"]).endswith("元"))
+        assumed_fields = {item["field"] for item in result["assumed_defaults"]}
+        self.assertIn("category", assumed_fields)
+        self.assertIn("has_door", assumed_fields)
+
+    def test_lightweight_amount_check_prefers_best_cabinet_candidate_by_contract_amount(self) -> None:
+        normalized_fields = {
+            "fields": {
+                "product_category": {"value": "柜体", "confidence": 0.96},
+                "length": {"value": "2000mm", "confidence": 0.95},
+                "height": {"value": "2400mm", "confidence": 0.95},
+                "wood_material": {"value": "北美樱桃木", "confidence": 0.95},
+            },
+            "route_evidence": {
+                "recommended_route": "cabinet",
+                "candidates": [
+                    {
+                        "route": "cabinet",
+                        "score": 9,
+                        "signals": ["开放书柜"],
+                        "evidence_snippets": ["图下注：开放书柜，层板可调"],
+                        "source_asset_ids": ["asset-visual"],
+                        "inferred_overrides": {
+                            "category": "书柜",
+                            "has_door": "no",
+                        },
+                    }
+                ],
+            },
+        }
+
+        def fake_run_precheck(precheck_args: dict[str, str]) -> dict[str, object]:
+            self.assertEqual(precheck_args["category"], "书柜")
+            return {
+                "ready_for_formal_quote": True,
+                "quote_decision": "reference_quote",
+                "assumed_defaults": [],
+                "pricing_route": "cabinet",
+            }
+
+        def fake_build_quote_payload_from_precheck(*, precheck_args: dict[str, str], precheck_result: dict[str, object]) -> dict[str, object]:
+            del precheck_result
+            total = "21200元" if precheck_args.get("has_door") == "yes" else "20500元"
+            return {
+                "items": [],
+                "total": total,
+                "pricing_route": "cabinet_projection_area",
+                "reference": True,
+            }
+
+        fake_module = type(
+            "FakeQuoteModule",
+            (),
+            {"_build_quote_payload_from_precheck": staticmethod(fake_build_quote_payload_from_precheck)},
+        )
+
+        with mock.patch.object(BRIDGE, "run_liangqin_pricing_precheck", side_effect=fake_run_precheck), mock.patch.object(
+            BRIDGE,
+            "_load_handle_quote_message_module",
+            return_value=fake_module,
+        ):
+            result = BRIDGE.build_lightweight_amount_check_quote_payload(
+                normalized_fields,
+                pricing_bridge_payload={
+                    "status": "manual_confirmation_required",
+                    "reason": "category_missing_or_untrusted",
+                    "precheck_args": {
+                        "category": "柜体",
+                        "length": "2000mm",
+                        "height": "2400mm",
+                        "material": "北美樱桃木",
+                    },
+                    "precheck_result": None,
+                },
+                contract_total="21200元",
+            )
+
+        assert result is not None
+        self.assertEqual(result["pricing_total"], "21200元")
+        self.assertEqual(result["selected_route_candidate"]["inferred_overrides"]["has_door"], "yes")
+        self.assertEqual(result["selected_route_candidate"]["match_diff_value"], 0.0)
+        self.assertEqual(len(result["route_candidates"]), 2)
+        self.assertFalse(result["route_uncertainty"])
+
+    def test_lightweight_amount_check_marks_route_uncertainty_when_runner_up_is_close(self) -> None:
+        normalized_fields = {
+            "fields": {
+                "product_category": {"value": "柜体", "confidence": 0.96},
+                "length": {"value": "2000mm", "confidence": 0.95},
+                "height": {"value": "2400mm", "confidence": 0.95},
+                "wood_material": {"value": "北美樱桃木", "confidence": 0.95},
+            },
+            "route_evidence": {
+                "recommended_route": "cabinet",
+                "candidates": [
+                    {
+                        "route": "cabinet",
+                        "score": 9,
+                        "signals": ["开放书柜"],
+                        "evidence_snippets": ["图下注：开放书柜，层板可调"],
+                        "source_asset_ids": ["asset-visual"],
+                        "inferred_overrides": {
+                            "category": "书柜",
+                            "has_door": "no",
+                        },
+                    }
+                ],
+            },
+        }
+
+        def fake_run_precheck(precheck_args: dict[str, str]) -> dict[str, object]:
+            self.assertEqual(precheck_args["category"], "书柜")
+            return {
+                "ready_for_formal_quote": True,
+                "quote_decision": "reference_quote",
+                "assumed_defaults": [],
+                "pricing_route": "cabinet",
+            }
+
+        def fake_build_quote_payload_from_precheck(*, precheck_args: dict[str, str], precheck_result: dict[str, object]) -> dict[str, object]:
+            del precheck_result
+            total = "21020元" if precheck_args.get("has_door") == "no" else "21060元"
+            return {
+                "items": [],
+                "total": total,
+                "pricing_route": "cabinet_projection_area",
+                "reference": True,
+            }
+
+        fake_module = type(
+            "FakeQuoteModule",
+            (),
+            {"_build_quote_payload_from_precheck": staticmethod(fake_build_quote_payload_from_precheck)},
+        )
+
+        with mock.patch.object(BRIDGE, "run_liangqin_pricing_precheck", side_effect=fake_run_precheck), mock.patch.object(
+            BRIDGE,
+            "_load_handle_quote_message_module",
+            return_value=fake_module,
+        ):
+            result = BRIDGE.build_lightweight_amount_check_quote_payload(
+                normalized_fields,
+                pricing_bridge_payload={
+                    "status": "manual_confirmation_required",
+                    "reason": "category_missing_or_untrusted",
+                    "precheck_args": {
+                        "category": "柜体",
+                        "length": "2000mm",
+                        "height": "2400mm",
+                        "material": "北美樱桃木",
+                    },
+                    "precheck_result": None,
+                },
+                contract_total="21000元",
+            )
+
+        assert result is not None
+        self.assertEqual(result["selected_route_candidate"]["inferred_overrides"]["has_door"], "no")
+        self.assertTrue(result["route_uncertainty"])
+        self.assertEqual(result["selected_vs_runner_up_diff_value"], 40.0)
+        self.assertEqual(result["runner_up_route_candidate"]["inferred_overrides"]["has_door"], "yes")
 
 
 if __name__ == "__main__":

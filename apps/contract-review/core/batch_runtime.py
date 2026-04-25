@@ -6,6 +6,7 @@ import json
 import os
 import re
 import shutil
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from pathlib import Path
 from typing import Any
 
@@ -36,6 +37,12 @@ TEMPLATE_FEEDBACK_ROOT_CAUSE = {
     "add_on_mismatch": "add_on_omission",
     "field_conflict": "template_field_conflict",
 }
+REVIEWER_DECISION_LABELS = {
+    "auto_pass": "可自动通过",
+    "review_recommended": "建议人工复核",
+    "manual_required": "必须人工确认",
+}
+REVIEWER_DECISION_ORDER = ("manual_required", "review_recommended", "auto_pass")
 
 
 def slugify(value: str) -> str:
@@ -99,7 +106,16 @@ def sort_batch_results(batch_results: list[dict[str, Any]]) -> list[dict[str, An
     )
 
 
-def _build_manual_review_queue_payload(batch_plan: BatchPlan, sorted_results: list[dict[str, Any]]) -> dict[str, Any]:
+def _build_manual_review_queue_payload(
+    batch_plan: BatchPlan,
+    sorted_results: list[dict[str, Any]],
+    reviewer_card_summary_payload: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    reviewer_decisions = {
+        str(item.get("job_id") or "").strip(): str(item.get("decision") or "").strip()
+        for item in list((reviewer_card_summary_payload or {}).get("items") or [])
+        if str(item.get("job_id") or "").strip()
+    }
     items = [
         {
             "job_id": row["job_id"],
@@ -122,6 +138,7 @@ def _build_manual_review_queue_payload(batch_plan: BatchPlan, sorted_results: li
             "job_dir": row["job_dir"],
         }
         for row in sorted_results
+        if reviewer_decisions.get(str(row.get("job_id") or "").strip(), "manual_required") != "auto_pass"
     ]
     return {
         "batch_id": batch_plan.batch_id,
@@ -540,6 +557,214 @@ def _build_pricing_diagnosis_payload(batch_plan: BatchPlan, sorted_results: list
     }
 
 
+def _parse_amount(value: Any) -> Decimal | None:
+    text = str(value or "").strip()
+    if not text:
+        return None
+    normalized = (
+        text.replace(",", "")
+        .replace("，", "")
+        .replace("人民币", "")
+        .replace("元", "")
+        .strip()
+    )
+    if not normalized:
+        return None
+    try:
+        return Decimal(normalized).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    except InvalidOperation:
+        return None
+
+
+def _format_amount(value: Decimal | None) -> str:
+    if value is None:
+        return ""
+    quantized = value.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    if quantized == quantized.to_integral():
+        return f"{int(quantized)}元"
+    return f"{format(quantized.normalize(), 'f')}元"
+
+
+def _derive_fallback_item_ledger(row: dict[str, Any], pricing_compare_payload: dict[str, Any]) -> list[dict[str, Any]]:
+    contract_amount = (
+        str(row.get("contract_total") or "").strip()
+        or str(row.get("discounted_total") or "").strip()
+        or str(row.get("list_price_total") or "").strip()
+    )
+    pricing_amount = str(row.get("pricing_total") or "").strip()
+    compare_status = str(row.get("pricing_compare_status") or "").strip()
+    ledger_status = "compared" if pricing_amount else "pending"
+    difference = ""
+    difference_value: float | None = None
+    contract_decimal = _parse_amount(contract_amount)
+    pricing_decimal = _parse_amount(pricing_amount)
+    if contract_decimal is not None and pricing_decimal is not None:
+        difference_decimal = abs(pricing_decimal - contract_decimal)
+        difference = _format_amount(difference_decimal)
+        difference_value = float(difference_decimal)
+
+    reason = str(pricing_compare_payload.get("reason") or "").strip()
+    if not reason:
+        reason = compare_status or ("pricing_total_compared" if pricing_amount else "formal_quote_not_available")
+
+    entry = {
+        "product_name": "整单",
+        "product_code": "",
+        "ledger_status": ledger_status,
+        "contract_amount": contract_amount,
+        "pricing_amount": pricing_amount,
+        "difference": difference,
+        "difference_value": difference_value,
+        "pricing_route": str(row.get("pricing_route") or "").strip(),
+        "reason": reason,
+    }
+    best_match_target = str(pricing_compare_payload.get("best_match_target") or "").strip()
+    if best_match_target:
+        entry["best_match_target"] = best_match_target
+    best_match_diff = str(pricing_compare_payload.get("best_match_diff") or "").strip()
+    if best_match_diff:
+        entry["best_match_diff"] = best_match_diff
+    return [entry]
+
+
+def _build_pricing_replay_baseline_payload(batch_plan: BatchPlan, sorted_results: list[dict[str, Any]]) -> dict[str, Any]:
+    items: list[dict[str, Any]] = []
+    for row in sorted_results:
+        job_dir = Path(str(row.get("job_dir") or ""))
+        review_payload = _load_job_output_payload(job_dir, "review.json")
+        pricing_compare_payload = (review_payload.get("pricing_compare") or {})
+        if not pricing_compare_payload:
+            pricing_compare_payload = _load_job_output_payload(job_dir, "pricing-compare.json")
+
+        item_ledger = [
+            dict(item)
+            for item in list(pricing_compare_payload.get("item_ledger") or [])
+            if isinstance(item, dict)
+        ]
+        if not item_ledger:
+            item_ledger = _derive_fallback_item_ledger(row, pricing_compare_payload)
+
+        items.append(
+            {
+                "job_id": row["job_id"],
+                "group_key": row["group_key"],
+                "pricing_compare_status": str(row.get("pricing_compare_status") or "").strip(),
+                "pricing_route": str(row.get("pricing_route") or "").strip(),
+                "contract_total": str(row.get("contract_total") or "").strip(),
+                "pricing_total": str(row.get("pricing_total") or "").strip(),
+                "review_path": row["review_path"],
+                "item_ledger": item_ledger,
+            }
+        )
+    return {
+        "batch_id": batch_plan.batch_id,
+        "job_count": len(items),
+        "items": items,
+    }
+
+
+def _build_reviewer_card_summary_payload(batch_plan: BatchPlan, sorted_results: list[dict[str, Any]]) -> dict[str, Any]:
+    decision_breakdown = {key: 0 for key in REVIEWER_DECISION_LABELS}
+    items: list[dict[str, Any]] = []
+    for row in sorted_results:
+        job_dir = Path(str(row.get("job_dir") or ""))
+        reviewer_card = _load_job_output_payload(job_dir, "reviewer-card.json")
+        decision = str(reviewer_card.get("decision") or "").strip()
+        if decision not in REVIEWER_DECISION_LABELS:
+            decision = "manual_required"
+
+        decision_breakdown[decision] += 1
+        amounts = reviewer_card.get("amounts") or {}
+        line_items = [
+            dict(item)
+            for item in list(reviewer_card.get("line_items") or [])
+            if isinstance(item, dict)
+        ]
+        manual_required_items = [
+            item
+            for item in line_items
+            if str(item.get("review_status") or "").strip() == "manual_required"
+        ]
+        review_recommended_items = [
+            item
+            for item in line_items
+            if str(item.get("review_status") or "").strip() == "review_recommended"
+        ]
+        compared_items = [
+            item
+            for item in line_items
+            if str(item.get("review_status") or "").strip() == "compared"
+        ]
+        next_actions = [
+            str(action).strip()
+            for action in list(reviewer_card.get("next_actions") or [])
+            if str(action).strip()
+        ]
+        primary_reason = str(reviewer_card.get("primary_reason") or "").strip()
+        if not primary_reason:
+            primary_reason = "未生成审核员决策卡，请人工确认该单是否已形成系统报价。"
+        if not next_actions and decision == "manual_required":
+            next_actions = ["优先确认该单是否存在未入账品项或无法形成报价的品项。"]
+
+        items.append(
+            {
+                "job_id": row["job_id"],
+                "group_key": row["group_key"],
+                "decision": decision,
+                "decision_label": str(reviewer_card.get("decision_label") or REVIEWER_DECISION_LABELS[decision]).strip(),
+                "primary_reason": primary_reason,
+                "contract_amount": str(amounts.get("contract_amount") or row.get("contract_total") or "").strip(),
+                "pricing_amount": str(amounts.get("pricing_amount") or row.get("pricing_total") or "").strip(),
+                "difference": str(amounts.get("difference") or row.get("pricing_compare_best_match_diff") or "").strip(),
+                "comparison_basis_label": str(amounts.get("comparison_basis_label") or "").strip(),
+                "manual_required_item_count": len(manual_required_items),
+                "review_recommended_item_count": len(review_recommended_items),
+                "compared_item_count": len(compared_items),
+                "pending_item_names": [
+                    str(item.get("product_name") or "未命名品项").strip() or "未命名品项"
+                    for item in manual_required_items
+                ],
+                "next_actions": next_actions[:3],
+                "review_path": row["review_path"],
+                "reviewer_card_path": str(job_dir / "output" / "reviewer-card.md") if job_dir else "",
+            }
+        )
+
+    return {
+        "batch_id": batch_plan.batch_id,
+        "job_count": len(items),
+        "decision_breakdown": decision_breakdown,
+        "items": items,
+    }
+
+
+def _render_reviewer_card_summary_markdown(payload: dict[str, Any]) -> str:
+    lines = [
+        f"# 审核员批量决策汇总：{payload['batch_id']}",
+        "",
+        f"- 单据数：`{payload['job_count']}`",
+    ]
+    breakdown = payload.get("decision_breakdown") or {}
+    for decision in REVIEWER_DECISION_ORDER:
+        lines.append(f"- {REVIEWER_DECISION_LABELS[decision]}：`{breakdown.get(decision, 0)}`")
+
+    lines.extend(["", "## 逐单结论", ""])
+    for item in list(payload.get("items") or []):
+        lines.append(
+            f"- `{item['job_id']}` / `{item['group_key']}` / {item['decision_label']} / "
+            f"合同={item.get('contract_amount') or '未识别'} / "
+            f"报价={item.get('pricing_amount') or '未形成报价'} / "
+            f"差额={item.get('difference') or '无法对比'}"
+        )
+        if item.get("primary_reason"):
+            lines.append(f"  原因：{item['primary_reason']}")
+        if item.get("pending_item_names"):
+            lines.append(f"  未入账品项：{'、'.join(item['pending_item_names'])}")
+        if item.get("next_actions"):
+            lines.append(f"  建议动作：{'；'.join(item['next_actions'])}")
+    return "\n".join(lines).strip() + "\n"
+
+
 def materialize_job(job: ReviewJob, *, runtime_root: Path = DEFAULT_RUNTIME_ROOT) -> Path:
     job_dir = job_output_dir(job.job_id, runtime_root=runtime_root)
     input_dir = ensure_dir(job_dir / "input")
@@ -580,8 +805,8 @@ def write_batch_summary(
         "created_at": batch_plan.created_at,
     }
 
-    write_json(output_dir / "batch-summary.json", summary_payload)
-    queue_payload = _build_manual_review_queue_payload(batch_plan, sorted_results)
+    reviewer_card_summary_payload = _build_reviewer_card_summary_payload(batch_plan, sorted_results)
+    queue_payload = _build_manual_review_queue_payload(batch_plan, sorted_results, reviewer_card_summary_payload)
     write_json(output_dir / "manual-review-queue.json", queue_payload)
     dashboard_payload = _build_batch_dashboard_payload(batch_plan, sorted_results, queue_payload)
     write_json(output_dir / "batch-dashboard.json", dashboard_payload)
@@ -589,6 +814,14 @@ def write_batch_summary(
     write_json(output_dir / "pricing-compare.json", pricing_compare_payload)
     pricing_diagnosis_payload = _build_pricing_diagnosis_payload(batch_plan, sorted_results)
     write_json(output_dir / "pricing-compare-diagnosis.json", pricing_diagnosis_payload)
+    pricing_replay_baseline_payload = _build_pricing_replay_baseline_payload(batch_plan, sorted_results)
+    write_json(output_dir / "pricing-replay-baseline.json", pricing_replay_baseline_payload)
+    write_json(output_dir / "reviewer-card-summary.json", reviewer_card_summary_payload)
+    summary_payload["reviewer_card_summary"] = {
+        "decision_breakdown": reviewer_card_summary_payload["decision_breakdown"],
+        "job_count": reviewer_card_summary_payload["job_count"],
+    }
+    write_json(output_dir / "batch-summary.json", summary_payload)
 
     csv_rows = [
         {
@@ -751,6 +984,33 @@ def write_batch_summary(
         if item["recommended_next_actions"]:
             diagnosis_lines.append(f"  next_actions: {'；'.join(item['recommended_next_actions'])}")
     write_markdown(output_dir / "pricing-compare-diagnosis.md", "\n".join(diagnosis_lines).strip() + "\n")
+
+    replay_baseline_lines = [
+        f"# 报价回放基准集：{batch_plan.batch_id}",
+        "",
+        f"- job_count: `{pricing_replay_baseline_payload['job_count']}`",
+        "",
+        "## 逐单台账",
+        "",
+    ]
+    for item in pricing_replay_baseline_payload["items"]:
+        replay_baseline_lines.append(
+            f"- `{item['job_id']}` / `{item['group_key']}` / compare={item['pricing_compare_status'] or 'n/a'} / "
+            f"pricing_route={item['pricing_route'] or 'n/a'}"
+        )
+        for ledger in item["item_ledger"]:
+            replay_baseline_lines.append(
+                f"  - {ledger.get('product_name') or '未命名品项'} / "
+                f"合同={ledger.get('contract_amount') or 'n/a'} / "
+                f"报价={ledger.get('pricing_amount') or 'n/a'} / "
+                f"差额={ledger.get('difference') or 'n/a'} / "
+                f"status={ledger.get('ledger_status') or 'n/a'}"
+            )
+    write_markdown(output_dir / "pricing-replay-baseline.md", "\n".join(replay_baseline_lines).strip() + "\n")
+    write_markdown(
+        output_dir / "reviewer-card-summary.md",
+        _render_reviewer_card_summary_markdown(reviewer_card_summary_payload),
+    )
 
     dashboard_lines = [
         f"# 批次首页：{batch_plan.batch_id}",

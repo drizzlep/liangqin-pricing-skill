@@ -29,6 +29,175 @@ BATCH_RUNTIME = load_module("contract_review_batch_runtime_for_insights", MODULE
 
 
 class BatchRuntimeInsightsTests(unittest.TestCase):
+    def test_write_batch_summary_emits_reviewer_card_summary(self) -> None:
+        batch_plan = JOB_MODELS.BatchPlan(
+            batch_id="batch-reviewer-cards",
+            batch_dir=Path("/tmp/batch-reviewer-cards"),
+            source_type="manual_batch",
+            source_channel="manual",
+            requested_actions=["audit", "replay"],
+            jobs=[],
+        )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            runtime_root = Path(tmpdir)
+            job_auto = runtime_root / "jobs" / "batch-reviewer-cards-001"
+            job_manual = runtime_root / "jobs" / "batch-reviewer-cards-002"
+            (job_auto / "output").mkdir(parents=True)
+            (job_manual / "output").mkdir(parents=True)
+            (job_auto / "output" / "reviewer-card.json").write_text(
+                json.dumps(
+                    {
+                        "decision": "auto_pass",
+                        "decision_label": "可自动通过",
+                        "primary_reason": "金额差异在可自动通过范围内（差额4元）。",
+                        "amounts": {
+                            "contract_amount": "19800元",
+                            "pricing_amount": "19796元",
+                            "difference": "4元",
+                            "comparison_basis_label": "合同总金额",
+                        },
+                        "line_items": [
+                            {
+                                "product_name": "书柜",
+                                "review_status": "compared",
+                                "review_status_label": "已核对",
+                            }
+                        ],
+                        "next_actions": ["可低风险通过，建议保留本次金额核对记录。"],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            (job_manual / "output" / "reviewer-card.json").write_text(
+                json.dumps(
+                    {
+                        "decision": "manual_required",
+                        "decision_label": "必须人工确认",
+                        "primary_reason": "存在1个品项未入账，不能判断整单金额是否正确。",
+                        "amounts": {
+                            "contract_amount": "41085元",
+                            "pricing_amount": "26325元",
+                            "difference": "14760元",
+                            "comparison_basis_label": "合同总金额",
+                        },
+                        "line_items": [
+                            {
+                                "product_name": "衣柜",
+                                "review_status": "compared",
+                                "review_status_label": "已核对",
+                            },
+                            {
+                                "product_name": "衣柜组合",
+                                "review_status": "manual_required",
+                                "review_status_label": "必须人工确认",
+                                "manual_hint": "该品项未形成报价，请人工确认后再判断整单金额。",
+                            },
+                        ],
+                        "next_actions": ["优先确认未入账品项：衣柜组合。"],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            summary_payload = BATCH_RUNTIME.write_batch_summary(
+                batch_plan,
+                batch_results=[
+                    {
+                        "job_id": "batch-reviewer-cards-001",
+                        "group_key": "case-auto",
+                        "status": "compared",
+                        "review_priority": "normal",
+                        "review_priority_score": 3,
+                        "review_priority_reason": "",
+                        "finding_count": 0,
+                        "blocking_finding_count": 0,
+                        "primary_contract_count": 1,
+                        "automation_state": "review_completed",
+                        "conflict_count": 0,
+                        "conflict_fields": [],
+                        "manual_review_reasons": [],
+                        "risk_flags": [],
+                        "contract_total": "19800元",
+                        "list_price_total": "",
+                        "discounted_total": "",
+                        "discount_rate": "",
+                        "pricing_total": "19796元",
+                        "pricing_compare_status": "close_match_contract_total",
+                        "pricing_compare_match_band": "close_match",
+                        "pricing_compare_best_match_target": "contract_total",
+                        "pricing_compare_best_match_diff": "4元",
+                        "pricing_route": "cabinet_projection_area",
+                        "review_path": str(job_auto / "output" / "review.md"),
+                        "job_dir": str(job_auto),
+                        "actionable_priority": "auto_pass_candidate",
+                        "actionable_priority_score": 4,
+                        "issue_codes": [],
+                        "template_id": "",
+                        "template_fingerprint": "",
+                    },
+                    {
+                        "job_id": "batch-reviewer-cards-002",
+                        "group_key": "case-manual",
+                        "status": "manual_review_required",
+                        "review_priority": "p1",
+                        "review_priority_score": 1,
+                        "review_priority_reason": "pricing_total:manual_required",
+                        "finding_count": 1,
+                        "blocking_finding_count": 0,
+                        "primary_contract_count": 1,
+                        "automation_state": "review_completed",
+                        "conflict_count": 0,
+                        "conflict_fields": [],
+                        "manual_review_reasons": ["pricing_total:manual_required"],
+                        "risk_flags": [],
+                        "contract_total": "41085元",
+                        "list_price_total": "",
+                        "discounted_total": "",
+                        "discount_rate": "",
+                        "pricing_total": "26325元",
+                        "pricing_compare_status": "mismatch_contract_total",
+                        "pricing_compare_match_band": "mismatch",
+                        "pricing_compare_best_match_target": "contract_total",
+                        "pricing_compare_best_match_diff": "14760元",
+                        "pricing_route": "multi_product_aggregate",
+                        "review_path": str(job_manual / "output" / "review.md"),
+                        "job_dir": str(job_manual),
+                        "actionable_priority": "need_user_input",
+                        "actionable_priority_score": 1,
+                        "issue_codes": ["pricing_total_missing"],
+                        "template_id": "",
+                        "template_fingerprint": "",
+                    },
+                ],
+                runtime_root=runtime_root,
+            )
+
+            output_dir = runtime_root / "batches" / "batch-reviewer-cards"
+            persisted_batch_summary = json.loads((output_dir / "batch-summary.json").read_text(encoding="utf-8"))
+            reviewer_summary = json.loads((output_dir / "reviewer-card-summary.json").read_text(encoding="utf-8"))
+            reviewer_markdown = (output_dir / "reviewer-card-summary.md").read_text(encoding="utf-8")
+            manual_queue = json.loads((output_dir / "manual-review-queue.json").read_text(encoding="utf-8"))
+            dashboard_payload = json.loads((output_dir / "batch-dashboard.json").read_text(encoding="utf-8"))
+
+        self.assertEqual(summary_payload["reviewer_card_summary"]["decision_breakdown"]["auto_pass"], 1)
+        self.assertEqual(summary_payload["reviewer_card_summary"]["decision_breakdown"]["manual_required"], 1)
+        self.assertEqual(persisted_batch_summary["reviewer_card_summary"]["decision_breakdown"]["auto_pass"], 1)
+        self.assertEqual(reviewer_summary["decision_breakdown"]["review_recommended"], 0)
+        self.assertEqual(reviewer_summary["items"][0]["decision"], "manual_required")
+        self.assertEqual(reviewer_summary["items"][0]["manual_required_item_count"], 1)
+        self.assertEqual(reviewer_summary["items"][1]["decision"], "auto_pass")
+        self.assertIn("审核员批量决策汇总", reviewer_markdown)
+        self.assertIn("case-manual", reviewer_markdown)
+        self.assertIn("必须人工确认", reviewer_markdown)
+        self.assertIn("优先确认未入账品项：衣柜组合。", reviewer_markdown)
+        self.assertEqual(manual_queue["queue_count"], 1)
+        self.assertEqual(manual_queue["items"][0]["job_id"], "batch-reviewer-cards-002")
+        self.assertEqual(dashboard_payload["manual_queue_count"], 1)
+        self.assertEqual(dashboard_payload["top_priority_job_ids"], ["batch-reviewer-cards-002"])
+
     def test_write_batch_summary_emits_actionable_priority_and_template_stats(self) -> None:
         batch_plan = JOB_MODELS.BatchPlan(
             batch_id="batch-insights",

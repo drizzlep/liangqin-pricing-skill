@@ -7,6 +7,8 @@ from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from pathlib import Path
 from typing import Any
 
+from liangqin_paths import resolve_pricing_scripts_dir
+
 
 def execute_formal_quote(
     precheck_args: dict[str, Any],
@@ -159,6 +161,7 @@ def build_multi_product_aggregate_comparison(
     items = product_split_payload.get("items") or []
     included_items: list[dict[str, Any]] = []
     excluded_items: list[dict[str, Any]] = []
+    item_ledger: list[dict[str, Any]] = []
     aggregate_total = Decimal("0.00")
 
     for item in items:
@@ -176,18 +179,53 @@ def build_multi_product_aggregate_comparison(
             "split_status": str(item.get("split_status") or "").strip(),
             "line_total": str(item.get("line_total") or "").strip(),
         }
+        pricing_route = str(
+            formal_quote.get("pricing_route")
+            or item_compare_payload.get("pricing_route")
+            or ""
+        ).strip()
+        if pricing_route:
+            item_summary["pricing_route"] = pricing_route
+        fallback_strategy = str(formal_quote.get("fallback_strategy") or "").strip()
+        if fallback_strategy:
+            item_summary["fallback_strategy"] = fallback_strategy
+        fallback_detail = formal_quote.get("fallback_detail")
+        if isinstance(fallback_detail, dict) and fallback_detail:
+            item_summary["fallback_detail"] = fallback_detail
         if pricing_total is None:
             item_summary["reason"] = str(
                 formal_quote.get("reason")
                 or item_compare_payload.get("reason")
                 or "pricing_total_missing"
             ).strip()
+            follow_up_question = _build_split_follow_up_question(item)
+            if follow_up_question:
+                item_summary["follow_up_question"] = follow_up_question
+            item_summary.update(_extract_split_stair_storage_watch(item))
             excluded_items.append(item_summary)
+            item_ledger.append(
+                _build_pending_item_ledger_entry(
+                    item=item_summary,
+                    detail_resolution=item.get("detail_resolution") or {},
+                )
+            )
             continue
 
         aggregate_total += pricing_total
         item_summary["pricing_total"] = format_amount(pricing_total)
         included_items.append(item_summary)
+        item_ledger.append(
+            _build_compared_item_ledger_entry(
+                item=item_summary,
+                pricing_total=pricing_total,
+                detail_resolution=item.get("detail_resolution") or {},
+                reason=str(
+                    formal_quote.get("reason")
+                    or item_compare_payload.get("reason")
+                    or "pricing_total_compared"
+                ).strip(),
+            )
+        )
 
     if not included_items:
         return {
@@ -213,6 +251,7 @@ def build_multi_product_aggregate_comparison(
             "excluded_item_count": len(excluded_items),
             "included_items": included_items,
             "excluded_items": excluded_items,
+            "item_ledger": item_ledger,
         }
 
     aggregate_quote_payload = {
@@ -236,9 +275,218 @@ def build_multi_product_aggregate_comparison(
             "excluded_item_count": len(excluded_items),
             "included_items": included_items,
             "excluded_items": excluded_items,
+            "item_ledger": item_ledger,
         }
     )
     return result
+
+
+def _build_compared_item_ledger_entry(
+    *,
+    item: dict[str, Any],
+    pricing_total: Decimal,
+    detail_resolution: dict[str, Any],
+    reason: str,
+) -> dict[str, Any]:
+    line_total = parse_amount(item.get("line_total"))
+    difference = abs(pricing_total - line_total) if line_total is not None else None
+    entry = {
+        "product_name": str(item.get("product_name") or "").strip(),
+        "product_code": str(item.get("product_code") or "").strip(),
+        "split_status": str(item.get("split_status") or "").strip(),
+        "ledger_status": "compared",
+        "contract_amount": str(item.get("line_total") or "").strip(),
+        "pricing_amount": str(item.get("pricing_total") or "").strip(),
+        "difference": format_amount(difference) if difference is not None else "",
+        "difference_value": _decimal_to_float(difference),
+        "pricing_route": str(item.get("pricing_route") or "").strip(),
+        "reason": str(reason or "").strip(),
+    }
+    fallback_strategy = str(item.get("fallback_strategy") or "").strip()
+    if fallback_strategy:
+        entry["fallback_strategy"] = fallback_strategy
+        entry["fallback_label"] = _describe_item_fallback(item)
+    fallback_detail = item.get("fallback_detail")
+    if isinstance(fallback_detail, dict) and fallback_detail:
+        entry["fallback_detail"] = fallback_detail
+    entry.update(_summarize_detail_resolution(detail_resolution))
+    return entry
+
+
+def _build_pending_item_ledger_entry(
+    *,
+    item: dict[str, Any],
+    detail_resolution: dict[str, Any],
+) -> dict[str, Any]:
+    entry = {
+        "product_name": str(item.get("product_name") or "").strip(),
+        "product_code": str(item.get("product_code") or "").strip(),
+        "split_status": str(item.get("split_status") or "").strip(),
+        "ledger_status": "pending",
+        "contract_amount": str(item.get("line_total") or "").strip(),
+        "pricing_amount": "",
+        "difference": "",
+        "difference_value": None,
+        "pricing_route": str(item.get("pricing_route") or "").strip(),
+        "reason": str(item.get("reason") or "pricing_total_missing").strip(),
+    }
+    follow_up_question = str(item.get("follow_up_question") or "").strip()
+    if follow_up_question:
+        entry["follow_up_question"] = follow_up_question
+    fallback_strategy = str(item.get("fallback_strategy") or "").strip()
+    if fallback_strategy:
+        entry["fallback_strategy"] = fallback_strategy
+        entry["fallback_label"] = _describe_item_fallback(item)
+    fallback_detail = item.get("fallback_detail")
+    if isinstance(fallback_detail, dict) and fallback_detail:
+        entry["fallback_detail"] = fallback_detail
+    stair_storage_mode = str(item.get("stair_storage_mode") or "").strip()
+    if stair_storage_mode:
+        entry["stair_storage_mode"] = stair_storage_mode
+    stair_storage_evidence_snippets = [
+        str(snippet).strip()
+        for snippet in list(item.get("stair_storage_evidence_snippets") or [])
+        if str(snippet).strip()
+    ]
+    if stair_storage_evidence_snippets:
+        entry["stair_storage_evidence_snippets"] = stair_storage_evidence_snippets
+    entry.update(_summarize_detail_resolution(detail_resolution))
+    return entry
+
+
+def _summarize_detail_resolution(detail_resolution: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(detail_resolution, dict) or not detail_resolution:
+        return {}
+    payload: dict[str, Any] = {}
+    detail_page_no = detail_resolution.get("detail_page_no")
+    if detail_page_no not in {None, ""}:
+        payload["detail_page_no"] = detail_page_no
+    for field_name in ("anchor_method", "anchor_confidence", "stop_reason", "evidence_scope"):
+        value = str(detail_resolution.get(field_name) or "").strip()
+        if value:
+            payload[field_name] = value
+    linked_range = detail_resolution.get("linked_contract_page_range") or {}
+    if isinstance(linked_range, dict) and any(
+        linked_range.get(key) not in {None, ""} for key in ("start", "end")
+    ):
+        payload["linked_contract_page_range"] = {
+            "start": linked_range.get("start"),
+            "end": linked_range.get("end"),
+        }
+    return payload
+
+
+def _describe_item_fallback(item: dict[str, Any]) -> str:
+    fallback_strategy = str(item.get("fallback_strategy") or "").strip()
+    fallback_detail = item.get("fallback_detail") or {}
+    profile_key = str(fallback_detail.get("profile_key") or "").strip()
+    if fallback_strategy == "generic_cabinet_projection_profile":
+        profile_label = profile_key or "柜体"
+        return f"通用{profile_label}投影面积估算"
+    if fallback_strategy == "generic_cabinet_unit_candidate":
+        return "目录柜类候选估算"
+    if fallback_strategy == "dining_cabinet_unit_price_combo":
+        return "餐边柜组合估算"
+    if fallback_strategy == "generic_tatami_projection_profile":
+        return "榻榻米投影面积估算"
+    if fallback_strategy == "modular_child_bed_dimension_probe":
+        return "儿童床轻量试算"
+    if fallback_strategy == "explicit_catalog_code":
+        return "目录编码回放"
+    if fallback_strategy == "standard_bed_mattress_candidate":
+        return "床垫尺寸回放"
+    return ""
+
+
+def _build_split_follow_up_question(item: dict[str, Any]) -> str:
+    pricing_precheck = item.get("pricing_precheck") or {}
+    precheck_result = pricing_precheck.get("precheck_result") or {}
+    next_question = str(precheck_result.get("next_question") or "").strip()
+    if next_question:
+        return next_question
+
+    detail_resolution = item.get("detail_resolution") or {}
+    detail_status = str(detail_resolution.get("status") or "").strip()
+    stop_reason = str(detail_resolution.get("stop_reason") or "").strip()
+    if detail_status in {"missing_detail_in_source_text", "detail_not_resolved", "detail_anchor_missing"} or stop_reason == "detail_anchor_missing":
+        product_name = str(item.get("product_name") or "当前品项").strip() or "当前品项"
+        return f"请先人工确认 {product_name} 的详情首页和连续图纸页是否切对，再继续金额核对。"
+
+    route_evidence = pricing_precheck.get("route_evidence") or ((item.get("normalized_fields") or {}).get("route_evidence") or {})
+    candidate = _pick_split_route_candidate(route_evidence)
+    route = str(candidate.get("route") or "").strip()
+    if route != "modular_child_bed":
+        return ""
+
+    blocked_fields = {
+        str(field_name).strip()
+        for field_name in [*list(pricing_precheck.get("blocked_fields") or []), *list(pricing_precheck.get("strict_ocr_blocked_fields") or [])]
+        if str(field_name).strip()
+    }
+    inferred_overrides = candidate.get("inferred_overrides") or {}
+    bed_form = str(inferred_overrides.get("bed_form") or "").strip()
+    lower_bed_type = str(inferred_overrides.get("lower_bed_type") or "").strip()
+    if bed_form == "上下床" and "access_style" in blocked_fields:
+        lower_suffix = f"，下层结构是否为{lower_bed_type}" if lower_bed_type else ""
+        return f"请人工确认：这是不是梯柜上下床儿童床{lower_suffix}？若是，再补充围栏样式、梯柜参数和上下床尺寸。"
+    return "请人工确认这属于哪种儿童床路线（直梯/斜梯/梯柜，以及架式床/箱体床），再继续金额核对。"
+
+
+def _extract_split_stair_storage_watch(item: dict[str, Any]) -> dict[str, Any]:
+    pricing_precheck = item.get("pricing_precheck") or {}
+    normalized_fields = item.get("normalized_fields") or {}
+    child_bed_analysis = (
+        pricing_precheck.get("child_bed_analysis")
+        or normalized_fields.get("child_bed_analysis")
+        or {}
+    )
+    route_evidence = pricing_precheck.get("route_evidence") or (normalized_fields.get("route_evidence") or {})
+    candidate = _pick_split_route_candidate(route_evidence)
+    inferred_overrides = candidate.get("inferred_overrides") or {}
+
+    mode = str(
+        child_bed_analysis.get("stair_storage_mode")
+        or inferred_overrides.get("stair_storage_mode")
+        or ""
+    ).strip()
+    if not mode:
+        return {}
+
+    signals = [
+        str(item).strip()
+        for item in list(child_bed_analysis.get("stair_storage_signals") or [])
+        if str(item).strip()
+    ]
+    snippets = [
+        str(item).strip()
+        for item in list(child_bed_analysis.get("stair_storage_evidence_snippets") or [])
+        if str(item).strip()
+    ]
+    if not snippets:
+        snippets = [
+            str(item).strip()
+            for item in list(candidate.get("evidence_snippets") or [])
+            if str(item).strip()
+        ]
+
+    payload = {"stair_storage_mode": mode}
+    if signals:
+        payload["stair_storage_signals"] = signals[:3]
+    if snippets:
+        payload["stair_storage_evidence_snippets"] = snippets[:2]
+    return payload
+
+
+def _pick_split_route_candidate(route_evidence: dict[str, Any]) -> dict[str, Any]:
+    candidates = [item for item in list(route_evidence.get("candidates") or []) if isinstance(item, dict)]
+    if not candidates:
+        return {}
+    recommended_route = str(route_evidence.get("recommended_route") or "").strip()
+    if recommended_route:
+        for candidate in candidates:
+            if str(candidate.get("route") or "").strip() == recommended_route:
+                return candidate
+    return candidates[0]
 
 
 def parse_amount(value: Any) -> Decimal | None:
@@ -308,9 +556,7 @@ def _to_decimal(value: Any) -> Decimal | None:
 
 
 def _load_handle_quote_message_module():
-    scripts_dir = (
-        Path(__file__).resolve().parents[3] / "skill" / "liangqin-pricing" / "scripts"
-    )
+    scripts_dir = resolve_pricing_scripts_dir(Path(__file__))
     if str(scripts_dir) not in sys.path:
         sys.path.insert(0, str(scripts_dir))
     return importlib.import_module("handle_quote_message")

@@ -112,7 +112,7 @@ def _explicit_job_groups(batch_dir: Path, manifest: dict[str, Any]) -> list[tupl
         if not isinstance(job, dict):
             continue
         raw_paths = job.get("paths") or []
-        resolved_paths = [(batch_dir / str(relative_path)).resolve() for relative_path in raw_paths]
+        resolved_paths = [(batch_dir / str(relative_path)) for relative_path in raw_paths]
         missing = [str(path) for path in resolved_paths if not path.exists()]
         if missing:
             raise FileNotFoundError(f"manifest job references missing files: {missing}")

@@ -41,6 +41,8 @@ python3 ~/.openclaw/workspace/skills/liangqin-contract-review/scripts/handle_rev
 --context-json '{...}' --channel dingtalk-connector
 ```
 
+如果调用层没有显式传这两个参数，但把 `Conversation info (untrusted metadata)` / `Sender (untrusted metadata)` 前缀拼进了 `--text`，脚本现在也会自动提取会话信息并做状态隔离。
+
 这样高风险队列、`看下一份高风险合同`、`展开证据` 这些状态就能按当前钉钉会话隔离保存。
 
 ## 当前支持的交互

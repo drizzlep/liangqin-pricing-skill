@@ -4,6 +4,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from PIL import Image, ImageDraw
 
 
 APP_ROOT = Path(__file__).resolve().parents[1]
@@ -35,6 +36,41 @@ TEMPLATE_LEARNING = load_module("contract_review_template_learning_for_normalize
 
 
 class FieldNormalizerTests(unittest.TestCase):
+    def _build_synthetic_stair_storage_image(self, path: Path, *, mode: str) -> None:
+        image = Image.new("RGB", (900, 600), (236, 232, 226))
+        draw = ImageDraw.Draw(image)
+        wood = (171, 112, 63)
+        wood_dark = (116, 70, 36)
+
+        draw.rectangle((70, 80, 500, 560), fill=wood)
+        draw.rectangle((540, 80, 860, 560), fill=(230, 228, 224))
+
+        if mode == "open_grid":
+            for x in (110, 200, 290, 380):
+                draw.rectangle((x, 120, x + 10, 520), fill=wood_dark)
+            for y in (170, 250, 330, 410):
+                draw.rectangle((90, y, 450, y + 8), fill=wood_dark)
+            palette = [(245, 245, 238), (205, 205, 198), (148, 142, 128), (86, 76, 60)]
+            for row in range(4):
+                for col in range(4):
+                    left = 92 + col * 90
+                    top = 122 + row * 80
+                    draw.rectangle((left, top, left + 70, top + 58), fill=palette[(row + col) % len(palette)])
+            for x in (90, 180, 270, 360):
+                draw.rectangle((x, 450, x + 72, 515), fill=(109, 85, 52))
+                draw.rectangle((x + 8, 458, x + 64, 507), fill=(129, 116, 88))
+        elif mode == "drawer":
+            for idx, y in enumerate((150, 250, 350, 450)):
+                draw.rectangle((95, y, 440, y + 58), fill=(176 - idx * 6, 118 - idx * 4, 70 - idx * 3))
+                draw.line((95, y, 440, y), fill=wood_dark, width=6)
+                draw.line((95, y + 58, 440, y + 58), fill=wood_dark, width=6)
+            for x in (160, 285):
+                draw.line((x, 150, x, 508), fill=wood_dark, width=6)
+        else:
+            raise ValueError(mode)
+
+        image.save(path)
+
     def test_normalizer_extracts_modular_child_bed_fields(self) -> None:
         job = JOB_MODELS.ReviewJob(
             job_id="job-bed-001",
@@ -713,6 +749,285 @@ class FieldNormalizerTests(unittest.TestCase):
         self.assertEqual(fields["rear_cabinet_height"]["value"], "1200mm")
         self.assertEqual(fields["rear_cabinet_depth"]["value"], "450mm")
         self.assertEqual(fields["rear_cabinet_mode"]["value"], "无门有背板")
+
+    def test_normalizer_marks_underbed_combo_candidate_from_child_bed_signals(self) -> None:
+        job = JOB_MODELS.ReviewJob(
+            job_id="job-combo-signal-001",
+            batch_id="batch-combo",
+            group_key="case-combo-signal",
+            source_type="manual_batch",
+            source_channel="manual",
+            requested_actions=["audit", "replay"],
+            assets=[
+                JOB_MODELS.SourceAsset(
+                    asset_id="asset-001",
+                    source_path="/tmp/fake-combo-signal.docx",
+                    relative_path="raw/case-combo-signal/合同.docx",
+                    file_name="合同.docx",
+                    extension=".docx",
+                    media_kind="document",
+                    role_hint="primary_contract",
+                    text_preview=(
+                        "产品名称：高架床\n"
+                        "本单按定制执行\n"
+                        "床形态：高架床\n"
+                        "上层出入方式：直梯\n"
+                        "床垫宽度：1080mm\n"
+                        "床垫长度：2096mm\n"
+                        "材质：北美白橡木\n"
+                        "床下柜子为双面柜\n"
+                        "该面朝外\n"
+                        "活动层板\n"
+                    ),
+                    text_extract_method="docx_text",
+                )
+            ],
+        )
+
+        normalized = FIELD_NORMALIZER.normalize_job_fields(job)
+        analysis = normalized["child_bed_analysis"]
+
+        self.assertEqual(analysis["suggested_pricing_route"], "modular_child_bed_combo")
+        self.assertIn("双面柜", analysis["combo_candidate_signals"])
+        self.assertIn("朝外柜", analysis["combo_candidate_signals"])
+        self.assertIn("活动层板", analysis["combo_candidate_signals"])
+
+    def test_normalizer_builds_route_evidence_from_child_bed_visual_caption(self) -> None:
+        job = JOB_MODELS.ReviewJob(
+            job_id="job-route-evidence-child-001",
+            batch_id="batch-route-evidence",
+            group_key="case-route-evidence-child",
+            source_type="manual_batch",
+            source_channel="manual",
+            requested_actions=["audit", "replay"],
+            assets=[
+                JOB_MODELS.SourceAsset(
+                    asset_id="asset-contract",
+                    source_path="/tmp/fake-child-contract.docx",
+                    relative_path="raw/case-route-evidence-child/合同.docx",
+                    file_name="合同.docx",
+                    extension=".docx",
+                    media_kind="document",
+                    role_hint="primary_contract",
+                    text_preview=(
+                        "产品名称：高架床\n"
+                        "本单按定制执行\n"
+                        "床形态：高架床\n"
+                        "上层出入方式：梯柜\n"
+                        "床垫宽度：1080mm\n"
+                        "床垫长度：2096mm\n"
+                        "材质：北美白橡木\n"
+                    ),
+                    text_extract_method="docx_text",
+                ),
+                JOB_MODELS.SourceAsset(
+                    asset_id="asset-visual",
+                    source_path="/tmp/fake-child-visual.png",
+                    relative_path="raw/case-route-evidence-child/大尺寸图.png",
+                    file_name="大尺寸图.png",
+                    extension=".png",
+                    media_kind="image",
+                    role_hint="visual_attachment",
+                    text_preview="图下注：床下柜子为双面柜，该面朝外，活动层板",
+                    text_extract_method="ocr_markdown",
+                ),
+            ],
+        )
+
+        normalized = FIELD_NORMALIZER.normalize_job_fields(job)
+        route_evidence = normalized["route_evidence"]
+        top_candidate = route_evidence["candidates"][0]
+
+        self.assertEqual(route_evidence["recommended_route"], "modular_child_bed_combo")
+        self.assertEqual(top_candidate["route"], "modular_child_bed_combo")
+        self.assertIn("双面柜", top_candidate["signals"])
+        self.assertIn("朝外柜", top_candidate["signals"])
+        self.assertIn("活动层板", top_candidate["signals"])
+        self.assertIn("asset-visual", top_candidate["source_asset_ids"])
+        self.assertTrue(any("床下柜子为双面柜" in item for item in top_candidate["evidence_snippets"]))
+
+    def test_normalizer_marks_open_grid_stair_cabinet_from_child_bed_visual_caption(self) -> None:
+        job = JOB_MODELS.ReviewJob(
+            job_id="job-route-evidence-child-002",
+            batch_id="batch-route-evidence",
+            group_key="case-route-evidence-child-open-grid",
+            source_type="manual_batch",
+            source_channel="manual",
+            requested_actions=["audit", "replay"],
+            assets=[
+                JOB_MODELS.SourceAsset(
+                    asset_id="asset-contract",
+                    source_path="/tmp/fake-child-contract-open-grid.docx",
+                    relative_path="raw/case-route-evidence-child-open-grid/合同.docx",
+                    file_name="合同.docx",
+                    extension=".docx",
+                    media_kind="document",
+                    role_hint="primary_contract",
+                    text_preview=(
+                        "产品名称：儿童上下床\n"
+                        "本单按定制执行\n"
+                        "床形态：上下床\n"
+                        "上层出入方式：梯柜\n"
+                        "下层结构：箱体床\n"
+                        "床垫宽度：1200mm\n"
+                        "床垫长度：2000mm\n"
+                        "材质：北美白橡木\n"
+                    ),
+                    text_extract_method="docx_text",
+                ),
+                JOB_MODELS.SourceAsset(
+                    asset_id="asset-visual",
+                    source_path="/tmp/fake-child-open-grid-visual.png",
+                    relative_path="raw/case-route-evidence-child-open-grid/效果图.png",
+                    file_name="效果图.png",
+                    extension=".png",
+                    media_kind="image",
+                    role_hint="visual_attachment",
+                    text_preview="图下注：左侧开放格梯柜，无抽屉，层板可调",
+                    text_extract_method="ocr_markdown",
+                ),
+            ],
+        )
+
+        normalized = FIELD_NORMALIZER.normalize_job_fields(job)
+        analysis = normalized["child_bed_analysis"]
+
+        self.assertEqual(analysis["stair_storage_mode"], "open_grid")
+        self.assertIn("开放格", analysis["stair_storage_signals"])
+        self.assertIn("无抽屉", analysis["stair_storage_signals"])
+        self.assertIn("asset-visual", analysis["stair_storage_source_asset_ids"])
+        self.assertTrue(
+            any("左侧开放格梯柜" in item for item in analysis["stair_storage_evidence_snippets"])
+        )
+
+    def test_effect_image_heuristic_can_detect_open_grid_stair_storage(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            image_path = Path(tmpdir) / "open-grid.jpg"
+            self._build_synthetic_stair_storage_image(image_path, mode="open_grid")
+
+            result = FIELD_NORMALIZER._infer_stair_storage_mode_from_effect_image(image_path)
+
+        self.assertEqual(result["mode"], "open_grid")
+        self.assertGreaterEqual(result["confidence_score"], 3.0)
+        self.assertIn("visual_open_cells", result["signals"])
+
+    def test_effect_image_heuristic_does_not_misclassify_drawer_stair_storage(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            image_path = Path(tmpdir) / "drawer.jpg"
+            self._build_synthetic_stair_storage_image(image_path, mode="drawer")
+
+            result = FIELD_NORMALIZER._infer_stair_storage_mode_from_effect_image(image_path)
+
+        self.assertEqual(result["mode"], "")
+        self.assertNotIn("visual_open_cells", result["signals"])
+
+    def test_normalizer_can_use_ocr_effect_image_for_open_grid_stair_cabinet(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ocr_root = Path(tmpdir) / "ocr"
+            page_dir = ocr_root / "page-001"
+            imgs_dir = page_dir / "imgs"
+            imgs_dir.mkdir(parents=True)
+            image_path = imgs_dir / "open-grid.jpg"
+            self._build_synthetic_stair_storage_image(image_path, mode="open_grid")
+            (page_dir / "page-001.md").write_text(
+                (
+                    '<div style="text-align: center;"><html><body><table border="1"><tr><td>儿童房 其他儿童床 202603910 04004</td>'
+                    "<td>尺寸 长：1380mm 宽：2568mm 高：1885mm</td></tr><tr><td>注明：</td>"
+                    "<td>下床为侧翻箱体床</td></tr></table></body></html></div>\n\n"
+                    '<div style="text-align: center;"><img src="imgs/open-grid.jpg" alt="Image" width="80%" /></div>\n\n'
+                    '<div style="text-align: center;">效果图</div>\n'
+                ),
+                encoding="utf-8",
+            )
+
+            job = JOB_MODELS.ReviewJob(
+                job_id="job-route-evidence-child-visual-ocr",
+                batch_id="batch-route-evidence",
+                group_key="case-route-evidence-child-visual-ocr",
+                source_type="manual_batch",
+                source_channel="manual",
+                requested_actions=["audit", "replay"],
+                assets=[
+                    JOB_MODELS.SourceAsset(
+                        asset_id="asset-contract",
+                        source_path="/tmp/fake-child-contract-open-grid.docx",
+                        relative_path="raw/case-route-evidence-child-open-grid/合同.docx",
+                        file_name="合同.docx",
+                        extension=".docx",
+                        media_kind="document",
+                        role_hint="primary_contract",
+                        text_preview=(
+                            "产品名称：儿童上下床\n"
+                            "本单按定制执行\n"
+                            "床形态：上下床\n"
+                            "上层出入方式：梯柜\n"
+                            "下层结构：箱体床\n"
+                            "床垫宽度：1200mm\n"
+                            "床垫长度：2000mm\n"
+                            "材质：北美白橡木\n"
+                        ),
+                        text_extract_method="native_plus_ocr",
+                        metadata={"ocr_output_dir": str(ocr_root)},
+                    )
+                ],
+            )
+
+            normalized = FIELD_NORMALIZER.normalize_job_fields(job)
+
+        analysis = normalized["child_bed_analysis"]
+        self.assertEqual(analysis["stair_storage_mode"], "open_grid")
+        self.assertIn("visual_open_cells", analysis["stair_storage_signals"])
+        self.assertTrue(any("open-grid.jpg" in item for item in analysis["stair_storage_evidence_snippets"]))
+
+    def test_normalizer_builds_cabinet_route_evidence_from_caption_text(self) -> None:
+        job = JOB_MODELS.ReviewJob(
+            job_id="job-route-evidence-cabinet-001",
+            batch_id="batch-route-evidence",
+            group_key="case-route-evidence-cabinet",
+            source_type="manual_batch",
+            source_channel="manual",
+            requested_actions=["audit", "replay"],
+            assets=[
+                JOB_MODELS.SourceAsset(
+                    asset_id="asset-contract",
+                    source_path="/tmp/fake-cabinet-contract.docx",
+                    relative_path="raw/case-route-evidence-cabinet/合同.docx",
+                    file_name="合同.docx",
+                    extension=".docx",
+                    media_kind="document",
+                    role_hint="primary_contract",
+                    text_preview=(
+                        "产品名称：柜体\n"
+                        "长度：2000mm\n"
+                        "高度：2400mm\n"
+                        "材质：北美樱桃木\n"
+                    ),
+                    text_extract_method="docx_text",
+                ),
+                JOB_MODELS.SourceAsset(
+                    asset_id="asset-visual",
+                    source_path="/tmp/fake-cabinet-visual.png",
+                    relative_path="raw/case-route-evidence-cabinet/立面图.png",
+                    file_name="立面图.png",
+                    extension=".png",
+                    media_kind="image",
+                    role_hint="visual_attachment",
+                    text_preview="图下注：开放书柜，层板可调",
+                    text_extract_method="ocr_markdown",
+                ),
+            ],
+        )
+
+        normalized = FIELD_NORMALIZER.normalize_job_fields(job)
+        route_evidence = normalized["route_evidence"]
+        top_candidate = route_evidence["candidates"][0]
+
+        self.assertEqual(route_evidence["recommended_route"], "cabinet")
+        self.assertEqual(top_candidate["route"], "cabinet")
+        self.assertEqual(normalized["fields"]["product_category"]["value"], "书柜")
+        self.assertEqual(top_candidate["inferred_overrides"]["has_door"], "no")
+        self.assertIn("开放书柜", top_candidate["signals"])
+        self.assertIn("asset-visual", top_candidate["source_asset_ids"])
 
     def test_bridge_can_use_generic_underbed_mode_for_single_front_row(self) -> None:
         result = PRICING_BRIDGE.bridge_contract_to_pricing_precheck(

@@ -4,9 +4,11 @@ import json
 import os
 import subprocess
 import hashlib
+import re
 import shutil
 import sys
 from dataclasses import dataclass
+from html import unescape
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -65,7 +67,7 @@ def extract_asset(
             "reason": "ocr_backend_disabled",
         }
 
-    if config.ocr_backend != "paddleocr":
+    if config.ocr_backend not in {"paddleocr", "mineru"}:
         return {
             "asset_id": asset.asset_id,
             "status": "failed",
@@ -75,24 +77,28 @@ def extract_asset(
         }
 
     ocr_source_path, ocr_context = _prepare_ocr_source_path(asset, source_path=source_path, job_dir=job_dir)
-    cached_record = _load_cached_paddleocr_record(
-        asset,
-        source_path=ocr_source_path,
-        job_dir=job_dir,
-        config=config,
-    )
-    if cached_record is not None:
-        for key, value in ocr_context.items():
-            if value is None or value == "":
-                continue
-            cached_record.setdefault(key, value)
-        return cached_record
-    record = _extract_with_paddleocr(asset, source_path=ocr_source_path, job_dir=job_dir, config=config)
-    _store_cached_paddleocr_record(
-        record,
-        source_path=ocr_source_path,
-        config=config,
-    )
+    if config.ocr_backend == "paddleocr":
+        cached_record = _load_cached_paddleocr_record(
+            asset,
+            source_path=ocr_source_path,
+            job_dir=job_dir,
+            config=config,
+        )
+        if cached_record is not None:
+            for key, value in ocr_context.items():
+                if value is None or value == "":
+                    continue
+                cached_record.setdefault(key, value)
+            return cached_record
+        record = _extract_with_paddleocr(asset, source_path=ocr_source_path, job_dir=job_dir, config=config)
+        _store_cached_paddleocr_record(
+            record,
+            source_path=ocr_source_path,
+            config=config,
+        )
+    else:
+        record = _extract_with_mineru(asset, source_path=ocr_source_path, job_dir=job_dir, config=config)
+
     for key, value in ocr_context.items():
         if value is None or value == "":
             continue
@@ -265,6 +271,297 @@ def _project_paddleocr_python() -> Path | None:
         if candidate.exists():
             return candidate
     return None
+
+
+def _extract_with_mineru(
+    asset: SourceAsset,
+    *,
+    source_path: Path,
+    job_dir: Path,
+    config: ExtractionConfig,
+) -> dict[str, Any]:
+    mineru_bin = _resolve_mineru_command()
+    if mineru_bin is None:
+        return {
+            "asset_id": asset.asset_id,
+            "status": "unavailable",
+            "backend": "mineru",
+            "reason": "mineru_not_installed",
+            "error": "mineru command not found",
+            "install_hint": "先按 MinerU 官方文档安装 CLI，例如 `pip install -U mineru`，再确认 `mineru` 命令可用。",
+        }
+
+    output_dir = job_dir / "normalized" / "ocr" / asset.asset_id
+    if output_dir.exists():
+        shutil.rmtree(output_dir)
+    ensure_dir(output_dir)
+    raw_output_dir = ensure_dir(output_dir / "_mineru_raw")
+    env = dict(os.environ)
+    command = [
+        str(mineru_bin),
+        "-p",
+        str(source_path),
+        "-o",
+        str(raw_output_dir),
+        "-b",
+        "pipeline",
+        "-m",
+        "auto",
+    ]
+    if str(config.paddleocr_lang or "").strip():
+        command.extend(["-l", str(config.paddleocr_lang).strip()])
+
+    result = subprocess.run(
+        command,
+        capture_output=True,
+        text=True,
+        env=env,
+        check=False,
+    )
+    if result.returncode != 0:
+        return {
+            "asset_id": asset.asset_id,
+            "status": "failed",
+            "backend": "mineru",
+            "reason": "mineru_execution_failed",
+            "error": (result.stderr or "").strip() or f"mineru exited with code {result.returncode}",
+            "command": command,
+        }
+
+    artifacts = _locate_mineru_output_artifacts(raw_output_dir=raw_output_dir)
+    content_entries = _load_mineru_content_entries(artifacts)
+    page_payloads = _group_mineru_content_entries_by_page(content_entries)
+    if not page_payloads:
+        return {
+            "asset_id": asset.asset_id,
+            "status": "failed",
+            "backend": "mineru",
+            "reason": "mineru_output_incomplete",
+            "error": "MinerU completed but no readable page content was found.",
+        }
+
+    page_records: list[dict[str, Any]] = []
+    for page_no, page_payload in sorted(page_payloads.items()):
+        page_dir = ensure_dir(output_dir / f"page-{page_no:03d}")
+        page_text = "\n".join(page_payload["rec_texts"]).strip()
+        write_json(page_dir / "result.json", {"overall_ocr_res": page_payload})
+        write_markdown(page_dir / "page.md", (page_text + "\n") if page_text else "")
+        page_records.append(
+            {
+                "page_no": page_no,
+                "json_path": str(page_dir / "result.json"),
+                "markdown_dir": str(page_dir),
+                "markdown_text_length": len(page_text),
+            }
+        )
+
+    markdown_text = _read_text_if_exists(artifacts.get("markdown_path")) or _build_mineru_combined_markdown(page_payloads)
+    preview_text = normalize_preview(markdown_text, limit_chars=config.preview_limit_chars)
+    markdown_path = output_dir / "combined.md"
+    summary_path = output_dir / "summary.json"
+    write_markdown(markdown_path, (markdown_text or preview_text or "").strip() + "\n")
+    write_json(
+        summary_path,
+        {
+            "asset_id": asset.asset_id,
+            "backend": "mineru",
+            "status": "succeeded",
+            "source_path": str(source_path),
+            "markdown_path": str(markdown_path),
+            "page_count": len(page_records),
+            "pages": page_records,
+            "raw_output_dir": str(raw_output_dir),
+            "raw_markdown_path": str(artifacts.get("markdown_path") or ""),
+            "raw_content_list_path": str(artifacts.get("content_list_path") or ""),
+            "raw_content_list_v2_path": str(artifacts.get("content_list_v2_path") or ""),
+            "raw_middle_json_path": str(artifacts.get("middle_json_path") or ""),
+        },
+    )
+    return {
+        "asset_id": asset.asset_id,
+        "status": "succeeded",
+        "backend": "mineru",
+        "reason": "ocr_completed",
+        "text_preview": preview_text,
+        "full_text": markdown_text,
+        "text_extract_method": "mineru_pipeline_auto",
+        "output_dir": str(output_dir),
+        "markdown_path": str(markdown_path),
+        "json_path": str(summary_path),
+        "page_count": len(page_records),
+        "command": command,
+    }
+
+
+def _resolve_mineru_command() -> Path | None:
+    override = str(os.environ.get("LIANGQIN_CONTRACT_REVIEW_MINERU_BIN") or "").strip()
+    if override:
+        candidate = Path(override).expanduser()
+        if candidate.exists():
+            return candidate
+    resolved = shutil.which("mineru")
+    return Path(resolved) if resolved else None
+
+
+def _locate_mineru_output_artifacts(*, raw_output_dir: Path) -> dict[str, Path | None]:
+    markdown_candidates = sorted(
+        path for path in raw_output_dir.rglob("*.md")
+        if path.is_file() and path.name.lower() not in {"page.md", "combined.md"}
+    )
+    content_list_candidates = sorted(
+        path for path in raw_output_dir.rglob("*content_list.json")
+        if path.is_file()
+    )
+    content_list_v2_candidates = sorted(
+        path for path in raw_output_dir.rglob("*content_list_v2.json")
+        if path.is_file()
+    )
+    middle_json_candidates = sorted(
+        path for path in raw_output_dir.rglob("*middle.json")
+        if path.is_file()
+    )
+    return {
+        "markdown_path": markdown_candidates[0] if markdown_candidates else None,
+        "content_list_path": content_list_candidates[0] if content_list_candidates else None,
+        "content_list_v2_path": content_list_v2_candidates[0] if content_list_v2_candidates else None,
+        "middle_json_path": middle_json_candidates[0] if middle_json_candidates else None,
+    }
+
+
+def _load_mineru_content_entries(artifacts: dict[str, Path | None]) -> list[dict[str, Any]]:
+    content_list_path = artifacts.get("content_list_path")
+    if content_list_path is not None:
+        payload = _read_json_file(content_list_path)
+        if isinstance(payload, list):
+            return [item for item in payload if isinstance(item, dict)]
+
+    content_list_v2_path = artifacts.get("content_list_v2_path")
+    if content_list_v2_path is not None:
+        payload = _read_json_file(content_list_v2_path)
+        if isinstance(payload, list):
+            return _flatten_mineru_content_list_v2(payload)
+    return []
+
+
+def _flatten_mineru_content_list_v2(payload: list[Any]) -> list[dict[str, Any]]:
+    flattened: list[dict[str, Any]] = []
+    for page_index, page in enumerate(payload):
+        if not isinstance(page, dict):
+            continue
+        page_idx = int(page.get("page_idx") or page.get("page_no") or page_index)
+        for item in list(page.get("items") or page.get("content") or []):
+            if not isinstance(item, dict):
+                continue
+            normalized = dict(item)
+            normalized.setdefault("page_idx", page_idx)
+            flattened.append(normalized)
+    return flattened
+
+
+def _group_mineru_content_entries_by_page(entries: list[dict[str, Any]]) -> dict[int, dict[str, list[Any]]]:
+    grouped: dict[int, dict[str, list[Any]]] = {}
+    for item in entries:
+        page_idx = int(item.get("page_idx") or item.get("page_no") or 0)
+        page_no = page_idx + 1 if page_idx >= 0 else 1
+        page_payload = grouped.setdefault(page_no, {"rec_texts": [], "rec_boxes": [], "rec_scores": []})
+        texts = _extract_mineru_item_texts(item)
+        if not texts:
+            continue
+        bbox = _coerce_mineru_bbox(item.get("bbox"))
+        for text in texts:
+            normalized_text = str(text or "").strip()
+            if not normalized_text:
+                continue
+            page_payload["rec_texts"].append(normalized_text)
+            page_payload["rec_boxes"].append(bbox or [0.0, 0.0, 1.0, 1.0])
+            page_payload["rec_scores"].append(float(item.get("score") or 1.0))
+    return {page_no: payload for page_no, payload in grouped.items() if payload["rec_texts"]}
+
+
+def _extract_mineru_item_texts(item: dict[str, Any]) -> list[str]:
+    texts: list[str] = []
+    for key in (
+        "text",
+        "html",
+        "latex",
+        "table_body",
+        "table_caption",
+        "table_footnote",
+        "image_caption",
+        "image_footnote",
+    ):
+        value = item.get(key)
+        texts.extend(_normalize_mineru_text_values(value))
+
+    nested = item.get("blocks") or item.get("items") or item.get("content")
+    if isinstance(nested, list):
+        for child in nested:
+            if isinstance(child, dict):
+                texts.extend(_extract_mineru_item_texts(child))
+    return _dedupe_texts(texts)
+
+
+def _normalize_mineru_text_values(value: Any) -> list[str]:
+    if isinstance(value, str):
+        normalized = _strip_markup_text(value)
+        return [normalized] if normalized else []
+    if isinstance(value, list):
+        texts: list[str] = []
+        for item in value:
+            texts.extend(_normalize_mineru_text_values(item))
+        return texts
+    if isinstance(value, dict):
+        texts: list[str] = []
+        for child in value.values():
+            texts.extend(_normalize_mineru_text_values(child))
+        return texts
+    return []
+
+
+def _strip_markup_text(text: str) -> str:
+    normalized = re.sub(r"<[^>]+>", " ", unescape(str(text or "")))
+    normalized = re.sub(r"\s+", " ", normalized).strip()
+    return normalized
+
+
+def _dedupe_texts(values: list[str]) -> list[str]:
+    deduped: list[str] = []
+    for value in values:
+        normalized = str(value or "").strip()
+        if normalized and normalized not in deduped:
+            deduped.append(normalized)
+    return deduped
+
+
+def _coerce_mineru_bbox(value: Any) -> list[float] | None:
+    if isinstance(value, (list, tuple)) and len(value) == 4 and all(isinstance(item, (int, float)) for item in value):
+        return [float(item) for item in value]
+    return None
+
+
+def _build_mineru_combined_markdown(page_payloads: dict[int, dict[str, list[Any]]]) -> str:
+    parts = []
+    for page_no in sorted(page_payloads):
+        page_text = "\n".join(str(item) for item in page_payloads[page_no]["rec_texts"]).strip()
+        if page_text:
+            parts.append(f"第{page_no}页\n{page_text}")
+    return "\n\n".join(parts).strip()
+
+
+def _read_text_if_exists(path: Path | None) -> str:
+    if path is None or not path.exists():
+        return ""
+    try:
+        return path.read_text(encoding="utf-8").strip()
+    except OSError:
+        return ""
+
+
+def _read_json_file(path: Path) -> dict[str, Any] | list[Any] | None:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
 
 
 def _load_cached_paddleocr_record(
