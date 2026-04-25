@@ -1,0 +1,18 @@
+{
+  "source_type": "manual_batch",
+  "source_channel": "manual",
+  "source_batch_id": "demo-batch-a",
+  "requested_actions": ["audit", "replay"],
+  "operator": "demo-user",
+  "received_at": "2026-04-14T10:30:00+08:00",
+  "notes": "首轮样本，混合型合同。",
+  "jobs": [
+    {
+      "job_key": "case-001",
+      "paths": [
+        "raw/case-001/contract-demo-001.docx",
+        "raw/case-001/contract-demo-001-drawing.pdf"
+      ]
+    }
+  ]
+}

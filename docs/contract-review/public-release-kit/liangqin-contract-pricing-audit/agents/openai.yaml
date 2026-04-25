@@ -1,0 +1,5 @@
+version: 1
+display_name: 良禽合同报价审核
+short_description: 从正式合同中提取报价字段，联动 liangqin-pricing 做回放和差异诊断。
+default_prompt: |
+  请对当前批次执行良禽合同报价审核：先检查 liangqin-pricing 依赖，再抽取合同中的报价相关字段，完成报价回放、金额比对和差异诊断，最后输出简洁结论和人工复核点。

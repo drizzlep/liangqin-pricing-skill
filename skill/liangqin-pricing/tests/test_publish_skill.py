@@ -55,6 +55,37 @@ class PublishSkillTests(unittest.TestCase):
                 "hello",
             )
 
+    def test_validate_skill_dir_allows_routing_arrow_in_description(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            skill_dir = Path(tmpdir)
+            (skill_dir / "SKILL.md").write_text(
+                "---\n"
+                "name: liangqin-contract-review\n"
+                'description: "合同审核 => liangqin-contract-review"\n'
+                "---\n\n"
+                "# Test\n",
+                encoding="utf-8",
+            )
+
+            MODULE.validate_skill_dir(skill_dir)
+
+    def test_validate_skill_dir_rejects_html_like_tags_in_description(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            skill_dir = Path(tmpdir)
+            (skill_dir / "SKILL.md").write_text(
+                "---\n"
+                "name: liangqin-contract-review\n"
+                'description: "合同审核 <b>bad</b>"\n'
+                "---\n\n"
+                "# Test\n",
+                encoding="utf-8",
+            )
+
+            with self.assertRaises(SystemExit) as context:
+                MODULE.validate_skill_dir(skill_dir)
+
+            self.assertEqual(str(context.exception), "Frontmatter description cannot contain HTML-like tags")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import argparse
 import copy
 import json
@@ -1641,6 +1643,207 @@ def _consultant_workbench(payload: dict[str, Any]) -> dict[str, Any]:
     return _build_consultant_workbench(payload)
 
 
+def _normalize_quote_followup_state(raw: Any) -> dict[str, Any]:
+    if not isinstance(raw, dict) or not raw:
+        return {}
+    normalized: dict[str, Any] = {}
+    for key in (
+        "code",
+        "label",
+        "status",
+        "current_phase",
+        "recommended_track",
+        "current_version_status",
+        "compare_version_status",
+        "followthrough_status",
+        "next_action_code",
+        "compare_action_code",
+        "followthrough_action_code",
+        "next_version_label",
+    ):
+        value = str(raw.get(key, "")).strip()
+        if value:
+            normalized[key] = value
+    recommended_next_codes = [
+        str(entry).strip()
+        for entry in (raw.get("recommended_next_codes") or [])
+        if str(entry).strip()
+    ]
+    if recommended_next_codes:
+        normalized["recommended_next_codes"] = recommended_next_codes
+    return normalized
+
+
+def _quote_followup_track(payload: dict[str, Any]) -> str:
+    if payload.get("reference"):
+        return "formal_confirmation"
+    priority = _customer_priority(payload)
+    mapping = {
+        "budget": "budget_compare",
+        "aesthetics": "finish_upgrade",
+        "storage": "storage_refine",
+        "space_efficiency": "layout_refine",
+        "eco_material": "material_refine",
+    }
+    return mapping.get(priority, "general_followup")
+
+
+def _build_quote_followup_state(payload: dict[str, Any]) -> dict[str, Any]:
+    post_quote_stage = _post_quote_stage(payload)
+    next_best_action = payload.get("next_best_action") or _derive_next_best_action(payload)
+    quote_version_summary = _quote_version_summary(payload)
+    action_queue = _consultant_action_queue(payload)
+    recommended_next_codes = [
+        str(entry.get("code", "")).strip()
+        for entry in action_queue[:3]
+        if isinstance(entry, dict) and str(entry.get("code", "")).strip()
+    ]
+    return {
+        "code": str(post_quote_stage.get("code", "")).strip() or "quote_followup_ready",
+        "label": str(post_quote_stage.get("label", "")).strip() or "报价后跟进待开始",
+        "status": "awaiting_confirmation" if payload.get("reference") else "awaiting_customer_feedback",
+        "current_phase": "reference_quote_followup" if payload.get("reference") else "formal_quote_followup",
+        "recommended_track": _quote_followup_track(payload),
+        "current_version_status": "ready_to_send",
+        "compare_version_status": "ready_after_confirmation" if payload.get("reference") else "ready_when_triggered",
+        "followthrough_status": "ready_after_confirmation" if payload.get("reference") else "ready_after_acceptance",
+        "recommended_next_codes": recommended_next_codes,
+        "next_action_code": str(next_best_action.get("primary_action_code", "")).strip()
+        or (recommended_next_codes[0] if recommended_next_codes else ""),
+        "compare_action_code": str(next_best_action.get("secondary_action_code", "")).strip(),
+        "followthrough_action_code": str(next_best_action.get("followthrough_action_code", "")).strip(),
+        "next_version_label": str(quote_version_summary.get("next_version_label", "")).strip(),
+    }
+
+
+def _quote_followup_state(payload: dict[str, Any]) -> dict[str, Any]:
+    existing = _normalize_quote_followup_state(payload.get("quote_followup_state"))
+    if existing:
+        return existing
+    return _build_quote_followup_state(payload)
+
+
+def _normalize_quote_feedback_signal(raw: Any) -> dict[str, Any]:
+    if not isinstance(raw, dict) or not raw:
+        return {}
+    normalized: dict[str, Any] = {}
+    for key in (
+        "code",
+        "label",
+        "source",
+        "recommended_objection_code",
+        "recommended_followthrough_code",
+    ):
+        value = str(raw.get(key, "")).strip()
+        if value:
+            normalized[key] = value
+    if "is_explicit" in raw:
+        normalized["is_explicit"] = bool(raw.get("is_explicit"))
+    return normalized
+
+
+def _build_quote_feedback_signal(payload: dict[str, Any]) -> dict[str, Any]:
+    priority = _customer_priority(payload)
+    priority_label = _consultant_priority_label(priority)
+    next_best_action = payload.get("next_best_action") or _derive_next_best_action(payload)
+    objection_playbook = _objection_playbook(payload)
+    if priority and priority_label:
+        return {
+            "code": priority,
+            "label": priority_label,
+            "source": "customer_priority",
+            "is_explicit": True,
+            "recommended_objection_code": str(objection_playbook.get("recommended_first_code", "")).strip(),
+            "recommended_followthrough_code": str(next_best_action.get("followthrough_action_code", "")).strip(),
+        }
+    if payload.get("reference"):
+        return {
+            "code": "confirm_key_fields",
+            "label": "待确认关键条件",
+            "source": "reference_quote_stage",
+            "is_explicit": False,
+            "recommended_objection_code": str(objection_playbook.get("recommended_first_code", "")).strip(),
+            "recommended_followthrough_code": str(next_best_action.get("followthrough_action_code", "")).strip(),
+        }
+    return {
+        "code": "",
+        "label": "",
+        "source": "pending_customer_feedback",
+        "is_explicit": False,
+        "recommended_objection_code": str(objection_playbook.get("recommended_first_code", "")).strip(),
+        "recommended_followthrough_code": str(next_best_action.get("followthrough_action_code", "")).strip(),
+    }
+
+
+def _quote_feedback_signal(payload: dict[str, Any]) -> dict[str, Any]:
+    existing = _normalize_quote_feedback_signal(payload.get("quote_feedback_signal"))
+    if existing:
+        return existing
+    return _build_quote_feedback_signal(payload)
+
+
+def _normalize_quote_outcome(raw: Any) -> dict[str, str]:
+    if not isinstance(raw, dict) or not raw:
+        return {}
+    normalized: dict[str, str] = {}
+    for key in ("code", "label", "status", "result_stage", "next_target_code", "next_target_label"):
+        value = str(raw.get(key, "")).strip()
+        if value:
+            normalized[key] = value
+    return normalized
+
+
+def _build_quote_outcome(payload: dict[str, Any]) -> dict[str, str]:
+    post_quote_stage = _post_quote_stage(payload)
+    next_best_action = payload.get("next_best_action") or _derive_next_best_action(payload)
+    stage_code = str(post_quote_stage.get("code", "")).strip()
+    outcome_map = {
+        "reference_quote_pending_confirmation": ("waiting_confirmation", "参考报价待确认", "reference_quote"),
+        "formal_quote_waiting_reply": ("waiting_reply", "正式报价待回复", "formal_quote"),
+        "formal_quote_waiting_budget_feedback": ("comparing", "正式报价进入预算比较", "formal_quote"),
+        "formal_quote_waiting_finish_feedback": ("comparing", "正式报价进入效果比较", "formal_quote"),
+        "formal_quote_waiting_storage_feedback": ("comparing", "正式报价进入收纳比较", "formal_quote"),
+        "formal_quote_waiting_layout_feedback": ("comparing", "正式报价进入布局比较", "formal_quote"),
+        "formal_quote_waiting_material_feedback": ("comparing", "正式报价进入材质比较", "formal_quote"),
+    }
+    code, label, result_stage = outcome_map.get(
+        stage_code,
+        (
+            "waiting_confirmation" if payload.get("reference") else "waiting_reply",
+            str(post_quote_stage.get("label", "")).strip() or ("参考报价待确认" if payload.get("reference") else "正式报价待回复"),
+            "reference_quote" if payload.get("reference") else "formal_quote",
+        ),
+    )
+    followthrough_code = str(next_best_action.get("followthrough_action_code", "")).strip()
+    next_target_map = {
+        "lock_formal_quote": ("formal_confirmation", "锁正式报价"),
+        "schedule_store_visit": ("booked_visit", "约到店确认"),
+        "request_design_deepening": ("deepen_request", "转深化/出图"),
+        "confirm_layout_deepening": ("deepen_request", "转深化确认布局"),
+        "confirm_material_and_deepen": ("deepen_request", "确认材质后深化"),
+        "schedule_store_or_design_followup": ("general_followup", "约沟通推进"),
+    }
+    next_target_code, next_target_label = next_target_map.get(
+        followthrough_code,
+        ("general_followup", str(next_best_action.get("followthrough_action_label", "")).strip() or "继续跟进"),
+    )
+    return {
+        "code": code,
+        "label": label,
+        "status": "active",
+        "result_stage": result_stage,
+        "next_target_code": next_target_code,
+        "next_target_label": next_target_label,
+    }
+
+
+def _quote_outcome(payload: dict[str, Any]) -> dict[str, str]:
+    existing = _normalize_quote_outcome(payload.get("quote_outcome"))
+    if existing:
+        return existing
+    return _build_quote_outcome(payload)
+
+
 def _build_consultant_handoff_plan(payload: dict[str, Any]) -> dict[str, Any]:
     priority = _customer_priority(payload)
     priority_label = _consultant_priority_label(priority)
@@ -2051,6 +2254,12 @@ def enrich_conversion_metadata(payload: dict[str, Any]) -> dict[str, Any]:
         enriched["consultant_action_queue"] = _build_consultant_action_queue(enriched)
     if "consultant_workbench" not in enriched:
         enriched["consultant_workbench"] = _build_consultant_workbench(enriched)
+    if "quote_followup_state" not in enriched:
+        enriched["quote_followup_state"] = _build_quote_followup_state(enriched)
+    if "quote_feedback_signal" not in enriched:
+        enriched["quote_feedback_signal"] = _build_quote_feedback_signal(enriched)
+    if "quote_outcome" not in enriched:
+        enriched["quote_outcome"] = _build_quote_outcome(enriched)
     return enriched
 
 
@@ -2363,6 +2572,9 @@ def render_with_quote_card_follow_up(
                 "consultant_quick_actions": prepared_payload.get("consultant_quick_actions") or [],
                 "consultant_action_queue": prepared_payload.get("consultant_action_queue") or [],
                 "consultant_workbench": prepared_payload.get("consultant_workbench") or {},
+                "quote_followup_state": prepared_payload.get("quote_followup_state") or {},
+                "quote_feedback_signal": prepared_payload.get("quote_feedback_signal") or {},
+                "quote_outcome": prepared_payload.get("quote_outcome") or {},
                 "post_quote_stage": prepared_payload.get("post_quote_stage") or {},
                 "quote_version_summary": prepared_payload.get("quote_version_summary") or {},
                 "quote_version_actions": prepared_payload.get("quote_version_actions") or {},

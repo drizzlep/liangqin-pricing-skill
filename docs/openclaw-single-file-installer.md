@@ -2,7 +2,7 @@
 
 ## 1. 这是什么
 
-这是把整个良禽佳木报价 skill 打成 `一个文件` 的安装方案。
+这是把整个良禽佳木双 skill 打成 `一个文件` 的安装方案。
 
 生成后你会得到一个文件，例如：
 
@@ -12,9 +12,11 @@ liangqin-pricing-installer-YYYYMMDD.sh
 
 这个文件本身就已经包含：
 
-- skill 本体
+- `liangqin-pricing` skill 本体
+- `liangqin-contract-review` skill 本体
 - 当前价格索引
 - 当前规则
+- 合同审核运行时代码
 - 安装逻辑
 - 发布逻辑
 
@@ -45,7 +47,7 @@ bash scripts/build_single_file_installer.sh
 如果对方环境允许 OpenClaw 执行本地 shell 命令，你可以直接对 OpenClaw 说：
 
 ```text
-请运行 /绝对路径/liangqin-pricing-installer-YYYYMMDD.sh，把良禽佳木报价 skill 安装到 shared skills，并同步到 workspace。安装完成后再做一次 fresh 测试。
+请运行 /绝对路径/liangqin-pricing-installer-YYYYMMDD.sh，把良禽佳木的 pricing + contract-review 两个 skill 一起安装到 shared skills，并同步到 workspace。安装完成后再做一次 fresh 测试。
 ```
 
 如果你想让它安装后用指定问题测试，可以说：
@@ -57,7 +59,7 @@ bash scripts/build_single_file_installer.sh
 如果你担心对方环境开了联网搜索，更推荐直接用这版：
 
 ```text
-请运行 /绝对路径/liangqin-pricing-installer-YYYYMMDD.sh，把良禽佳木报价 skill 安装到 shared skills，并同步到 workspace。安装完成后，良禽相关问题只能按 liangqin-pricing 当前资料回答；资料没明确写到，就直接说“现有良禽资料未明确”或“当前不能替你确认”，不要把联网搜索结果和行业常识写成良禽资料。然后用“良禽佳木可以选国产五金和进口五金吗？良禽有BLUM的五金，是什么啊？”做一次 fresh 测试，并把完整结果告诉我。
+请运行 /绝对路径/liangqin-pricing-installer-YYYYMMDD.sh，把良禽佳木的 pricing + contract-review 两个 skill 一起安装到 shared skills，并同步到 workspace。安装完成后，良禽相关问题只能按 liangqin-pricing 当前资料回答；资料没明确写到，就直接说“现有良禽资料未明确”或“当前不能替你确认”，不要把联网搜索结果和行业常识写成良禽资料。然后用“良禽佳木可以选国产五金和进口五金吗？良禽有BLUM的五金，是什么啊？”做一次 fresh 测试，并把完整结果告诉我。
 ```
 
 ## 5. 这个单文件安装器默认会做什么
@@ -66,8 +68,9 @@ bash scripts/build_single_file_installer.sh
 
 1. 解出 skill 文件
 2. 安装到 `~/.openclaw/skills/liangqin-pricing`
-3. 发布到 `~/.openclaw/workspace/skills/liangqin-pricing`
-4. 跑一次 fresh 测试
+3. 安装到 `~/.openclaw/skills/liangqin-contract-review`
+4. 发布到 `~/.openclaw/workspace/skills/`
+5. 跑一次 fresh 测试
 
 如果你要专门验收“是否混入外部五金知识”，安装后建议再手动补测一次：
 
@@ -88,7 +91,7 @@ sh liangqin-pricing-installer-YYYYMMDD.sh --skip-test
 可以带参数：
 
 ```bash
-sh liangqin-pricing-installer-YYYYMMDD.sh --skills-root /你的skills根目录 --workspace-dest /你的workspace技能目录/liangqin-pricing --skip-test
+sh liangqin-pricing-installer-YYYYMMDD.sh --skills-root /你的skills根目录 --workspace-root /你的workspace技能根目录 --skip-test
 ```
 
 所以它也可以兼容一部分云端环境。

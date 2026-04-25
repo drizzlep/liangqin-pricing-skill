@@ -95,6 +95,13 @@ class FormatQuoteReplyTests(unittest.TestCase):
                 for panel in prepared["consultant_workbench"]["info_panels"]
             )
         )
+        self.assertEqual(prepared["quote_followup_state"]["status"], "awaiting_customer_feedback")
+        self.assertEqual(prepared["quote_followup_state"]["recommended_track"], "general_followup")
+        self.assertEqual(prepared["quote_followup_state"]["next_action_code"], "send_current_quote")
+        self.assertEqual(prepared["quote_feedback_signal"]["source"], "pending_customer_feedback")
+        self.assertEqual(prepared["quote_feedback_signal"]["recommended_objection_code"], "price_high")
+        self.assertEqual(prepared["quote_outcome"]["code"], "waiting_reply")
+        self.assertEqual(prepared["quote_outcome"]["next_target_code"], "general_followup")
         self.assertEqual(prepared["objection_playbook"]["recommended_first_code"], "price_high")
         self.assertIn("客户说价格偏高", prepared["objection_playbook"]["price_high"]["label"])
         self.assertIn("方案对比版", prepared["objection_playbook"]["cheaper_option"]["customer_reply"])
@@ -401,6 +408,30 @@ class FormatQuoteReplyTests(unittest.TestCase):
         self.assertEqual(
             rendered["prepared_payload"]["consultant_workbench"]["primary_action"]["code"],
             "send_current_quote",
+        )
+        self.assertEqual(
+            rendered["prepared_payload"]["quote_followup_state"]["recommended_track"],
+            "budget_compare",
+        )
+        self.assertEqual(
+            rendered["prepared_payload"]["quote_followup_state"]["compare_action_code"],
+            "send_current_then_budget_compare",
+        )
+        self.assertEqual(
+            rendered["prepared_payload"]["quote_feedback_signal"]["code"],
+            "budget",
+        )
+        self.assertEqual(
+            rendered["prepared_payload"]["quote_feedback_signal"]["recommended_objection_code"],
+            "cheaper_option",
+        )
+        self.assertEqual(
+            rendered["prepared_payload"]["quote_outcome"]["code"],
+            "comparing",
+        )
+        self.assertEqual(
+            rendered["prepared_payload"]["quote_outcome"]["next_target_code"],
+            "booked_visit",
         )
         self.assertIn(
             "预算控制",
@@ -734,6 +765,9 @@ class FormatQuoteReplyTests(unittest.TestCase):
         self.assertTrue(saved["consultant_action_queue"][0]["recommended"])
         self.assertEqual(saved["consultant_workbench"]["primary_action"]["code"], "send_current_quote")
         self.assertEqual(saved["consultant_workbench"]["action_queue"][1]["code"], "offer_compare_version")
+        self.assertEqual(saved["quote_followup_state"]["status"], "awaiting_customer_feedback")
+        self.assertEqual(saved["quote_feedback_signal"]["source"], "pending_customer_feedback")
+        self.assertEqual(saved["quote_outcome"]["code"], "waiting_reply")
         self.assertEqual(saved["consultant_action_queue"][3]["code"], "handle_price_high")
         self.assertEqual(saved["objection_playbook"]["recommended_first_code"], "price_high")
 

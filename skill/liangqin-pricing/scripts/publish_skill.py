@@ -65,8 +65,8 @@ def validate_skill_dir(skill_dir: Path) -> None:
         raise SystemExit("Frontmatter requires non-empty name and description")
     if not re.fullmatch(r"[a-z0-9-]+", name):
         raise SystemExit("Frontmatter name must be kebab-case")
-    if "<" in description or ">" in description:
-        raise SystemExit("Frontmatter description cannot contain angle brackets")
+    if re.search(r"<[^>]+>", description):
+        raise SystemExit("Frontmatter description cannot contain HTML-like tags")
 
 
 def ignore_filter(_dir: str, names: list[str]) -> set[str]:

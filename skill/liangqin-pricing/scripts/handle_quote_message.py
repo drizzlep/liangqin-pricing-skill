@@ -88,12 +88,29 @@ CUSTOMER_GOAL_HINTS = ("收纳", "睡觉", "学习", "展示", "空间利用", "
 CUSTOMER_USER_HINTS = ("一个孩子", "两个孩子", "小朋友", "孩子", "大人", "全家")
 CUSTOMER_REFERENCE_HINTS = ("照片", "户型图", "草图", "现场图")
 CUSTOMER_BUDGET_HINTS = ("预算", "先看看价格", "先看价格", "大概多少钱", "先估个大概")
+REFERENCE_QUOTE_HINTS = ("参考价", "参考报价", "先给我参考", "先做个参考", "先报个参考")
+AUTO_EXECUTE_READY_QUOTE_BLOCKERS = ("先别正式报价", "先不正式报价", "别正式报价", "不要正式报价")
+ACCESSORY_ADDON_KEYWORDS = ("轨道插座", "五孔插座", "插座", "灯带", "开关", "抽屉", "拉手", "穿衣镜")
+ACCESSORY_ADDON_CONNECTORS = ("再配", "再加", "再带", "加一个", "加两个", "配一个", "配两个")
+DINING_SET_PRODUCT_KEYWORDS = ("餐桌", "椅", "餐边柜")
 CUSTOMER_PRIORITY_PATTERNS = (
     ("budget", ("预算", "别太贵", "不要太贵", "省一点", "控制预算", "性价比", "划算")),
     ("aesthetics", ("颜值", "好看", "效果", "高级感", "风格", "质感")),
     ("storage", ("收纳", "能装", "储物", "分类收纳", "容量")),
     ("space_efficiency", ("空间利用", "利用起来", "不浪费空间", "动线", "紧凑")),
     ("eco_material", ("环保", "气味", "材质安全", "环保材质", "更环保")),
+)
+INTERNAL_PROCESS_TEXT_REPLACEMENTS = (
+    (r"预检通过，可直接进入正式报价。当前路径：[^\n。]+。?", "现在条件已经够了，可以直接进入正式报价。"),
+    (r"预检通过，可先给参考报价。当前路径：[^\n。]+。?", "现在条件已经够了，可以先给你参考报价。"),
+    (r"我先运行预检再继续。?", ""),
+    (r"我先运行预检。?", ""),
+    (r"直接走预检。?", ""),
+    (r"让我先预检一下。?", ""),
+    (r"先跑一下特殊规则识别。?", ""),
+    (r"调用定价技能。?", ""),
+    (r"根据目录查询[^。]*。?", ""),
+    (r"目录中无[^。]*。?", ""),
 )
 
 PRECHECK_DEFAULTS = {
@@ -103,6 +120,8 @@ PRECHECK_DEFAULTS = {
     "height": None,
     "width": None,
     "material": None,
+    "light_strip_type": "",
+    "variant_hint": "",
     "quote_kind": "unknown",
     "has_door": "unknown",
     "door_type": "",
@@ -323,6 +342,91 @@ def _extract_contextual_metric(text: str, *, context_terms: tuple[str, ...], fie
     return _normalize_metric_value(match.group(1), match.group(2))
 
 
+def _extract_inline_metric_after_keywords(text: str, keywords: tuple[str, ...]) -> str:
+    keyword_pattern = "|".join(re.escape(keyword) for keyword in keywords)
+    pattern = rf"(?:{keyword_pattern})\s*(\d+(?:\.\d+)?)\s*{DIMENSION_UNIT_PATTERN}"
+    match = re.search(pattern, text)
+    if not match:
+        return ""
+    return _normalize_metric_value(match.group(1), match.group(2))
+
+
+def _extract_loose_metric_candidates(text: str) -> list[str]:
+    candidates: list[str] = []
+    for match in re.finditer(rf"(\d+(?:\.\d+)?)\s*{DIMENSION_UNIT_PATTERN}\s*(?:的)?", text):
+        normalized = _normalize_metric_value(match.group(1), match.group(2))
+        if normalized:
+            candidates.append(normalized)
+    return candidates
+
+
+def _extract_explicit_table_length(text: str, *, category: str) -> str:
+    normalized = str(text or "").strip()
+    if not normalized or not category:
+        return ""
+    if category not in normalized:
+        return ""
+    candidates: list[str] = []
+    for match in re.finditer(rf"(\d+(?:\.\d+)?)\s*{DIMENSION_UNIT_PATTERN}", normalized):
+        value = _normalize_metric_value(match.group(1), match.group(2))
+        if not value:
+            continue
+        number = Decimal(value)
+        if Decimal("1.0") <= number <= Decimal("3.0"):
+            candidates.append(_format_decimal(number))
+    unique_candidates = sorted(set(candidates))
+    if len(unique_candidates) == 1:
+        return unique_candidates[0]
+    return ""
+
+
+def _extract_sofa_variant_hint(text: str) -> str:
+    parts: list[str] = []
+    normalized = str(text or "").strip()
+    for seat_label in ("单人位", "双人位", "三人位"):
+        if seat_label in normalized:
+            parts.append(seat_label)
+            break
+    if "不带垫" in normalized or "不要垫" in normalized:
+        parts.append("不带垫子")
+    elif "布艺" in normalized:
+        parts.append("带布艺垫子")
+    elif "真皮" in normalized:
+        parts.append("带真皮垫子")
+    elif "沙发垫" in normalized or "垫子" in normalized:
+        parts.append("沙发垫")
+    return " ".join(parts).strip()
+
+
+def _infer_light_strip_type(text: str) -> str:
+    normalized = str(text or "").strip()
+    if "单色温" in normalized:
+        return "单色温灯带"
+    if "双色温" in normalized or "双光" in normalized:
+        return "双色温灯带"
+    if "可调色温" in normalized or "调色温" in normalized:
+        return "可调色温灯带"
+    return ""
+
+
+def _is_desk_hanging_combo_category(category: str) -> bool:
+    return "书桌与吊柜" in str(category or "").strip()
+
+
+def _extract_desk_hanging_mode(text: str, *, category_hint: str = "") -> dict[str, Any]:
+    normalized = str(text or "").strip()
+    if not normalized:
+        return {}
+    relevant = _is_desk_hanging_combo_category(category_hint) or "吊柜" in normalized or "上柜" in normalized
+    if not relevant:
+        return {}
+    if "带门" in normalized or "加门" in normalized:
+        return {"has_door": "yes", "door_type": "带门"}
+    if "开放" in normalized or "不带门" in normalized or "无门" in normalized:
+        return {"has_door": "no", "door_type": ""}
+    return {}
+
+
 def _extract_bed_pair_dimensions(text: str) -> tuple[str, str]:
     for match in re.finditer(
         rf"(\d+(?:\.\d+)?)\s*{DIMENSION_UNIT_PATTERN}\s*[*xX×乘]\s*(\d+(?:\.\d+)?)\s*{DIMENSION_UNIT_PATTERN}",
@@ -340,6 +444,32 @@ def _extract_bed_pair_dimensions(text: str) -> tuple[str, str]:
         if Decimal("0.7") <= width <= Decimal("2.0") and Decimal("1.7") <= length <= Decimal("2.5"):
             return _format_decimal(width), _format_decimal(length)
     return "", ""
+
+
+def _extract_cabinet_triplet_dimensions(text: str) -> tuple[str, str, str]:
+    for match in re.finditer(
+        rf"(\d+(?:\.\d+)?)\s*{DIMENSION_UNIT_PATTERN}\s*[*xX×乘]\s*"
+        rf"(\d+(?:\.\d+)?)\s*{DIMENSION_UNIT_PATTERN}\s*[*xX×乘]\s*"
+        rf"(\d+(?:\.\d+)?)\s*{DIMENSION_UNIT_PATTERN}",
+        text,
+    ):
+        length = _normalize_metric_value(match.group(1), match.group(2))
+        height = _normalize_metric_value(match.group(3), match.group(4))
+        depth = _normalize_metric_value(match.group(5), match.group(6))
+        if not all((length, height, depth)):
+            continue
+
+        length_value = Decimal(length)
+        height_value = Decimal(height)
+        depth_value = Decimal(depth)
+        if not (Decimal("0.5") <= length_value <= Decimal("6.0")):
+            continue
+        if not (Decimal("1.0") <= height_value <= Decimal("3.5")):
+            continue
+        if not (Decimal("0.2") <= depth_value <= Decimal("1.2")):
+            continue
+        return _format_decimal(length_value), _format_decimal(height_value), _format_decimal(depth_value)
+    return "", "", ""
 
 
 def _infer_bed_form_from_text(text: str) -> str:
@@ -569,6 +699,12 @@ def _should_use_customer_guidance(*, customer_strategy: str, precheck_args: dict
     if customer_strategy in {"renovation_browse", "guided_discovery"}:
         return True
     normalized = precheck_args or {}
+    explicit_category = str(normalized.get("category") or "").strip()
+    if explicit_category:
+        explicit_probe = dict(PRECHECK_DEFAULTS)
+        explicit_probe.update(normalized)
+        if precheck_quote.has_explicit_product_identity(argparse.Namespace(**explicit_probe)):
+            return False
     has_core_quote_signal = any(
         str(normalized.get(field) or "").strip()
         for field in ("length", "height", "width", "depth", "material")
@@ -578,6 +714,115 @@ def _should_use_customer_guidance(*, customer_strategy: str, precheck_args: dict
     if customer_strategy != "precise_need":
         return False
     return not has_core_quote_signal
+
+
+def _has_main_product_with_accessories_signal(text: str, precheck_args: dict[str, Any] | None) -> bool:
+    normalized_text = str(text or "").strip()
+    category = str((precheck_args or {}).get("category") or "").strip()
+    if not normalized_text or not category:
+        return False
+    has_accessory = any(keyword in normalized_text for keyword in ACCESSORY_ADDON_KEYWORDS)
+    has_connector = any(keyword in normalized_text for keyword in ACCESSORY_ADDON_CONNECTORS)
+    return has_accessory and has_connector
+
+
+def _has_lighting_zone_control_signal(text: str) -> bool:
+    normalized = str(text or "").strip()
+    if "灯带" not in normalized:
+        return False
+    return any(keyword in normalized for keyword in ("开关区", "分区控制", "多个开关"))
+
+
+def _build_lighting_type_follow_up_result(precheck_args: dict[str, Any]) -> dict[str, Any] | None:
+    if not precheck_args:
+        return None
+    if str(precheck_args.get("light_strip_type") or "").strip():
+        return None
+    return precheck_quote.response(
+        ready=False,
+        category_type="cabinet",
+        next_required_field="light_strip_type",
+        next_question="这边还需要先确认灯带类型。",
+        reason="lighting zone-control add-on requires light-strip type before quote can continue",
+        route="cabinet",
+        question_code="addendum_guidance.follow_up",
+        missing_fields=["light_strip_type"],
+        detail_level_hint="single_question_follow_up",
+    )
+
+
+def _extract_combo_cabinet_segment_lengths(text: str) -> list[str]:
+    normalized = str(text or "").strip()
+    if not normalized:
+        return []
+    lengths: list[str] = []
+    patterns = (
+        rf"(\d+(?:\.\d+)?)\s*{DIMENSION_UNIT_PATTERN}\s*高柜",
+        rf"(\d+(?:\.\d+)?)\s*{DIMENSION_UNIT_PATTERN}\s*矮柜",
+    )
+    for pattern in patterns:
+        for match in re.finditer(pattern, normalized):
+            value = _normalize_metric_value(match.group(1), match.group(2))
+            if value:
+                lengths.append(value)
+    return lengths
+
+
+def _looks_like_split_combo_cabinet(text: str, precheck_args: dict[str, Any] | None) -> bool:
+    normalized = str(text or "").strip()
+    category = str((precheck_args or {}).get("category") or "").strip()
+    if "组合餐边柜" not in normalized and category != "组合餐边柜":
+        return False
+    lengths = _extract_combo_cabinet_segment_lengths(normalized)
+    return len(lengths) >= 2
+
+
+def _build_split_combo_cabinet_precheck_result(precheck_args: dict[str, Any] | None, text: str) -> dict[str, Any]:
+    result = precheck_quote.response(
+        ready=False,
+        category_type="cabinet",
+        next_required_field="depth",
+        next_question="这组组合餐边柜我先只确认一个关键尺寸：进深大概多少？",
+        reason="split combo cabinet should confirm depth before expanding into other dimensions",
+        route="cabinet",
+        question_code="cabinet.depth.required",
+        missing_fields=["depth"],
+        detail_level_hint="single_question_follow_up",
+    )
+    lengths = _extract_combo_cabinet_segment_lengths(text)
+    if precheck_args or lengths:
+        result["combo_context"] = {
+            "category": str((precheck_args or {}).get("category") or "").strip(),
+            "material": str((precheck_args or {}).get("material") or "").strip(),
+            "segment_lengths": lengths,
+        }
+    result["pricing_route"] = "cabinet"
+    return result
+
+
+def _looks_like_dining_room_bundle(text: str) -> bool:
+    normalized = str(text or "").strip()
+    return all(keyword in normalized for keyword in DINING_SET_PRODUCT_KEYWORDS)
+
+
+def _build_dining_room_bundle_precheck_result(precheck_args: dict[str, Any] | None) -> dict[str, Any]:
+    result = precheck_quote.response(
+        ready=False,
+        category_type="table",
+        next_required_field="table_length",
+        next_question="这套餐厅家具我先只确认一个问题：餐桌准备做多长？",
+        reason="dining-room bundle should confirm the table length before expanding follow-up questions",
+        route="dining_room_bundle",
+        missing_fields=["table_length"],
+        detail_level_hint="single_question_follow_up",
+    )
+    if precheck_args:
+        result["bundle_context"] = {
+            "category": str(precheck_args.get("category") or "").strip(),
+            "material": str(precheck_args.get("material") or "").strip(),
+        }
+    result["pricing_route"] = "dining_room_bundle"
+    return result
 
 
 def _infer_cabinet_category_from_payload(payload: dict[str, Any]) -> str:
@@ -655,19 +900,32 @@ def _extract_combo_row_follow_up_fields(
 
 def _infer_category_from_text(text: str) -> str:
     bed_form = _infer_bed_form_from_text(text)
+    if re.search(r"经典床(?!头柜)", text):
+        return "经典床"
+    for product_name in _queryable_product_names():
+        if product_name in text:
+            return product_name
     if _looks_like_bed_combo_request(text):
         return bed_form or "半高床"
     if bed_form:
         return "定制上下床" if bed_form == "上下床" and any(keyword in text for keyword in CUSTOM_QUOTE_KEYWORDS) else bed_form
-    for product_name in _queryable_product_names():
-        if product_name in text:
-            return product_name
     if "上下床" in text and any(keyword in text for keyword in CUSTOM_QUOTE_KEYWORDS):
         return "定制上下床"
     for candidate in _category_candidates():
         if candidate in text:
             return candidate
     return ""
+
+
+def _resolve_category_type(category: str) -> str:
+    normalized = precheck_quote.normalize_category_label(category)
+    if normalized != "generic":
+        return normalized
+    for product in precheck_quote.load_queryable_product_lookup():
+        if str(product.get("name") or "").strip() != str(category or "").strip():
+            continue
+        return precheck_quote.normalize_category_label(str(product.get("sheet") or "").strip())
+    return normalized
 
 
 def _infer_material_from_text(text: str) -> str:
@@ -699,14 +957,20 @@ def _infer_precheck_args_from_text(text: str) -> dict[str, Any]:
         return {}
 
     inferred: dict[str, Any] = {}
+    if any(keyword in normalized_text for keyword in REFERENCE_QUOTE_HINTS):
+        inferred["approximate_only"] = True
     bed_form = _infer_bed_form_from_text(normalized_text)
     category = _infer_category_from_text(normalized_text)
+    category_type = _resolve_category_type(category)
     if category:
         inferred["category"] = category
 
     material = _infer_material_from_text(normalized_text)
     if material:
         inferred["material"] = material
+    light_strip_type = _infer_light_strip_type(normalized_text)
+    if light_strip_type:
+        inferred["light_strip_type"] = light_strip_type
 
     quote_kind = _infer_quote_kind_from_text(normalized_text)
     if quote_kind:
@@ -717,8 +981,26 @@ def _infer_precheck_args_from_text(text: str) -> dict[str, Any]:
     height = _extract_labeled_metric(normalized_text, ("高度", "高"))
     width = _extract_labeled_metric(normalized_text, ("宽度", "宽"))
 
+    if category_type == "cabinet":
+        triplet_length, triplet_height, triplet_depth = _extract_cabinet_triplet_dimensions(normalized_text)
+        if not length and triplet_length:
+            length = triplet_length
+        if not height and triplet_height:
+            height = triplet_height
+        if not depth and triplet_depth:
+            depth = triplet_depth
+
+    if not length and category_type == "table":
+        if category in {"书桌柜", "转角书桌柜"}:
+            length = _extract_inline_metric_after_keywords(normalized_text, ("桌子", "书桌", "桌面"))
+        elif _is_desk_hanging_combo_category(category) and not any([depth, height, width]):
+            loose_candidates = sorted(set(_extract_loose_metric_candidates(normalized_text)))
+            if len(loose_candidates) == 1:
+                length = loose_candidates[0]
+        elif category:
+            length = _extract_explicit_table_length(normalized_text, category=category)
+
     bed_pair_width, bed_pair_length = _extract_bed_pair_dimensions(normalized_text)
-    category_type = precheck_quote.normalize_category_label(category)
     is_bed_like_text = category_type == "bed" or "床" in normalized_text
     if bed_pair_width and is_bed_like_text:
         width = bed_pair_width
@@ -738,12 +1020,20 @@ def _infer_precheck_args_from_text(text: str) -> dict[str, Any]:
     if width:
         inferred["width"] = width
 
+    variant_hint = _extract_sofa_variant_hint(normalized_text)
+    if variant_hint:
+        inferred["variant_hint"] = variant_hint
+
     if bed_form:
         inferred["bed_form"] = bed_form
 
     access_style = _infer_access_style(normalized_text)
     if access_style:
         inferred["access_style"] = access_style
+
+    desk_hanging_mode = _extract_desk_hanging_mode(normalized_text, category_hint=category)
+    if desk_hanging_mode:
+        inferred.update(desk_hanging_mode)
 
     bed_form = str(inferred.get("bed_form") or "")
     if "下层箱体床" in normalized_text or ("箱体床" in normalized_text and bed_form in {"上下床", "错层床"}):
@@ -877,6 +1167,11 @@ def _infer_precheck_follow_up_from_state(
         for field_name, value in inferred.items():
             if value not in (None, "", []):
                 updates[field_name] = value
+        if "has_door" in missing_fields and "has_door" not in updates:
+            category_hint = str(confirmed_fields.get("category") or "").strip()
+            desk_hanging_mode = _extract_desk_hanging_mode(text, category_hint=category_hint)
+            if desk_hanging_mode:
+                updates.update(desk_hanging_mode)
 
     if not updates:
         return None
@@ -1044,8 +1339,8 @@ def _shape_role_output(
     professional_text: str,
     customer_text: str | None = None,
 ) -> dict[str, str]:
-    normalized_professional = str(professional_text or "").strip()
-    normalized_customer = str(customer_text or normalized_professional).strip()
+    normalized_professional = _sanitize_internal_process_text(professional_text)
+    normalized_customer = _sanitize_internal_process_text(customer_text or normalized_professional)
 
     if audience_role == "designer":
         return {
@@ -1064,6 +1359,18 @@ def _shape_role_output(
         "internal_summary": "",
         "customer_forward_text": normalized_customer,
     }
+
+
+def _sanitize_internal_process_text(text: str | None) -> str:
+    normalized = str(text or "").strip()
+    if not normalized:
+        return ""
+    sanitized = normalized
+    for pattern, replacement in INTERNAL_PROCESS_TEXT_REPLACEMENTS:
+        sanitized = re.sub(pattern, replacement, sanitized)
+    sanitized = re.sub(r"\n{3,}", "\n\n", sanitized)
+    sanitized = re.sub(r"[ \t]{2,}", " ", sanitized)
+    return sanitized.strip()
 
 
 def _resolve_context(
@@ -1337,6 +1644,9 @@ def _store_flow_state(
     consultant_quick_actions: list[dict[str, Any]] | None = None,
     consultant_action_queue: list[dict[str, Any]] | None = None,
     consultant_workbench: dict[str, Any] | None = None,
+    quote_followup_state: dict[str, Any] | None = None,
+    quote_feedback_signal: dict[str, Any] | None = None,
+    quote_outcome: dict[str, Any] | None = None,
     post_quote_stage: dict[str, Any] | None = None,
     quote_version_summary: dict[str, Any] | None = None,
     quote_version_actions: dict[str, Any] | None = None,
@@ -1374,6 +1684,9 @@ def _store_flow_state(
             "consultant_quick_actions": consultant_quick_actions or [],
             "consultant_action_queue": consultant_action_queue or [],
             "consultant_workbench": consultant_workbench or {},
+            "quote_followup_state": quote_followup_state or {},
+            "quote_feedback_signal": quote_feedback_signal or {},
+            "quote_outcome": quote_outcome or {},
             "post_quote_stage": post_quote_stage or {},
             "quote_version_summary": quote_version_summary or {},
             "quote_version_actions": quote_version_actions or {},
@@ -1412,7 +1725,11 @@ def _build_progress_metadata(
             "conversion_intent_level": "high",
             "next_best_action": {
                 "code": "complete_key_quote_field",
-                "text": f"下一步先补这一个关键条件：{next_question}" if next_question else "下一步先补齐缺失的关键报价条件。",
+                "text": (
+                    f"下一步我先只确认一个问题，先补这一个关键条件：{next_question}"
+                    if next_question
+                    else "下一步我先只确认一个问题，先补齐缺失的关键报价条件。"
+                ),
             },
         }
     if handled_by == "inquiry_reply":
@@ -1820,6 +2137,40 @@ def _find_standard_catalog_record(precheck_args: dict[str, Any]) -> dict[str, An
     return None
 
 
+def _is_explicit_desk_hanging_combo(precheck_args: dict[str, Any]) -> bool:
+    normalized = dict(PRECHECK_DEFAULTS)
+    normalized.update(precheck_args)
+    args = argparse.Namespace(**normalized)
+    return precheck_quote.is_explicit_desk_hanging_combo(args)
+
+
+def _find_explicit_combo_component_record(
+    *,
+    precheck_args: dict[str, Any],
+    remark: str,
+) -> dict[str, Any] | None:
+    normalized = dict(PRECHECK_DEFAULTS)
+    normalized.update(precheck_args)
+    args = argparse.Namespace(**normalized)
+    matched_product = precheck_quote.infer_explicit_product_match(args)
+    if not matched_product:
+        return None
+
+    for record in precheck_quote.load_queryable_price_records():
+        if record.get("sheet") != matched_product.get("sheet"):
+            continue
+        if record.get("product_code") != matched_product.get("product_code"):
+            continue
+        if record.get("name") != matched_product.get("name"):
+            continue
+        if str(record.get("remark") or "").strip() != remark:
+            continue
+        if str(record.get("pricing_mode") or "").strip() not in precheck_quote.STANDARD_PRICING_MODES:
+            continue
+        return record
+    return None
+
+
 def _dimension_pairs_from_record(record: dict[str, Any]) -> list[str]:
     dimensions = record.get("dimensions") or {}
     pairs = []
@@ -1832,6 +2183,66 @@ def _dimension_pairs_from_record(record: dict[str, Any]) -> list[str]:
         else:
             pairs.append(f"{label}{value}")
     return pairs
+
+
+def _build_explicit_desk_hanging_combo_quote_payload(
+    *,
+    precheck_args: dict[str, Any],
+    precheck_result: dict[str, Any],
+) -> dict[str, Any]:
+    internal_material = normalize_material_for_query(str(precheck_args.get("material") or ""))
+    if not internal_material:
+        raise ValueError("material is required for desk-hanging combo catalog quote")
+
+    desk_record = _find_explicit_combo_component_record(precheck_args=precheck_args, remark="书桌价格")
+    hanging_remark = "吊柜带门单价" if str(precheck_args.get("has_door") or "").strip() == "yes" else "吊柜开放单价"
+    hanging_record = _find_explicit_combo_component_record(precheck_args=precheck_args, remark=hanging_remark)
+    if desk_record is None or hanging_record is None:
+        raise ValueError("当前书桌与吊柜组合未命中完整目录记录，无法自动执行正式报价")
+
+    desk_price = (desk_record.get("materials") or {}).get(internal_material)
+    hanging_price = (hanging_record.get("materials") or {}).get(internal_material)
+    if desk_price is None or hanging_price is None:
+        raise ValueError("书桌与吊柜组合记录缺少对应材质价格")
+
+    material_label = formalize_material_name(internal_material) or internal_material
+    desk_total = _round_formal_total(_quantize_money(Decimal(str(desk_price))))
+    hanging_total = _round_formal_total(_quantize_money(Decimal(str(hanging_price))))
+    total = desk_total + hanging_total
+    desk_dimensions = _dimension_pairs_from_record(desk_record)
+    hanging_dimensions = _dimension_pairs_from_record(hanging_record)
+    hanging_label = "吊柜带门" if str(precheck_args.get("has_door") or "").strip() == "yes" else "吊柜开放"
+    product_name = str(desk_record.get("name") or precheck_args.get("category") or "").strip()
+
+    payload: dict[str, Any] = {
+        "items": [
+            {
+                "product": f"{material_label}{product_name}（书桌部分）",
+                "confirmed": "，".join(part for part in [material_label, *desk_dimensions, "书桌部分"] if part),
+                "pricing_method": "目录标准单价计价",
+                "calculation_steps": [
+                    *( [f"目录规格：{'，'.join(desk_dimensions)}"] if desk_dimensions else [] ),
+                    f"目录标准价：{desk_total} 元",
+                ],
+                "subtotal": f"{desk_total}元",
+            },
+            {
+                "product": f"{material_label}{product_name}（{hanging_label}）",
+                "confirmed": "，".join(part for part in [material_label, *hanging_dimensions, hanging_label] if part),
+                "pricing_method": "目录标准单价计价",
+                "calculation_steps": [
+                    *( [f"目录规格：{'，'.join(hanging_dimensions)}"] if hanging_dimensions else [] ),
+                    f"目录标准价：{hanging_total} 元",
+                ],
+                "subtotal": f"{hanging_total}元",
+            },
+        ],
+        "total": f"{total}元",
+        "pricing_route": "catalog_unit_price",
+    }
+    if precheck_result.get("quote_decision") == "reference_quote":
+        payload["reference"] = True
+    return payload
 
 
 def _build_catalog_unit_price_quote_payload(
@@ -2128,6 +2539,11 @@ def _build_quote_payload_from_precheck(
     precheck_result: dict[str, Any],
 ) -> dict[str, Any] | None:
     pricing_route = str(precheck_result.get("pricing_route") or "").strip()
+    if _is_explicit_desk_hanging_combo(precheck_args) and precheck_result.get("ready_for_formal_quote"):
+        return _build_explicit_desk_hanging_combo_quote_payload(
+            precheck_args=precheck_args,
+            precheck_result=precheck_result,
+        )
     if pricing_route in {"modular_child_bed", "modular_child_bed_combo"}:
         return _build_modular_child_bed_quote_payload(
             precheck_args=precheck_args,
@@ -2147,12 +2563,33 @@ def _build_quote_payload_from_precheck(
             precheck_args=precheck_args,
             precheck_result=precheck_result,
         )
-    if pricing_route in {"table", "catalog_child_bed", "cabinet", "bed"} and precheck_result.get("ready_for_formal_quote"):
+    if pricing_route in {"table", "catalog_child_bed", "catalog_unit_price"} and precheck_result.get("ready_for_formal_quote"):
         return _build_catalog_unit_price_quote_payload(
             precheck_args=precheck_args,
             precheck_result=precheck_result,
         )
     return None
+
+
+def _should_auto_execute_ready_quote(
+    *,
+    text: str,
+    precheck_args: dict[str, Any],
+    precheck_result: dict[str, Any],
+) -> bool:
+    if not precheck_result.get("ready_for_formal_quote"):
+        return False
+    if precheck_result.get("quote_decision") == "reference_quote":
+        return False
+    normalized_text = str(text or "").strip()
+    if any(blocker in normalized_text for blocker in AUTO_EXECUTE_READY_QUOTE_BLOCKERS):
+        return False
+    if not route_quote_request.is_quote_request(normalized_text):
+        return False
+    return _build_quote_payload_from_precheck(
+        precheck_args=precheck_args,
+        precheck_result=precheck_result,
+    ) is not None
 
 
 def _format_quote_payload_result(
@@ -2212,6 +2649,9 @@ def _format_quote_payload_result(
         "consultant_quick_actions": render_bundle["prepared_payload"].get("consultant_quick_actions") or [],
         "consultant_action_queue": render_bundle["prepared_payload"].get("consultant_action_queue") or [],
         "consultant_workbench": render_bundle["prepared_payload"].get("consultant_workbench") or {},
+        "quote_followup_state": render_bundle["prepared_payload"].get("quote_followup_state") or {},
+        "quote_feedback_signal": render_bundle["prepared_payload"].get("quote_feedback_signal") or {},
+        "quote_outcome": render_bundle["prepared_payload"].get("quote_outcome") or {},
         "post_quote_stage": render_bundle["prepared_payload"].get("post_quote_stage") or {},
         "quote_version_summary": render_bundle["prepared_payload"].get("quote_version_summary") or {},
         "quote_version_actions": render_bundle["prepared_payload"].get("quote_version_actions") or {},
@@ -2484,10 +2924,13 @@ def handle_message(
                 precheck_args = inferred_precheck_args
         precheck_args = _augment_precheck_args_from_customer_guided_context(precheck_args, state=existing_state)
         precheck_args = _augment_precheck_args_from_product_context(precheck_args, product_context=effective_product_context)
-        if audience_role == "customer" and entry_mode in CUSTOMER_GUIDED_ENTRY_MODES and _should_use_customer_guidance(
+        if _looks_like_dining_room_bundle(text):
+            downstream_result = _build_dining_room_bundle_precheck_result(precheck_args)
+            text_bundle = _precheck_text(downstream_result, audience_role=audience_role)
+        elif audience_role == "customer" and entry_mode in CUSTOMER_GUIDED_ENTRY_MODES and _should_use_customer_guidance(
             customer_strategy=customer_strategy,
             precheck_args=precheck_args,
-        ):
+        ) and not _has_main_product_with_accessories_signal(text, precheck_args):
             if audience_role == "customer" and entry_mode in CUSTOMER_GUIDED_ENTRY_MODES:
                 guidance_result = _customer_guided_text(
                     text,
@@ -2540,43 +2983,61 @@ def handle_message(
                     "downstream_result": guidance_result,
                     "conversation_id": conversation_id or str(route_result.get("conversation_id", "")).strip(),
                 }
-        if precheck_args is None:
-            return {
-                "status": "needs_precheck_args",
-                "handled_by": "route_quote_request",
-                "audience_role": audience_role,
-                "output_profile": output_profile,
-                "entry_mode": entry_mode,
-                "customer_strategy": customer_strategy,
-                "reply_text": "",
-                "internal_summary": "",
-                "customer_forward_text": "",
-                "missing_fields": [],
-                "route_result": route_result,
-                "downstream_result": {},
-                "conversation_id": str(route_result.get("conversation_id", "")).strip(),
-            }
-        downstream_result = _run_precheck(precheck_args)
-        if execute_quote_when_ready and downstream_result.get("ready_for_formal_quote"):
-            calculated_payload = _build_quote_payload_from_precheck(
-                precheck_args=precheck_args,
-                precheck_result=downstream_result,
-            )
-            if calculated_payload is not None:
-                return _format_quote_payload_result(
-                    quote_payload=calculated_payload,
-                    audience_role=audience_role,
-                    output_profile=output_profile,
-                    context_json=context_json,
-                    channel=channel,
-                    bundle_root=bundle_root,
-                    state_root=state_root,
-                    addenda_root=addenda_root,
-                    disable_addenda=disable_addenda,
-                    route_result=route_result,
-                    existing_state=existing_state,
+        else:
+            if precheck_args is None:
+                return {
+                    "status": "needs_precheck_args",
+                    "handled_by": "route_quote_request",
+                    "audience_role": audience_role,
+                    "output_profile": output_profile,
+                    "entry_mode": entry_mode,
+                    "customer_strategy": customer_strategy,
+                    "reply_text": "",
+                    "internal_summary": "",
+                    "customer_forward_text": "",
+                    "missing_fields": [],
+                    "route_result": route_result,
+                    "downstream_result": {},
+                    "conversation_id": str(route_result.get("conversation_id", "")).strip(),
+                }
+            if _looks_like_split_combo_cabinet(text, precheck_args):
+                downstream_result = _build_split_combo_cabinet_precheck_result(precheck_args, text)
+                text_bundle = _precheck_text(downstream_result, audience_role=audience_role)
+            else:
+                downstream_result = _run_precheck(precheck_args)
+                if (
+                    downstream_result.get("ready_for_formal_quote")
+                    and _has_main_product_with_accessories_signal(text, precheck_args)
+                    and _has_lighting_zone_control_signal(text)
+                ):
+                    lighting_follow_up = _build_lighting_type_follow_up_result(precheck_args)
+                    if lighting_follow_up is not None:
+                        downstream_result = lighting_follow_up
+                auto_execute_when_ready = execute_quote_when_ready or _should_auto_execute_ready_quote(
+                    text=text,
+                    precheck_args=precheck_args,
+                    precheck_result=downstream_result,
                 )
-        text_bundle = _precheck_text(downstream_result, audience_role=audience_role)
+                if auto_execute_when_ready and downstream_result.get("ready_for_formal_quote"):
+                    calculated_payload = _build_quote_payload_from_precheck(
+                        precheck_args=precheck_args,
+                        precheck_result=downstream_result,
+                    )
+                    if calculated_payload is not None:
+                        return _format_quote_payload_result(
+                            quote_payload=calculated_payload,
+                            audience_role=audience_role,
+                            output_profile=output_profile,
+                            context_json=context_json,
+                            channel=channel,
+                            bundle_root=bundle_root,
+                            state_root=state_root,
+                            addenda_root=addenda_root,
+                            disable_addenda=disable_addenda,
+                            route_result=route_result,
+                            existing_state=existing_state,
+                        )
+                text_bundle = _precheck_text(downstream_result, audience_role=audience_role)
     else:
         downstream_result = {}
         text_bundle = _shape_role_output(audience_role=audience_role, professional_text="", customer_text="")

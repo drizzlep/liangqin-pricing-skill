@@ -241,6 +241,37 @@ class QuoteFlowStateTests(unittest.TestCase):
                     }
                 ],
             },
+            quote_followup_state={
+                "code": "formal_quote_waiting_budget_feedback",
+                "label": "正式报价待预算反馈",
+                "status": "awaiting_customer_feedback",
+                "current_phase": "formal_quote_followup",
+                "recommended_track": "budget_compare",
+                "current_version_status": "ready_to_send",
+                "compare_version_status": "ready_when_triggered",
+                "followthrough_status": "ready_after_acceptance",
+                "recommended_next_codes": ["send_current_quote", "send_current_then_budget_compare"],
+                "next_action_code": "send_current_quote",
+                "compare_action_code": "send_current_then_budget_compare",
+                "followthrough_action_code": "schedule_store_visit",
+                "next_version_label": "预算收一档对比版",
+            },
+            quote_feedback_signal={
+                "code": "budget",
+                "label": "预算控制",
+                "source": "customer_priority",
+                "is_explicit": True,
+                "recommended_objection_code": "cheaper_option",
+                "recommended_followthrough_code": "schedule_store_visit",
+            },
+            quote_outcome={
+                "code": "comparing",
+                "label": "正式报价进入预算比较",
+                "status": "active",
+                "result_stage": "formal_quote",
+                "next_target_code": "booked_visit",
+                "next_target_label": "约到店确认",
+            },
             post_quote_stage={"code": "formal_quote_waiting_budget_feedback", "label": "正式报价待预算反馈"},
             quote_version_summary={
                 "current_version_code": "formal_base",
@@ -302,6 +333,12 @@ class QuoteFlowStateTests(unittest.TestCase):
         self.assertEqual(loaded["consultant_workbench"]["header"]["title"], "正式报价待预算反馈")
         self.assertEqual(loaded["consultant_workbench"]["primary_action"]["code"], "send_current_quote")
         self.assertEqual(loaded["conversion"]["consultant_workbench"]["quick_action_groups"][0]["group"], "quote_send")
+        self.assertEqual(loaded["quote_followup_state"]["recommended_track"], "budget_compare")
+        self.assertEqual(loaded["conversion"]["quote_followup_state"]["compare_action_code"], "send_current_then_budget_compare")
+        self.assertEqual(loaded["quote_feedback_signal"]["code"], "budget")
+        self.assertEqual(loaded["conversion"]["quote_feedback_signal"]["recommended_objection_code"], "cheaper_option")
+        self.assertEqual(loaded["quote_outcome"]["code"], "comparing")
+        self.assertEqual(loaded["conversion"]["quote_outcome"]["next_target_code"], "booked_visit")
         self.assertIn("到店/沟通收口", loaded["conversion"]["follow_up_script_set"]["consultant_followthrough_prompt"])
         self.assertEqual(loaded["post_quote_stage"]["code"], "formal_quote_waiting_budget_feedback")
         self.assertEqual(loaded["quote_version_summary"]["current_version_index"], "V1")

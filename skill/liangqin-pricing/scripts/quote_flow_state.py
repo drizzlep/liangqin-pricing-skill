@@ -61,6 +61,9 @@ def build_quote_flow_state(
     consultant_quick_actions: list[dict[str, Any]] | None = None,
     consultant_action_queue: list[dict[str, Any]] | None = None,
     consultant_workbench: dict[str, Any] | None = None,
+    quote_followup_state: dict[str, Any] | None = None,
+    quote_feedback_signal: dict[str, Any] | None = None,
+    quote_outcome: dict[str, Any] | None = None,
     post_quote_stage: dict[str, Any] | None = None,
     quote_version_summary: dict[str, Any] | None = None,
     quote_version_actions: dict[str, Any] | None = None,
@@ -84,6 +87,9 @@ def build_quote_flow_state(
     normalized_consultant_quick_actions = consultant_quick_actions or []
     normalized_consultant_action_queue = consultant_action_queue or []
     normalized_consultant_workbench = consultant_workbench or {}
+    normalized_quote_followup_state = quote_followup_state or {}
+    normalized_quote_feedback_signal = quote_feedback_signal or {}
+    normalized_quote_outcome = quote_outcome or {}
     normalized_post_quote_stage = post_quote_stage or {}
     normalized_quote_version_summary = quote_version_summary or {}
     normalized_quote_version_actions = quote_version_actions or {}
@@ -121,6 +127,9 @@ def build_quote_flow_state(
         "consultant_quick_actions": normalized_consultant_quick_actions,
         "consultant_action_queue": normalized_consultant_action_queue,
         "consultant_workbench": normalized_consultant_workbench,
+        "quote_followup_state": normalized_quote_followup_state,
+        "quote_feedback_signal": normalized_quote_feedback_signal,
+        "quote_outcome": normalized_quote_outcome,
         "post_quote_stage": normalized_post_quote_stage,
         "quote_version_summary": normalized_quote_version_summary,
         "quote_version_actions": normalized_quote_version_actions,
@@ -169,6 +178,9 @@ def build_quote_flow_state(
             "consultant_quick_actions": normalized_consultant_quick_actions,
             "consultant_action_queue": normalized_consultant_action_queue,
             "consultant_workbench": normalized_consultant_workbench,
+            "quote_followup_state": normalized_quote_followup_state,
+            "quote_feedback_signal": normalized_quote_feedback_signal,
+            "quote_outcome": normalized_quote_outcome,
             "post_quote_stage": normalized_post_quote_stage,
             "quote_version_summary": normalized_quote_version_summary,
             "quote_version_actions": normalized_quote_version_actions,
@@ -232,6 +244,9 @@ def _extract_existing_state_fields(state: dict[str, Any]) -> dict[str, Any]:
         "consultant_quick_actions": state.get("consultant_quick_actions") or conversion.get("consultant_quick_actions") or [],
         "consultant_action_queue": state.get("consultant_action_queue") or conversion.get("consultant_action_queue") or [],
         "consultant_workbench": state.get("consultant_workbench") or conversion.get("consultant_workbench") or {},
+        "quote_followup_state": state.get("quote_followup_state") or conversion.get("quote_followup_state") or {},
+        "quote_feedback_signal": state.get("quote_feedback_signal") or conversion.get("quote_feedback_signal") or {},
+        "quote_outcome": state.get("quote_outcome") or conversion.get("quote_outcome") or {},
         "post_quote_stage": state.get("post_quote_stage") or conversion.get("post_quote_stage") or {},
         "quote_version_summary": state.get("quote_version_summary") or conversion.get("quote_version_summary") or {},
         "quote_version_actions": state.get("quote_version_actions") or conversion.get("quote_version_actions") or {},
@@ -276,8 +291,11 @@ def merge_quote_flow_state(
             "consultant_handoff_plan",
             "compare_plan",
             "follow_up_script_set",
-            "consultant_quick_actions",
             "consultant_workbench",
+            "quote_followup_state",
+            "quote_feedback_signal",
+            "quote_outcome",
+            "consultant_quick_actions",
             "post_quote_stage",
             "quote_version_summary",
             "quote_version_actions",
@@ -337,6 +355,9 @@ def merge_quote_flow_state(
         consultant_quick_actions=merged_fields["consultant_quick_actions"],
         consultant_action_queue=merged_fields["consultant_action_queue"],
         consultant_workbench=merged_fields["consultant_workbench"],
+        quote_followup_state=merged_fields["quote_followup_state"],
+        quote_feedback_signal=merged_fields["quote_feedback_signal"],
+        quote_outcome=merged_fields["quote_outcome"],
         post_quote_stage=merged_fields["post_quote_stage"],
         quote_version_summary=merged_fields["quote_version_summary"],
         quote_version_actions=merged_fields["quote_version_actions"],

@@ -1,0 +1,4 @@
+case_key,expected_bucket,expected_verdict,expected_issue_codes,expected_primary_check,notes
+case-001-normal,normal,recommended_release,,无,正常合同样本
+case-002-calc-error,calc_error,manual_review_required,calculation_error,核对折扣,折扣计算错误
+case-003-quote-conflict,quote_conflict,manual_review_required,quote_conflict|discount_mismatch,核对报价口径,合同金额与报价系统冲突
