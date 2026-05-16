@@ -759,8 +759,12 @@ def _apply_lightweight_route_overrides(
         if field_name == "category":
             precheck_quote = _load_precheck_quote_module()
             normalized_current = precheck_quote.normalize_category_label(current_value)
-            if current_value and normalized_current == "cabinet":
-                continue
+            normalized_candidate = precheck_quote.normalize_category_label(str(raw_value).strip())
+            if current_value:
+                if normalized_current != "cabinet" or normalized_candidate != "cabinet":
+                    continue
+                if not _is_generic_cabinet_category(current_value):
+                    continue
         elif current_value:
             continue
         normalized_value = _normalize_value_for_pricing(field_name, raw_value)
@@ -773,6 +777,10 @@ def _apply_lightweight_route_overrides(
             }
         )
     return assumptions
+
+
+def _is_generic_cabinet_category(value: str) -> bool:
+    return str(value or "").strip() in {"柜", "柜体", "其他柜"}
 
 
 def _has_lightweight_cabinet_requirements(precheck_args: dict[str, Any]) -> bool:

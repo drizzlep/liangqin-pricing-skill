@@ -64,6 +64,56 @@ class ProductSplitterTests(unittest.TestCase):
         self.assertEqual(items[1]["product_code"], "20260418001002")
         self.assertIn("长：450mm", items[1]["detail_snippet"])
 
+    def test_extract_product_line_items_preserves_plus_in_combo_name(self) -> None:
+        preview = (
+            "产品名称 产品编号 材质 数量 费用合计（元） "
+            "经典榻榻米+衣柜组合 20260229002002 北美白橡木 1 14760 合计 14760 "
+            "次卧 经典榻榻米+衣柜组合 20260229002002 北美白橡木 尺寸 长：2000mm 宽：1500mm 高：400mm "
+        )
+
+        items = PRODUCT_SPLITTER.extract_product_line_items(preview)
+
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]["product_name"], "经典榻榻米+衣柜组合")
+        self.assertEqual(items[0]["product_code"], "20260229002002")
+
+    def test_extract_product_line_items_uses_structured_detail_blocks_after_product_info_attachment(self) -> None:
+        preview = (
+            "第1页 合同首页 1.1甲方委托乙方定制家具。"
+            "第13页 附件：《产品信息及设计图纸》 产品名称 产品编号 材质 数量 费用合计（元） "
+            "升级经典无腰线衣柜 20260229002001 北美白橡木 1 36936 "
+            "经典榻榻米+衣柜组合 20260229002002 北美白橡木 1 14760 合计 51696 "
+            "交货地点 联系电话 交货日期 2026年05月31日 "
+            "福建省宁德市 次卧 升级经典无腰线衣柜 20260229002001 北美白橡木 无色哑光木蜡油 "
+            "尺寸 长：2090mm 宽：600mm 高：2770mm 1 注明："
+            "1.次卧白橡木拼框门衣柜，直角直边。"
+            "2.柜内五组抽拉挂衣杆，柜体后方避让90*25mm。 "
+            "福建省宁德市 次卧 经典榻榻米+衣柜组合 20260229002002 北美白橡木 无色哑光木蜡油 "
+            "尺寸 长：2000mm 宽：1500mm 高：400mm 1 注明："
+            "1.次卧白橡木榻榻米；1.5*2m床垫。"
+            "2.榻榻米靠外侧安排抽屉，平装盖板+侧开排骨架。"
+            "尺寸图 抽屉下沉125mm，贴墙预留10mm走线。"
+        )
+
+        items = PRODUCT_SPLITTER.extract_product_line_items(preview)
+
+        self.assertEqual(len(items), 2)
+        wardrobe_item = items[0]
+        combo_item = items[1]
+        self.assertEqual(wardrobe_item["product_code"], "20260229002001")
+        self.assertIn("长：2090mm", wardrobe_item["detail_snippet"])
+        self.assertIn("柜内五组抽拉挂衣杆", wardrobe_item["detail_snippet"])
+        self.assertNotIn("长：2000mm", wardrobe_item["detail_snippet"])
+        self.assertNotIn("榻榻米靠外侧安排抽屉", wardrobe_item["detail_snippet"])
+
+        self.assertEqual(combo_item["product_code"], "20260229002002")
+        self.assertIn("长：2000mm", combo_item["detail_snippet"])
+        self.assertIn("尺寸图 抽屉下沉125mm", combo_item["detail_snippet"])
+        self.assertNotIn("长：2090mm", combo_item["detail_snippet"])
+        self.assertNotIn("柜内五组抽拉挂衣杆", combo_item["detail_snippet"])
+        self.assertEqual(combo_item["detail_resolution"]["anchor_method"], "structured_product_block")
+        self.assertEqual(combo_item["detail_resolution"]["evidence_scope"], "detail_block")
+
     def test_extract_product_line_items_exposes_detail_page_numbers_for_fixed_multi_product_template(self) -> None:
         preview = (
             "第13页 附件： 产品名称 产品编号 材质 数量 费用合计（元） "
@@ -1379,6 +1429,64 @@ class ProductSplitterTests(unittest.TestCase):
         self.assertTrue(all(item["formal_quote"]["status"] == "completed" for item in layer_items))
         self.assertTrue(all(item["formal_quote"]["pricing_total"] == "0元" for item in layer_items))
         self.assertTrue(all(item["split_status"] == "compared" for item in layer_items))
+
+    def test_build_multi_product_split_review_splits_tatami_wardrobe_combo_components(self) -> None:
+        job = JOB_MODELS.ReviewJob(
+            job_id="job-tatami-wardrobe-combo",
+            batch_id="batch-tatami-wardrobe-combo",
+            group_key="case-tatami-wardrobe-combo",
+            source_type="manual_batch",
+            source_channel="manual",
+            requested_actions=["audit", "replay"],
+            assets=[
+                JOB_MODELS.SourceAsset(
+                    asset_id="asset-001",
+                    source_path="/tmp/fake-tatami-wardrobe-combo.docx",
+                    relative_path="raw/case/合同.docx",
+                    file_name="合同.docx",
+                    extension=".docx",
+                    media_kind="document",
+                    role_hint="primary_contract",
+                    text_preview=(
+                        "产品名称 产品编号 材质 数量 费用合计（元） "
+                        "升级经典无腰线衣柜 20260229002001 北美白橡木 1 36936 "
+                        "经典榻榻米+衣柜组合 20260229002002 北美白橡木 1 14760 "
+                        "合计 51696 折扣 98折 折扣后合计 50660 "
+                        "次卧 升级经典无腰线衣柜 20260229002001 北美白橡木 尺寸 长：2090mm 宽：600mm 高：2770mm "
+                        "注明：次卧白橡木拼框门衣柜，直角直边，柜内五组抽拉挂衣杆。 "
+                        "次卧 经典榻榻米+衣柜组合 20260229002002 北美白橡木 尺寸 长：2000mm 宽：1500mm 高：400mm "
+                        "注明：次卧白橡木榻榻米；1.5*2m床垫，榻榻米靠外侧安排抽屉，"
+                        "安装注意：当前三件家具不做任何固定，仅安装落地靠在一起。"
+                    ),
+                    text_extract_method="docx_text",
+                )
+            ],
+        )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            payload = PRODUCT_SPLITTER.build_multi_product_split_review(
+                job,
+                runtime_root=Path(tmpdir),
+            )
+
+        self.assertEqual(payload["item_count"], 3)
+        self.assertEqual(payload["status_breakdown"]["compared"], 2)
+        self.assertEqual(payload["status_breakdown"]["manual_confirmation_required"], 1)
+        names = [item["product_name"] for item in payload["items"]]
+        self.assertIn("升级经典无腰线衣柜", names)
+        self.assertIn("经典榻榻米+衣柜组合-榻榻米", names)
+        self.assertIn("经典榻榻米+衣柜组合-衣柜", names)
+
+        tatami_item = next(item for item in payload["items"] if item["product_name"].endswith("-榻榻米"))
+        self.assertEqual(tatami_item["formal_quote"]["status"], "completed")
+        self.assertEqual(tatami_item["formal_quote"]["pricing_total"], "13440元")
+        self.assertEqual(tatami_item["formal_quote"]["fallback_strategy"], "tatami_wardrobe_combo_tatami_component")
+        self.assertEqual(tatami_item["split_status"], "compared")
+
+        wardrobe_item = next(item for item in payload["items"] if item["product_name"].endswith("-衣柜"))
+        self.assertEqual(wardrobe_item["split_status"], "manual_confirmation_required")
+        self.assertEqual(wardrobe_item["formal_quote"]["status"], "skipped")
+        self.assertIn("衣柜部分的独立尺寸", wardrobe_item["pricing_precheck"]["precheck_result"]["next_question"])
 
     def test_scale_quote_payload_for_quantity_multiplies_completed_total(self) -> None:
         payload = PRODUCT_SPLITTER._scale_quote_payload_for_quantity(
