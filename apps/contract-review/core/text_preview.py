@@ -30,6 +30,7 @@ PDF_PRIORITY_KEYWORDS = (
     "柜体形式",
     "床形态",
 )
+DEFAULT_TEXT_PREVIEW_LIMIT = 8000
 
 
 def normalize_preview(text: str, *, limit_chars: int) -> str:
@@ -39,7 +40,7 @@ def normalize_preview(text: str, *, limit_chars: int) -> str:
     return normalized[:limit_chars].rstrip() + "..."
 
 
-def extract_docx_preview(path: Path, *, limit_chars: int = 600) -> tuple[str, str]:
+def extract_docx_preview(path: Path, *, limit_chars: int = DEFAULT_TEXT_PREVIEW_LIMIT) -> tuple[str, str]:
     with ZipFile(path) as archive:
         xml_bytes = archive.read("word/document.xml")
     root = ET.fromstring(xml_bytes)
@@ -124,7 +125,7 @@ def _score_pdf_page(text: str) -> int:
     return sum(1 for keyword in PDF_PRIORITY_KEYWORDS if keyword in text)
 
 
-def extract_text_preview(path: Path, *, limit_chars: int = 600) -> tuple[str, str]:
+def extract_text_preview(path: Path, *, limit_chars: int = DEFAULT_TEXT_PREVIEW_LIMIT) -> tuple[str, str]:
     suffix = path.suffix.lower()
     try:
         if suffix == ".docx":

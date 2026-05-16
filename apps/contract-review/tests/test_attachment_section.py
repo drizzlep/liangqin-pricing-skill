@@ -51,6 +51,20 @@ class AttachmentSectionTests(unittest.TestCase):
         self.assertNotIn("1.1甲方委托乙方定制家具", section)
         self.assertIn("长：450mm", section)
 
+    def test_extract_attachment_pricing_section_supports_product_info_title(self) -> None:
+        text = (
+            "第1页 合同首页 1.1甲方委托乙方定制家具。"
+            "第13页 附件：《产品信息及设计图纸》 产品名称 产品编号 材质 数量 费用合计（元） "
+            "经典榻榻米+衣柜组合 20260229002002 北美白橡木 1 14760 "
+            "第14页 次卧 经典榻榻米+衣柜组合 20260229002002 尺寸 长：2000mm 宽：1500mm 高：400mm"
+        )
+
+        section = ATTACHMENT_SECTION.extract_attachment_pricing_section(text)
+
+        self.assertTrue(section.startswith("附件：《产品信息及设计图纸》"))
+        self.assertNotIn("合同首页", section)
+        self.assertIn("经典榻榻米+衣柜组合", section)
+
     def test_extract_attachment_pricing_section_trims_repeated_contract_pages_after_attachment(self) -> None:
         text = (
             "第13页 附件： 产品名称 产品编号 材质 数量 费用合计（元） "

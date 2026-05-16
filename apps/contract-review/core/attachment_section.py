@@ -6,7 +6,7 @@ from product_code_utils import extract_unique_product_codes
 
 
 ATTACHMENT_PRICING_TITLE_PATTERN = re.compile(
-    r"附件\s*[：:]\s*[《“\"]?\s*定制清单及设计图纸\s*[》”\"]?"
+    r"附件\s*[：:]\s*[《“\"]?\s*(?:定制清单|产品信息)及设计图纸\s*[》”\"]?"
 )
 ATTACHMENT_TABLE_HEADER_PATTERN = re.compile(
     r"附件\s*[：:]\s*产品名称\s*产品编号\s*材质\s*数量\s*费用合计(?:（元）|\(元\)|元)?"

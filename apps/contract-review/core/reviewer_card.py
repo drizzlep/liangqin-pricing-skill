@@ -46,6 +46,7 @@ def build_reviewer_card(
     pending_amount = sum(
         (_parse_amount(item.get("contract_amount")) or Decimal("0"))
         for item in pending_items
+        if not str(item.get("parent_product_code") or "").strip()
     )
 
     difference_sources = _build_difference_sources(

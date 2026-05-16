@@ -22,7 +22,7 @@ from product_code_utils import extract_unique_product_codes
 TABLE_HEADER_PATTERN = re.compile(r"产品名称\s*产品编号\s*材质\s*数量\s*费用合计(?:（元）|\(元\)|元)?")
 TABLE_TOTAL_PATTERN = re.compile(r"\s合计\s*\d")
 PRODUCT_ROW_PATTERN = re.compile(
-    r"(?P<name>[\u4e00-\u9fa5A-Za-z（）()·\-\s]{1,40}?)\s*"
+    r"(?P<name>[\u4e00-\u9fa5A-Za-z（）()·+\＋\-\s]{1,40}?)\s*"
     r"(?P<code>\d[\d\s]{13,17})\s*"
     r"(?P<material>[\u4e00-\u9fa5A-Za-z]+木)\s*"
     r"(?P<qty>\d+)\s*"
@@ -107,6 +107,18 @@ def build_multi_product_split_review(
             normalized_fields=normalized_fields,
         )
         pricing_bridge_payload = bridge_contract_to_pricing_precheck(normalized_fields)
+        combo_split_items = _build_tatami_wardrobe_combo_split_items(
+            index=index,
+            line_item=line_item,
+            normalized_fields=normalized_fields,
+            detail_snippet=line_item["detail_snippet"],
+        )
+        if combo_split_items:
+            for split_item in combo_split_items:
+                split_status = str(split_item.get("split_status") or "manual_confirmation_required").strip()
+                status_breakdown[split_status] = status_breakdown.get(split_status, 0) + 1
+                split_items.append(split_item)
+            continue
         quote_runtime_root = runtime_root / "split-items" / line_item["product_code"]
         if pricing_bridge_payload["status"] == "ready_for_formal_quote":
             formal_quote_payload = pricing_compare.execute_formal_quote(
@@ -275,10 +287,14 @@ def extract_product_line_items(aggregate_text: str) -> list[dict[str, str]]:
     if not header_match:
         return []
 
-    table_text = section_text[header_match.start() :]
-    total_match = TABLE_TOTAL_PATTERN.search(table_text)
+    full_table_text = section_text[header_match.start() :]
+    total_match = TABLE_TOTAL_PATTERN.search(full_table_text)
+    detail_search_start = header_match.end()
     if total_match:
-        table_text = table_text[: total_match.start()]
+        table_text = full_table_text[: total_match.start()]
+        detail_search_start = header_match.start() + total_match.end()
+    else:
+        table_text = full_table_text
 
     items: list[dict[str, str]] = []
     seen_codes: set[str] = set()
@@ -307,6 +323,11 @@ def extract_product_line_items(aggregate_text: str) -> list[dict[str, str]]:
                 "boundary_end_page": _extract_page_marker_number(detail_snippet),
             }
         )
+    _apply_structured_product_detail_blocks(
+        section_text=section_text,
+        line_items=items,
+        detail_search_start=detail_search_start,
+    )
     return items
 
 
@@ -878,6 +899,136 @@ def _normalize_amount(value: str) -> str:
     return f"{normalized}元" if normalized else ""
 
 
+def _apply_structured_product_detail_blocks(
+    *,
+    section_text: str,
+    line_items: list[dict[str, Any]],
+    detail_search_start: int,
+) -> None:
+    if not section_text or len(line_items) < 1:
+        return
+
+    blocks = _extract_structured_product_detail_blocks(
+        section_text,
+        line_items=line_items,
+        detail_search_start=detail_search_start,
+    )
+    if not blocks:
+        return
+    product_codes = {
+        str(item.get("product_code") or "").strip()
+        for item in line_items
+        if str(item.get("product_code") or "").strip()
+    }
+    if set(blocks) != product_codes:
+        return
+
+    for item in line_items:
+        product_code = str(item.get("product_code") or "").strip()
+        detail_snippet = str(blocks.get(product_code) or "").strip()
+        if not detail_snippet:
+            continue
+        item["detail_snippet"] = detail_snippet
+        item["detail_resolution"] = _build_structured_detail_resolution(
+            section_text=section_text,
+            product_code=product_code,
+            detail_snippet=detail_snippet,
+        )
+        item["boundary_start_page"] = _extract_page_marker_number(detail_snippet)
+        item["boundary_end_page"] = _extract_page_marker_number(detail_snippet)
+
+
+def _extract_structured_product_detail_blocks(
+    section_text: str,
+    *,
+    line_items: list[dict[str, Any]],
+    detail_search_start: int,
+) -> dict[str, str]:
+    detail_text = str(section_text or "")[max(0, detail_search_start):]
+    if not detail_text:
+        return {}
+
+    anchors: list[dict[str, Any]] = []
+    for item in line_items:
+        product_code = str(item.get("product_code") or "").strip()
+        product_name = str(item.get("product_name") or "").strip()
+        if not product_code:
+            continue
+        match = _find_structured_detail_anchor(detail_text, product_code=product_code, product_name=product_name)
+        if match is None:
+            continue
+        anchors.append(
+            {
+                "product_code": product_code,
+                "start": match.start(),
+                "end": match.end(),
+            }
+        )
+
+    if len(anchors) < 2:
+        return {}
+
+    anchors.sort(key=lambda anchor: int(anchor["start"]))
+    blocks: dict[str, str] = {}
+    for index, anchor in enumerate(anchors):
+        start = int(anchor["start"])
+        next_start = int(anchors[index + 1]["start"]) if index + 1 < len(anchors) else len(detail_text)
+        block = _trim_structured_product_detail_block(detail_text[start:next_start])
+        if block and _has_structured_detail_signal(block):
+            blocks[str(anchor["product_code"])] = block
+    return blocks
+
+
+def _find_structured_detail_anchor(text: str, *, product_code: str, product_name: str) -> re.Match[str] | None:
+    code_pattern = r"\s*".join(map(re.escape, product_code))
+    name_pattern = r"\s*".join(map(re.escape, product_name)) if product_name else r"[\u4e00-\u9fa5A-Za-z（）()·+\＋\-\s]{1,40}?"
+    pattern = re.compile(
+        rf"(?:{'|'.join(map(re.escape, DETAIL_ROOM_KEYWORDS))})?\s*"
+        rf"{name_pattern}\s*"
+        rf"{code_pattern}",
+        flags=re.IGNORECASE,
+    )
+    best_match: re.Match[str] | None = None
+    best_score = -1
+    for match in pattern.finditer(text):
+        window = text[match.start(): min(len(text), match.end() + 500)]
+        score = _detail_snippet_score(window, product_name=product_name)
+        if score > best_score:
+            best_score = score
+            best_match = match
+    return best_match
+
+
+def _trim_structured_product_detail_block(block: str) -> str:
+    normalized = str(block or "").strip()
+    if not normalized:
+        return ""
+    trailing_match = re.search(r"\s(?:交货地点|联系电话|交货日期)\s", normalized)
+    if trailing_match and trailing_match.start() > 0:
+        normalized = normalized[: trailing_match.start()].strip()
+    return normalized
+
+
+def _has_structured_detail_signal(block: str) -> bool:
+    normalized = str(block or "").strip()
+    return bool(normalized and "尺寸" in normalized and any(keyword in normalized for keyword in ("长：", "宽：", "高：", "注明")))
+
+
+def _build_structured_detail_resolution(
+    *,
+    section_text: str,
+    product_code: str,
+    detail_snippet: str,
+) -> dict[str, Any]:
+    resolution = _build_detail_resolution(section_text, product_code, detail_snippet)
+    resolution["reason"] = "linked_from_structured_product_detail_block"
+    resolution["anchor_method"] = "structured_product_block"
+    resolution["anchor_confidence"] = "high"
+    resolution["stop_reason"] = "next_product_detail_anchor"
+    resolution["evidence_scope"] = "detail_block"
+    return resolution
+
+
 def _extract_catalog_section(aggregate_text: str) -> str:
     return extract_attachment_pricing_section(aggregate_text)
 
@@ -1373,6 +1524,273 @@ def _find_manual_split_field_override(
     return {}
 
 
+def _build_tatami_wardrobe_combo_split_items(
+    *,
+    index: int,
+    line_item: dict[str, Any],
+    normalized_fields: dict[str, Any],
+    detail_snippet: str,
+) -> list[dict[str, Any]]:
+    product_name = str(line_item.get("product_name") or "").strip()
+    detail = str(detail_snippet or "").strip()
+    if "榻榻米" not in product_name or "衣柜" not in product_name:
+        return []
+
+    product_code = str(line_item.get("product_code") or "").strip()
+    line_total = str(line_item.get("line_total") or "").strip()
+    material = str((normalized_fields.get("fields") or {}).get("wood_material", {}).get("value") or line_item.get("material") or "").strip()
+    component_dimensions = _extract_component_dimensions_near_anchor(
+        detail,
+        product_name=product_name,
+        product_code=product_code,
+    )
+    length = component_dimensions.get("length") or str((normalized_fields.get("fields") or {}).get("length", {}).get("value") or "").strip()
+    width = component_dimensions.get("width") or str((normalized_fields.get("fields") or {}).get("width", {}).get("value") or "").strip()
+    height = component_dimensions.get("height") or str((normalized_fields.get("fields") or {}).get("height", {}).get("value") or "").strip()
+
+    items: list[dict[str, Any]] = []
+    tatami_quote = _build_generic_tatami_quote_payload(
+        {
+            "category": "榻榻米",
+            "material": material,
+            "length": length,
+            "width": width,
+            "height": height,
+            "quote_kind": "custom",
+        },
+        detail_snippet=detail,
+        line_total=line_total,
+        allow_large_diff=True,
+    )
+    if tatami_quote is not None:
+        quote_payload = dict(tatami_quote["quote_payload"])
+        quote_payload["fallback_strategy"] = "tatami_wardrobe_combo_tatami_component"
+        quote_payload["fallback_detail"] = tatami_quote["detail"]
+        quote_payload["reason"] = "formal_quote_completed_via_tatami_wardrobe_combo_split"
+        pricing_compare_payload = pricing_compare.build_pricing_comparison(
+            contract_audit_payload={
+                "financials": {
+                    "contract_total": {"value": line_total},
+                    "list_price_total": {"value": line_total},
+                    "discounted_total": {"value": line_total},
+                }
+            },
+            pricing_bridge_payload={"status": "component_split", "component_kind": "tatami"},
+            quote_payload=quote_payload,
+        )
+        items.append(
+            {
+                "product_index": index,
+                "component_index": 1,
+                "product_name": f"{product_name}-榻榻米",
+                "product_code": f"{product_code}:tatami" if product_code else "tatami",
+                "parent_product_name": product_name,
+                "parent_product_code": product_code,
+                "material": material,
+                "quantity": str(line_item.get("quantity") or "").strip(),
+                "line_total": line_total,
+                "detail_snippet": detail,
+                "detail_resolution": line_item.get("detail_resolution") or {},
+                "boundary_start_page": line_item.get("boundary_start_page"),
+                "boundary_end_page": line_item.get("boundary_end_page"),
+                "normalized_fields": _component_normalized_fields(
+                    normalized_fields,
+                    product_category="榻榻米",
+                    source_label="榻榻米组件",
+                ),
+                "pricing_precheck": {
+                    "status": "component_split",
+                    "reason": "tatami_wardrobe_combo_component",
+                    "precheck_args": {
+                        "category": "榻榻米",
+                        "material": material,
+                        "length": length,
+                        "width": width,
+                        "height": height,
+                        "quote_kind": "custom",
+                    },
+                    "blocked_fields": [],
+                },
+                "formal_quote": quote_payload,
+                "pricing_compare": pricing_compare_payload,
+                "split_status": "compared",
+            }
+        )
+
+    wardrobe_item = _build_pending_combo_component_item(
+        index=index,
+        component_index=2,
+        product_name=f"{product_name}-衣柜",
+        product_code=f"{product_code}:wardrobe" if product_code else "wardrobe",
+        parent_product_name=product_name,
+        parent_product_code=product_code,
+        material=material,
+        quantity=str(line_item.get("quantity") or "").strip(),
+        line_total=line_total,
+        detail_snippet=detail,
+        detail_resolution=line_item.get("detail_resolution") or {},
+        boundary_start_page=line_item.get("boundary_start_page"),
+        boundary_end_page=line_item.get("boundary_end_page"),
+        normalized_fields=_component_normalized_fields(
+            normalized_fields,
+            product_category="衣柜",
+            source_label="衣柜组件",
+        ),
+        reason="tatami_wardrobe_combo_wardrobe_detail_missing",
+        follow_up_question=(
+            f"请人工确认 {product_name} 中衣柜部分的独立尺寸、门型和合同金额占比；"
+            "确认后再按衣柜品类单独入账。"
+        ),
+    )
+    items.append(wardrobe_item)
+    return items
+
+
+def _extract_component_dimensions_near_anchor(
+    detail_snippet: str,
+    *,
+    product_name: str,
+    product_code: str,
+) -> dict[str, str]:
+    detail = str(detail_snippet or "")
+    if not detail:
+        return {}
+
+    anchors: list[int] = []
+    if product_code:
+        code_pattern = r"\s*".join(map(re.escape, product_code))
+        anchors.extend(match.start() for match in re.finditer(code_pattern, detail))
+    normalized_detail = _normalize_inline_text(detail)
+    normalized_name = _normalize_inline_text(product_name)
+    if normalized_name:
+        compact_index = normalized_detail.rfind(normalized_name)
+        if compact_index >= 0:
+            anchors.append(max(0, compact_index))
+
+    start = max(anchors) if anchors else 0
+    window = detail[start : start + 900]
+    dimensions: dict[str, str] = {}
+    patterns = {
+        "length": r"长[：:]\s*(\d+(?:\.\d+)?)\s*(mm|毫米|cm|m|米)?",
+        "width": r"宽[：:]\s*(\d+(?:\.\d+)?)\s*(mm|毫米|cm|m|米)?",
+        "height": r"高[：:]\s*(\d+(?:\.\d+)?)\s*(mm|毫米|cm|m|米)?",
+    }
+    for field_name, pattern in patterns.items():
+        match = re.search(pattern, window, flags=re.IGNORECASE)
+        if not match:
+            continue
+        dimensions[field_name] = _format_dimension_text(match.group(1), match.group(2))
+    return dimensions
+
+
+def _format_dimension_text(number_text: str, unit_text: str | None) -> str:
+    unit = str(unit_text or "mm").strip()
+    if unit == "毫米":
+        unit = "mm"
+    if unit == "米":
+        unit = "m"
+    value = Decimal(str(number_text))
+    if unit.lower() in {"m"}:
+        value = value * Decimal("1000")
+        unit = "mm"
+    elif unit.lower() == "cm":
+        value = value * Decimal("10")
+        unit = "mm"
+    if unit == "mm":
+        return f"{int(value.quantize(Decimal('1'), rounding=ROUND_HALF_UP))}mm"
+    return f"{_format_decimal(value)}{unit}"
+
+
+def _component_normalized_fields(
+    normalized_fields: dict[str, Any],
+    *,
+    product_category: str,
+    source_label: str,
+) -> dict[str, Any]:
+    cloned = json.loads(json.dumps(normalized_fields, ensure_ascii=False))
+    fields = cloned.setdefault("fields", {})
+    fields["product_category"] = {
+        "value": product_category,
+        "confidence": 0.99,
+        "evidence_refs": [
+            {
+                "asset_id": "component-split",
+                "file_name": "component_split",
+                "text_extract_method": "tatami_wardrobe_combo_split",
+                "snippet": source_label,
+            }
+        ],
+    }
+    return cloned
+
+
+def _build_pending_combo_component_item(
+    *,
+    index: int,
+    component_index: int,
+    product_name: str,
+    product_code: str,
+    parent_product_name: str,
+    parent_product_code: str,
+    material: str,
+    quantity: str,
+    line_total: str,
+    detail_snippet: str,
+    detail_resolution: dict[str, Any],
+    boundary_start_page: Any,
+    boundary_end_page: Any,
+    normalized_fields: dict[str, Any],
+    reason: str,
+    follow_up_question: str,
+) -> dict[str, Any]:
+    pricing_precheck = {
+        "status": "manual_confirmation_required",
+        "reason": reason,
+        "precheck_result": {"next_question": follow_up_question},
+        "blocked_fields": ["component_amount", "component_dimensions"],
+    }
+    formal_quote = {
+        "status": "skipped",
+        "reason": reason,
+        "pricing_route": "cabinet_projection_area",
+        "pricing_total": "",
+        "pricing_total_value": None,
+        "prepared_payload": {},
+        "raw_result": None,
+    }
+    pricing_compare_payload = pricing_compare.build_pricing_comparison(
+        contract_audit_payload={
+            "financials": {
+                "contract_total": {"value": line_total},
+                "list_price_total": {"value": line_total},
+                "discounted_total": {"value": line_total},
+            }
+        },
+        pricing_bridge_payload=pricing_precheck,
+        quote_payload=formal_quote,
+    )
+    return {
+        "product_index": index,
+        "component_index": component_index,
+        "product_name": product_name,
+        "product_code": product_code,
+        "parent_product_name": parent_product_name,
+        "parent_product_code": parent_product_code,
+        "material": material,
+        "quantity": quantity,
+        "line_total": line_total,
+        "detail_snippet": detail_snippet,
+        "detail_resolution": detail_resolution,
+        "boundary_start_page": boundary_start_page,
+        "boundary_end_page": boundary_end_page,
+        "normalized_fields": normalized_fields,
+        "pricing_precheck": pricing_precheck,
+        "formal_quote": formal_quote,
+        "pricing_compare": pricing_compare_payload,
+        "split_status": "manual_confirmation_required",
+    }
+
+
 def _looks_like_split_child_bed_category(*values: str) -> bool:
     for value in values:
         normalized = str(value or "").strip()
@@ -1520,6 +1938,9 @@ def _resolve_split_product_category(*, current_category: str, product_name: str,
     current = str(current_category or "").strip()
     line_name = str(product_name or "").strip()
     detail = str(detail_snippet or "").strip()
+    line_profile_key = _generic_cabinet_profile_key(line_name)
+    if line_profile_key and current != line_name:
+        return line_name
 
     for candidate in (line_name, current):
         refined = _refine_category_from_detail(candidate, detail)
@@ -2638,6 +3059,7 @@ def _build_generic_tatami_quote_payload(
     *,
     detail_snippet: str,
     line_total: str,
+    allow_large_diff: bool = False,
 ) -> dict[str, Any] | None:
     category = str(precheck_args.get("category") or "").strip()
     if category not in {"床", "其他床", "经典床", "榻榻米", "床榻"}:
@@ -2661,7 +3083,7 @@ def _build_generic_tatami_quote_payload(
     platform_width = min(raw_length, raw_width)
     if raw_height > Decimal("0.45"):
         return None
-    if platform_length < Decimal("2.20") or platform_width < Decimal("1.20"):
+    if not allow_large_diff and (platform_length < Decimal("2.20") or platform_width < Decimal("1.20")):
         return None
     if any(token in str(detail_snippet or "") for token in ("围栏", "梯柜", "直梯", "斜梯", "上床", "下床", "儿童床")):
         return None
@@ -2698,7 +3120,7 @@ def _build_generic_tatami_quote_payload(
     area = (platform_length * platform_width).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     subtotal = (area * unit_price).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     total_value = subtotal.quantize(Decimal("1"), rounding=ROUND_HALF_UP)
-    if abs(total_value - contract_total) > Decimal("2000"):
+    if not allow_large_diff and abs(total_value - contract_total) > Decimal("2000"):
         return None
 
     pricing_total = pricing_compare.format_amount(total_value)

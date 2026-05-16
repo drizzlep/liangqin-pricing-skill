@@ -179,6 +179,15 @@ def build_multi_product_aggregate_comparison(
             "split_status": str(item.get("split_status") or "").strip(),
             "line_total": str(item.get("line_total") or "").strip(),
         }
+        parent_product_name = str(item.get("parent_product_name") or "").strip()
+        parent_product_code = str(item.get("parent_product_code") or "").strip()
+        if parent_product_name:
+            item_summary["parent_product_name"] = parent_product_name
+        if parent_product_code:
+            item_summary["parent_product_code"] = parent_product_code
+        component_index = item.get("component_index")
+        if component_index not in {None, ""}:
+            item_summary["component_index"] = component_index
         pricing_route = str(
             formal_quote.get("pricing_route")
             or item_compare_payload.get("pricing_route")
@@ -302,6 +311,12 @@ def _build_compared_item_ledger_entry(
         "pricing_route": str(item.get("pricing_route") or "").strip(),
         "reason": str(reason or "").strip(),
     }
+    if str(item.get("parent_product_name") or "").strip():
+        entry["parent_product_name"] = str(item.get("parent_product_name") or "").strip()
+    if str(item.get("parent_product_code") or "").strip():
+        entry["parent_product_code"] = str(item.get("parent_product_code") or "").strip()
+    if item.get("component_index") not in {None, ""}:
+        entry["component_index"] = item.get("component_index")
     fallback_strategy = str(item.get("fallback_strategy") or "").strip()
     if fallback_strategy:
         entry["fallback_strategy"] = fallback_strategy
@@ -330,6 +345,12 @@ def _build_pending_item_ledger_entry(
         "pricing_route": str(item.get("pricing_route") or "").strip(),
         "reason": str(item.get("reason") or "pricing_total_missing").strip(),
     }
+    if str(item.get("parent_product_name") or "").strip():
+        entry["parent_product_name"] = str(item.get("parent_product_name") or "").strip()
+    if str(item.get("parent_product_code") or "").strip():
+        entry["parent_product_code"] = str(item.get("parent_product_code") or "").strip()
+    if item.get("component_index") not in {None, ""}:
+        entry["component_index"] = item.get("component_index")
     follow_up_question = str(item.get("follow_up_question") or "").strip()
     if follow_up_question:
         entry["follow_up_question"] = follow_up_question
@@ -389,6 +410,8 @@ def _describe_item_fallback(item: dict[str, Any]) -> str:
         return "餐边柜组合估算"
     if fallback_strategy == "generic_tatami_projection_profile":
         return "榻榻米投影面积估算"
+    if fallback_strategy == "tatami_wardrobe_combo_tatami_component":
+        return "榻榻米+衣柜组合拆分：榻榻米组件"
     if fallback_strategy == "modular_child_bed_dimension_probe":
         return "儿童床轻量试算"
     if fallback_strategy == "explicit_catalog_code":
