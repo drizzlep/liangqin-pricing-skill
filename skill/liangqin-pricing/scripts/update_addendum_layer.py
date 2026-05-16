@@ -718,6 +718,17 @@ def build_seed_coverage_ledger(
                 "domain": entry.get("domain"),
                 "summary": normalized_rule,
                 "source": "rules_index_seed",
+                **{
+                    field_name: entry.get(field_name)
+                    for field_name in (
+                        "source_path",
+                        "source_title",
+                        "source_node_id",
+                        "source_local_path",
+                        "source_page",
+                    )
+                    if entry.get(field_name) not in {None, ""}
+                },
             }
         )
 

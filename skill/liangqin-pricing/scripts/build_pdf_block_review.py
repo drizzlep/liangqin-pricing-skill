@@ -19,7 +19,10 @@ from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Any
 
-from PIL import Image
+try:
+    from PIL import Image
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    Image = None
 try:
     from PyPDF2 import PdfReader
 except ModuleNotFoundError:
@@ -90,6 +93,11 @@ _VISION_OCR_BIN: Path | None = None
 def require_pypdf2() -> None:
     if PdfReader is None:
         raise RuntimeError("PyPDF2 is required to build PDF block review artifacts.")
+
+
+def require_pillow() -> None:
+    if Image is None:
+        raise RuntimeError("Pillow is required to build image-based PDF block review artifacts.")
 
 VISION_OCR_SWIFT = """\
 import Foundation
@@ -509,6 +517,7 @@ def extract_vision_observations(image_path: Path) -> list[dict[str, Any]]:
         stderr = result.stderr.strip() or result.stdout.strip() or "vision ocr failed"
         raise RuntimeError(stderr)
     payload = json.loads(result.stdout or "[]")
+    require_pillow()
     with Image.open(image_path) as image:
         width, height = image.size
 
@@ -554,6 +563,7 @@ def assign_pdf_text_to_blocks(blocks: list[dict[str, Any]], pdf_text: str) -> li
 
 def crop_block_image(page_image_path: Path, bbox: tuple[int, int, int, int], output_path: Path) -> Path:
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    require_pillow()
     with Image.open(page_image_path) as image:
         left = max(bbox[0] - 8, 0)
         upper = max(bbox[1] - 8, 0)
@@ -886,6 +896,7 @@ def process_pdf_page(
         vision_observations = []
         vision_ocr_error = format_error_message(error)
 
+    require_pillow()
     with Image.open(page_image_path) as page_image:
         image_width, image_height = page_image.size
 

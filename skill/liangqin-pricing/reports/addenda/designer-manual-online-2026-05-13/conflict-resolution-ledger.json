@@ -1,0 +1,90 @@
+{
+  "entries": [
+    {
+      "landing_id": "landing-rule-0009",
+      "source_data_point_id": "data-point-0009",
+      "machine_resolution_status": "blocked_by_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "软包床头",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:bed_or_soft_package_adjustment",
+      "risk_level": "P0-影响金额",
+      "old_rule_match_count": 0,
+      "old_rule_matches": [],
+      "machine_reason": "该冲突规则同时属于金额规则，必须先通过金额回归，不能仅靠语义 shadow 覆盖。"
+    },
+    {
+      "landing_id": "landing-rule-0002",
+      "source_data_point_id": "data-point-0002",
+      "machine_resolution_status": "blocked_by_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "天地铰链铝框门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P0-影响金额",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "只适用天地铰链",
+          "match_type": "source_title"
+        },
+        {
+          "title": "针式铰链铝框门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "铝框岩板门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "拱形藤编门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "藤编门尺寸限制",
+          "match_type": "signal_overlap"
+        }
+      ],
+      "machine_reason": "该冲突规则同时属于金额规则，必须先通过金额回归，不能仅靠语义 shadow 覆盖。"
+    },
+    {
+      "landing_id": "landing-rule-0155",
+      "source_data_point_id": "data-point-0155",
+      "machine_resolution_status": "blocked_by_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "穿衣镜",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P0-影响金额",
+      "old_rule_match_count": 0,
+      "old_rule_matches": [],
+      "machine_reason": "该冲突规则同时属于金额规则，必须先通过金额回归，不能仅靠语义 shadow 覆盖。"
+    },
+    {
+      "landing_id": "landing-rule-0099",
+      "source_data_point_id": "data-point-0099",
+      "machine_resolution_status": "blocked_by_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "特殊抽屉滑轨",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P0-影响金额",
+      "old_rule_match_count": 0,
+      "old_rule_matches": [],
+      "machine_reason": "该冲突规则同时属于金额规则，必须先通过金额回归，不能仅靠语义 shadow 覆盖。"
+    },
+    {
+      "landing_id": "landing-rule-0027",
+      "source_data_point_id": "data-point-0027",
+      "machine_resolution_status": "blocked_by_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "极窄斜边拼框门",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P0-影响金额",
+      "old_rule_match_count": 0,
+      "old_rule_matches": [],
+      "machine_reason": "该冲突规则同时属于金额规则，必须先通过金额回归，不能仅靠语义 shadow 覆盖。"
+    }
+  ]
+}

@@ -65,6 +65,33 @@ class BuildRulesIndexTests(unittest.TestCase):
         self.assertGreaterEqual(entry["relevance_score"], 5)
         self.assertIn("柜体", entry["clean_title"])
 
+    def test_build_index_strips_dingtalk_html_from_human_fields(self) -> None:
+        payload = {
+            "source_file": "/tmp/rules.json",
+            "source_format": "dingtalk_workspace_snapshot",
+            "sections": [
+                {
+                    "page": 1,
+                    "heading": '1. <span style="color: #C10002;">增加新门型</span>',
+                    "content": ['![image.png](https://alidocs2.example.com/res/image.png?Signature=secret "")'],
+                    "tags": ["门型"],
+                    "rule_type": "material_mapping",
+                    "normalized_rule": '关键信息：<span style="color: #C10002;">增加新门型</span>',
+                    "confidence": 0.99,
+                    "extract_method": "dingtalk_markdown",
+                }
+            ],
+        }
+
+        index = MODULE.build_rules_index(payload)
+        entry = index["entries"][0]
+
+        rendered = json.dumps(entry, ensure_ascii=False)
+        self.assertEqual(entry["clean_title"], "1. 增加新门型")
+        self.assertNotIn("<span", rendered)
+        self.assertNotIn("style=", rendered)
+        self.assertNotIn("Signature", rendered)
+
     def test_choose_clean_title_falls_back_to_meaningful_content(self) -> None:
         title = MODULE.choose_clean_title(
             heading="2s —— — Mb Tr",

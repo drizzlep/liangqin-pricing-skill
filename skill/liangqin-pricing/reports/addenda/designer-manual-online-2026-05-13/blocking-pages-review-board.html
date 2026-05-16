@@ -1,0 +1,1072 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>阻断页复核包</title>
+  <style>
+    :root {
+      --paper: #f7f1e6;
+      --card: #fffaf2;
+      --ink: #2a2119;
+      --muted: #756858;
+      --line: #e3d4bf;
+      --accent: #8c4b25;
+      --danger: #a33b24;
+      --ok: #436f4d;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: linear-gradient(135deg, #fff9ef 0%, var(--paper) 52%, #eee2d0 100%); color: var(--ink); font-family: "Songti SC", "Noto Serif CJK SC", serif; }
+    .shell { max-width: 1220px; margin: 0 auto; padding: 42px 24px 80px; }
+    .hero { border: 1px solid var(--line); border-radius: 30px; background: rgba(255, 250, 242, .9); padding: 34px; box-shadow: 0 28px 80px rgba(69, 43, 19, .13); }
+    .eyebrow { color: var(--accent); letter-spacing: .16em; font-size: 13px; }
+    h1 { margin: 12px 0; font-size: clamp(32px, 5vw, 60px); line-height: 1.05; }
+    .hero p { max-width: 780px; color: var(--muted); font-size: 18px; line-height: 1.8; }
+    .status { display: inline-flex; padding: 9px 14px; border-radius: 999px; background: #fff0e8; color: var(--danger); font-weight: 800; }
+    .metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 18px 0; }
+    .metric { border: 1px solid var(--line); border-radius: 20px; background: rgba(255, 250, 242, .85); padding: 17px; }
+    .metric__label { color: var(--muted); font-size: 14px; }
+    .metric__value { font-size: 30px; font-weight: 900; margin: 8px 0; }
+    .metric__hint { color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0; }
+    .filter { border: 1px solid var(--line); background: #fffaf2; color: var(--ink); padding: 10px 13px; border-radius: 999px; cursor: pointer; }
+    .filter.is-active { background: var(--accent); color: white; border-color: var(--accent); }
+    .board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .page-card { border: 1px solid var(--line); border-radius: 24px; background: var(--card); padding: 18px; box-shadow: 0 16px 44px rgba(70, 46, 23, .09); }
+    .page-card__meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; }
+    .page-card__meta span, .choice { border: 1px solid var(--line); border-radius: 999px; background: #fffdf8; padding: 5px 9px; }
+    h3 { margin: 14px 0 8px; font-size: 22px; }
+    .reason { color: var(--muted); line-height: 1.7; }
+    .choices { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    .choice.is-selected { background: #eff6ed; color: var(--ok); border-color: #bdd0b8; font-weight: 800; }
+    .page-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .label { margin: 0 0 6px; color: var(--accent); font-weight: 900; }
+    .hint { color: var(--muted); font-size: 13px; line-height: 1.55; }
+    img { margin-top: 14px; width: 100%; max-height: 560px; object-fit: contain; border: 1px solid var(--line); border-radius: 16px; background: white; }
+    .image-fallback { margin-top: 14px; padding: 12px; border: 1px dashed var(--line); border-radius: 16px; color: var(--muted); }
+    .empty { display:none; color: var(--muted); padding: 30px; text-align: center; }
+    @media (max-width: 900px) { .metrics, .board, .page-grid { grid-template-columns: 1fr; } .shell { padding: 24px 14px 52px; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow">良禽佳木 · 设计师手册阻断页</div>
+      <h1>这些页先看完，再决定能不能激活线上版</h1>
+      <p>本复核包聚焦 33 个阻断页：PDF 文字层为空，或此前 OCR 抽样为空。本轮 PaddleOCR 后仍有 3 页为空或失败，需要人工看截图；候选层不得激活。</p>
+      <div class="status">候选层仍是 ACTIVE · designer-manual-online-2026-05-13</div>
+    </section>
+    <section class="metrics">
+      
+      <section class="metric">
+        <div class="metric__label">阻断页</div>
+        <div class="metric__value">33</div>
+        <div class="metric__hint">PDF 文字层为空或 OCR 抽样为空</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">截图成功</div>
+        <div class="metric__value">33</div>
+        <div class="metric__hint">每页都应有可看截图</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">OCR 成功</div>
+        <div class="metric__value">30</div>
+        <div class="metric__hint">PaddleOCR 读到文字</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">仍为空/失败</div>
+        <div class="metric__value">3</div>
+        <div class="metric__hint">需要人工看截图</div>
+      </section>
+    
+    </section>
+    <section class="metrics">
+      
+      <section class="metric">
+        <div class="metric__label">不影响规则</div>
+        <div class="metric__value">12</div>
+        <div class="metric__hint">默认建议，可人工改</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">OCR 可用</div>
+        <div class="metric__value">11</div>
+        <div class="metric__hint">可作为候选证据</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">必须看图</div>
+        <div class="metric__value">1</div>
+        <div class="metric__hint">图示或尺寸要看截图</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">暂缓激活</div>
+        <div class="metric__value">9</div>
+        <div class="metric__hint">先不要进规则</div>
+      </section>
+    
+    </section>
+    <section class="toolbar">
+      <button class="filter is-active" data-filter="all">全部</button>
+      <button class="filter" data-filter="暂缓激活">暂缓激活</button>
+      <button class="filter" data-filter="必须看图">必须看图</button>
+      <button class="filter" data-filter="OCR 可用">OCR 可用</button>
+      <button class="filter" data-filter="不影响规则">不影响规则</button>
+    </section>
+    <section id="board" class="board">
+      <article class="page-card" data-decision="不影响规则" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>GB 28007-2024 婴幼儿及儿童家具安全技术规范</span>
+          <span>源页 2</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>不影响规则</h3>
+        <p class="reason">当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。</p>
+        <div class="choices"><span class="choice is-selected">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>DIzs</p>
+            <p class="hint">状态：succeeded；字数：4；图片数：2</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>如果截图是空白、封面、纯图片或无规则内容，可以标为不影响规则。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p002.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="不影响规则" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>GB 28007-2024 婴幼儿及儿童家具安全技术规范</span>
+          <span>源页 4</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>不影响规则</h3>
+        <p class="reason">当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。</p>
+        <div class="choices"><span class="choice is-selected">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>szIc</p>
+            <p class="hint">状态：succeeded；字数：4；图片数：2</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>如果截图是空白、封面、纯图片或无规则内容，可以标为不影响规则。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p004.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="不影响规则" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>GB 28007-2024 婴幼儿及儿童家具安全技术规范</span>
+          <span>源页 8</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>不影响规则</h3>
+        <p class="reason">当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。</p>
+        <div class="choices"><span class="choice is-selected">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>SzC</p>
+            <p class="hint">状态：succeeded；字数：3；图片数：2</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>如果截图是空白、封面、纯图片或无规则内容，可以标为不影响规则。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p008.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="不影响规则" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>GB 28007-2024 婴幼儿及儿童家具安全技术规范</span>
+          <span>源页 45</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>不影响规则</h3>
+        <p class="reason">当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。</p>
+        <div class="choices"><span class="choice is-selected">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>SAC</p>
+            <p class="hint">状态：succeeded；字数：3；图片数：2</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>如果截图是空白、封面、纯图片或无规则内容，可以标为不影响规则。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p045.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="不影响规则" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>GB 28007-2024 婴幼儿及儿童家具安全技术规范</span>
+          <span>源页 46</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>不影响规则</h3>
+        <p class="reason">当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。</p>
+        <div class="choices"><span class="choice is-selected">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>SZC</p>
+            <p class="hint">状态：succeeded；字数：3；图片数：2</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>如果截图是空白、封面、纯图片或无规则内容，可以标为不影响规则。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p046.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="不影响规则" data-ocr-status="empty">
+        <div class="page-card__meta">
+          <span>GB 28007-2024 婴幼儿及儿童家具安全技术规范</span>
+          <span>源页 47</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>不影响规则</h3>
+        <p class="reason">当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。</p>
+        <div class="choices"><span class="choice is-selected">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>PaddleOCR 没补到文字。</p>
+            <p class="hint">状态：empty；字数：；图片数：2</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>如果截图是空白、封面、纯图片或无规则内容，可以标为不影响规则。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p047.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="不影响规则" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>GB 28008-2024 家具结构安全技术规范</span>
+          <span>源页 2</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>不影响规则</h3>
+        <p class="reason">当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。</p>
+        <div class="choices"><span class="choice is-selected">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>SAC</p>
+            <p class="hint">状态：succeeded；字数：3；图片数：2</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>如果截图是空白、封面、纯图片或无规则内容，可以标为不影响规则。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/GB_28008-2024_家具结构安全技术规范__p002.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="不影响规则" data-ocr-status="empty">
+        <div class="page-card__meta">
+          <span>GB 28008-2024 家具结构安全技术规范</span>
+          <span>源页 4</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>不影响规则</h3>
+        <p class="reason">当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。</p>
+        <div class="choices"><span class="choice is-selected">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>PaddleOCR 没补到文字。</p>
+            <p class="hint">状态：empty；字数：；图片数：2</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>如果截图是空白、封面、纯图片或无规则内容，可以标为不影响规则。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/GB_28008-2024_家具结构安全技术规范__p004.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="不影响规则" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>GB 28008-2024 家具结构安全技术规范</span>
+          <span>源页 16</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>不影响规则</h3>
+        <p class="reason">当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。</p>
+        <div class="choices"><span class="choice is-selected">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>SAC</p>
+            <p class="hint">状态：succeeded；字数：3；图片数：2</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>如果截图是空白、封面、纯图片或无规则内容，可以标为不影响规则。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/GB_28008-2024_家具结构安全技术规范__p016.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="不影响规则" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>GB 28008-2024 家具结构安全技术规范</span>
+          <span>源页 17</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>不影响规则</h3>
+        <p class="reason">当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。</p>
+        <div class="choices"><span class="choice is-selected">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>SZIC</p>
+            <p class="hint">状态：succeeded；字数：4；图片数：2</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>如果截图是空白、封面、纯图片或无规则内容，可以标为不影响规则。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/GB_28008-2024_家具结构安全技术规范__p017.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="不影响规则" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>GB 28008-2024 家具结构安全技术规范</span>
+          <span>源页 18</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>不影响规则</h3>
+        <p class="reason">当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。</p>
+        <div class="choices"><span class="choice is-selected">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>SAC</p>
+            <p class="hint">状态：succeeded；字数：3；图片数：2</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>如果截图是空白、封面、纯图片或无规则内容，可以标为不影响规则。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/GB_28008-2024_家具结构安全技术规范__p018.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="不影响规则" data-ocr-status="empty">
+        <div class="page-card__meta">
+          <span>GB 28008-2024 家具结构安全技术规范</span>
+          <span>源页 19</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>不影响规则</h3>
+        <p class="reason">当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。</p>
+        <div class="choices"><span class="choice is-selected">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>PaddleOCR 没补到文字。</p>
+            <p class="hint">状态：empty；字数：；图片数：2</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>如果截图是空白、封面、纯图片或无规则内容，可以标为不影响规则。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/GB_28008-2024_家具结构安全技术规范__p019.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="OCR 可用" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>可调节床头使用说明书</span>
+          <span>源页 1</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>OCR 可用</h3>
+        <p class="reason">OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice is-selected">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>&lt;div style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;imgs/img_in_image_box_0_6_1080_1912.jpg&quot; alt=&quot;Image&quot; width=&quot;100%&quot; /&gt;&lt;/div&gt;</p>
+            <p class="hint">状态：succeeded；字数：111；图片数：1</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>建议对照截图快速确认 OCR 文字是否覆盖主要信息。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/可调节床头使用说明书__p001.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="暂缓激活" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>岩板</span>
+          <span>源页 5</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>暂缓激活</h3>
+        <p class="reason">OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice is-selected">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>## 圣勃朗鱼肚 ## DESCRIPTION 踏上瓦特纳冰原，凝视着冰川划过的痕迹，纵横交错，犹如不同的人生轨迹，曲折或顺利，进退之间，都化作一段奇妙的旅程。 As if stepping on the Vatnajokull,we gaze at the crisscrossing glaciers.Like different life trajectories,it&#x27;s full of twists or success.Between advance and retreat,they all turn into a wonderful jour...</p>
+            <p class="hint">状态：succeeded；字数：879；图片数：5</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>请确认《岩板》这页是否包含报价、尺寸、安全或工艺限制。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/岩板__p005.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="暂缓激活" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>岩板</span>
+          <span>源页 6</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>暂缓激活</h3>
+        <p class="reason">OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice is-selected">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>## 保加利亚浅灰 ## DESCRIPTION 保加利亚，“上帝的后花园”位于欧洲巴尔干半岛东南部，悠久的历史建筑，人文风情，从巴尔干山峰，到黑海岸边迷人的沙滩，独特的风景令人叹为观止。皎洁柔和的灰色线条交织，灵动得如舞动的月光，飘酒到纯粹的极简空间，保加利亚石材中的灰色系，弥足珍贵，抢眼夺目。 Bulgaria, the &quot;God&#x27;s Back Garden&quot; is located in the southeastern part of the Balkan Peninsula in Europe. With a long history of ar...</p>
+            <p class="hint">状态：succeeded；字数：1078；图片数：5</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>请确认《岩板》这页是否包含报价、尺寸、安全或工艺限制。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/岩板__p006.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="暂缓激活" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>岩板</span>
+          <span>源页 8</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>暂缓激活</h3>
+        <p class="reason">OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice is-selected">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>## 劳伦特 ## DESCRIPTION 白色与金属色纹理纵横交错，宛如墨染苍穹时的一缕曙光，摄人心魂，彰显气势磅礴器宇轩昂之势。 Like a ray of dawn across the sky stained with ink, the white and metallic textures are criss-crossed.lt captures people&#x27;hearts and souls, demonstrats the majestice, nergetic and extraordinary momentum. ## SPECIFI...</p>
+            <p class="hint">状态：succeeded；字数：682；图片数：5</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>请确认《岩板》这页是否包含报价、尺寸、安全或工艺限制。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/岩板__p008.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="暂缓激活" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>岩板</span>
+          <span>源页 9</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>暂缓激活</h3>
+        <p class="reason">OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice is-selected">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>## 阿勒闪电 ## DESCRIPTION 无以复加的天然质感，经久不衰的黑白色调，呈现出一种超越边界之美，如闪电般的纹理，又如激起荡漾的波光，带来强烈视觉冲击，空间表现力强，尽显新潮时尚风。 Unsurpassed natural texture and enduring black and white tones present a beauty that transcends boundaries. The texture is like lightning and rippling waves, which brings a strong vi...</p>
+            <p class="hint">状态：succeeded；字数：887；图片数：5</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>请确认《岩板》这页是否包含报价、尺寸、安全或工艺限制。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/岩板__p009.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="暂缓激活" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>常规推拉门</span>
+          <span>源页 8</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>暂缓激活</h3>
+        <p class="reason">OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice is-selected">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>&lt;div style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;imgs/img_in_image_box_1_0_1920_1078.jpg&quot; alt=&quot;Image&quot; width=&quot;99%&quot; /&gt;&lt;/div&gt;</p>
+            <p class="hint">状态：succeeded；字数：110；图片数：1</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>请确认《常规推拉门》这页是否包含报价、尺寸、安全或工艺限制。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/常规推拉门__p008.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="暂缓激活" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>常规推拉门</span>
+          <span>源页 9</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>暂缓激活</h3>
+        <p class="reason">OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice is-selected">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>&lt;div style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;imgs/img_in_image_box_1_0_1920_1078.jpg&quot; alt=&quot;Image&quot; width=&quot;99%&quot; /&gt;&lt;/div&gt;</p>
+            <p class="hint">状态：succeeded；字数：110；图片数：1</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>请确认《常规推拉门》这页是否包含报价、尺寸、安全或工艺限制。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/常规推拉门__p009.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="暂缓激活" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>常规推拉门</span>
+          <span>源页 10</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>暂缓激活</h3>
+        <p class="reason">OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice is-selected">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>&lt;div style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;imgs/img_in_image_box_1_1_1920_1078.jpg&quot; alt=&quot;Image&quot; width=&quot;99%&quot; /&gt;&lt;/div&gt;</p>
+            <p class="hint">状态：succeeded；字数：110；图片数：1</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>请确认《常规推拉门》这页是否包含报价、尺寸、安全或工艺限制。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/常规推拉门__p010.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="OCR 可用" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>常规边角风格</span>
+          <span>源页 12</span>
+          <span>PDF 文字层为空；PaddleOCR 抽样为空</span>
+        </div>
+        <h3>OCR 可用</h3>
+        <p class="reason">OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice is-selected">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>&lt;div style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;imgs/img_in_image_box_575_0_1417_506.jpg&quot; alt=&quot;Image&quot; width=&quot;43%&quot; /&gt;&lt;/div&gt; &lt;div style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;imgs/img_in_image_box_86_565_596_1005.jpg&quot; alt=&quot;Image&quot; width=&quot;26%&quot; /&gt;&lt;/div&gt; &lt;div style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;...</p>
+            <p class="hint">状态：succeeded；字数：452；图片数：4</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>建议对照截图快速确认 OCR 文字是否覆盖主要信息。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/常规边角风格__p012.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="必须看图" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>木材种类</span>
+          <span>源页 3</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>必须看图</h3>
+        <p class="reason">图片较多且 OCR 不充分，可能有图示、尺寸或表格需要人工看截图。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice is-selected">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>## 白蜡木 ## WHITE ASH WOOD</p>
+            <p class="hint">状态：succeeded；字数：19；图片数：7</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>请看截图判断是否有尺寸标注、表格、结构说明或设计限制。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/木材种类__p003.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="OCR 可用" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>木材种类</span>
+          <span>源页 4</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>OCR 可用</h3>
+        <p class="reason">OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice is-selected">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>## CHERRY WOOD 木质温润细腻 时光着色 还稳 &lt;div style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;imgs/img_in_image_box_433_122_1920_985.jpg&quot; alt=&quot;Image&quot; width=&quot;77%&quot; /&gt;&lt;/div&gt;</p>
+            <p class="hint">状态：succeeded；字数：137；图片数：7</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>建议对照截图快速确认 OCR 文字是否覆盖主要信息。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/木材种类__p004.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="OCR 可用" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>木材种类</span>
+          <span>源页 5</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>OCR 可用</h3>
+        <p class="reason">OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice is-selected">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>## 白橡木WHITE OAK WOOD 提到原木色 你脑袋里出现的颜色和纹路准是它 &lt;div style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;imgs/img_in_image_box_443_179_1918_1001.jpg&quot; alt=&quot;Image&quot; width=&quot;76%&quot; /&gt;&lt;/div&gt;</p>
+            <p class="hint">状态：succeeded；字数：151；图片数：7</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>建议对照截图快速确认 OCR 文字是否覆盖主要信息。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/木材种类__p005.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="OCR 可用" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>木材种类</span>
+          <span>源页 6</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>OCR 可用</h3>
+        <p class="reason">OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice is-selected">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>## 黑胡桃木 ## BLACK &lt;div style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;imgs/img_in_image_box_4_169_1920_1026.jpg&quot; alt=&quot;Image&quot; width=&quot;99%&quot; /&gt;&lt;/div&gt;</p>
+            <p class="hint">状态：succeeded；字数：125；图片数：7</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>建议对照截图快速确认 OCR 文字是否覆盖主要信息。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/木材种类__p006.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="OCR 可用" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>极窄斜边拼框门</span>
+          <span>源页 5</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>OCR 可用</h3>
+        <p class="reason">OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice is-selected">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>&lt;div style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;imgs/img_in_image_box_5_96_1918_1075.jpg&quot; alt=&quot;Image&quot; width=&quot;99%&quot; /&gt;&lt;/div&gt;</p>
+            <p class="hint">状态：succeeded；字数：111；图片数：1</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>建议对照截图快速确认 OCR 文字是否覆盖主要信息。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/极窄斜边拼框门__p005.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="OCR 可用" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>模块卡座书柜定制设计指引</span>
+          <span>源页 13</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>OCR 可用</h3>
+        <p class="reason">OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice is-selected">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>Loremipsum dolor sit amet.</p>
+            <p class="hint">状态：succeeded；字数：23；图片数：2</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>建议对照截图快速确认 OCR 文字是否覆盖主要信息。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/模块卡座书柜定制设计指引__p013.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="OCR 可用" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>模块卡座书柜定制设计指引</span>
+          <span>源页 14</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>OCR 可用</h3>
+        <p class="reason">OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice is-selected">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>&lt;div style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;imgs/img_in_image_box_0_19_1920_1080.jpg&quot; alt=&quot;Image&quot; width=&quot;100%&quot; /&gt;&lt;/div&gt;</p>
+            <p class="hint">状态：succeeded；字数：112；图片数：2</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>建议对照截图快速确认 OCR 文字是否覆盖主要信息。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/模块卡座书柜定制设计指引__p014.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="OCR 可用" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>模块卡座书柜定制设计指引</span>
+          <span>源页 15</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>OCR 可用</h3>
+        <p class="reason">OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice is-selected">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>&lt;div style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;imgs/img_in_image_box_9_20_1916_1035.jpg&quot; alt=&quot;Image&quot; width=&quot;99%&quot; /&gt;&lt;/div&gt;</p>
+            <p class="hint">状态：succeeded；字数：111；图片数：1</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>建议对照截图快速确认 OCR 文字是否覆盖主要信息。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/模块卡座书柜定制设计指引__p015.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="OCR 可用" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>模块卡座书柜定制设计指引</span>
+          <span>源页 16</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>OCR 可用</h3>
+        <p class="reason">OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice is-selected">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>&lt;div style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;imgs/img_in_image_box_19_5_1906_1074.jpg&quot; alt=&quot;Image&quot; width=&quot;98%&quot; /&gt;&lt;/div&gt;</p>
+            <p class="hint">状态：succeeded；字数：111；图片数：1</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>建议对照截图快速确认 OCR 文字是否覆盖主要信息。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/模块卡座书柜定制设计指引__p016.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="OCR 可用" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>模块卡座书柜定制设计指引</span>
+          <span>源页 17</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>OCR 可用</h3>
+        <p class="reason">OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice is-selected">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>&lt;div style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;imgs/img_in_image_box_0_2_1912_1077.jpg&quot; alt=&quot;Image&quot; width=&quot;99%&quot; /&gt;&lt;/div&gt;</p>
+            <p class="hint">状态：succeeded；字数：110；图片数：1</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>建议对照截图快速确认 OCR 文字是否覆盖主要信息。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/模块卡座书柜定制设计指引__p017.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="暂缓激活" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>雪见推拉门</span>
+          <span>源页 2</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>暂缓激活</h3>
+        <p class="reason">OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice is-selected">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>&lt;div style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;imgs/img_in_image_box_1_5_1919_1077.jpg&quot; alt=&quot;Image&quot; width=&quot;99%&quot; /&gt;&lt;/div&gt;</p>
+            <p class="hint">状态：succeeded；字数：110；图片数：1</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>请确认《雪见推拉门》这页是否包含报价、尺寸、安全或工艺限制。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/雪见推拉门__p002.png" alt="页面截图">
+      </article>
+    
+
+      <article class="page-card" data-decision="暂缓激活" data-ocr-status="succeeded">
+        <div class="page-card__meta">
+          <span>雪见推拉门</span>
+          <span>源页 3</span>
+          <span>PDF 文字层为空</span>
+        </div>
+        <h3>暂缓激活</h3>
+        <p class="reason">OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。</p>
+        <div class="choices"><span class="choice">不影响规则</span>
+<span class="choice">OCR 可用</span>
+<span class="choice">必须看图</span>
+<span class="choice is-selected">暂缓激活</span></div>
+        <div class="page-grid">
+          <section>
+            <p class="label">PaddleOCR 读到什么</p>
+            <p>&lt;div style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;imgs/img_in_image_box_32_0_1917_1075.jpg&quot; alt=&quot;Image&quot; width=&quot;98%&quot; /&gt;&lt;/div&gt;</p>
+            <p class="hint">状态：succeeded；字数：111；图片数：1</p>
+          </section>
+          <section>
+            <p class="label">给人的备注建议</p>
+            <p>请确认《雪见推拉门》这页是否包含报价、尺寸、安全或工艺限制。</p>
+            <p class="hint">人工只需要确认这页属于哪一类，必要时补一句短备注。</p>
+          </section>
+        </div>
+        <img src="blocking-pages/images/雪见推拉门__p003.png" alt="页面截图">
+      </article>
+    </section>
+    <section id="empty" class="empty">没有这个分类的阻断页。</section>
+  </main>
+  <script>
+    const buttons = [...document.querySelectorAll('.filter')];
+    const cards = [...document.querySelectorAll('.page-card')];
+    const empty = document.querySelector('#empty');
+    function applyFilter(value) {
+      let visible = 0;
+      cards.forEach(card => {
+        const show = value === 'all' || card.dataset.decision === value;
+        card.style.display = show ? '' : 'none';
+        if (show) visible += 1;
+      });
+      empty.style.display = visible ? 'none' : 'block';
+    }
+    buttons.forEach(button => button.addEventListener('click', () => {
+      buttons.forEach(item => item.classList.remove('is-active'));
+      button.classList.add('is-active');
+      applyFilter(button.dataset.filter);
+    }));
+  </script>
+</body>
+</html>

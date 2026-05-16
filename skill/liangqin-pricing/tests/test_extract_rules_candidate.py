@@ -90,6 +90,26 @@ class ExtractRulesCandidateTests(unittest.TestCase):
 
         self.assertTrue(should_ocr)
 
+    def test_count_pdf_page_images_returns_zero_when_pdf_image_stream_is_invalid(self) -> None:
+        class BrokenPage:
+            @property
+            def images(self) -> list[object]:
+                raise ValueError("not enough image data")
+
+        self.assertEqual(MODULE.count_pdf_page_images(BrokenPage()), 0)
+
+    def test_normalize_text_removes_dingtalk_html_and_signed_image_links(self) -> None:
+        text = (
+            '1. <span style="color: rgb(193, 0, 2);">增加新门型</span>'
+            '![image.png](https://alidocs2.example.com/res/image.png?Signature=secret "")'
+        )
+
+        normalized = MODULE.normalize_text(text)
+
+        self.assertEqual(normalized, "1. 增加新门型")
+        self.assertNotIn("span", normalized)
+        self.assertNotIn("Signature", normalized)
+
     def test_ensure_pdf_renderer_binary_reuses_compiled_binary(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             cache_dir = Path(tmpdir)
@@ -126,7 +146,7 @@ class ExtractRulesCandidateTests(unittest.TestCase):
             write_minimal_pdf(pdf_path, ["1. Cabinet", "600mm<depth<=700mm add 15%"])
 
             with mock.patch.object(MODULE, "ocr_pdf_page", side_effect=AssertionError("unexpected OCR")):
-                payload = MODULE.build_candidate_payload(pdf_path, markdown_output=markdown_path)
+                payload = MODULE.build_candidate_payload(pdf_path, markdown_output=markdown_path, ocr_min_chars=-1)
 
             markdown = markdown_path.read_text(encoding="utf-8")
 
@@ -144,6 +164,38 @@ class ExtractRulesCandidateTests(unittest.TestCase):
         self.assertEqual(record["page"], 7)
         self.assertEqual(record["extract_method"], "hybrid")
         self.assertIn("Recovered content", record["raw_text"])
+        self.assertTrue(record["needs_ocr"])
+
+    def test_build_pdf_page_record_marks_text_layer_when_needed_ocr_is_unavailable(self) -> None:
+        record = MODULE.build_pdf_page_record(
+            page_number=8,
+            text_layer_text="Too short",
+            ocr_text="",
+            ocr_min_chars=50,
+            ocr_backend="paddleocr",
+            ocr_error="backend failed",
+        )
+
+        self.assertEqual(record["extract_method"], "text_layer_ocr_unavailable")
+        self.assertEqual(record["ocr_backend"], "paddleocr")
+        self.assertEqual(record["ocr_error"], "backend failed")
+
+    @unittest.skipIf(MODULE.PdfReader is None, "PyPDF2 not installed")
+    def test_extract_pdf_page_records_can_use_paddleocr_backend_once_per_document(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            pdf_path = Path(tmpdir) / "rules.pdf"
+            write_minimal_pdf(pdf_path, ["short"])
+
+            with mock.patch.object(MODULE, "ocr_pdf_document_with_paddleocr", return_value={1: "Paddle recovered"}):
+                records = MODULE.extract_pdf_page_records(
+                    pdf_path,
+                    ocr_min_chars=50,
+                    ocr_backend="paddleocr",
+                )
+
+        self.assertEqual(records[0]["extract_method"], "hybrid")
+        self.assertEqual(records[0]["ocr_backend"], "paddleocr")
+        self.assertIn("Paddle recovered", records[0]["raw_text"])
 
 
 if __name__ == "__main__":

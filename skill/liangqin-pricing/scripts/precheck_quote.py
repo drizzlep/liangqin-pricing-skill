@@ -12,6 +12,7 @@ from math import isclose
 from pathlib import Path
 from typing import Any
 
+import baseline_rule_gates
 from quote_response_metadata import build_response_metadata
 
 
@@ -196,6 +197,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def normalize_category_label(category: str) -> str:
+    if category in {"柜体", "柜子"}:
+        return "cabinet"
     if category in TATAMI_CATEGORIES:
         return "tatami"
     if category in CABINET_CATEGORIES:
@@ -1435,6 +1438,25 @@ def precheck_modular_child_bed(args: argparse.Namespace, responder) -> dict[str,
 
 
 def precheck_cabinet(args: argparse.Namespace) -> dict[str, Any]:
+    baseline_gate = baseline_rule_gates.find_baseline_rule_gate(args, "cabinet")
+    if baseline_gate:
+        return baseline_rule_gates.apply_baseline_gate_metadata(
+            response(
+                ready=False,
+                category_type="cabinet",
+                next_required_field=baseline_gate["missing_field"],
+                next_question=baseline_gate["question"],
+                reason=baseline_gate["reason"],
+                hard_block=bool(baseline_gate["hard_block"]),
+                route="cabinet",
+                question_code=f"{baseline_gate['constraint_code']}.question",
+                constraint_code=baseline_gate["constraint_code"],
+                missing_fields=[baseline_gate["missing_field"]],
+                detail_level_hint="single_question_follow_up",
+            ),
+            baseline_gate,
+        )
+
     default_context = resolve_cabinet_default_context(args)
     explicit_product = has_explicit_product_identity(args)
     if needs_quote_kind_confirmation(args, "cabinet"):
@@ -1601,6 +1623,20 @@ def precheck_bed(args: argparse.Namespace) -> dict[str, Any]:
     if pricing_route == "modular_child_bed_combo":
         return precheck_modular_child_bed_combo(args, bed_response)
 
+    baseline_gate = baseline_rule_gates.find_baseline_rule_gate(args, "bed")
+    if baseline_gate:
+        return baseline_rule_gates.apply_baseline_gate_metadata(
+            bed_response(
+                ready=False,
+                next_required_field=baseline_gate["missing_field"],
+                next_question=baseline_gate["question"],
+                reason=baseline_gate["reason"],
+                hard_block=bool(baseline_gate["hard_block"]),
+                constraint_code=baseline_gate["constraint_code"],
+            ),
+            baseline_gate,
+        )
+
     adult_style_question = adult_bed_style_question(args)
     if adult_style_question:
         return bed_response(
@@ -1717,6 +1753,25 @@ def precheck_tatami(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def precheck_table(args: argparse.Namespace) -> dict[str, Any]:
+    baseline_gate = baseline_rule_gates.find_baseline_rule_gate(args, "table")
+    if baseline_gate:
+        return baseline_rule_gates.apply_baseline_gate_metadata(
+            response(
+                ready=False,
+                category_type="table",
+                next_required_field=baseline_gate["missing_field"],
+                next_question=baseline_gate["question"],
+                reason=baseline_gate["reason"],
+                hard_block=bool(baseline_gate["hard_block"]),
+                route="table",
+                question_code=f"{baseline_gate['constraint_code']}.question",
+                constraint_code=baseline_gate["constraint_code"],
+                missing_fields=[baseline_gate["missing_field"]],
+                detail_level_hint="single_question_follow_up",
+            ),
+            baseline_gate,
+        )
+
     if needs_quote_kind_confirmation(args, "table"):
         return response(
             ready=False,

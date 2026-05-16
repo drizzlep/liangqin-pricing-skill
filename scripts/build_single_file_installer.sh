@@ -94,20 +94,18 @@ with zipfile.ZipFile(zip_path) as zf:
 PY
 
 PRICING_SOURCE="\$EXTRACT_DIR/liangqin-pricing"
-CONTRACT_REVIEW_SOURCE="\$EXTRACT_DIR/liangqin-contract-review"
 PUBLISH_SCRIPT_SOURCE="\$EXTRACT_DIR/scripts/publish_openclaw_skills.py"
 PRICING_DEST="\$SKILLS_ROOT/liangqin-pricing"
-CONTRACT_REVIEW_DEST="\$SKILLS_ROOT/liangqin-contract-review"
 PUBLISH_SCRIPT_DEST="\$SKILLS_ROOT/scripts/publish_openclaw_skills.py"
 
 mkdir -p "\$SKILLS_ROOT"
 mkdir -p "\$SKILLS_ROOT/scripts"
-rm -rf "\$PRICING_DEST" "\$CONTRACT_REVIEW_DEST"
+rm -rf "\$PRICING_DEST"
 cp -R "\$PRICING_SOURCE" "\$PRICING_DEST"
-cp -R "\$CONTRACT_REVIEW_SOURCE" "\$CONTRACT_REVIEW_DEST"
 cp "\$PUBLISH_SCRIPT_SOURCE" "\$PUBLISH_SCRIPT_DEST"
 
 python3 "\$PUBLISH_SCRIPT_DEST" \\
+  --skill liangqin-pricing \\
   --source-root "\$SKILLS_ROOT" \\
   --skills-root "\$SKILLS_ROOT" \\
   --workspace-root "\$WORKSPACE_ROOT" \\
@@ -122,7 +120,6 @@ if [ "\$RUN_TEST" -eq 1 ]; then
 fi
 
 echo "安装完成：\$PRICING_DEST"
-echo "安装完成：\$CONTRACT_REVIEW_DEST"
 echo "已同步到：\$WORKSPACE_ROOT"
 EOF
 

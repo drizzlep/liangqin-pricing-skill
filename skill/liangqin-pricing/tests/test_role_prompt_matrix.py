@@ -219,7 +219,7 @@ class RolePromptMatrixTests(unittest.TestCase):
                     bundle_root=root / "rule_consultation" / "bundles",
                 )
                 self.assertEqual(result["handled_by"], "query_addendum_guidance")
-                self.assertIn("默认顶盖侧", result["reply_text"])
+                self.assertIn("新版设计师手册里没有明确写到", result["reply_text"])
                 self._assert_non_quote_role_shape(result, role)
 
             with self.subTest(role=role, case="special_rule_detection"):

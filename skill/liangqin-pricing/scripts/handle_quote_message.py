@@ -902,6 +902,12 @@ def _infer_category_from_text(text: str) -> str:
     bed_form = _infer_bed_form_from_text(text)
     if re.search(r"经典床(?!头柜)", text):
         return "经典床"
+    if any(keyword in text for keyword in ("悬空电视柜", "隐藏支架电视柜")):
+        return "电视柜"
+    if any(keyword in text for keyword in ("挂墙桌", "壁挂桌", "挂墙书桌", "墙上书桌")):
+        return "书桌"
+    if any(keyword in text for keyword in ("电动举升器", "电动举升", "电动床箱")):
+        return "床"
     for product_name in _queryable_product_names():
         if product_name in text:
             return product_name
@@ -914,6 +920,8 @@ def _infer_category_from_text(text: str) -> str:
     for candidate in _category_candidates():
         if candidate in text:
             return candidate
+    if any(keyword in text for keyword in ("轨道插座", "轨道电源", "电力轨道", "岩板台面", "岩板柜")):
+        return "柜体"
     return ""
 
 
@@ -964,6 +972,25 @@ def _infer_precheck_args_from_text(text: str) -> dict[str, Any]:
     category_type = _resolve_category_type(category)
     if category:
         inferred["category"] = category
+
+    shape_terms = [
+        "轨道插座",
+        "轨道电源",
+        "电力轨道",
+        "悬空电视柜",
+        "悬空支架",
+        "隐藏支架",
+        "挂墙桌",
+        "壁挂桌",
+        "挂墙书桌",
+        "岩板台面",
+        "岩板柜",
+        "电动举升器",
+        "电动举升",
+    ]
+    matched_shape_terms = [term for term in shape_terms if term in normalized_text]
+    if matched_shape_terms:
+        inferred["shape"] = " ".join(matched_shape_terms)
 
     material = _infer_material_from_text(normalized_text)
     if material:
@@ -2424,6 +2451,153 @@ def _build_hidden_rosewood_special_payload(special_quote: dict[str, Any]) -> dic
     }
 
 
+def _build_linear_addition_payload(
+    *,
+    special_quote: dict[str, Any],
+    special_rule: str,
+    product: str,
+    pricing_method: str,
+    unit_label: str,
+    unit_price: Decimal,
+    quantity_field: str,
+    quantity_label: str,
+) -> dict[str, Any]:
+    quantity = Decimal(str(special_quote.get(quantity_field) or ""))
+    subtotal = _quantize_money(quantity * unit_price)
+    return {
+        "items": [
+            {
+                "product": product,
+                "confirmed": f"{quantity_label}{_format_decimal(quantity)}{unit_label}",
+                "pricing_method": pricing_method,
+                "calculation_steps": [
+                    f"专项单价：{_amount_to_text(unit_price)} 元/{unit_label}",
+                    f"小计：{_format_decimal(quantity)} × {_amount_to_text(unit_price)} = {_amount_to_text(subtotal)} 元",
+                ],
+                "subtotal": f"{_amount_to_text(subtotal)}元",
+            }
+        ],
+        "total": f"{_amount_to_text(subtotal)}元",
+        "pricing_route": f"special_adjustment.{special_rule}",
+    }
+
+
+def _build_percentage_addition_payload(special_quote: dict[str, Any], *, special_rule: str) -> dict[str, Any]:
+    base_amount = _parse_amount(special_quote.get("base_amount"))
+    rate = Decimal(str(special_quote.get("rate") or "0.15"))
+    addition = _quantize_money(base_amount * rate)
+    return {
+        "items": [
+            {
+                "product": str(special_quote.get("product") or "平板门纹理连续加价").strip(),
+                "confirmed": f"基础金额{_amount_to_text(base_amount)}元，加价比例{_amount_to_text(rate * Decimal('100'))}%",
+                "pricing_method": "比例加价专项计价",
+                "calculation_steps": [
+                    f"加价金额：{_amount_to_text(base_amount)} × {_amount_to_text(rate * Decimal('100'))}% = {_amount_to_text(addition)} 元",
+                ],
+                "subtotal": f"{_amount_to_text(addition)}元",
+            }
+        ],
+        "total": f"{_amount_to_text(addition)}元",
+        "pricing_route": f"special_adjustment.{special_rule}",
+    }
+
+
+def _build_door_panel_area_payload(special_quote: dict[str, Any]) -> dict[str, Any]:
+    material = normalize_material_for_query(str(special_quote.get("material") or ""))
+    door_family = str(special_quote.get("door_family") or "").strip()
+    unit_prices = {
+        "standalone_frame_door": {"玫瑰木": 1680, "樱桃木": 1780, "白蜡木": 1780, "白橡木": 2080, "黑胡桃": 2980},
+        "standalone_aluminum_frame_door": {"玫瑰木": 1380, "樱桃木": 1980, "白蜡木": 1980, "白橡木": 2280, "黑胡桃": 3280},
+        "standalone_rattan_door": {"玫瑰木": 2280, "樱桃木": 2380, "白蜡木": 2380, "白橡木": 2980, "黑胡桃": 3880},
+    }
+    family_prices = unit_prices.get(door_family)
+    if family_prices is None:
+        raise ValueError(f"unsupported door panel family: {door_family}")
+    if material not in family_prices:
+        raise ValueError("单独门板专项价缺少可识别材质")
+    width = Decimal(str(special_quote.get("width") or ""))
+    height = Decimal(str(special_quote.get("height") or ""))
+    area = width * height
+    unit_price = Decimal(str(family_prices[material]))
+    subtotal = _quantize_money(area * unit_price)
+    family_labels = {
+        "standalone_frame_door": "单独拼框门",
+        "standalone_aluminum_frame_door": "单独铝框门",
+        "standalone_rattan_door": "单独藤编门",
+    }
+    material_label = formalize_material_name(material)
+    return {
+        "items": [
+            {
+                "product": family_labels[door_family],
+                "confirmed": f"{material_label}，宽{_format_decimal(width)}m，高{_format_decimal(height)}m",
+                "pricing_method": "单独门板面积专项计价",
+                "calculation_steps": [
+                    f"门板面积：{_format_decimal(width)} × {_format_decimal(height)} = {_format_decimal(area)}㎡",
+                    f"门板单价：{_amount_to_text(unit_price)} 元/㎡",
+                    f"小计：{_format_decimal(area)} × {_amount_to_text(unit_price)} = {_amount_to_text(subtotal)} 元",
+                ],
+                "subtotal": f"{_amount_to_text(subtotal)}元",
+            }
+        ],
+        "total": f"{_amount_to_text(subtotal)}元",
+        "pricing_route": "special_adjustment.door_panel_area",
+    }
+
+
+def _build_bottomless_cabinet_side_panel_payload(special_quote: dict[str, Any]) -> dict[str, Any]:
+    material = normalize_material_for_query(str(special_quote.get("material") or ""))
+    unit_prices = {"玫瑰木": 1100, "樱桃木": 1180, "白蜡木": 1180, "白橡木": 1480, "黑胡桃": 1800}
+    if material not in unit_prices:
+        raise ValueError("无底板柜侧板专项价缺少可识别材质")
+    height = Decimal(str(special_quote.get("height") or ""))
+    depth = Decimal(str(special_quote.get("depth") or ""))
+    side_count = Decimal(str(special_quote.get("side_count") or "2"))
+    unit_price = Decimal(str(unit_prices[material]))
+    area = height * depth * side_count
+    subtotal = _quantize_money(area * unit_price)
+    material_label = formalize_material_name(material)
+    return {
+        "items": [
+            {
+                "product": "无底板柜下部侧板",
+                "confirmed": f"{material_label}，高{_format_decimal(height)}m，深{_format_decimal(depth)}m，侧板{_format_decimal(side_count)}块",
+                "pricing_method": "无底板柜侧板面积专项计价",
+                "calculation_steps": [
+                    f"侧板面积：{_format_decimal(height)} × {_format_decimal(depth)} × {_format_decimal(side_count)} = {_format_decimal(area)}㎡",
+                    f"侧板单价：{_amount_to_text(unit_price)} 元/㎡",
+                    f"小计：{_format_decimal(area)} × {_amount_to_text(unit_price)} = {_amount_to_text(subtotal)} 元",
+                ],
+                "subtotal": f"{_amount_to_text(subtotal)}元",
+            }
+        ],
+        "total": f"{_amount_to_text(subtotal)}元",
+        "pricing_route": "special_adjustment.bottomless_cabinet_side_panel",
+    }
+
+
+def _build_manual_zero_impact_payload(special_quote: dict[str, Any]) -> dict[str, Any]:
+    title = str(special_quote.get("rule_title") or "新版手册结构规则").strip()
+    evidence = str(special_quote.get("evidence") or "机器未定位到独立收费金额，按结构/备注规则进入正式金额门。").strip()
+    return {
+        "items": [
+            {
+                "product": title,
+                "confirmed": evidence,
+                "pricing_method": "新版手册结构规则，金额影响为0元",
+                "calculation_steps": [
+                    "机器回源未找到独立收费金额或单价字段。",
+                    "该规则作为结构、备注或尺寸限制进入正式金额计算门，不改变报价小计。",
+                ],
+                "subtotal": "0元",
+            }
+        ],
+        "total": "0元",
+        "pricing_route": "special_adjustment.manual_zero_impact",
+    }
+
+
 def _build_special_quote_payload(
     *,
     special_quote: dict[str, Any],
@@ -2443,6 +2617,47 @@ def _build_special_quote_payload(
         return _build_operation_gap_special_payload(special_quote)
     if special_rule == "hidden_rosewood_discount":
         return _build_hidden_rosewood_special_payload(special_quote)
+    if special_rule == "curved_side_panel":
+        return _build_linear_addition_payload(
+            special_quote=special_quote,
+            special_rule=special_rule,
+            product="圆弧侧板",
+            pricing_method="圆弧侧板按米专项计价",
+            unit_label="米",
+            unit_price=Decimal("300"),
+            quantity_field="length",
+            quantity_label="长度",
+        )
+    if special_rule == "push_to_open_drawer_slide":
+        return _build_linear_addition_payload(
+            special_quote=special_quote,
+            special_rule=special_rule,
+            product="按弹抽屉滑轨",
+            pricing_method="推弹阻尼回收滑轨按套专项计价",
+            unit_label="套",
+            unit_price=Decimal("850"),
+            quantity_field="set_count",
+            quantity_label="数量",
+        )
+    if special_rule == "hanging_rail_door":
+        return _build_linear_addition_payload(
+            special_quote=special_quote,
+            special_rule=special_rule,
+            product="吊轨门",
+            pricing_method="吊轨门在门板基础上加价",
+            unit_label="扇",
+            unit_price=Decimal("400"),
+            quantity_field="door_count",
+            quantity_label="门扇",
+        )
+    if special_rule == "texture_continuity_markup":
+        return _build_percentage_addition_payload(special_quote, special_rule=special_rule)
+    if special_rule == "door_panel_area":
+        return _build_door_panel_area_payload(special_quote)
+    if special_rule == "bottomless_cabinet_side_panel":
+        return _build_bottomless_cabinet_side_panel_payload(special_quote)
+    if special_rule == "manual_zero_impact":
+        return _build_manual_zero_impact_payload(special_quote)
     raise ValueError(f"unsupported special_rule: {special_rule}")
 
 
@@ -2590,6 +2805,26 @@ def _should_auto_execute_ready_quote(
         precheck_args=precheck_args,
         precheck_result=precheck_result,
     ) is not None
+
+
+def _should_precheck_override_addendum_guidance(text: str, inferred_precheck_args: dict[str, Any]) -> bool:
+    if not inferred_precheck_args:
+        return False
+    normalized_text = str(text or "").strip()
+    if any(keyword in normalized_text for keyword in ("怎么回", "怎么回复", "怎么说", "话术", "更合适")):
+        return False
+    if any(keyword in normalized_text for keyword in ("默认做", "还是", "结构怎么做", "有什么要求", "要求是什么", "一般多少")):
+        return False
+    if _is_role_output_switch_request(normalized_text, role_override=None):
+        return False
+    if not route_quote_request.is_quote_request(normalized_text):
+        return False
+    has_product_identity = bool(inferred_precheck_args.get("category") or inferred_precheck_args.get("bed_form"))
+    has_quote_basis = any(
+        inferred_precheck_args.get(field)
+        for field in ("length", "width", "height", "depth", "material", "quote_kind")
+    )
+    return has_product_identity and has_quote_basis
 
 
 def _format_quote_payload_result(
@@ -2908,6 +3143,11 @@ def handle_message(
     if resumed_precheck_args is not None:
         precheck_args = resumed_precheck_args
         preferred_next_tool = "precheck_quote"
+    if preferred_next_tool == "query_addendum_guidance" and precheck_args is None:
+        inferred_precheck_args = _infer_precheck_args_from_text(text)
+        if _should_precheck_override_addendum_guidance(text, inferred_precheck_args):
+            precheck_args = inferred_precheck_args
+            preferred_next_tool = "precheck_quote"
     if preferred_next_tool == "query_bed_weight_guidance":
         downstream_result = query_bed_weight_guidance.query_guidance(text)
         text_bundle = _guidance_text(downstream_result, audience_role=audience_role)

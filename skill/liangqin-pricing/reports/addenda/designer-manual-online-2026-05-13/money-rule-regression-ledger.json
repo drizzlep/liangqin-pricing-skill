@@ -1,0 +1,680 @@
+{
+  "entries": [
+    {
+      "landing_id": "landing-rule-0009",
+      "source_data_point_id": "data-point-0009",
+      "machine_resolution_status": "conflict_blocked_until_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "软包床头",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:bed_or_soft_package_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "length",
+        "material",
+        "door_type",
+        "quote_note"
+      ],
+      "numeric_signals": [
+        "18mm"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0002",
+      "source_data_point_id": "data-point-0002",
+      "machine_resolution_status": "conflict_blocked_until_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "天地铰链铝框门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "material",
+        "door_type",
+        "quote_note"
+      ],
+      "numeric_signals": [
+        "305mm",
+        "2200mm",
+        "180mm",
+        "500mm",
+        "26mm",
+        "≤2200",
+        "≤500"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0155",
+      "source_data_point_id": "data-point-0155",
+      "machine_resolution_status": "conflict_blocked_until_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "穿衣镜",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "material",
+        "door_type",
+        "wall_or_install_condition"
+      ],
+      "numeric_signals": [
+        "10mm",
+        "380mm",
+        "25mm",
+        "900mm",
+        "≥10",
+        "≥380"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "报价原则",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0099",
+      "source_data_point_id": "data-point-0099",
+      "machine_resolution_status": "conflict_blocked_until_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "特殊抽屉滑轨",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category"
+      ],
+      "numeric_signals": [],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "额外收费",
+        "公式",
+        "不额外收费"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "机器未抽取到足够公式字段或金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0027",
+      "source_data_point_id": "data-point-0027",
+      "machine_resolution_status": "conflict_blocked_until_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "极窄斜边拼框门",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "door_type"
+      ],
+      "numeric_signals": [
+        "70mm",
+        "40mm",
+        "60mm",
+        "10mm",
+        "20mm"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0010",
+      "source_data_point_id": "data-point-0010",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "模块卡座书柜定制设计指引",
+      "source_page": 3,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "depth",
+        "material",
+        "door_type"
+      ],
+      "numeric_signals": [
+        "900mm",
+        "1800mm",
+        "2000mm",
+        "300mm",
+        "≤300"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0079",
+      "source_data_point_id": "data-point-0079",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "圆弧侧板",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "material"
+      ],
+      "numeric_signals": [
+        "50mm",
+        "2600mm",
+        "15m",
+        "2600m",
+        "≤2600",
+        "≥50",
+        "≥15"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0122",
+      "source_data_point_id": "data-point-0122",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "藤编门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "door_type"
+      ],
+      "numeric_signals": [
+        "560mm",
+        "2300mm",
+        "700mm",
+        "22mm",
+        "60mm",
+        "30mm",
+        "≤560",
+        "≤2300",
+        "≤23"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0369",
+      "source_data_point_id": "data-point-0369",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "针式铰链铝框门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "material",
+        "door_type",
+        "quote_note"
+      ],
+      "numeric_signals": [
+        "305mm",
+        "3000mm",
+        "180mm",
+        "500mm",
+        "36mm",
+        "22mm",
+        "≤3000",
+        "≤500"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0067",
+      "source_data_point_id": "data-point-0067",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "无底板柜",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "depth",
+        "length",
+        "wall_or_install_condition"
+      ],
+      "numeric_signals": [
+        "700mm",
+        "30mm",
+        "1200mm",
+        "1000mm",
+        "≤700",
+        "≥30",
+        "≤1200"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0048",
+      "source_data_point_id": "data-point-0048",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "纹理连续说明",
+      "source_page": 5,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "material",
+        "door_type",
+        "quote_note"
+      ],
+      "numeric_signals": [
+        "2600mm",
+        "≤2600"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0082",
+      "source_data_point_id": "data-point-0082",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "挡条",
+      "source_page": 4,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "door_type",
+        "wall_or_install_condition"
+      ],
+      "numeric_signals": [
+        "22mm",
+        "20mm",
+        "120mm",
+        "≤120",
+        "48*48"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0105",
+      "source_data_point_id": "data-point-0105",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "平开门说明",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "length",
+        "door_type"
+      ],
+      "numeric_signals": [
+        "≤1.5"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0249",
+      "source_data_point_id": "data-point-0249",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "挡条",
+      "source_page": 3,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "door_type"
+      ],
+      "numeric_signals": [
+        "15mm",
+        "22mm",
+        "28mm",
+        "20mm",
+        "120mm",
+        "≤120"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0157",
+      "source_data_point_id": "data-point-0157",
+      "machine_resolution_status": "blocked_missing_formula_fields_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 4,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "required_fields": [
+        "product_or_category"
+      ],
+      "numeric_signals": [],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "机器未抽取到足够公式字段或金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0158",
+      "source_data_point_id": "data-point-0158",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 11,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "required_fields": [
+        "product_or_category"
+      ],
+      "numeric_signals": [
+        "600mm"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0227",
+      "source_data_point_id": "data-point-0227",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "常规拆装柜体",
+      "source_page": 7,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响合同备注",
+      "required_fields": [
+        "product_or_category",
+        "depth",
+        "quote_note"
+      ],
+      "numeric_signals": [
+        "700mm"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0505",
+      "source_data_point_id": "data-point-0505",
+      "machine_resolution_status": "blocked_missing_formula_fields_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "常规拆装柜体",
+      "source_page": 9,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "required_fields": [
+        "product_or_category",
+        "height"
+      ],
+      "numeric_signals": [],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "机器未抽取到足够公式字段或金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0136",
+      "source_data_point_id": "data-point-0136",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "吊轨门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:general_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "door_type",
+        "wall_or_install_condition"
+      ],
+      "numeric_signals": [
+        "30kg",
+        "600mm",
+        "1200mm",
+        "2300mm",
+        "26mm",
+        "≤1200",
+        "≤2300"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0543",
+      "source_data_point_id": "data-point-0543",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "吊轨门",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "door_type",
+        "wall_or_install_condition"
+      ],
+      "numeric_signals": [
+        "70mm"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    }
+  ]
+}

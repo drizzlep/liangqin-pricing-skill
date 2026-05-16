@@ -1,0 +1,144 @@
+{
+  "layer_id": "designer-manual-online-2026-05-13",
+  "layer_status": "PAUSED",
+  "topic": "推拉门",
+  "asset_count": 5,
+  "page_image_count": 5,
+  "crop_image_count": 5,
+  "missing_page_image_count": 0,
+  "low_confidence_count": 5,
+  "agent_ready_count": 0,
+  "agent_visual_review_count": 5,
+  "needs_human_review_count": 0,
+  "recommended_action": "可进入 Agent 视觉阅读：有整页图，OCR 弱的页面由 Agent 直接读图处理。",
+  "source_board": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages-review-board.json",
+  "asset_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/visual-evidence/推拉门/visual-assets.json",
+  "html_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/visual-evidence/推拉门/visual-evidence-board.html",
+  "entries": [
+    {
+      "topic": "推拉门",
+      "keywords": [
+        "推拉门",
+        "常规推拉门",
+        "<root>/7.门板/常规推拉门"
+      ],
+      "source_title": "常规推拉门",
+      "source_path": "<root>/7.门板/常规推拉门",
+      "source_page": 8,
+      "source_node_id": "gvNG4YZ7Jn6kMwLbs9g7DY1oJ2LD0oRE",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0096__7.门板__常规推拉门__gvNG4YZ7Jn6k.pdf",
+      "ocr_status": "empty",
+      "ocr_summary": "",
+      "page_image": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/常规推拉门__p008.png",
+      "crop_images": [],
+      "debug_crop_images": [
+        "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/常规推拉门__p008/paddleocr/page-001/imgs/img_in_image_box_1_0_1920_1078.jpg"
+      ],
+      "confidence": 0.7,
+      "evidence_status": "agent_visual_review",
+      "needs_human_review": false,
+      "review_reason": "",
+      "agent_guidance": "有整页图但 OCR 文字偏弱，Agent 应直接阅读整页图，不要求人工先介入。"
+    },
+    {
+      "topic": "推拉门",
+      "keywords": [
+        "推拉门",
+        "常规推拉门",
+        "<root>/7.门板/常规推拉门"
+      ],
+      "source_title": "常规推拉门",
+      "source_path": "<root>/7.门板/常规推拉门",
+      "source_page": 9,
+      "source_node_id": "gvNG4YZ7Jn6kMwLbs9g7DY1oJ2LD0oRE",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0096__7.门板__常规推拉门__gvNG4YZ7Jn6k.pdf",
+      "ocr_status": "empty",
+      "ocr_summary": "",
+      "page_image": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/常规推拉门__p009.png",
+      "crop_images": [],
+      "debug_crop_images": [
+        "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/常规推拉门__p009/paddleocr/page-001/imgs/img_in_image_box_1_0_1920_1078.jpg"
+      ],
+      "confidence": 0.7,
+      "evidence_status": "agent_visual_review",
+      "needs_human_review": false,
+      "review_reason": "",
+      "agent_guidance": "有整页图但 OCR 文字偏弱，Agent 应直接阅读整页图，不要求人工先介入。"
+    },
+    {
+      "topic": "推拉门",
+      "keywords": [
+        "推拉门",
+        "常规推拉门",
+        "<root>/7.门板/常规推拉门"
+      ],
+      "source_title": "常规推拉门",
+      "source_path": "<root>/7.门板/常规推拉门",
+      "source_page": 10,
+      "source_node_id": "gvNG4YZ7Jn6kMwLbs9g7DY1oJ2LD0oRE",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0096__7.门板__常规推拉门__gvNG4YZ7Jn6k.pdf",
+      "ocr_status": "empty",
+      "ocr_summary": "",
+      "page_image": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/常规推拉门__p010.png",
+      "crop_images": [],
+      "debug_crop_images": [
+        "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/常规推拉门__p010/paddleocr/page-001/imgs/img_in_image_box_1_1_1920_1078.jpg"
+      ],
+      "confidence": 0.7,
+      "evidence_status": "agent_visual_review",
+      "needs_human_review": false,
+      "review_reason": "",
+      "agent_guidance": "有整页图但 OCR 文字偏弱，Agent 应直接阅读整页图，不要求人工先介入。"
+    },
+    {
+      "topic": "推拉门",
+      "keywords": [
+        "推拉门",
+        "雪见推拉门",
+        "<root>/7.门板/雪见推拉门"
+      ],
+      "source_title": "雪见推拉门",
+      "source_path": "<root>/7.门板/雪见推拉门",
+      "source_page": 2,
+      "source_node_id": "P7QG4Yx2Jp6pNqe3sgK2YRdkW9dEq3XD",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0098__7.门板__雪见推拉门__P7QG4Yx2Jp6p.pdf",
+      "ocr_status": "empty",
+      "ocr_summary": "",
+      "page_image": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/雪见推拉门__p002.png",
+      "crop_images": [],
+      "debug_crop_images": [
+        "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/雪见推拉门__p002/paddleocr/page-001/imgs/img_in_image_box_1_5_1919_1077.jpg"
+      ],
+      "confidence": 0.7,
+      "evidence_status": "agent_visual_review",
+      "needs_human_review": false,
+      "review_reason": "",
+      "agent_guidance": "有整页图但 OCR 文字偏弱，Agent 应直接阅读整页图，不要求人工先介入。"
+    },
+    {
+      "topic": "推拉门",
+      "keywords": [
+        "推拉门",
+        "雪见推拉门",
+        "<root>/7.门板/雪见推拉门"
+      ],
+      "source_title": "雪见推拉门",
+      "source_path": "<root>/7.门板/雪见推拉门",
+      "source_page": 3,
+      "source_node_id": "P7QG4Yx2Jp6pNqe3sgK2YRdkW9dEq3XD",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0098__7.门板__雪见推拉门__P7QG4Yx2Jp6p.pdf",
+      "ocr_status": "empty",
+      "ocr_summary": "",
+      "page_image": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/雪见推拉门__p003.png",
+      "crop_images": [],
+      "debug_crop_images": [
+        "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/雪见推拉门__p003/paddleocr/page-001/imgs/img_in_image_box_32_0_1917_1075.jpg"
+      ],
+      "confidence": 0.7,
+      "evidence_status": "agent_visual_review",
+      "needs_human_review": false,
+      "review_reason": "",
+      "agent_guidance": "有整页图但 OCR 文字偏弱，Agent 应直接阅读整页图，不要求人工先介入。"
+    }
+  ]
+}

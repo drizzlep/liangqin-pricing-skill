@@ -277,6 +277,11 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/update_release.py
 
 ## 设计师追加规则怎么维护
 
+线上钉钉版《良禽佳木设计师标准手册》应作为最终权威源；`designer-manual-2026-03-22` 只是旧 PDF 的历史归档和审计快照，不再参与报价或咨询兜底。
+同步线上版时先按 `PAUSED` 生成候选层并做差异检查，不要直接覆盖当前 `ACTIVE` 层。完整流程见：
+
+- `docs/pricing-designer-manual-sync.md`
+
 如果后面你拿到的是单独的设计师补充规则文件，不希望污染主规则：
 
 ```bash
@@ -291,6 +296,16 @@ python3 ~/.openclaw/skills/liangqin-pricing/scripts/update_addendum_layer.py --r
 - 额外生成一份 `knowledge-layer.json` 作为“可回答但暂不程序化”的知识层
 - 额外生成一份 `coverage-ledger.json` 作为整本 PDF 的统一覆盖台账
 - 供后续报价在主规则之后做二次判断
+
+线上版替换旧版后，运行时只读取 `ACTIVE` 层。新版没有覆盖的旧版内容应返回“新版标准未明确”，不能再用旧版手册补成当前良禽标准。
+
+如果要看新版手册如何接入报价系统，可生成整本文档数据认证包：
+
+```bash
+python3 ~/.openclaw/skills/liangqin-pricing/scripts/build_full_document_data_certification.py --candidate-layer designer-manual-online-2026-05-13
+```
+
+认证包会把数据点分成：`报价计算硬规则`、`报价前追问/拦截规则`、`设计师咨询知识`、`人工复核`、`不开放`。
 
 ## 最傻瓜的刷新 + 测试
 

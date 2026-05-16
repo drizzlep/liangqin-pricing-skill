@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>金额暂停规则机器回归决策板</title>
+  <style>
+    :root {
+      --bg: #f7f1e7;
+      --ink: #2f271f;
+      --muted: #78695b;
+      --card: #fffaf2;
+      --line: #e1d1bb;
+      --pause: #9d4d2f;
+      --ok: #276749;
+    }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Songti SC", "STSong", serif; }
+    header { padding: 44px min(6vw, 72px) 24px; }
+    h1 { margin: 0 0 12px; font-size: clamp(30px, 5vw, 56px); letter-spacing: -0.04em; }
+    .lead { max-width: 860px; color: var(--muted); font-size: 18px; line-height: 1.7; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; padding: 0 min(6vw, 72px) 28px; }
+    .stat { background: #eadcc8; border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+    .stat b { display: block; font-size: 30px; }
+    main { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; padding: 0 min(6vw, 72px) 56px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 20px; box-shadow: 0 18px 45px rgba(74, 53, 31, .08); }
+    .card-top { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    .pill { border-radius: 999px; padding: 6px 10px; background: #f3d8c8; color: var(--pause); font-size: 12px; font-weight: 700; }
+    h3 { margin: 16px 0 8px; font-size: 22px; }
+    p, dd, li { line-height: 1.6; color: var(--muted); }
+    dl { display: grid; grid-template-columns: 92px 1fr; gap: 8px 12px; }
+    dt { color: var(--ink); font-weight: 700; }
+    dd { margin: 0; }
+    summary { cursor: pointer; color: var(--pause); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>金额暂停规则机器回归决策板</h1>
+    <p class="lead">机器只在同时拿到明确金额公式、golden 期望金额和可执行计算器映射时，才允许规则进入正式报价金额计算。当前未通过的规则继续暂停，不要求人工逐条审规则。</p>
+  </header>
+  <section class="stats">
+    <div class="stat"><b>20</b><span>金额规则</span></div>
+    <div class="stat"><b>20</b><span>golden 样例</span></div>
+    <div class="stat"><b>20</b><span>正式激活</span></div>
+    <div class="stat"><b>0</b><span>继续暂停</span></div>
+  </section>
+  <main>
+    
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0009</strong>
+              </div>
+              <h3>软包床头</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>8980 元</dd>
+                <dt>公式/尺寸字段</dt><dd>18mm</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.bed_standard</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0002</strong>
+              </div>
+              <h3>天地铰链铝框门</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>1500 元</dd>
+                <dt>公式/尺寸字段</dt><dd>305mm, 2200mm, 180mm, 500mm, 26mm, ≤2200, ≤500</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.special_adjustment.texture_continuity_markup, calculate_door_panel_adjustment</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0155</strong>
+              </div>
+              <h3>穿衣镜</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>3680 元</dd>
+                <dt>公式/尺寸字段</dt><dd>10mm, 380mm, 25mm, 900mm, ≥10, ≥380</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.catalog_unit_price, calculate_door_panel_adjustment</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0099</strong>
+              </div>
+              <h3>特殊抽屉滑轨</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>850 元</dd>
+                <dt>公式/尺寸字段</dt><dd>未抽取到尺寸/数值</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.special_adjustment.push_to_open_drawer_slide</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0027</strong>
+              </div>
+              <h3>极窄斜边拼框门</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>3576 元</dd>
+                <dt>公式/尺寸字段</dt><dd>70mm, 40mm, 60mm, 10mm, 20mm</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.special_adjustment.door_panel_area, calculate_door_panel_adjustment</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0010</strong>
+              </div>
+              <h3>模块卡座书柜定制设计指引</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>35112 元</dd>
+                <dt>公式/尺寸字段</dt><dd>900mm, 1800mm, 2000mm, 300mm, ≤300</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.cabinet_projection_area, calculate_operation_gap_price</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0079</strong>
+              </div>
+              <h3>圆弧侧板</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>540 元</dd>
+                <dt>公式/尺寸字段</dt><dd>50mm, 2600mm, 15m, 2600m, ≤2600, ≥50, ≥15</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.special_adjustment.curved_side_panel, calculate_rock_slab_price</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0122</strong>
+              </div>
+              <h3>藤编门</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>4656 元</dd>
+                <dt>公式/尺寸字段</dt><dd>560mm, 2300mm, 700mm, 22mm, 60mm, 30mm, ≤560, ≤2300, ≤23</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.special_adjustment.door_panel_area, calculate_door_panel_adjustment</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0369</strong>
+              </div>
+              <h3>针式铰链铝框门</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>3936 元</dd>
+                <dt>公式/尺寸字段</dt><dd>305mm, 3000mm, 180mm, 500mm, 36mm, 22mm, ≤3000, ≤500</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.special_adjustment.door_panel_area, calculate_door_panel_adjustment</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0067</strong>
+              </div>
+              <h3>无底板柜</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>4329 元</dd>
+                <dt>公式/尺寸字段</dt><dd>700mm, 30mm, 1200mm, 1000mm, ≤700, ≥30, ≤1200</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.special_adjustment.bottomless_cabinet_side_panel</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0048</strong>
+              </div>
+              <h3>纹理连续说明</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>29225 元</dd>
+                <dt>公式/尺寸字段</dt><dd>2600mm, ≤2600</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.cabinet_projection_area, calculate_door_panel_adjustment</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0082</strong>
+              </div>
+              <h3>挡条</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>0 元</dd>
+                <dt>公式/尺寸字段</dt><dd>22mm, 20mm, 120mm, ≤120, 48*48</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.special_adjustment.manual_zero_impact, calculate_door_panel_adjustment</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0105</strong>
+              </div>
+              <h3>平开门说明</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>0 元</dd>
+                <dt>公式/尺寸字段</dt><dd>≤1.5</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.special_adjustment.manual_zero_impact, calculate_door_panel_adjustment</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0249</strong>
+              </div>
+              <h3>挡条</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>0 元</dd>
+                <dt>公式/尺寸字段</dt><dd>15mm, 22mm, 28mm, 20mm, 120mm, ≤120</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.special_adjustment.manual_zero_impact, calculate_door_panel_adjustment</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0157</strong>
+              </div>
+              <h3>模块化儿童床设计要求</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>8915 元</dd>
+                <dt>公式/尺寸字段</dt><dd>60mm, 75mm</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.modular_child_bed, calculate_modular_child_bed_quote, calculate_modular_child_bed_combo_quote</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0158</strong>
+              </div>
+              <h3>模块化儿童床设计要求</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>10271 元</dd>
+                <dt>公式/尺寸字段</dt><dd>600mm, 20mm, 200mm, 475mm</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.modular_child_bed, calculate_modular_child_bed_quote, calculate_modular_child_bed_combo_quote</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0227</strong>
+              </div>
+              <h3>常规拆装柜体</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>0 元</dd>
+                <dt>公式/尺寸字段</dt><dd>700mm</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.special_adjustment.manual_zero_impact, calculate_operation_gap_price, calculate_double_sided_door_price, calculate_modular_child_bed_combo_quote</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0505</strong>
+              </div>
+              <h3>常规拆装柜体</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>0 元</dd>
+                <dt>公式/尺寸字段</dt><dd>未抽取到尺寸/数值</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.special_adjustment.manual_zero_impact, calculate_modular_child_bed_combo_quote</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0136</strong>
+              </div>
+              <h3>吊轨门</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>400 元</dd>
+                <dt>公式/尺寸字段</dt><dd>30kg, 600mm, 1200mm, 2300mm, 26mm, ≤1200, ≤2300</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.special_adjustment.hanging_rail_door, calculate_modular_child_bed_combo_quote</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+            <article class="card activate_formal_amount_calculation">
+              <div class="card-top">
+                <span class="pill">activate_formal_amount_calculation</span>
+                <strong>landing-rule-0543</strong>
+              </div>
+              <h3>吊轨门</h3>
+              <p>机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。</p>
+              <dl>
+                <dt>明确金额</dt><dd>400 元</dd>
+                <dt>公式/尺寸字段</dt><dd>70mm</dd>
+                <dt>计算器候选</dt><dd>handle_quote_message.special_adjustment.hanging_rail_door, calculate_door_panel_adjustment</dd>
+                <dt>机器队列</dt><dd>activated_catalog_amount_runtime</dd>
+                <dt>下一步</dt><dd>正式报价计算已可使用现有 catalog_unit_price runtime。</dd>
+              </dl>
+              <details>
+                <summary>阻塞原因</summary>
+                <ul><li>无</li></ul>
+              </details>
+            </article>
+            
+  </main>
+</body>
+</html>

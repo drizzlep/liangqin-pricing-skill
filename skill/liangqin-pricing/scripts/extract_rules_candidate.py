@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import html as html_lib
 import json
 import os
 import re
@@ -23,6 +24,8 @@ except ModuleNotFoundError:
 W_NS = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
 HEADING_RE = re.compile(r"^(\d+(?:\.\d+)*)\s*(.+)$")
 TABLE_RE = re.compile(r"^表\s*\d+$")
+HTML_TAG_RE = re.compile(r"</?[^>]+>")
+MARKDOWN_IMAGE_RE = re.compile(r"!\[[^\]]*\]\([^)]+\)")
 
 TEXT_TAGS: list[tuple[str, tuple[str, ...]]] = [
     ("柜体", ("柜体", "衣柜", "书柜", "电视柜", "餐边柜", "玄关柜")),
@@ -49,6 +52,7 @@ VISUAL_RULE_KEYWORDS = (
 )
 
 _PDF_RENDERER_BIN: Path | None = None
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 
 def require_pypdf2() -> None:
@@ -139,10 +143,21 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", required=True, help="Path to write candidate JSON.")
     parser.add_argument("--markdown-output", help="Optional path to write a reviewable markdown source document.")
     parser.add_argument("--ocr-min-chars", type=int, default=50, help="Run OCR when extracted text is shorter than this threshold.")
+    parser.add_argument(
+        "--ocr-backend",
+        choices=["tesseract", "paddleocr"],
+        default="tesseract",
+        help="OCR backend used when a PDF page needs visual text extraction.",
+    )
+    parser.add_argument("--paddleocr-lang", default="ch", help="Language hint passed to PaddleOCR when used.")
+    parser.add_argument("--paddleocr-device", default="cpu", help="Device hint passed to PaddleOCR when used.")
     return parser.parse_args()
 
 
 def normalize_text(text: str) -> str:
+    text = MARKDOWN_IMAGE_RE.sub("", text)
+    text = HTML_TAG_RE.sub("", text)
+    text = html_lib.unescape(text)
     text = text.replace("\r\n", "\n").replace("\r", "\n").replace("\u00a0", " ")
     lines = [re.sub(r"\s+", " ", line).strip() for line in text.splitlines()]
     return "\n".join(line for line in lines if line)
@@ -168,6 +183,8 @@ def merge_text_sources(*texts: str) -> str:
 
 
 def should_ocr_page(*, text_layer_text: str, image_count: int, ocr_min_chars: int) -> bool:
+    if ocr_min_chars < 0:
+        return False
     normalized_text = normalize_text(text_layer_text)
     if effective_char_count(normalized_text) < ocr_min_chars:
         return True
@@ -204,9 +221,11 @@ def classify_rule_type(text: str) -> str:
 def confidence_for(method: str, text: str) -> float:
     base = {
         "docx_text": 0.99,
+        "dingtalk_markdown": 0.99,
         "text_layer": 0.95,
         "hybrid": 0.86,
         "ocr_fallback": 0.72,
+        "text_layer_ocr_unavailable": 0.68,
         "unknown": 0.6,
     }.get(method, 0.6)
     if effective_char_count(text) < 20:
@@ -280,7 +299,10 @@ def finalize_section(section: dict[str, object], *, extract_method: str) -> dict
 def sectionize_lines(lines: list[str], *, page: int = 1, extract_method: str = "docx_text") -> list[dict[str, object]]:
     sections: list[dict[str, object]] = []
     current: dict[str, object] | None = None
-    for line in lines:
+    for raw_line in lines:
+        line = normalize_text(raw_line)
+        if not line:
+            continue
         if is_heading(line):
             current = {"heading": line, "content": [], "page": page}
             sections.append(current)
@@ -361,6 +383,107 @@ def ocr_pdf_page(pdf_path: Path, page_number: int) -> str:
         return txt_path.read_text(encoding="utf-8", errors="ignore")
 
 
+def project_paddleocr_python() -> Path | None:
+    candidates = [
+        _PROJECT_ROOT / ".venv-paddleocr310-arm64" / "bin" / "python",
+        _PROJECT_ROOT / ".venv-paddleocr310-arm64" / "bin" / "python3",
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return None
+
+
+def ocr_pdf_document_with_paddleocr(
+    pdf_path: Path,
+    *,
+    output_dir: Path,
+    lang: str = "ch",
+    device: str = "cpu",
+) -> dict[int, str]:
+    python_path = project_paddleocr_python()
+    if python_path is None:
+        raise RuntimeError("PaddleOCR project venv not found: .venv-paddleocr310-arm64")
+
+    runner_path = _PROJECT_ROOT / "apps" / "contract-review" / "core" / "paddleocr_runner.py"
+    if not runner_path.exists():
+        raise RuntimeError(f"PaddleOCR runner not found: {runner_path}")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    env = dict(os.environ)
+    env.setdefault("PADDLE_PDX_DISABLE_MODEL_SOURCE_CHECK", "True")
+    command = [
+        str(python_path),
+        str(runner_path),
+        "--asset-id",
+        pdf_path.stem,
+        "--source-path",
+        str(pdf_path),
+        "--output-dir",
+        str(output_dir),
+        "--lang",
+        lang,
+        "--device",
+        device,
+        "--preview-limit-chars",
+        "2000000",
+    ]
+    result = subprocess.run(command, check=False, capture_output=True, text=True, env=env)
+    if result.returncode != 0:
+        stderr = result.stderr.strip() or result.stdout.strip() or "PaddleOCR failed"
+        raise RuntimeError(stderr)
+
+    try:
+        payload = json.loads(result.stdout or "{}")
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"PaddleOCR returned invalid JSON: {exc}") from exc
+
+    summary_path = Path(str(payload.get("json_path") or output_dir / "summary.json"))
+    if not summary_path.exists():
+        raise RuntimeError(f"PaddleOCR summary missing: {summary_path}")
+
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    page_texts: dict[int, str] = {}
+    for index, page in enumerate(summary.get("pages", []), start=1):
+        if not isinstance(page, dict):
+            continue
+        page_no = int(page.get("page_no") or index)
+        markdown_dir = Path(str(page.get("markdown_dir") or ""))
+        page_text = read_paddleocr_page_markdown(markdown_dir)
+        if page_text:
+            page_texts[page_no] = page_text
+    return page_texts
+
+
+def read_paddleocr_page_markdown(markdown_dir: Path) -> str:
+    if not markdown_dir.exists():
+        return ""
+    candidates = sorted(path for path in markdown_dir.glob("*.md") if path.is_file())
+    texts: list[str] = []
+    for candidate in candidates:
+        if candidate.name == "combined.md":
+            continue
+        try:
+            text = candidate.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        if text.strip():
+            texts.append(text)
+    return normalize_text("\n".join(texts))
+
+
+def ocr_pdf_page_with_backend(
+    pdf_path: Path,
+    page_number: int,
+    *,
+    backend: str,
+    paddleocr_page_texts: dict[int, str] | None = None,
+) -> str:
+    if backend == "paddleocr":
+        return (paddleocr_page_texts or {}).get(page_number, "")
+    return ocr_pdf_page(pdf_path, page_number)
+
+
 def build_pdf_page_record(
     page_number: int,
     text_layer_text: str,
@@ -368,6 +491,8 @@ def build_pdf_page_record(
     *,
     ocr_min_chars: int,
     image_count: int = 0,
+    ocr_backend: str = "tesseract",
+    ocr_error: str = "",
 ) -> dict[str, object]:
     text_layer_text = normalize_text(text_layer_text)
     ocr_text = normalize_text(ocr_text)
@@ -383,7 +508,7 @@ def build_pdf_page_record(
         extract_method = "ocr_fallback"
         raw_text = ocr_text
     else:
-        extract_method = "text_layer" if text_layer_text else "unknown"
+        extract_method = "text_layer_ocr_unavailable" if text_layer_text and needs_ocr else "text_layer" if text_layer_text else "unknown"
         raw_text = text_layer_text
 
     tags = infer_tags(raw_text)
@@ -397,26 +522,70 @@ def build_pdf_page_record(
         "rule_type": rule_type,
         "confidence": confidence_for(extract_method, raw_text),
         "image_count": image_count,
+        "needs_ocr": needs_ocr,
+        "ocr_backend": ocr_backend if needs_ocr else "",
+        "ocr_error": ocr_error,
     }
 
 
-def extract_pdf_page_records(path: Path, *, ocr_min_chars: int) -> list[dict[str, object]]:
+def count_pdf_page_images(page: object) -> int:
+    try:
+        return len(list(page.images))  # type: ignore[attr-defined]
+    except Exception:
+        return 0
+
+
+def extract_pdf_page_records(
+    path: Path,
+    *,
+    ocr_min_chars: int,
+    ocr_backend: str = "tesseract",
+    paddleocr_lang: str = "ch",
+    paddleocr_device: str = "cpu",
+) -> list[dict[str, object]]:
     require_pypdf2()
     reader = PdfReader(str(path))
-    records: list[dict[str, object]] = []
+    page_inputs: list[tuple[int, object, str, int, bool]] = []
     for page_number, page in enumerate(reader.pages, start=1):
         try:
             text_layer_text = page.extract_text() or ""
         except Exception:
             text_layer_text = ""
-        image_count = len(list(page.images))
+        image_count = count_pdf_page_images(page)
+        needs_ocr = should_ocr_page(text_layer_text=text_layer_text, image_count=image_count, ocr_min_chars=ocr_min_chars)
+        page_inputs.append((page_number, page, text_layer_text, image_count, needs_ocr))
 
+    paddleocr_page_texts: dict[int, str] = {}
+    paddleocr_error = ""
+    if ocr_backend == "paddleocr" and any(item[4] for item in page_inputs):
+        try:
+            with tempfile.TemporaryDirectory(prefix="liangqin-paddleocr-") as tmpdir:
+                paddleocr_page_texts = ocr_pdf_document_with_paddleocr(
+                    path,
+                    output_dir=Path(tmpdir) / "ocr",
+                    lang=paddleocr_lang,
+                    device=paddleocr_device,
+                )
+        except Exception as exc:
+            paddleocr_error = str(exc)
+
+    records: list[dict[str, object]] = []
+    for page_number, _page, text_layer_text, image_count, needs_ocr in page_inputs:
         ocr_text = ""
-        if should_ocr_page(text_layer_text=text_layer_text, image_count=image_count, ocr_min_chars=ocr_min_chars):
+        ocr_error = ""
+        if needs_ocr:
             try:
-                ocr_text = ocr_pdf_page(path, page_number)
-            except Exception:
+                ocr_text = ocr_pdf_page_with_backend(
+                    path,
+                    page_number,
+                    backend=ocr_backend,
+                    paddleocr_page_texts=paddleocr_page_texts,
+                )
+            except Exception as exc:
                 ocr_text = ""
+                ocr_error = str(exc)
+            if ocr_backend == "paddleocr" and not ocr_text and paddleocr_error:
+                ocr_error = paddleocr_error
 
         records.append(
             build_pdf_page_record(
@@ -425,6 +594,8 @@ def extract_pdf_page_records(path: Path, *, ocr_min_chars: int) -> list[dict[str
                 ocr_text,
                 ocr_min_chars=ocr_min_chars,
                 image_count=image_count,
+                ocr_backend=ocr_backend,
+                ocr_error=ocr_error,
             )
         )
     return records
@@ -508,7 +679,15 @@ def write_markdown_output(output_path: Path, payload: dict[str, object]) -> None
     os.replace(temp_path, output_path)
 
 
-def build_candidate_payload(input_path: Path, markdown_output: Path | None = None, *, ocr_min_chars: int = 50) -> dict[str, object]:
+def build_candidate_payload(
+    input_path: Path,
+    markdown_output: Path | None = None,
+    *,
+    ocr_min_chars: int = 50,
+    ocr_backend: str = "tesseract",
+    paddleocr_lang: str = "ch",
+    paddleocr_device: str = "cpu",
+) -> dict[str, object]:
     input_path = input_path.expanduser().resolve()
     suffix = input_path.suffix.lower()
 
@@ -521,11 +700,18 @@ def build_candidate_payload(input_path: Path, markdown_output: Path | None = Non
             "sections": sectionize_lines(lines),
         }
     elif suffix == ".pdf":
-        page_records = extract_pdf_page_records(input_path, ocr_min_chars=ocr_min_chars)
+        page_records = extract_pdf_page_records(
+            input_path,
+            ocr_min_chars=ocr_min_chars,
+            ocr_backend=ocr_backend,
+            paddleocr_lang=paddleocr_lang,
+            paddleocr_device=paddleocr_device,
+        )
         payload = {
             "source_file": str(input_path),
             "source_format": "pdf",
             "page_count": len(page_records),
+            "ocr_backend": ocr_backend if ocr_min_chars >= 0 else "disabled",
             "pages": page_records,
             "sections": sectionize_pdf_pages(page_records),
         }
@@ -544,7 +730,14 @@ def main() -> int:
     markdown_output = Path(args.markdown_output).expanduser().resolve() if args.markdown_output else None
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    payload = build_candidate_payload(input_path, markdown_output=markdown_output, ocr_min_chars=args.ocr_min_chars)
+    payload = build_candidate_payload(
+        input_path,
+        markdown_output=markdown_output,
+        ocr_min_chars=args.ocr_min_chars,
+        ocr_backend=args.ocr_backend,
+        paddleocr_lang=args.paddleocr_lang,
+        paddleocr_device=args.paddleocr_device,
+    )
     temp_path = output_path.with_suffix(output_path.suffix + ".tmp")
     with temp_path.open("w", encoding="utf-8") as handle:
         json.dump(payload, handle, ensure_ascii=False, indent=2)

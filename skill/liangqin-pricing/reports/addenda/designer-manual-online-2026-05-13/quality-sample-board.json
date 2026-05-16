@@ -1,0 +1,951 @@
+{
+  "candidate_layer": "designer-manual-online-2026-05-13",
+  "status": "ACTIVE",
+  "html_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/quality-sample-board.html",
+  "verdict": "full_document_closed",
+  "summary": "33 页 PDF 文字层未知页已全部写入 unknown-page-resolution-ledger，不再阻塞发布。",
+  "page_count": 829,
+  "unknown_page_count": 33,
+  "unknown_page_closure": {
+    "exists": true,
+    "unknown_page_count": 33,
+    "resolved_count": 33,
+    "unresolved_count": 0,
+    "resolution_counts": {
+      "machine_extractable_needs_rule_test": 3,
+      "not_machine_readable_excluded": 23,
+      "manual_source_only": 3,
+      "machine_extractable_knowledge": 4
+    }
+  },
+  "image_heavy_count": 453,
+  "method_counts": {
+    "text_layer": 796,
+    "unknown": 33
+  },
+  "ocr_checked_count": 0,
+  "ocr_status_counts": {},
+  "samples": [
+    {
+      "page": 137002,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/9.儿童床/GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_node_id": "ZgpG2NdyVX5xOMAaUbwNZNAEJMwvDqPk",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0137__9.儿童床__GB 28007-2024 婴幼儿及儿童家具安全技术规范__ZgpG2NdyVX5x.pdf",
+      "source_page": 2,
+      "_sample_reasons": [
+        "PDF 文字层没有读到内容"
+      ],
+      "_sample_priority": 1
+    },
+    {
+      "page": 137004,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/9.儿童床/GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_node_id": "ZgpG2NdyVX5xOMAaUbwNZNAEJMwvDqPk",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0137__9.儿童床__GB 28007-2024 婴幼儿及儿童家具安全技术规范__ZgpG2NdyVX5x.pdf",
+      "source_page": 4,
+      "_sample_reasons": [
+        "PDF 文字层没有读到内容"
+      ],
+      "_sample_priority": 1
+    },
+    {
+      "page": 137008,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/9.儿童床/GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_node_id": "ZgpG2NdyVX5xOMAaUbwNZNAEJMwvDqPk",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0137__9.儿童床__GB 28007-2024 婴幼儿及儿童家具安全技术规范__ZgpG2NdyVX5x.pdf",
+      "source_page": 8,
+      "_sample_reasons": [
+        "PDF 文字层没有读到内容"
+      ],
+      "_sample_priority": 1
+    },
+    {
+      "page": 138002,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/9.儿童床/GB 28008-2024 家具结构安全技术规范",
+      "source_title": "GB 28008-2024 家具结构安全技术规范",
+      "source_node_id": "kDnRL6jAJM6ZAOjDsGYQNKov8yMoPYe1",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0138__9.儿童床__GB 28008-2024 家具结构安全技术规范__kDnRL6jAJM6Z.pdf",
+      "source_page": 2,
+      "_sample_reasons": [
+        "PDF 文字层没有读到内容"
+      ],
+      "_sample_priority": 1
+    },
+    {
+      "page": 145001,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 1,
+      "source_path": "<root>/10.床榻/可调节床头使用说明书",
+      "source_title": "可调节床头使用说明书",
+      "source_node_id": "gwva2dxOW4ZQp42yiA2PzvKOJbkz3BRL",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0145__10.床榻__可调节床头使用说明书__gwva2dxOW4ZQ.pdf",
+      "source_page": 1,
+      "_sample_reasons": [
+        "PDF 文字层没有读到内容"
+      ],
+      "_sample_priority": 1
+    },
+    {
+      "page": 122005,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 5,
+      "source_path": "<root>/8.配件/岩板",
+      "source_title": "岩板",
+      "source_node_id": "ZX6GRezwJl6jDOZysR1Q7QwvWdqbropQ",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0122__8.配件__岩板__ZX6GRezwJl6j.pdf",
+      "source_page": 5,
+      "_sample_reasons": [
+        "PDF 文字层没有读到内容"
+      ],
+      "_sample_priority": 1
+    },
+    {
+      "page": 96008,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 1,
+      "source_path": "<root>/7.门板/常规推拉门",
+      "source_title": "常规推拉门",
+      "source_node_id": "gvNG4YZ7Jn6kMwLbs9g7DY1oJ2LD0oRE",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0096__7.门板__常规推拉门__gvNG4YZ7Jn6k.pdf",
+      "source_page": 8,
+      "_sample_reasons": [
+        "PDF 文字层没有读到内容"
+      ],
+      "_sample_priority": 1
+    },
+    {
+      "page": 11012,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 4,
+      "source_path": "<root>/2.边角风格/常规边角风格",
+      "source_title": "常规边角风格",
+      "source_node_id": "a9E05BDRVQ57LqANU2lOG7KxV63zgkYA",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0011__2.边角风格__常规边角风格__a9E05BDRVQ57.pdf",
+      "source_page": 12,
+      "_sample_reasons": [
+        "PDF 文字层没有读到内容"
+      ],
+      "_sample_priority": 1
+    },
+    {
+      "page": 9003,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 7,
+      "source_path": "<root>/1.材料/木材种类",
+      "source_title": "木材种类",
+      "source_node_id": "7NkDwLng8Z5P3rnKUM5p5Y9pJKMEvZBY",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0009__1.材料__木材种类__7NkDwLng8Z5P.pdf",
+      "source_page": 3,
+      "_sample_reasons": [
+        "PDF 文字层没有读到内容"
+      ],
+      "_sample_priority": 1
+    },
+    {
+      "page": 89005,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 1,
+      "source_path": "<root>/7.门板/极窄斜边拼框门",
+      "source_title": "极窄斜边拼框门",
+      "source_node_id": "dQPGYqjpJY5O0jLmUZQoaze3Jakx1Z5N",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0089__7.门板__极窄斜边拼框门__dQPGYqjpJY5O.pdf",
+      "source_page": 5,
+      "_sample_reasons": [
+        "PDF 文字层没有读到内容"
+      ],
+      "_sample_priority": 1
+    },
+    {
+      "page": 5013,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/0.设计与应用指引/模块卡座书柜定制设计指引",
+      "source_title": "模块卡座书柜定制设计指引",
+      "source_node_id": "AR4GpnMqJzDbLBvYfaP2YNoYWKe0xjE3",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0005__0.设计与应用指引__模块卡座书柜定制设计指引__AR4GpnMqJzDb.pdf",
+      "source_page": 13,
+      "_sample_reasons": [
+        "PDF 文字层没有读到内容"
+      ],
+      "_sample_priority": 1
+    },
+    {
+      "page": 98002,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 1,
+      "source_path": "<root>/7.门板/雪见推拉门",
+      "source_title": "雪见推拉门",
+      "source_node_id": "P7QG4Yx2Jp6pNqe3sgK2YRdkW9dEq3XD",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0098__7.门板__雪见推拉门__P7QG4Yx2Jp6p.pdf",
+      "source_page": 2,
+      "_sample_reasons": [
+        "PDF 文字层没有读到内容"
+      ],
+      "_sample_priority": 1
+    },
+    {
+      "page": 8005,
+      "extract_method": "text_layer",
+      "raw_text": "了解NHLA分等规则\n普1级中最小板面的规格是3英寸宽4英尺长，净划面比例是 。最小净划面的尺寸3英寸宽3英尺长和和\n4英寸宽2英尺长。净划面数量根据板材的尺寸而定，\nNHLA分等规则",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：了解NHLA分等规则；普1级中最小板面的规格是3英寸宽4英尺长，净划面比例是 。最小净划面的尺寸3英寸宽3英尺长和和；4英寸宽2英尺长。净划面数量根据板材的尺寸而定，；NHLA分等规则",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.95,
+      "image_count": 21,
+      "source_path": "<root>/1.材料/NHLA分等规则",
+      "source_title": "NHLA分等规则",
+      "source_node_id": "Y1OQX0akWm6NgPZlsOBNBXQ4VGlDd3mE",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0008__1.材料__NHLA分等规则__Y1OQX0akWm6N.pdf",
+      "source_page": 5,
+      "_sample_reasons": [
+        "图片较多，文字层可能漏掉图中标注",
+        "包含可能影响报价或设计限制的词"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 4006,
+      "extract_method": "text_layer",
+      "raw_text": "≥40mm可通高侧板分段柜\n适用于：上下分段侧板可水平放置于地面安装的柜体,如通高衣柜、书柜等\n安装步骤：将分段侧板先水平放置于地面组装，待关键结构固定后再整体竖立。不可通高侧板分段柜\n适用于：上下侧板由横向板件或岩板等断开的柜体，柜体高度需考虑三合一安装空间≥40mm\n如餐边柜、卡座书柜等。\n安装步骤：先下后上原则，即下柜安装完成后再安装上柜，上柜单板件安装，注意侧板需由\n上至下安装。\n分段侧板柜安装顺序说明",
+      "normalized_explanation": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：≥40mm可通高侧板分段柜；适用于：上下分段侧板可水平放置于地面安装的柜体,如通高衣柜、书柜等；安装步骤：将分段侧板先水平放置于地面组装，待关键结构固定后再整体竖立。不可通高侧板分段柜；适用于：上下侧板由横向板件或岩板等断开的柜体，柜体高度需考虑三合一安装空间≥40mm",
+      "tags": [
+        "柜体",
+        "尺寸阈值"
+      ],
+      "rule_type": "dimension_threshold",
+      "confidence": 0.95,
+      "image_count": 13,
+      "source_path": "<root>/0.设计与应用指引/侧板通顶柜体设计应用",
+      "source_title": "侧板通顶柜体设计应用",
+      "source_node_id": "gvNG4YZ7Jn6kMwLbsrK3j3D9J2LD0oRE",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0004__0.设计与应用指引__侧板通顶柜体设计应用__gvNG4YZ7Jn6k.pdf",
+      "source_page": 6,
+      "_sample_reasons": [
+        "图片较多，文字层可能漏掉图中标注",
+        "包含可能影响报价或设计限制的词"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 170002,
+      "extract_method": "text_layer",
+      "raw_text": "1.沟通问题",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1.沟通问题",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.85,
+      "image_count": 0,
+      "source_path": "<root>/设计相关售后问题汇编/售后设计问题总结250102",
+      "source_title": "售后设计问题总结250102",
+      "source_node_id": "ZX6GRezwJl6jDOZysRv34AgeWdqbropQ",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0170__设计相关售后问题汇编__售后设计问题总结250102__ZX6GRezwJl6j.pdf",
+      "source_page": 2,
+      "_sample_reasons": [
+        "文字很少，可能是图示页或扫描页"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 170030,
+      "extract_method": "text_layer",
+      "raw_text": "3）.问题：图纸与效果图/备注不一致\n●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸，\n而备注尺寸未修改，导致备注与图纸不符。\n●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。进深不符，和设计沟通按备注为准\n备注与效果图不符，和设计沟通确认按备注为准\n效果图和图纸边角不同，和设计师沟通按图纸圆边做\n深度尺寸不一致\n踢脚线尺寸前后备注不一致\n总长度尺寸前后备注不一样",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：3）.问题：图纸与效果图/备注不一致；●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸，；而备注尺寸未修改，导致备注与图纸不符。；●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。进深不符，和设计沟通按备注为准",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.95,
+      "image_count": 12,
+      "source_path": "<root>/设计相关售后问题汇编/售后设计问题总结250102",
+      "source_title": "售后设计问题总结250102",
+      "source_node_id": "ZX6GRezwJl6jDOZysRv34AgeWdqbropQ",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0170__设计相关售后问题汇编__售后设计问题总结250102__ZX6GRezwJl6j.pdf",
+      "source_page": 30,
+      "_sample_reasons": [
+        "图片较多，文字层可能漏掉图中标注",
+        "包含可能影响报价或设计限制的词"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 171002,
+      "extract_method": "text_layer",
+      "raw_text": "1.沟通问题",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：1.沟通问题",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.85,
+      "image_count": 0,
+      "source_path": "<root>/设计相关售后问题汇编/售后设计问题总结2503",
+      "source_title": "售后设计问题总结2503",
+      "source_node_id": "2Amq4vjg89RQqMPeip1RyLg7W3kdP0wQ",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0171__设计相关售后问题汇编__售后设计问题总结2503__2Amq4vjg89RQ.pdf",
+      "source_page": 2,
+      "_sample_reasons": [
+        "文字很少，可能是图示页或扫描页"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 171018,
+      "extract_method": "text_layer",
+      "raw_text": "3）.问题：图纸与效果图/备注不一致\n●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸，\n而备注尺寸未修改，导致备注与图纸不符。\n●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。顶视图和侧视图进深不符，和设计沟通按侧视图为准\n图纸和备注尺寸不符，经沟通以图纸为准\n效果图边角和图纸备注不符，经沟通按图纸为准\n图纸和备注尺寸不符，经沟通以图纸为准\n高度尺寸备注不一致 深度尺寸备注不一致",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：3）.问题：图纸与效果图/备注不一致；●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸，；而备注尺寸未修改，导致备注与图纸不符。；●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。顶视图和侧视图进深不符，和设计沟通按侧视图为准",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.95,
+      "image_count": 13,
+      "source_path": "<root>/设计相关售后问题汇编/售后设计问题总结2503",
+      "source_title": "售后设计问题总结2503",
+      "source_node_id": "2Amq4vjg89RQqMPeip1RyLg7W3kdP0wQ",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0171__设计相关售后问题汇编__售后设计问题总结2503__2Amq4vjg89RQ.pdf",
+      "source_page": 18,
+      "_sample_reasons": [
+        "图片较多，文字层可能漏掉图中标注",
+        "包含可能影响报价或设计限制的词"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 172012,
+      "extract_method": "text_layer",
+      "raw_text": "2.备注问题",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2.备注问题",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.85,
+      "image_count": 0,
+      "source_path": "<root>/设计相关售后问题汇编/售后设计问题总结2504",
+      "source_title": "售后设计问题总结2504",
+      "source_node_id": "EpGBa2Lm8aEAvaojfM3Y9GBe8gN7R35y",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0172__设计相关售后问题汇编__售后设计问题总结2504__EpGBa2Lm8aEA.pdf",
+      "source_page": 12,
+      "_sample_reasons": [
+        "文字很少，可能是图示页或扫描页"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 172030,
+      "extract_method": "text_layer",
+      "raw_text": "3）.问题：图纸与效果图/备注不一致\n●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸，\n而备注尺寸未修改，导致备注与图纸不符。\n●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。\n门板画的直角拼框，实际上应该做斜角拼框 备注边角和图纸边角不符，和设计沟通按图纸边角做，圆边圆角\n门板样式不一样\n活层调节方式备注不一致\n柜体深度备注、图纸和模型3个尺寸。两张图抽屉高度不一致",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：柜体。关键信息：3）.问题：图纸与效果图/备注不一致；●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸，；而备注尺寸未修改，导致备注与图纸不符。；●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。",
+      "tags": [
+        "柜体"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.95,
+      "image_count": 11,
+      "source_path": "<root>/设计相关售后问题汇编/售后设计问题总结2504",
+      "source_title": "售后设计问题总结2504",
+      "source_node_id": "EpGBa2Lm8aEAvaojfM3Y9GBe8gN7R35y",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0172__设计相关售后问题汇编__售后设计问题总结2504__EpGBa2Lm8aEA.pdf",
+      "source_page": 30,
+      "_sample_reasons": [
+        "图片较多，文字层可能漏掉图中标注"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 173020,
+      "extract_method": "text_layer",
+      "raw_text": "3）.问题：图纸与效果图/备注不一致\n●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸，\n而备注尺寸未修改，导致备注与图纸不符。\n●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。备注尺寸和图纸尺寸不一样，和设计沟通以图纸尺寸为准\n效果图与图纸信息上不一致，玻璃颜色应该是欧茶\n订单备注圆边，模型还原出来是直边；\n和设计师沟通是备注错了，应该是直角平边\n高度备注和图纸不一致\n总高度备注和图纸不一致（柜体加高1公分）\n侧视图尺寸与产品信息尺寸不一致\n材质备注和渲染图上不一样，\n和设计师沟通是备注错了。",
+      "normalized_explanation": "本段主要描述材质、门型或结构之间的映射关系。 识别标签：柜体, 材质。关键信息：3）.问题：图纸与效果图/备注不一致；●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸，；而备注尺寸未修改，导致备注与图纸不符。；●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。备注尺寸和图纸尺寸不一样，和设计沟通以图纸尺寸为准",
+      "tags": [
+        "柜体",
+        "材质"
+      ],
+      "rule_type": "material_mapping",
+      "confidence": 0.95,
+      "image_count": 12,
+      "source_path": "<root>/设计相关售后问题汇编/售后设计问题总结2505",
+      "source_title": "售后设计问题总结2505",
+      "source_node_id": "m9bN7RYPWd6dg7GXsqd2EkyvJZd1wyK0",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0173__设计相关售后问题汇编__售后设计问题总结2505__m9bN7RYPWd6d.pdf",
+      "source_page": 20,
+      "_sample_reasons": [
+        "图片较多，文字层可能漏掉图中标注",
+        "包含可能影响报价或设计限制的词"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 174015,
+      "extract_method": "text_layer",
+      "raw_text": "9.拆单问题",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：9.拆单问题",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.85,
+      "image_count": 0,
+      "source_path": "<root>/设计相关售后问题汇编/售后设计问题总结2506",
+      "source_title": "售后设计问题总结2506",
+      "source_node_id": "6LeBq413JAQvGZxecRDExb71JDOnGvpb",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0174__设计相关售后问题汇编__售后设计问题总结2506__6LeBq413JAQv.pdf",
+      "source_page": 15,
+      "_sample_reasons": [
+        "文字很少，可能是图示页或扫描页"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 174018,
+      "extract_method": "text_layer",
+      "raw_text": "3）.问题：图纸与效果图/备注不一致\n●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸，\n而备注尺寸未修改，导致备注与图纸不符。\n●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。备注写的用通长拉手，实际用反弹器\n备注反弹开启，实际通长拉手\n备注尺寸与图纸尺寸不一样，和设计沟通以图纸尺寸为准\n尺寸不符，和设计沟通按备注为准\n备注与图纸不符。和酷家乐也不符，和设计确认按酷家乐尺寸为准。\n上床宽度备注和图纸不一致（按1200）",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：3）.问题：图纸与效果图/备注不一致；●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸，；而备注尺寸未修改，导致备注与图纸不符。；●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。备注写的用通长拉手，实际用反弹器",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.95,
+      "image_count": 12,
+      "source_path": "<root>/设计相关售后问题汇编/售后设计问题总结2506",
+      "source_title": "售后设计问题总结2506",
+      "source_node_id": "6LeBq413JAQvGZxecRDExb71JDOnGvpb",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0174__设计相关售后问题汇编__售后设计问题总结2506__6LeBq413JAQv.pdf",
+      "source_page": 18,
+      "_sample_reasons": [
+        "图片较多，文字层可能漏掉图中标注",
+        "包含可能影响报价或设计限制的词"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 175009,
+      "extract_method": "text_layer",
+      "raw_text": "2.备注问题",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2.备注问题",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.85,
+      "image_count": 0,
+      "source_path": "<root>/设计相关售后问题汇编/售后设计问题总结2507",
+      "source_title": "售后设计问题总结2507",
+      "source_node_id": "qnYMoO1rWxvRlBKbc0Zr31qKJ47Z3je9",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0175__设计相关售后问题汇编__售后设计问题总结2507__qnYMoO1rWxvR.pdf",
+      "source_page": 9,
+      "_sample_reasons": [
+        "文字很少，可能是图示页或扫描页"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 175025,
+      "extract_method": "text_layer",
+      "raw_text": "3）.问题：图纸与效果图/备注不一致\n●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸，\n而备注尺寸未修改，导致备注与图纸不符。\n●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。图纸和备注信息尺寸不一致，以图为准\n柜体总宽正视图1390备注信息以及顶视图1400，1390对的\n上门板应该是玻璃门\n图纸备注的是活动茶格，酷家乐还原出来是固定的\n两张图结构不一致 ，上图盖板是内嵌的，下图盖板盖侧板\n书桌深度备注和图纸不一致",
+      "normalized_explanation": "本段主要描述材质、门型或结构之间的映射关系。 识别标签：柜体, 门型。关键信息：3）.问题：图纸与效果图/备注不一致；●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸，；而备注尺寸未修改，导致备注与图纸不符。；●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。图纸和备注信息尺寸不一致，以图为准",
+      "tags": [
+        "柜体",
+        "门型"
+      ],
+      "rule_type": "material_mapping",
+      "confidence": 0.95,
+      "image_count": 11,
+      "source_path": "<root>/设计相关售后问题汇编/售后设计问题总结2507",
+      "source_title": "售后设计问题总结2507",
+      "source_node_id": "qnYMoO1rWxvRlBKbc0Zr31qKJ47Z3je9",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0175__设计相关售后问题汇编__售后设计问题总结2507__qnYMoO1rWxvR.pdf",
+      "source_page": 25,
+      "_sample_reasons": [
+        "图片较多，文字层可能漏掉图中标注",
+        "包含可能影响报价或设计限制的词"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 176008,
+      "extract_method": "text_layer",
+      "raw_text": "2.设计问题",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2.设计问题",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.85,
+      "image_count": 0,
+      "source_path": "<root>/设计相关售后问题汇编/售后设计问题总结2508",
+      "source_title": "售后设计问题总结2508",
+      "source_node_id": "QOG9lyrgJPBnO5AjfbGaMlBzWzN67Mw4",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0176__设计相关售后问题汇编__售后设计问题总结2508__QOG9lyrgJPBn.pdf",
+      "source_page": 8,
+      "_sample_reasons": [
+        "文字很少，可能是图示页或扫描页"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 177010,
+      "extract_method": "text_layer",
+      "raw_text": "2.设计问题",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2.设计问题",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.85,
+      "image_count": 0,
+      "source_path": "<root>/设计相关售后问题汇编/售后设计问题总结2509",
+      "source_title": "售后设计问题总结2509",
+      "source_node_id": "QG53mjyd80rQjeNySv5nnz4oV6zbX04v",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0177__设计相关售后问题汇编__售后设计问题总结2509__QG53mjyd80rQ.pdf",
+      "source_page": 10,
+      "_sample_reasons": [
+        "文字很少，可能是图示页或扫描页"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 178006,
+      "extract_method": "text_layer",
+      "raw_text": "2.设计问题",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2.设计问题",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.85,
+      "image_count": 0,
+      "source_path": "<root>/设计相关售后问题汇编/售后设计问题总结2510",
+      "source_title": "售后设计问题总结2510",
+      "source_node_id": "R1zknDm0WR5ReKAkUBrlowlA8BQEx5rG",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0178__设计相关售后问题汇编__售后设计问题总结2510__R1zknDm0WR5R.pdf",
+      "source_page": 6,
+      "_sample_reasons": [
+        "文字很少，可能是图示页或扫描页"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 179009,
+      "extract_method": "text_layer",
+      "raw_text": "2.设计问题",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：2.设计问题",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.85,
+      "image_count": 0,
+      "source_path": "<root>/设计相关售后问题汇编/售后设计问题总结2511",
+      "source_title": "售后设计问题总结2511",
+      "source_node_id": "93NwLYZXWy90lB4bhkmwEmQqWkyEqBQm",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0179__设计相关售后问题汇编__售后设计问题总结2511__93NwLYZXWy90.pdf",
+      "source_page": 9,
+      "_sample_reasons": [
+        "文字很少，可能是图示页或扫描页"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 11001,
+      "extract_method": "text_layer",
+      "raw_text": "常规边角风格\n家具边角可根据实际需求进行调整，目前现有的边角风格有14种，具体可见下表。各边角细节尺寸见后续小节。平边边缘及直角边缘实物均有\nR2.38mm（3/16）小圆弧，非锋利直角边。合同中备注边角风格可直接截图本页图片+名称部分，图纸中无需额外标注边角细节尺寸。\na）直角平边 b）圆角平边\nc）直角圆边 d）圆角圆边\ng）直角侧圆边 e）直角内斜边 f）圆角内斜边\ni）新现代边角-侧边平齐h）圆边切角\nk）外直角新古典圆边 j）新现代边角-侧边飘出\nl）外圆角新古典圆边",
+      "normalized_explanation": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：常规边角风格；家具边角可根据实际需求进行调整，目前现有的边角风格有14种，具体可见下表。各边角细节尺寸见后续小节。平边边缘及直角边缘实物均有；R2.38mm（3/16）小圆弧，非锋利直角边。合同中备注边角风格可直接截图本页图片+名称部分，图纸中无需额外标注边角细节尺寸。；a）直角平边 b）圆角平边",
+      "tags": [
+        "尺寸阈值"
+      ],
+      "rule_type": "dimension_threshold",
+      "confidence": 0.95,
+      "image_count": 12,
+      "source_path": "<root>/2.边角风格/常规边角风格",
+      "source_title": "常规边角风格",
+      "source_node_id": "a9E05BDRVQ57LqANU2lOG7KxV63zgkYA",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0011__2.边角风格__常规边角风格__a9E05BDRVQ57.pdf",
+      "source_page": 1,
+      "_sample_reasons": [
+        "图片较多，文字层可能漏掉图中标注",
+        "包含可能影响报价或设计限制的词"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 20005,
+      "extract_method": "text_layer",
+      "raw_text": "框架式标准支腿\n支腿名称支腿\n顶直径支腿\n底直径支腿高度 腿称高度 使用产品\n圆直腿\n1-15045 25 150 40\n圆直腿\n1-20045 25 200 40\n圆直腿\n1-22045 25 220 40\n圆直腿\n1-24045 25 240 40\n圆直腿\n2-15045 30 150 40\n圆直腿\n2-20045 30 200 40\n圆斜腿\n1-15045 25 150 40DG-02 DG-06 DG-10\nDSG-03 CTG-01 CTG-03\nCBG-04\nDSG-08 CBG-07\nXSG-04\nDG-08 DSG-02 CJ-01\nYG-06 YG-09 YG-17 SG-13 YG-11\nDSG-01 XSG-02 DSG-04",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：框架式标准支腿；支腿名称支腿；顶直径支腿；底直径支腿高度 腿称高度 使用产品",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.95,
+      "image_count": 21,
+      "source_path": "<root>/3.柜体/支腿柜体",
+      "source_title": "支腿柜体",
+      "source_node_id": "G1DKw2zgV22QXe0yuP5dmQPwVB5r9YAn",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0020__3.柜体__支腿柜体__G1DKw2zgV22Q.pdf",
+      "source_page": 5,
+      "_sample_reasons": [
+        "图片较多，文字层可能漏掉图中标注",
+        "包含可能影响报价或设计限制的词"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 89003,
+      "extract_method": "text_layer",
+      "raw_text": "场\n景\n应\n用",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：场；景；应；用",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.85,
+      "image_count": 1,
+      "source_path": "<root>/7.门板/极窄斜边拼框门",
+      "source_title": "极窄斜边拼框门",
+      "source_node_id": "dQPGYqjpJY5O0jLmUZQoaze3Jakx1Z5N",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0089__7.门板__极窄斜边拼框门__dQPGYqjpJY5O.pdf",
+      "source_page": 3,
+      "_sample_reasons": [
+        "文字很少，可能是图示页或扫描页"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 120001,
+      "extract_method": "text_layer",
+      "raw_text": "黑玻\n欧茶 金茶 欧灰超白长虹 超白\n油砂 欧灰长虹•玻璃均为钢化玻璃，长虹玻璃高度＜300mm或高度＞300mm长度＜365mm无法做钢化，其他玻璃尺寸长度高度均小于365mm时无法做钢化；\n•玻璃厚度统一5mm；\n•使用玻璃时，需截图手册玻璃样式图片附于合同中，常规玻璃无备注默认使用超白玻，长虹玻璃默认为超白长虹玻璃，使用其他种类玻璃\n需明确备注对应名称；铝框门不可选用“水波纹”，可选用“超白银玻”；“镜面玻璃-单向透光”只用于铝框门；\n•长虹玻璃统一凸面朝外；\n•油砂玻璃统一油砂面朝外；\n水波纹\n玻璃\n超白银玻（铝框门）\n镜面玻璃-单向透光\n（铝框门）\n油砂长虹",
+      "normalized_explanation": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：黑玻；欧茶 金茶 欧灰超白长虹 超白；油砂 欧灰长虹•玻璃均为钢化玻璃，长虹玻璃高度＜300mm或高度＞300mm长度＜365mm无法做钢化，其他玻璃尺寸长度高度均小于365mm时无法做钢化；；•玻璃厚度统一5mm；",
+      "tags": [
+        "尺寸阈值"
+      ],
+      "rule_type": "dimension_threshold",
+      "confidence": 0.95,
+      "image_count": 12,
+      "source_path": "<root>/8.配件/玻璃",
+      "source_title": "玻璃",
+      "source_node_id": "R1zknDm0WR5ReKAkUB7XnLdD8BQEx5rG",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0120__8.配件__玻璃__R1zknDm0WR5R.pdf",
+      "source_page": 1,
+      "_sample_reasons": [
+        "图片较多，文字层可能漏掉图中标注",
+        "包含可能影响报价或设计限制的词"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 120002,
+      "extract_method": "text_layer",
+      "raw_text": "超白",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：超白",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.85,
+      "image_count": 4,
+      "source_path": "<root>/8.配件/玻璃",
+      "source_title": "玻璃",
+      "source_node_id": "R1zknDm0WR5ReKAkUB7XnLdD8BQEx5rG",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0120__8.配件__玻璃__R1zknDm0WR5R.pdf",
+      "source_page": 2,
+      "_sample_reasons": [
+        "文字很少，可能是图示页或扫描页"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 24006,
+      "extract_method": "text_layer",
+      "raw_text": "•对开门，可用大角度铰链\n•设计通长扣手及对扣手时漏缝，请勿做该设计\n•门板抽涨两门间可能有漏缝或无法开门的情况发生\n•两门无法同时开启，需先后打开两门，门板开启后两\n门间空间较小，可能无法正常使用\n•非必要不设计该样式柜门，如客户要求，请向客户说\n明使用上的不便之处并在合同中说明\n以下为带门整体转角柜开门设计方法，设计时应注意柜门开启时是否方便使用。\n平行铰链+铰链称\n铰链称宽度≥80mm\n平行铰链+铰链称\n铰链称宽度≥80mm常规铰链+铰链称\n门板内嵌\n铰链称宽度≥门厚+80mm常规铰链+铰链称\n门板内嵌\n铰链称宽度≥门厚+80mm",
+      "normalized_explanation": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：•对开门，可用大角度铰链；•设计通长扣手及对扣手时漏缝，请勿做该设计；•门板抽涨两门间可能有漏缝或无法开门的情况发生；•两门无法同时开启，需先后打开两门，门板开启后两",
+      "tags": [
+        "尺寸阈值"
+      ],
+      "rule_type": "dimension_threshold",
+      "confidence": 0.95,
+      "image_count": 19,
+      "source_path": "<root>/3.柜体/转角柜",
+      "source_title": "转角柜",
+      "source_node_id": "QG53mjyd80rQjeNySvYzpB4AV6zbX04v",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0024__3.柜体__转角柜__QG53mjyd80rQ.pdf",
+      "source_page": 6,
+      "_sample_reasons": [
+        "图片较多，文字层可能漏掉图中标注",
+        "包含可能影响报价或设计限制的词"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 78003,
+      "extract_method": "text_layer",
+      "raw_text": "•应用场景",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：•应用场景",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.85,
+      "image_count": 2,
+      "source_path": "<root>/7.门板/零食柜门",
+      "source_title": "零食柜门",
+      "source_node_id": "20eMKjyp81pQNLkOs9PPvwzPJxAZB1Gv",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0078__7.门板__零食柜门__20eMKjyp81pQ.pdf",
+      "source_page": 3,
+      "_sample_reasons": [
+        "文字很少，可能是图示页或扫描页"
+      ],
+      "_sample_priority": 2
+    },
+    {
+      "page": 180011,
+      "extract_method": "text_layer",
+      "raw_text": "3）.问题：图纸与效果图/备注/实际需求不一致\n●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸，\n而备注尺寸未修改，导致备注与图纸不符。\n●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。门板尺寸与图纸对不上\n图纸挡条宽度不一致，一个图纸40 一个50 按照40做的\n备注是直角圆边，图上是直角直边，备注是错的按照图纸做\n备注尺寸和图纸尺寸不一致，以图纸尺寸为准\n图纸备注直角圆边，酷家乐还原出来抽屉和吗都没有缩圆边\n（和设计师沟通边角样式应该是直角平边）\n材质备注错误",
+      "normalized_explanation": "本段主要描述材质、门型或结构之间的映射关系。 识别标签：材质。关键信息：3）.问题：图纸与效果图/备注/实际需求不一致；●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸，；而备注尺寸未修改，导致备注与图纸不符。；●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。门板尺寸与图纸对不上",
+      "tags": [
+        "材质"
+      ],
+      "rule_type": "material_mapping",
+      "confidence": 0.95,
+      "image_count": 11,
+      "source_path": "<root>/设计相关售后问题汇编/售后设计问题总结2512",
+      "source_title": "售后设计问题总结2512",
+      "source_node_id": "P7QG4Yx2Jp6pNqe3seRd4YvLW9dEq3XD",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0180__设计相关售后问题汇编__售后设计问题总结2512__P7QG4Yx2Jp6p.pdf",
+      "source_page": 11,
+      "_sample_reasons": [
+        "包含可能影响报价或设计限制的词"
+      ],
+      "_sample_priority": 3
+    },
+    {
+      "page": 138009,
+      "extract_method": "text_layer",
+      "raw_text": "4.1.2.3 使用过程中的剪切和挤压点\n4.1.2.3.1 在预定的使用条件下,不应有可触及的剪切和挤压点。\n4.1.2.3.2 正常动作和操作(例如,尝试通过抬起椅面或调整椅背来移动椅子)时,不应有可能造成伤害\n的剪切和挤压点。\n4.1.2.3.3 正常使用中受力作用下可接触间隙用半球形手指探棒(如图1所示)试验,间隙应小于7mm\n或不小于18mm。\n4.1.2.3.4 剪切和挤压点的判定流程按附录A的规定进行。\n4.1.3 孔及间隙\n4.1.3.1 产品可触及区域内刚性部件上,深度超过10mm的孔及间隙,其直径或间隙用直径7mm的\n半球形手指探棒(如图1所示)施力30N不应通过,或用直径12mm的半球形手指探棒(如图1所示)\n不施力能通过。\n4.1.3.2 不符合4.1.3.1的管口应封闭。\n4.1.3.3 床头、床尾及安全护栏的相邻阻挡部件按GB/T24430—2023中6.3进行试验,同一方向上相\n邻阻挡部件的净空间隙应不大于75mm且不小于60mm。\n4.2 特定产品结构安全\n4.2.1 屏风\n4.2.1.1 办公家具屏风稳定性\n按GB/T22792.3—2008中6.3或6.4的规定进行稳定性试验时,屏风不应倾翻。\n4.2.1.2 办公家具屏风结构完整性\n按GB/T22792.3—2008中6.5进行试验时,所有组件不应被移出,结构上不应损坏。\n4.2.1.3 办公家具屏风装配强度\n按GB/T22792.3—2008中6.6进行强度试验时,无论有无附件,屏风装配件的稳定性不应有不利\n的影响,任何零件、连接件、组件不应破损,以及不应有影响屏风组合安全和功能的变形和松动。\n4.2.2 折叠翻靠床\n4.2.2.1 折叠配件\n当按照GB/T26172.2—2010中5.4进行折叠装置循环试验时,应保证折叠配件在试验进行100次\n和10000次循环后两次测定的启闭力差异不超过20%。\n4.2.2.2 折叠部分与框架的安装\n4.2.2.2.1 折叠装置应紧固在建筑或其他结构的框架上,产品在使用期间不应松动。\n4.2.2.2.2 当按照GB/T26172.2—2010中5.4进行试验后,紧固件应无松动。\n4.2.2.3 非故意闭合\n当按照GB/T26172.2—2010中5.5.3进行试验时,可折叠的部件不应自动闭合,支撑装置抬离地\n3GB28008—2024",
+      "normalized_explanation": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：4.1.2.3 使用过程中的剪切和挤压点；4.1.2.3.1 在预定的使用条件下,不应有可触及的剪切和挤压点。；4.1.2.3.2 正常动作和操作(例如,尝试通过抬起椅面或调整椅背来移动椅子)时,不应有可能造成伤害；的剪切和挤压点。",
+      "tags": [
+        "尺寸阈值"
+      ],
+      "rule_type": "dimension_threshold",
+      "confidence": 0.95,
+      "image_count": 2,
+      "source_path": "<root>/9.儿童床/GB 28008-2024 家具结构安全技术规范",
+      "source_title": "GB 28008-2024 家具结构安全技术规范",
+      "source_node_id": "kDnRL6jAJM6ZAOjDsGYQNKov8yMoPYe1",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0138__9.儿童床__GB 28008-2024 家具结构安全技术规范__kDnRL6jAJM6Z.pdf",
+      "source_page": 9,
+      "_sample_reasons": [
+        "普通页抽查，用来校准整体稳定性"
+      ],
+      "_sample_priority": 4
+    },
+    {
+      "page": 113001,
+      "extract_method": "text_layer",
+      "raw_text": "•型号：JS-FX\n•名称：方形金属拉手\n•规格尺寸：\n长度31mm\n宽度30mm\n高度20mm\n•型号：JS-YX\n•名称：圆形金属拉手\n•规格尺寸：\n直径32mm\n高度25mm\n•型号：JS-YZ\n•名称：圆珠金属拉手\n•规格尺寸：\n直径19mm\n高度20mm\n•型号：JS-ZT\n•名称：锥台金属拉手\n•规格尺寸：\n直径上20下13mm\n高度25mm\n•型号：JS-BK\n•名称：贝壳金属拉手\n•规格尺寸：\n直径25mm\n高度23mm\n•型号：JS-MSS\n•名称：美式双孔金属拉手\n•规格尺寸：\n长度106/138mm\n孔距96/128mm\n宽度23mm\n高度41mm\n五金拉手",
+      "normalized_explanation": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：尺寸阈值。关键信息：•型号：JS-FX；•名称：方形金属拉手；•规格尺寸：；长度31mm",
+      "tags": [
+        "尺寸阈值"
+      ],
+      "rule_type": "dimension_threshold",
+      "confidence": 0.95,
+      "image_count": 6,
+      "source_path": "<root>/8.配件/五金拉手",
+      "source_title": "五金拉手",
+      "source_node_id": "XPwkYGxZV3zQXKPyigLnvyLGWAgozOKL",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0113__8.配件__五金拉手__XPwkYGxZV3zQ.pdf",
+      "source_page": 1,
+      "_sample_reasons": [
+        "普通页抽查，用来校准整体稳定性"
+      ],
+      "_sample_priority": 4
+    },
+    {
+      "page": 173008,
+      "extract_method": "text_layer",
+      "raw_text": "3).问题：收口条2.5cm，客户门框凸出的尺寸和收口条卡扣的尺寸加起来3cm，导致加上\n卡扣差几毫米柜子推不进去（U型空间）\n● 原因：设计师没有按照U型空间的要求预留挡边条；且没有为门边框突出多预留出挡边条的安装空间。\n●如何避免：无额外安装空间的U型空间柜体，U形空间内无踢脚线，左右两侧挡条宽度之和要求≥80mm；如两侧有踢脚线，\n则在此基础增加踢脚线相应厚度。",
+      "normalized_explanation": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：3).问题：收口条2.5cm，客户门框凸出的尺寸和收口条卡扣的尺寸加起来3cm，导致加上；卡扣差几毫米柜子推不进去（U型空间）；● 原因：设计师没有按照U型空间的要求预留挡边条；且没有为门边框突出多预留出挡边条的安装空间。；●如何避免：无额外安装空间的U型空间柜体，U形空间内无踢脚线，左右两侧挡条宽度之和要求≥80mm；如两侧有踢脚线，",
+      "tags": [
+        "柜体",
+        "尺寸阈值"
+      ],
+      "rule_type": "dimension_threshold",
+      "confidence": 0.95,
+      "image_count": 3,
+      "source_path": "<root>/设计相关售后问题汇编/售后设计问题总结2505",
+      "source_title": "售后设计问题总结2505",
+      "source_node_id": "m9bN7RYPWd6dg7GXsqd2EkyvJZd1wyK0",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0173__设计相关售后问题汇编__售后设计问题总结2505__m9bN7RYPWd6d.pdf",
+      "source_page": 8,
+      "_sample_reasons": [
+        "普通页抽查，用来校准整体稳定性"
+      ],
+      "_sample_priority": 4
+    },
+    {
+      "page": 89001,
+      "extract_method": "text_layer",
+      "raw_text": "极窄斜边拼框门\n•尺寸限制：单扇门宽W≤500mm；高H≤2200mm\n•门板厚度：门厚28mm\n•门边框宽度：外露30mm（斜切边:25mm,外露平边5mm），边宽60mm\n•开启方式：可推弹开启；扣手开启\n•门板结构：45°斜角拼接\n•无外露中横，门后有暗称\n•适用铰链：内嵌门铰链称宽度需≥100mm，外盖门铰链称需≥80mm ；柜内拉\n篮等避让铰链宽度至少50mm；因门边限制，铰链不可嵌入式安装，因此该门\n不可用在钻石柜、大角度圆边柜体以及不可安装平装铰链。\n门板背面图\n门板正面图窄边框尺寸示意图",
+      "normalized_explanation": "本段主要描述材质、门型或结构之间的映射关系。 识别标签：柜体, 门型, 尺寸阈值。关键信息：极窄斜边拼框门；•尺寸限制：单扇门宽W≤500mm；高H≤2200mm；•门板厚度：门厚28mm；•门边框宽度：外露30mm（斜切边:25mm,外露平边5mm），边宽60mm",
+      "tags": [
+        "柜体",
+        "门型",
+        "尺寸阈值"
+      ],
+      "rule_type": "material_mapping",
+      "confidence": 0.95,
+      "image_count": 3,
+      "source_path": "<root>/7.门板/极窄斜边拼框门",
+      "source_title": "极窄斜边拼框门",
+      "source_node_id": "dQPGYqjpJY5O0jLmUZQoaze3Jakx1Z5N",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0089__7.门板__极窄斜边拼框门__dQPGYqjpJY5O.pdf",
+      "source_page": 1,
+      "_sample_reasons": [
+        "普通页抽查，用来校准整体稳定性"
+      ],
+      "_sample_priority": 4
+    },
+    {
+      "page": 37001,
+      "extract_method": "text_layer",
+      "raw_text": "活动层板\n•活动层板指在柜体中可拆卸或可调节的层板，使用层板钉与柜体连接，层板上有限位卡槽；\n•活动层板按结构方式可分为平板活动层板和拼框活动层板；\n①平板活动层板\n与其他常规层板相同，层板宽度W＜555mm\n②拼框活动层板\n与其他常规层板不同，上平装拼框结构，边框宽度60mm厚度22mm，芯板厚度11mm，层板宽度W≥555mm",
+      "normalized_explanation": "本段主要定义尺寸阈值、适用区间或边界条件。 识别标签：柜体, 尺寸阈值。关键信息：活动层板；•活动层板指在柜体中可拆卸或可调节的层板，使用层板钉与柜体连接，层板上有限位卡槽；；•活动层板按结构方式可分为平板活动层板和拼框活动层板；；①平板活动层板",
+      "tags": [
+        "柜体",
+        "尺寸阈值"
+      ],
+      "rule_type": "dimension_threshold",
+      "confidence": 0.95,
+      "image_count": 4,
+      "source_path": "<root>/4.组件/活动层板",
+      "source_title": "活动层板",
+      "source_node_id": "ZX6GRezwJl6jDOZysRxMwNopWdqbropQ",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0037__4.组件__活动层板__ZX6GRezwJl6j.pdf",
+      "source_page": 1,
+      "_sample_reasons": [
+        "普通页抽查，用来校准整体稳定性"
+      ],
+      "_sample_priority": 4
+    },
+    {
+      "page": 121014,
+      "extract_method": "text_layer",
+      "raw_text": "灯带分区控制设计说明\n•多个开关分区控制\n多个开关分区控制通过设置多个开关实现，最多可控制5个单独区域，可通过各区域单独开关控制，也可通过1个开关进行总控。以下以\n最多情况示例：\n控制器1\n控制器2\n控制器3\n控制器4\n控制器5驱动1\n驱动2\n驱动3\n驱动4\n驱动5A区开关\nB区开关\nC区开关\nD区开关\nE区开关总控开关",
+      "normalized_explanation": "本段主要是业务说明，可作为规则注释或补充前提。 识别标签：待分类。关键信息：灯带分区控制设计说明；•多个开关分区控制；多个开关分区控制通过设置多个开关实现，最多可控制5个单独区域，可通过各区域单独开关控制，也可通过1个开关进行总控。以下以；最多情况示例：",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "narrative_rule",
+      "confidence": 0.95,
+      "image_count": 1,
+      "source_path": "<root>/8.配件/灯带",
+      "source_title": "灯带",
+      "source_node_id": "qnYMoO1rWxvRlBKbczxQ2Y5bJ47Z3je9",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0121__8.配件__灯带__qnYMoO1rWxvR.pdf",
+      "source_page": 14,
+      "_sample_reasons": [
+        "普通页抽查，用来校准整体稳定性"
+      ],
+      "_sample_priority": 4
+    }
+  ]
+}

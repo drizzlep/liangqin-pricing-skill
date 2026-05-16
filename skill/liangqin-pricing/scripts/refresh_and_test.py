@@ -20,6 +20,10 @@ PRESET_MESSAGES = {
     "child-bed-width-limit": "做一张定制高架床，1.35米乘2米，北美白橡木，梯柜款，胶囊围栏，围栏长2米高0.4米，梯柜踏步宽520，进深500，这种能直接正式报价吗？",
 }
 DEFAULT_PRESET = "wardrobe-smoke"
+DEFAULT_INSTALL_DIRS = {
+    (Path.home() / ".openclaw" / "skills" / "liangqin-pricing").resolve(),
+    (Path.home() / ".openclaw" / "workspace" / "skills" / "liangqin-pricing").resolve(),
+}
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -108,6 +112,10 @@ def build_runtime_health_command(scripts_dir: Path, skill_dir: Path) -> list[str
     ]
 
 
+def is_installed_skill_dir(skill_dir: Path) -> bool:
+    return skill_dir.resolve() in DEFAULT_INSTALL_DIRS
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     skill_dir = Path(args.skill_dir).expanduser().resolve()
@@ -121,6 +129,8 @@ def main(argv: list[str] | None = None) -> int:
         update = run_step([sys.executable, str(scripts_dir / "update_release.py"), "--skill-dir", str(skill_dir)])
         if update.returncode != 0:
             return update.returncode
+    elif is_installed_skill_dir(skill_dir):
+        print_header("当前已在 OpenClaw 安装目录，跳过 self-publish")
     else:
         print_header("未检测到成套更新文件，直接发布当前 skill")
         publish = run_step([sys.executable, str(scripts_dir / "publish_skill.py"), "--source", str(skill_dir)])

@@ -207,6 +207,8 @@ def route_message(
         and not looks_like_rule_consultation(normalized_text)
     ):
         preferred_next_tool = "precheck_quote"
+    elif looks_like_rule_consultation(normalized_text):
+        preferred_next_tool = "query_addendum_guidance"
     elif addendum_result.get("matched") and (
         str(addendum_result.get("recommended_reply_mode", "")).strip() == "follow_up" or not is_quote_request(normalized_text)
     ):

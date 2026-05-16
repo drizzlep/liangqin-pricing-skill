@@ -1,0 +1,42 @@
+{
+  "workspace": "https://alidocs.dingtalk.com/i/spaces/oqvGpEPrWwAkVzDy/overview",
+  "generated_at": "2026-05-13T11:38:14",
+  "node_count": 264,
+  "file_count": 245,
+  "folder_count": 19,
+  "processed_file_count": 2,
+  "artifact_count": 2,
+  "error_count": 0,
+  "artifacts": [
+    {
+      "contentType": "ALIDOC",
+      "createTime": 1766390135000,
+      "docUrl": "https://alidocs.dingtalk.com/i/nodes/r1R7q3QmWe6KMROpszD00GEeVxkXOEP2?utm_scene=team_space",
+      "hasChildren": false,
+      "name": "设计手册-使用说明",
+      "nodeId": "r1R7q3QmWe6KMROpszD00GEeVxkXOEP2",
+      "nodeType": "file",
+      "updateTime": 1766721676000,
+      "workspaceId": "oqvGpEPrWwAkVzDy",
+      "path": "<root>/设计手册-使用说明",
+      "snapshot_type": "markdown",
+      "local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13-smoke/markdown/0001__设计手册-使用说明__r1R7q3QmWe6K.md"
+    },
+    {
+      "contentType": "DOCUMENT",
+      "createTime": 1766467805000,
+      "docUrl": "https://alidocs.dingtalk.com/i/nodes/14lgGw3P8vKnlBeLCvN3yXzLW5daZ90D?utm_scene=team_space",
+      "hasChildren": false,
+      "name": "海棠角设计与应用",
+      "nodeId": "14lgGw3P8vKnlBeLCvN3yXzLW5daZ90D",
+      "nodeType": "file",
+      "updateTime": 1766721676000,
+      "workspaceId": "oqvGpEPrWwAkVzDy",
+      "path": "<root>/0.设计与应用指引/海棠角设计与应用",
+      "snapshot_type": "binary",
+      "local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13-smoke/files/0002__0.设计与应用指引__海棠角设计与应用__14lgGw3P8vKn.pdf",
+      "expirationSeconds": 900
+    }
+  ],
+  "errors": []
+}

@@ -9,7 +9,10 @@ import re
 from pathlib import Path
 from typing import Any
 
-import xlrd
+try:
+    import xlrd
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    xlrd = None
 
 
 GENERAL_SHEET = "部件单价 "
@@ -26,7 +29,12 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def cell_text(sheet: xlrd.sheet.Sheet, row: int, col: int) -> str:
+def require_xlrd() -> None:
+    if xlrd is None:
+        raise RuntimeError("xlrd is required to extract modular child-bed pricing data from .xls workbooks.")
+
+
+def cell_text(sheet: Any, row: int, col: int) -> str:
     return str(sheet.cell_value(row, col)).strip()
 
 
@@ -82,7 +90,7 @@ def normalized_formula(value: str) -> str:
     return str(value or "").replace("\r", " ").replace("\n", " ").strip()
 
 
-def extract_general_components(sheet: xlrd.sheet.Sheet) -> dict[str, Any]:
+def extract_general_components(sheet: Any) -> dict[str, Any]:
     railings: dict[str, Any] = {}
     bed_frames: dict[str, Any] = {}
     access: dict[str, Any] = {}
@@ -136,7 +144,7 @@ def extract_general_components(sheet: xlrd.sheet.Sheet) -> dict[str, Any]:
     }
 
 
-def extract_rosewood_specials(sheet: xlrd.sheet.Sheet) -> dict[str, Any]:
+def extract_rosewood_specials(sheet: Any) -> dict[str, Any]:
     bunk_modules: dict[str, Any] = {}
     castle_modules: dict[str, Any] = {}
 
@@ -209,6 +217,7 @@ def extract_rosewood_specials(sheet: xlrd.sheet.Sheet) -> dict[str, Any]:
 
 
 def extract_payload(input_path: str | Path) -> dict[str, Any]:
+    require_xlrd()
     workbook = xlrd.open_workbook(str(Path(input_path).expanduser().resolve()))
     general_sheet = workbook.sheet_by_name(GENERAL_SHEET)
     rosewood_sheet = workbook.sheet_by_name(ROSEWOOD_SHEET)

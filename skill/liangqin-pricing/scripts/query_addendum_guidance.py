@@ -181,6 +181,34 @@ BOUNDARY_SOURCE_TERMS = (
     "算不算良禽资料",
 )
 
+MACHINE_CLOSURE_BLOCKING_QUERY_TERMS = (
+    "报价",
+    "正式报价",
+    "参考价",
+    "价格",
+    "加价",
+    "收费",
+    "尺寸",
+    "限制",
+    "1700",
+    "≤",
+    "≥",
+    "默认",
+    "必须",
+    "不得",
+    "不可",
+    "不能",
+    "安全",
+    "固定",
+    "上墙",
+    "备注",
+    "下单",
+    "现场确定",
+    "额外收费",
+    "怎么回",
+    "更合适",
+)
+
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Query active addendum guidance for a natural-language message.")
@@ -408,16 +436,27 @@ def should_use_strict_focus(focus_terms: list[str]) -> bool:
     )
 
 
+def focus_match_score(entry: dict[str, Any], focus_terms: list[str]) -> int:
+    haystack = f"{entry.get('title', '')} {entry.get('detail', '')}"
+    normalized_haystack = normalize_lookup_text(haystack)
+    matched_terms = [
+        term
+        for term in focus_terms
+        if term in haystack or normalize_lookup_text(term) in normalized_haystack
+    ]
+    return sum(max(len(term), 2) for term in matched_terms) + len(matched_terms) * 2
+
+
 def filter_by_focus(entries: list[dict[str, Any]], focus_terms: list[str], *, fallback_to_original: bool = True) -> list[dict[str, Any]]:
     if not focus_terms:
         return entries
     focused = [
         entry
         for entry in entries
-        if any(term in f"{entry.get('title', '')} {entry.get('detail', '')}" for term in focus_terms)
+        if focus_match_score(entry, focus_terms) > 0
     ]
     if focused:
-        return focused
+        return sorted(focused, key=lambda entry: -focus_match_score(entry, focus_terms))
     if fallback_to_original:
         return entries
     return []
@@ -427,9 +466,51 @@ def normalize_lookup_text(text: str) -> str:
     return "".join(str(text).split()).lower()
 
 
+def load_knowledge_layer_manifests(addenda_root: Path) -> list[dict[str, Any]]:
+    return load_active_layer_manifests(addenda_root)
+
+
+def load_guidance_layer_manifests(addenda_root: Path) -> list[dict[str, Any]]:
+    return load_active_layer_manifests(addenda_root)
+
+
+def load_guidance_layer_sources(addenda_root: Path) -> list[dict[str, Any]]:
+    layer_sources: list[dict[str, Any]] = []
+    for manifest in load_guidance_layer_manifests(addenda_root):
+        artifacts = manifest.get("artifacts", {})
+        runtime_rules_file = artifacts.get("runtime_rules_file")
+        if runtime_rules_file:
+            runtime_rules_path = resolve_manifest_artifact_path(manifest, runtime_rules_file)
+            if runtime_rules_path.exists():
+                runtime_payload = json.loads(runtime_rules_path.read_text(encoding="utf-8"))
+                layer_sources.append(
+                    {
+                        "manifest": manifest,
+                        "match_mode": "runtime",
+                        "rules": runtime_payload.get("rules", []),
+                    }
+                )
+                continue
+        rules_index_file = artifacts.get("rules_index_file")
+        if not rules_index_file:
+            continue
+        index_path = resolve_manifest_artifact_path(manifest, rules_index_file)
+        if not index_path.exists():
+            continue
+        index_payload = json.loads(index_path.read_text(encoding="utf-8"))
+        layer_sources.append(
+            {
+                "manifest": manifest,
+                "match_mode": "index",
+                "rules": index_payload.get("entries", []),
+            }
+        )
+    return layer_sources
+
+
 def load_active_knowledge_sources(addenda_root: Path) -> list[dict[str, Any]]:
     knowledge_sources: list[dict[str, Any]] = []
-    for manifest in load_active_layer_manifests(addenda_root):
+    for manifest in load_knowledge_layer_manifests(addenda_root):
         artifacts = manifest.get("artifacts", {})
         knowledge_layer_file = artifacts.get("knowledge_layer_file")
         if not knowledge_layer_file:
@@ -601,6 +682,13 @@ def detect_boundary_guardrail(text: str) -> tuple[str, str] | None:
     return None
 
 
+def build_no_current_standard_reply(text: str) -> str:
+    query = str(text)
+    if any(term in query for term in ("旧版", "旧手册", "之前手册", "老手册", "旧标准")):
+        return "新版设计师手册里没有明确覆盖这条旧版口径，所以不能再按旧版手册作为当前良禽标准回答。需要按新版手册重新确认，或找设计师/门店人工核对。"
+    return "新版设计师手册里没有明确写到这条内容，我不能按旧版资料或行业常识替你补成当前良禽标准。需要按新版手册重新确认，或找设计师/门店人工核对。"
+
+
 def decision_summary(decision: dict[str, Any]) -> str:
     summary = str(decision.get("summary", "")).strip()
     if summary:
@@ -659,6 +747,16 @@ def build_natural_knowledge_answer(match: dict[str, Any]) -> tuple[str, str, str
     return summary, evidence_level, confidence_note
 
 
+def can_answer_with_machine_closure_knowledge(text: str, match: dict[str, Any], *, strict_focus: bool) -> bool:
+    entry = match.get("entry") if isinstance(match.get("entry"), dict) else {}
+    if str(entry.get("evidence_level") or "") != "machine_full_document_closure":
+        return True
+    if strict_focus:
+        return False
+    query = str(text or "")
+    return not any(term in query for term in MACHINE_CLOSURE_BLOCKING_QUERY_TERMS)
+
+
 def query_guidance(text: str, addenda_root: Path) -> dict[str, Any]:
     boundary_guardrail = detect_boundary_guardrail(text)
     if boundary_guardrail:
@@ -697,7 +795,7 @@ def query_guidance(text: str, addenda_root: Path) -> dict[str, Any]:
     constraints = list(decisions.get("constraints") or [])
     adjustments = list(decisions.get("adjustments") or [])
 
-    for layer_source in load_active_layer_sources(addenda_root):
+    for layer_source in load_guidance_layer_sources(addenda_root):
         manifest = layer_source["manifest"]
         rules = layer_source["rules"]
         if layer_source["match_mode"] == "runtime":
@@ -736,6 +834,8 @@ def query_guidance(text: str, addenda_root: Path) -> dict[str, Any]:
     adjustments = filter_by_focus(adjustments, focus_terms, fallback_to_original=not strict_focus)
 
     knowledge_match = choose_knowledge_match(text, load_active_knowledge_sources(addenda_root))
+    if knowledge_match and not can_answer_with_machine_closure_knowledge(text, knowledge_match, strict_focus=strict_focus):
+        knowledge_match = None
     if knowledge_match:
         if pricing_gap_query and follow_ups:
             knowledge_match = None
@@ -823,10 +923,16 @@ def query_guidance(text: str, addenda_root: Path) -> dict[str, Any]:
             )
         )
     else:
+        payload["answer_style"] = "natural_rule_explanation"
+        payload["answer_summary"] = build_no_current_standard_reply(text)
+        payload["evidence_level"] = "current_standard_not_found"
+        payload["suggested_reply"] = payload["answer_summary"]
         payload.update(
             build_response_metadata(
                 route="addendum_guidance",
                 ready=False,
+                constraint_code="addendum_guidance.current_standard_not_found",
+                detail_level_hint="rule_explanation",
             )
         )
     return payload

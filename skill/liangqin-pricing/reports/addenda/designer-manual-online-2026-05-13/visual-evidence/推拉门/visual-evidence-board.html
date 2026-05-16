@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>推拉门图文证据看板</title>
+  <style>
+    :root {
+      --paper: #f8f1e7;
+      --card: #fffaf2;
+      --ink: #271f18;
+      --muted: #796a5b;
+      --line: #e2d2bd;
+      --accent: #87512d;
+      --good: #3f6f4c;
+      --warn: #a45c24;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: radial-gradient(circle at top left, #fff 0, var(--paper) 42%, #eadcc8 100%); font-family: "Songti SC", "Noto Serif CJK SC", serif; }
+    .shell { max-width: 1220px; margin: 0 auto; padding: 40px 22px 80px; }
+    .hero { padding: 34px; border: 1px solid var(--line); border-radius: 30px; background: rgba(255, 250, 242, .92); box-shadow: 0 24px 70px rgba(63, 41, 18, .13); }
+    .eyebrow { color: var(--accent); letter-spacing: .14em; font-size: 13px; }
+    h1 { margin: 12px 0; font-size: clamp(34px, 5vw, 58px); line-height: 1.04; }
+    .hero p { max-width: 850px; color: var(--muted); font-size: 18px; line-height: 1.8; }
+    .metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 18px 0; }
+    .metric { border: 1px solid var(--line); border-radius: 20px; background: rgba(255, 250, 242, .86); padding: 17px; }
+    .metric__label { color: var(--muted); font-size: 14px; }
+    .metric__value { font-size: 30px; font-weight: 900; margin: 8px 0; }
+    .metric__hint { color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .card { border: 1px solid var(--line); border-radius: 24px; padding: 18px; background: var(--card); box-shadow: 0 16px 44px rgba(70, 46, 23, .09); }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; }
+    .meta span, .keyword-row span { border: 1px solid var(--line); border-radius: 999px; padding: 5px 9px; background: #fffdf8; }
+    h3 { margin: 14px 0 8px; font-size: 22px; }
+    .summary { color: var(--ink); line-height: 1.75; }
+    .hint { color: var(--warn); line-height: 1.65; }
+    .keyword-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; color: var(--muted); font-size: 13px; }
+    img { object-fit: contain; background: white; }
+    .page-image { width: 100%; height: auto; max-height: 520px; margin-top: 10px; border: 1px solid var(--line); border-radius: 16px; }
+    .debug-note { margin: 10px 0 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .empty, .empty-crops { color: var(--muted); padding: 20px; border: 1px dashed var(--line); border-radius: 18px; background: #fffdf8; }
+    .decision { margin: 18px 0; padding: 18px 20px; border: 1px solid var(--line); border-radius: 22px; background: rgba(255, 253, 248, .9); color: var(--ink); line-height: 1.7; }
+    .decision strong { color: var(--accent); }
+    @media (max-width: 900px) { .metrics, .board { grid-template-columns: 1fr; } .shell { padding: 24px 14px 52px; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow">良禽佳木 · 图文证据层</div>
+      <h1>推拉门资料问答 + 配图</h1>
+      <p>第一版默认只给 Agent 和人工审核员看“对应整页图”，不把自动裁剪图作为主要证据。自动裁剪候选图只保留在 JSON 里用于机器调试，避免人类误判是裁错还是原图本身有透视。</p>
+    </section>
+    <section class="metrics">
+      
+      <section class="metric">
+        <div class="metric__label">图文条目</div>
+        <div class="metric__value">5</div>
+        <div class="metric__hint">当前主题收录页数</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">可用页图</div>
+        <div class="metric__value">5</div>
+        <div class="metric__hint">可作为整页证据返回</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">Agent 读图</div>
+        <div class="metric__value">5</div>
+        <div class="metric__hint">有整页图但 OCR 偏弱</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">人工兜底</div>
+        <div class="metric__value"></div>
+        <div class="metric__hint">仅缺整页图时触发</div>
+      </section>
+    
+    </section>
+    <section class="decision"><strong>推荐动作：</strong>可进入 Agent 视觉阅读：有整页图，OCR 弱的页面由 Agent 直接读图处理。</section>
+    <section class="board">
+      <article class="card" data-review="Agent 读整页图">
+        <div class="meta">
+          <span>常规推拉门</span>
+          <span>源页 8</span>
+          <span>Agent 读整页图</span>
+        </div>
+        <h3>常规推拉门 · 第 8 页</h3>
+        <p class="summary">OCR 未读到可用文字。</p>
+        <p class="hint">有整页图但 OCR 文字偏弱，Agent 应直接阅读整页图，不要求人工先介入。</p>
+        <div class="keyword-row"><span>推拉门</span><span>常规推拉门</span><span>&lt;root&gt;/7.门板/常规推拉门</span></div>
+        <img class="page-image" src="file:///Users/admin/Nutstore%20Files/%E6%88%91%E7%9A%84%E5%9D%9A%E6%9E%9C%E4%BA%91/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/%E5%B8%B8%E8%A7%84%E6%8E%A8%E6%8B%89%E9%97%A8__p008.png" alt="整页图">
+        <p class="debug-note">自动裁剪候选图：1 张，已保留在 JSON 中，仅用于机器调试，不在人工看板默认展示。</p>
+      </article>
+    
+
+      <article class="card" data-review="Agent 读整页图">
+        <div class="meta">
+          <span>常规推拉门</span>
+          <span>源页 9</span>
+          <span>Agent 读整页图</span>
+        </div>
+        <h3>常规推拉门 · 第 9 页</h3>
+        <p class="summary">OCR 未读到可用文字。</p>
+        <p class="hint">有整页图但 OCR 文字偏弱，Agent 应直接阅读整页图，不要求人工先介入。</p>
+        <div class="keyword-row"><span>推拉门</span><span>常规推拉门</span><span>&lt;root&gt;/7.门板/常规推拉门</span></div>
+        <img class="page-image" src="file:///Users/admin/Nutstore%20Files/%E6%88%91%E7%9A%84%E5%9D%9A%E6%9E%9C%E4%BA%91/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/%E5%B8%B8%E8%A7%84%E6%8E%A8%E6%8B%89%E9%97%A8__p009.png" alt="整页图">
+        <p class="debug-note">自动裁剪候选图：1 张，已保留在 JSON 中，仅用于机器调试，不在人工看板默认展示。</p>
+      </article>
+    
+
+      <article class="card" data-review="Agent 读整页图">
+        <div class="meta">
+          <span>常规推拉门</span>
+          <span>源页 10</span>
+          <span>Agent 读整页图</span>
+        </div>
+        <h3>常规推拉门 · 第 10 页</h3>
+        <p class="summary">OCR 未读到可用文字。</p>
+        <p class="hint">有整页图但 OCR 文字偏弱，Agent 应直接阅读整页图，不要求人工先介入。</p>
+        <div class="keyword-row"><span>推拉门</span><span>常规推拉门</span><span>&lt;root&gt;/7.门板/常规推拉门</span></div>
+        <img class="page-image" src="file:///Users/admin/Nutstore%20Files/%E6%88%91%E7%9A%84%E5%9D%9A%E6%9E%9C%E4%BA%91/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/%E5%B8%B8%E8%A7%84%E6%8E%A8%E6%8B%89%E9%97%A8__p010.png" alt="整页图">
+        <p class="debug-note">自动裁剪候选图：1 张，已保留在 JSON 中，仅用于机器调试，不在人工看板默认展示。</p>
+      </article>
+    
+
+      <article class="card" data-review="Agent 读整页图">
+        <div class="meta">
+          <span>雪见推拉门</span>
+          <span>源页 2</span>
+          <span>Agent 读整页图</span>
+        </div>
+        <h3>雪见推拉门 · 第 2 页</h3>
+        <p class="summary">OCR 未读到可用文字。</p>
+        <p class="hint">有整页图但 OCR 文字偏弱，Agent 应直接阅读整页图，不要求人工先介入。</p>
+        <div class="keyword-row"><span>推拉门</span><span>雪见推拉门</span><span>&lt;root&gt;/7.门板/雪见推拉门</span></div>
+        <img class="page-image" src="file:///Users/admin/Nutstore%20Files/%E6%88%91%E7%9A%84%E5%9D%9A%E6%9E%9C%E4%BA%91/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/%E9%9B%AA%E8%A7%81%E6%8E%A8%E6%8B%89%E9%97%A8__p002.png" alt="整页图">
+        <p class="debug-note">自动裁剪候选图：1 张，已保留在 JSON 中，仅用于机器调试，不在人工看板默认展示。</p>
+      </article>
+    
+
+      <article class="card" data-review="Agent 读整页图">
+        <div class="meta">
+          <span>雪见推拉门</span>
+          <span>源页 3</span>
+          <span>Agent 读整页图</span>
+        </div>
+        <h3>雪见推拉门 · 第 3 页</h3>
+        <p class="summary">OCR 未读到可用文字。</p>
+        <p class="hint">有整页图但 OCR 文字偏弱，Agent 应直接阅读整页图，不要求人工先介入。</p>
+        <div class="keyword-row"><span>推拉门</span><span>雪见推拉门</span><span>&lt;root&gt;/7.门板/雪见推拉门</span></div>
+        <img class="page-image" src="file:///Users/admin/Nutstore%20Files/%E6%88%91%E7%9A%84%E5%9D%9A%E6%9E%9C%E4%BA%91/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/%E9%9B%AA%E8%A7%81%E6%8E%A8%E6%8B%89%E9%97%A8__p003.png" alt="整页图">
+        <p class="debug-note">自动裁剪候选图：1 张，已保留在 JSON 中，仅用于机器调试，不在人工看板默认展示。</p>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

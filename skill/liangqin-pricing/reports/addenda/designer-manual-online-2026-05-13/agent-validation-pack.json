@@ -1,0 +1,399 @@
+{
+  "title": "良禽设计师手册企业 Agent 验证包",
+  "candidate_layer": "designer-manual-online-2026-05-13",
+  "case_count": 8,
+  "decision_counts": {
+    "可进入企业 Agent 样例": 3,
+    "可用但需人工复核": 3,
+    "暂不适合上线": 2
+  },
+  "page_first_violations": 0,
+  "non_current_standard_case_count": 0,
+  "recommended_action": "暂不封装：先处理暂不适合上线的验证题。",
+  "cases": [
+    {
+      "id": "rock-slab-visual",
+      "category": "岩板材料图文查询",
+      "question": "读一下岩板圣勃朗鱼肚，给我对应整页图。",
+      "expected": "能返回岩板整页证据，不展示自动裁剪图。",
+      "topic": "岩板",
+      "decision": "可进入企业 Agent 样例",
+      "decision_reasons": [
+        "回答和证据满足本阶段样例要求。"
+      ],
+      "agent_sample_ready": true,
+      "suggested_reply": "找到了对应页：岩板第 5 页。页面里能看到 圣勃朗鱼肚 和规格信息，请以整页图为准。",
+      "guidance": {
+        "matched": true,
+        "reply_mode": "rule_explanation",
+        "evidence_level": "hard_rule",
+        "missing_fields": [],
+        "constraint_code": "addendum_guidance.rule_explanation"
+      },
+      "visual_evidence": {
+        "evidence_status": "agent_ready",
+        "needs_human_review": false,
+        "review_reason": "",
+        "page_images": [
+          "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/岩板__p005.png",
+          "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/岩板__p006.png",
+          "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/岩板__p008.png"
+        ],
+        "crop_images": [],
+        "debug_crop_image_count": 11,
+        "source_refs": [
+          {
+            "source_title": "岩板",
+            "source_page": 5,
+            "source_path": "<root>/8.配件/岩板"
+          },
+          {
+            "source_title": "岩板",
+            "source_page": 6,
+            "source_path": "<root>/8.配件/岩板"
+          },
+          {
+            "source_title": "岩板",
+            "source_page": 8,
+            "source_path": "<root>/8.配件/岩板"
+          }
+        ]
+      },
+      "rule_sources": [
+        "设计师追加规则 线上版 2026-05-13"
+      ],
+      "current_standard_usage": {
+        "used": false,
+        "status": "仅使用新版",
+        "layers": [
+          "设计师追加规则 线上版 2026-05-13"
+        ]
+      }
+    },
+    {
+      "id": "sliding-door-visual-rule",
+      "category": "推拉门相关规则",
+      "question": "推拉门单小块门板需要内缩多少？给我对应页图。",
+      "expected": "能解释推拉门规则，并返回整页图证据。",
+      "topic": "推拉门",
+      "decision": "可用但需人工复核",
+      "decision_reasons": [
+        "这页文字不够稳，建议看整页图复核。"
+      ],
+      "agent_sample_ready": false,
+      "suggested_reply": "找到了对应页：常规推拉门第 8 页。请看整页图核对。",
+      "guidance": {
+        "matched": false,
+        "reply_mode": "none",
+        "evidence_level": "current_standard_not_found",
+        "missing_fields": [],
+        "constraint_code": "addendum_guidance.current_standard_not_found"
+      },
+      "visual_evidence": {
+        "evidence_status": "agent_visual_review",
+        "needs_human_review": false,
+        "review_reason": "",
+        "page_images": [
+          "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/常规推拉门__p008.png",
+          "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/常规推拉门__p009.png",
+          "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/常规推拉门__p010.png"
+        ],
+        "crop_images": [],
+        "debug_crop_image_count": 3,
+        "source_refs": [
+          {
+            "source_title": "常规推拉门",
+            "source_page": 8,
+            "source_path": "<root>/7.门板/常规推拉门"
+          },
+          {
+            "source_title": "常规推拉门",
+            "source_page": 9,
+            "source_path": "<root>/7.门板/常规推拉门"
+          },
+          {
+            "source_title": "常规推拉门",
+            "source_page": 10,
+            "source_path": "<root>/7.门板/常规推拉门"
+          }
+        ]
+      },
+      "rule_sources": [],
+      "current_standard_usage": {
+        "used": false,
+        "status": "仅使用新版",
+        "layers": []
+      }
+    },
+    {
+      "id": "open-shelf-seam",
+      "category": "开放格/分段缝/柜体结构",
+      "question": "超高带门柜体有开放格时，分段缝应该怎么对齐？",
+      "expected": "能命中开放格/分段缝规则；缺关键尺寸时应追问或提示复核。",
+      "topic": "",
+      "decision": "可用但需人工复核",
+      "decision_reasons": [
+        "还缺必要信息，需要补齐后再判断。"
+      ],
+      "agent_sample_ready": false,
+      "suggested_reply": "还差一个信息：follow_up_detail。补上后才能判断。",
+      "guidance": {
+        "matched": true,
+        "reply_mode": "follow_up",
+        "evidence_level": "needs_confirmation",
+        "missing_fields": [
+          "follow_up_detail"
+        ],
+        "constraint_code": null
+      },
+      "visual_evidence": {
+        "evidence_status": "not_requested",
+        "needs_human_review": false,
+        "review_reason": "",
+        "page_images": [],
+        "crop_images": [],
+        "debug_crop_image_count": 0,
+        "source_refs": []
+      },
+      "rule_sources": [
+        "设计师追加规则 线上版 2026-05-13"
+      ],
+      "current_standard_usage": {
+        "used": false,
+        "status": "仅使用新版",
+        "layers": [
+          "设计师追加规则 线上版 2026-05-13"
+        ]
+      }
+    },
+    {
+      "id": "cabinet-build-default",
+      "category": "柜体结构规则",
+      "question": "常规拆装柜体高度超过1700mm时，默认顶盖侧还是侧盖顶？",
+      "expected": "能给出柜体结构默认规则或明确需要确认的信息。",
+      "topic": "",
+      "decision": "暂不适合上线",
+      "decision_reasons": [
+        "规则和图文证据均未命中。"
+      ],
+      "agent_sample_ready": false,
+      "suggested_reply": "新版设计师手册里没有明确写到这条内容，我不能按旧版资料或行业常识替你补成当前良禽标准。需要按新版手册重新确认，或找设计师/门店人工核对。",
+      "guidance": {
+        "matched": false,
+        "reply_mode": "none",
+        "evidence_level": "current_standard_not_found",
+        "missing_fields": [],
+        "constraint_code": "addendum_guidance.current_standard_not_found"
+      },
+      "visual_evidence": {
+        "evidence_status": "not_requested",
+        "needs_human_review": false,
+        "review_reason": "",
+        "page_images": [],
+        "crop_images": [],
+        "debug_crop_image_count": 0,
+        "source_refs": []
+      },
+      "rule_sources": [],
+      "current_standard_usage": {
+        "used": false,
+        "status": "仅使用新版",
+        "layers": []
+      }
+    },
+    {
+      "id": "rock-slab-pricing",
+      "category": "报价注意点",
+      "question": "岩板台面和岩板背板报价或设计有什么注意点？",
+      "expected": "能结合岩板规则和整页资料，避免只凭自动识别文字判断。",
+      "topic": "岩板",
+      "decision": "可进入企业 Agent 样例",
+      "decision_reasons": [
+        "回答和证据满足本阶段样例要求。"
+      ],
+      "agent_sample_ready": true,
+      "suggested_reply": "找到了对应页：岩板第 5 页。页面里能看到 圣勃朗鱼肚 和规格信息，请以整页图为准。",
+      "guidance": {
+        "matched": false,
+        "reply_mode": "none",
+        "evidence_level": "current_standard_not_found",
+        "missing_fields": [],
+        "constraint_code": "addendum_guidance.current_standard_not_found"
+      },
+      "visual_evidence": {
+        "evidence_status": "agent_ready",
+        "needs_human_review": false,
+        "review_reason": "",
+        "page_images": [
+          "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/岩板__p005.png",
+          "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/岩板__p006.png",
+          "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/岩板__p008.png"
+        ],
+        "crop_images": [],
+        "debug_crop_image_count": 11,
+        "source_refs": [
+          {
+            "source_title": "岩板",
+            "source_page": 5,
+            "source_path": "<root>/8.配件/岩板"
+          },
+          {
+            "source_title": "岩板",
+            "source_page": 6,
+            "source_path": "<root>/8.配件/岩板"
+          },
+          {
+            "source_title": "岩板",
+            "source_page": 8,
+            "source_path": "<root>/8.配件/岩板"
+          }
+        ]
+      },
+      "rule_sources": [
+        "设计师追加规则 线上版 2026-05-13"
+      ],
+      "current_standard_usage": {
+        "used": false,
+        "status": "仅使用新版",
+        "layers": [
+          "设计师追加规则 线上版 2026-05-13"
+        ]
+      }
+    },
+    {
+      "id": "children-bed-safety",
+      "category": "儿童床/安全规范",
+      "question": "儿童床有什么安全规范要注意？给我对应整页图。",
+      "expected": "能返回安全规范整页图；图片或文字不可读时，不给具体建议。",
+      "topic": "安全规范",
+      "decision": "可用但需人工复核",
+      "decision_reasons": [
+        "对应整页图接近空白，不能据此给出具体建议，需要重新导出或人工补证据。"
+      ],
+      "agent_sample_ready": false,
+      "suggested_reply": "这页现在看不出有效内容。图片几乎是空白，文字也没读出来。所以不能直接回答具体要求，需要重新导出来源页，或者让人先确认原文。",
+      "guidance": {
+        "matched": true,
+        "reply_mode": "rule_explanation",
+        "evidence_level": "hard_rule",
+        "missing_fields": [],
+        "constraint_code": "addendum_guidance.rule_explanation"
+      },
+      "visual_evidence": {
+        "evidence_status": "needs_human_review",
+        "needs_human_review": true,
+        "review_reason": "blank_visual_asset",
+        "page_images": [
+          "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p002.png",
+          "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p004.png",
+          "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p008.png"
+        ],
+        "crop_images": [],
+        "debug_crop_image_count": 0,
+        "source_refs": [
+          {
+            "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+            "source_page": 2,
+            "source_path": "<root>/9.儿童床/GB 28007-2024 婴幼儿及儿童家具安全技术规范"
+          },
+          {
+            "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+            "source_page": 4,
+            "source_path": "<root>/9.儿童床/GB 28007-2024 婴幼儿及儿童家具安全技术规范"
+          },
+          {
+            "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+            "source_page": 8,
+            "source_path": "<root>/9.儿童床/GB 28007-2024 婴幼儿及儿童家具安全技术规范"
+          }
+        ]
+      },
+      "rule_sources": [
+        "设计师追加规则 线上版 2026-05-13"
+      ],
+      "current_standard_usage": {
+        "used": false,
+        "status": "仅使用新版",
+        "layers": [
+          "设计师追加规则 线上版 2026-05-13"
+        ]
+      }
+    },
+    {
+      "id": "archived-standard-boundary",
+      "category": "旧版资料边界",
+      "question": "榻榻米组合柜空区加托称时，需要固定上墙吗？",
+      "expected": "如果新版手册缺口径，应明确新版未覆盖，不再使用旧版兜底。",
+      "topic": "",
+      "decision": "暂不适合上线",
+      "decision_reasons": [
+        "规则和图文证据均未命中。"
+      ],
+      "agent_sample_ready": false,
+      "suggested_reply": "新版设计师手册里没有明确写到这条内容，我不能按旧版资料或行业常识替你补成当前良禽标准。需要按新版手册重新确认，或找设计师/门店人工核对。",
+      "guidance": {
+        "matched": false,
+        "reply_mode": "none",
+        "evidence_level": "current_standard_not_found",
+        "missing_fields": [],
+        "constraint_code": "addendum_guidance.current_standard_not_found"
+      },
+      "visual_evidence": {
+        "evidence_status": "not_requested",
+        "needs_human_review": false,
+        "review_reason": "",
+        "page_images": [],
+        "crop_images": [],
+        "debug_crop_image_count": 0,
+        "source_refs": []
+      },
+      "rule_sources": [
+        "设计师追加规则 线上版 2026-05-13"
+      ],
+      "current_standard_usage": {
+        "used": false,
+        "status": "仅使用新版",
+        "layers": [
+          "设计师追加规则 线上版 2026-05-13"
+        ]
+      }
+    },
+    {
+      "id": "source-boundary",
+      "category": "资料边界保护",
+      "question": "良禽佳木可以选国产五金和进口五金吗？良禽有 BLUM 五金吗？",
+      "expected": "资料未明确时不按行业常识编造，直接提示确认。",
+      "topic": "",
+      "decision": "可进入企业 Agent 样例",
+      "decision_reasons": [
+        "文档没写清楚，不往外补。"
+      ],
+      "agent_sample_ready": true,
+      "suggested_reply": "文档里没写清楚这件事，所以不能替你确认。要得到准确口径，需要问设计师或门店。",
+      "guidance": {
+        "matched": true,
+        "reply_mode": "rule_explanation",
+        "evidence_level": "source_boundary",
+        "missing_fields": [],
+        "constraint_code": "addendum_guidance.source_boundary"
+      },
+      "visual_evidence": {
+        "evidence_status": "not_requested",
+        "needs_human_review": false,
+        "review_reason": "",
+        "page_images": [],
+        "crop_images": [],
+        "debug_crop_image_count": 0,
+        "source_refs": []
+      },
+      "rule_sources": [],
+      "current_standard_usage": {
+        "used": false,
+        "status": "仅使用新版",
+        "layers": []
+      }
+    }
+  ],
+  "output_json": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/agent-validation-pack.json",
+  "output_html": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/agent-validation-pack.html"
+}

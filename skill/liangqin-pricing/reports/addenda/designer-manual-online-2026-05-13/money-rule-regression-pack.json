@@ -1,0 +1,5197 @@
+{
+  "title": "金额暂停规则机器回归包",
+  "candidate_layer": "designer-manual-online-2026-05-13",
+  "source_files": {
+    "money_ledger": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/money-rule-regression-ledger.json",
+    "landing_pack": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/agent-rule-landing-pack.json",
+    "certification": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/full-document-data-certification.json",
+    "price_index": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/data/current/price-index.json"
+  },
+  "human_rule_by_rule_review_required": false,
+  "formal_quote_calculation_changed": true,
+  "expected_money_rule_count": 20,
+  "counts": {
+    "money_rule_total": 20,
+    "golden_amount_case_total": 20,
+    "golden_amount_ready_count": 20,
+    "golden_amount_blocked_count": 0,
+    "activated_count": 20,
+    "still_paused_count": 0
+  },
+  "regression_status_counts": {
+    "passed_activate_formal_amount_calculation": 20
+  },
+  "runtime_action_counts": {
+    "activate_formal_amount_calculation": 20
+  },
+  "blocker_counts": {},
+  "machine_resolution_lane_counts": {
+    "activated_catalog_amount_runtime": 20
+  },
+  "rules": [
+    {
+      "landing_id": "landing-rule-0009",
+      "source_data_point_id": "data-point-0009",
+      "source_title": "软包床头",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:bed_or_soft_package_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "length",
+        "material",
+        "door_type",
+        "quote_note"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "18mm"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "报价原则",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "8980 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "price_index_machine_disambiguated_soft_package_bed",
+        "runtime_route": "bed_standard",
+        "match_count": 1,
+        "candidate_count": 1,
+        "record": {
+          "sheet": "床榻",
+          "group": "",
+          "source_row": 13,
+          "product_code": "JSC-06",
+          "name": "华夫格软包架式床",
+          "pricing_mode": "unit_price",
+          "dimensions": {
+            "length": 2,
+            "width": 1.5,
+            "mattress_height": 200
+          },
+          "remark": "",
+          "updated_at": ""
+        },
+        "golden_material": "黑胡桃",
+        "expected_amount": 8980,
+        "input_fixture": {
+          "category": "华夫格软包架式床",
+          "material": "北美黑胡桃木",
+          "length": "2",
+          "width": "1.5"
+        },
+        "evidence": "新版手册软包床头段落未给出独立床头收费；机器在当前价目表中精确消歧到华夫格软包架式床 JSC-06，黑胡桃 1.5m×2m 单件目录价。"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.bed_standard",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "price_index_machine_disambiguated_soft_package_bed",
+          "required_calculator_fields": [
+            "category",
+            "material",
+            "width",
+            "length"
+          ],
+          "runtime_route": "bed_standard",
+          "executable_for_rule": true,
+          "blocker": ""
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "bed_standard",
+        "runtime_status": "completed",
+        "expected_amount": 8980,
+        "actual_amount": 8980,
+        "reply_excerpt": "{\"items\": [{\"product\": \"北美黑胡桃木华夫格软包架式床\", \"confirmed\": \"北美黑胡桃木，床宽1.5米，床长2米\", \"pricing_method\": \"床类标准规则计价\", \"calculation_steps\": [\"床宽按 1.5 米标准价：8980.00 元\", \"床体小计：..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "category": "华夫格软包架式床",
+        "material": "北美黑胡桃木",
+        "length": "2",
+        "width": "1.5"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0002",
+      "source_data_point_id": "data-point-0002",
+      "source_title": "天地铰链铝框门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "material",
+        "door_type",
+        "quote_note"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "305mm",
+          "2200mm",
+          "180mm",
+          "500mm",
+          "26mm",
+          "≤2200",
+          "≤500"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "1500 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_percentage_markup",
+        "runtime_route": "special_adjustment.texture_continuity_markup",
+        "evidence": "定制产品报价原则 1.16 天地铰链铝框门+平板门计算方法：平板门纹理连续超过0.9m时，平板门部分需加价15%。",
+        "expected_amount": 1500,
+        "input_fixture": {
+          "special_rule": "texture_continuity_markup",
+          "product": "平板门纹理连续加价",
+          "base_amount": "10000",
+          "rate": "0.15"
+        },
+        "match_count": 1,
+        "rule_title": "天地铰链铝框门"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.texture_continuity_markup",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_percentage_markup",
+          "required_calculator_fields": [
+            "base_amount",
+            "product",
+            "rate",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.texture_continuity_markup",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.texture_continuity_markup",
+        "runtime_status": "completed",
+        "expected_amount": 1500,
+        "actual_amount": 1500,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：平板门纹理连续加价 已确认：基础金额10000元，加价比例15% 这次按比例加价专项计价。 正式报价：1500元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "texture_continuity_markup",
+        "product": "平板门纹理连续加价",
+        "base_amount": "10000",
+        "rate": "0.15"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0155",
+      "source_data_point_id": "data-point-0155",
+      "source_title": "穿衣镜",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "material",
+        "door_type",
+        "wall_or_install_condition"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "10mm",
+          "380mm",
+          "25mm",
+          "900mm",
+          "≥10",
+          "≥380"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "报价原则",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "3680 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "price_index_exact_catalog_unit_price",
+        "runtime_route": "catalog_unit_price",
+        "match_count": 1,
+        "record": {
+          "sheet": "衣柜",
+          "group": "配件",
+          "source_row": 4,
+          "product_code": "YGP-01",
+          "name": "穿衣镜",
+          "pricing_mode": "unit_price",
+          "dimensions": {
+            "length": 0.6,
+            "depth": 0.12,
+            "height": 1.8
+          },
+          "remark": "价格为单件 非投影面积",
+          "updated_at": "25.6.1调价"
+        },
+        "golden_material": "黑胡桃",
+        "expected_amount": 3680,
+        "input_fixture": {
+          "category": "穿衣镜",
+          "material": "北美黑胡桃木",
+          "length": "0.6",
+          "depth": "0.12",
+          "height": "1.8"
+        }
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.catalog_unit_price",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "price_index_exact_catalog_unit_price",
+          "required_calculator_fields": [
+            "category",
+            "material"
+          ],
+          "runtime_route": "catalog_unit_price",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "module",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "catalog_unit_price",
+        "runtime_status": "completed",
+        "expected_amount": 3680,
+        "actual_amount": 3680,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：北美黑胡桃木穿衣镜 已确认：北美黑胡桃木，长0.6米，深0.12米，高1.8米 这次按目录标准单价计价。 正式报价：3680元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "category": "穿衣镜",
+        "material": "北美黑胡桃木",
+        "length": "0.6",
+        "depth": "0.12",
+        "height": "1.8"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0099",
+      "source_data_point_id": "data-point-0099",
+      "source_title": "特殊抽屉滑轨",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "额外收费",
+          "公式",
+          "不额外收费"
+        ],
+        "explicit_amounts": [
+          "850 元"
+        ],
+        "has_machine_formula_fields": false,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_per_set_addition",
+        "runtime_route": "special_adjustment.push_to_open_drawer_slide",
+        "evidence": "定制产品报价原则 3.8 按弹抽屉：使用推弹阻尼回收滑轨，收费850元/套。",
+        "expected_amount": 850,
+        "input_fixture": {
+          "special_rule": "push_to_open_drawer_slide",
+          "set_count": "1"
+        },
+        "match_count": 1,
+        "rule_title": "特殊抽屉滑轨"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.push_to_open_drawer_slide",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_per_set_addition",
+          "required_calculator_fields": [
+            "set_count",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.push_to_open_drawer_slide",
+          "executable_for_rule": true,
+          "blocker": ""
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.push_to_open_drawer_slide",
+        "runtime_status": "completed",
+        "expected_amount": 850,
+        "actual_amount": 850,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：按弹抽屉滑轨 已确认：数量1套 这次按推弹阻尼回收滑轨按套专项计价。 正式报价：850元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先把预算往下收：如..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "push_to_open_drawer_slide",
+        "set_count": "1"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0027",
+      "source_data_point_id": "data-point-0027",
+      "source_title": "极窄斜边拼框门",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "door_type"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "70mm",
+          "40mm",
+          "60mm",
+          "10mm",
+          "20mm"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "3576 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_door_panel_area",
+        "runtime_route": "special_adjustment.door_panel_area",
+        "evidence": "定制产品报价原则 2.3 门板：单独拼框门/玻璃门/拱形门，黑胡桃单价2980元/投影面积；新版手册标题为极窄斜边拼框门。",
+        "expected_amount": 3576,
+        "input_fixture": {
+          "special_rule": "door_panel_area",
+          "door_family": "standalone_frame_door",
+          "material": "北美黑胡桃木",
+          "width": "0.6",
+          "height": "2"
+        },
+        "match_count": 1,
+        "rule_title": "极窄斜边拼框门"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.door_panel_area",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_door_panel_area",
+          "required_calculator_fields": [
+            "door_family",
+            "height",
+            "material",
+            "special_rule",
+            "width"
+          ],
+          "runtime_route": "special_adjustment.door_panel_area",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "module",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.door_panel_area",
+        "runtime_status": "completed",
+        "expected_amount": 3576,
+        "actual_amount": 3576,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：单独拼框门 已确认：北美黑胡桃木，宽0.6m，高2m 这次按单独门板面积专项计价。 正式报价：3576元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "door_panel_area",
+        "door_family": "standalone_frame_door",
+        "material": "北美黑胡桃木",
+        "width": "0.6",
+        "height": "2"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0010",
+      "source_data_point_id": "data-point-0010",
+      "source_title": "模块卡座书柜定制设计指引",
+      "source_page": 3,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "depth",
+        "material",
+        "door_type"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "900mm",
+          "1800mm",
+          "2000mm",
+          "300mm",
+          "≤300"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "35112 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "price_index_machine_disambiguated_projection_area",
+        "runtime_route": "cabinet_projection_area",
+        "match_count": 1,
+        "candidate_count": 1,
+        "record": {
+          "match_reason": "machine_exact_record_disambiguated",
+          "sheet": "书柜",
+          "group": "卡座书柜",
+          "source_row": 14,
+          "product_code": "SG-20",
+          "name": "卡座书柜",
+          "series": "卡座",
+          "door_type": "平板门",
+          "pricing_mode": "projection_area",
+          "remark": "平板门",
+          "dimensions": {
+            "length": 2,
+            "depth": 0.6,
+            "height": 2.2
+          },
+          "materials": {
+            "玫瑰木": 4880,
+            "樱桃木": 5380,
+            "白蜡木": 5380,
+            "白橡木": 6380,
+            "黑胡桃": 7980
+          }
+        },
+        "golden_material": "黑胡桃",
+        "unit_price": 7980,
+        "expected_amount": 35112,
+        "input_fixture": {
+          "category": "卡座书柜",
+          "material": "北美黑胡桃木",
+          "length": "2",
+          "height": "2.2",
+          "depth": "0.6",
+          "door_type": "平板门"
+        },
+        "evidence": "新版设计师手册模块卡座书柜命中卡座书柜；机器用门型=平板门、remark=平板门、projection_area 精确消歧到价目表 SG-20。"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.cabinet_projection_area",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "price_index_machine_disambiguated_projection_area",
+          "required_calculator_fields": [
+            "category",
+            "material",
+            "length",
+            "height",
+            "depth"
+          ],
+          "runtime_route": "cabinet_projection_area",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_operation_gap_price",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_operation_gap_price.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "length",
+            "height",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "cabinet_projection_area",
+        "runtime_status": "completed",
+        "expected_amount": 35112,
+        "actual_amount": 35112,
+        "reply_excerpt": "{\"items\": [{\"product\": \"北美黑胡桃木卡座书柜\", \"confirmed\": \"北美黑胡桃木，长2米，高2.2米，深0.6米，平板门\", \"pricing_method\": \"投影面积计价\", \"calculation_steps\": [\"投影面积：2 × 2.2 = 4.4㎡\", \"基础单价：7..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "category": "卡座书柜",
+        "material": "北美黑胡桃木",
+        "length": "2",
+        "height": "2.2",
+        "depth": "0.6",
+        "door_type": "平板门"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0079",
+      "source_data_point_id": "data-point-0079",
+      "source_title": "圆弧侧板",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "material"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "50mm",
+          "2600mm",
+          "15m",
+          "2600m",
+          "≤2600",
+          "≥50",
+          "≥15"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "540 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_linear_addition",
+        "runtime_route": "special_adjustment.curved_side_panel",
+        "evidence": "定制产品报价原则 2.7 圆弧侧板：圆弧侧板价格按米计算，每根长度300元/米。",
+        "expected_amount": 540,
+        "input_fixture": {
+          "special_rule": "curved_side_panel",
+          "length": "1.8"
+        },
+        "match_count": 1,
+        "rule_title": "圆弧侧板"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.curved_side_panel",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_linear_addition",
+          "required_calculator_fields": [
+            "length",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.curved_side_panel",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_rock_slab_price",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_rock_slab_price.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "length",
+            "depth",
+            "material",
+            "base_subtotal"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.curved_side_panel",
+        "runtime_status": "completed",
+        "expected_amount": 540,
+        "actual_amount": 540,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：圆弧侧板 已确认：长度1.8米 这次按圆弧侧板按米专项计价。 正式报价：540元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先把预算往下收：如果你想先..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "curved_side_panel",
+        "length": "1.8"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0122",
+      "source_data_point_id": "data-point-0122",
+      "source_title": "藤编门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "door_type"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "560mm",
+          "2300mm",
+          "700mm",
+          "22mm",
+          "60mm",
+          "30mm",
+          "≤560",
+          "≤2300",
+          "≤23"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "4656 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_door_panel_area",
+        "runtime_route": "special_adjustment.door_panel_area",
+        "evidence": "定制产品报价原则 2.3 门板：单独流云/飞瀑/简美/拉线/藤编/外悬条条推拉门，黑胡桃单价3880元/投影面积。",
+        "expected_amount": 4656,
+        "input_fixture": {
+          "special_rule": "door_panel_area",
+          "door_family": "standalone_rattan_door",
+          "material": "北美黑胡桃木",
+          "width": "0.6",
+          "height": "2"
+        },
+        "match_count": 1,
+        "rule_title": "藤编门"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.door_panel_area",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_door_panel_area",
+          "required_calculator_fields": [
+            "door_family",
+            "height",
+            "material",
+            "special_rule",
+            "width"
+          ],
+          "runtime_route": "special_adjustment.door_panel_area",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "module",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.door_panel_area",
+        "runtime_status": "completed",
+        "expected_amount": 4656,
+        "actual_amount": 4656,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：单独藤编门 已确认：北美黑胡桃木，宽0.6m，高2m 这次按单独门板面积专项计价。 正式报价：4656元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "door_panel_area",
+        "door_family": "standalone_rattan_door",
+        "material": "北美黑胡桃木",
+        "width": "0.6",
+        "height": "2"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0369",
+      "source_data_point_id": "data-point-0369",
+      "source_title": "针式铰链铝框门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "material",
+        "door_type",
+        "quote_note"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "305mm",
+          "3000mm",
+          "180mm",
+          "500mm",
+          "36mm",
+          "22mm",
+          "≤3000",
+          "≤500"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "3936 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_door_panel_area",
+        "runtime_route": "special_adjustment.door_panel_area",
+        "evidence": "定制产品报价原则 2.3 门板：单独铝框门，黑胡桃单价3280元/投影面积。",
+        "expected_amount": 3936,
+        "input_fixture": {
+          "special_rule": "door_panel_area",
+          "door_family": "standalone_aluminum_frame_door",
+          "material": "北美黑胡桃木",
+          "width": "0.6",
+          "height": "2"
+        },
+        "match_count": 1,
+        "rule_title": "针式铰链铝框门"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.door_panel_area",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_door_panel_area",
+          "required_calculator_fields": [
+            "door_family",
+            "height",
+            "material",
+            "special_rule",
+            "width"
+          ],
+          "runtime_route": "special_adjustment.door_panel_area",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "module",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.door_panel_area",
+        "runtime_status": "completed",
+        "expected_amount": 3936,
+        "actual_amount": 3936,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：单独铝框门 已确认：北美黑胡桃木，宽0.6m，高2m 这次按单独门板面积专项计价。 正式报价：3936元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "door_panel_area",
+        "door_family": "standalone_aluminum_frame_door",
+        "material": "北美黑胡桃木",
+        "width": "0.6",
+        "height": "2"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0067",
+      "source_data_point_id": "data-point-0067",
+      "source_title": "无底板柜",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "depth",
+        "length",
+        "wall_or_install_condition"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "700mm",
+          "30mm",
+          "1200mm",
+          "1000mm",
+          "≤700",
+          "≥30",
+          "≤1200"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "4329 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_side_panel_area",
+        "runtime_route": "special_adjustment.bottomless_cabinet_side_panel",
+        "evidence": "定制产品报价原则 1.14 无底板柜/冰箱柜：下部侧板按照侧板面积计算，黑胡桃单价1800元/投影面积。",
+        "expected_amount": 4329,
+        "input_fixture": {
+          "special_rule": "bottomless_cabinet_side_panel",
+          "material": "北美黑胡桃木",
+          "height": "1.85",
+          "depth": "0.65",
+          "side_count": "2"
+        },
+        "match_count": 1,
+        "rule_title": "无底板柜"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.bottomless_cabinet_side_panel",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_side_panel_area",
+          "required_calculator_fields": [
+            "depth",
+            "height",
+            "material",
+            "side_count",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.bottomless_cabinet_side_panel",
+          "executable_for_rule": true,
+          "blocker": ""
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.bottomless_cabinet_side_panel",
+        "runtime_status": "completed",
+        "expected_amount": 4329,
+        "actual_amount": 4329,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：无底板柜下部侧板 已确认：北美黑胡桃木，高1.85m，深0.65m，侧板2块 这次按无底板柜侧板面积专项计价。 正式报价：4329元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "bottomless_cabinet_side_panel",
+        "material": "北美黑胡桃木",
+        "height": "1.85",
+        "depth": "0.65",
+        "side_count": "2"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0048",
+      "source_data_point_id": "data-point-0048",
+      "source_title": "纹理连续说明",
+      "source_page": 5,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "material",
+        "door_type",
+        "quote_note"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "2600mm",
+          "≤2600"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "29225 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "price_index_direct_projection_area",
+        "runtime_route": "cabinet_projection_area",
+        "match_count": 1,
+        "candidate_count": 1,
+        "record": {
+          "match_reason": "keyword:纹理连续",
+          "sheet": "衣柜",
+          "group": "流云系列",
+          "source_row": 13,
+          "product_code": "YG-03",
+          "name": "流云金属门衣柜",
+          "series": "流云",
+          "door_type": "金属门",
+          "pricing_mode": "projection_area",
+          "remark": "纹理连续不足0.9m",
+          "dimensions": {
+            "length": 1.8,
+            "depth": 0.6,
+            "height": 2.2
+          },
+          "materials": {
+            "玫瑰木": 4980,
+            "樱桃木": 5480,
+            "白蜡木": 5480,
+            "白橡木": 6380,
+            "黑胡桃": 7380
+          }
+        },
+        "golden_material": "黑胡桃",
+        "unit_price": 7380,
+        "expected_amount": 29225,
+        "input_fixture": {
+          "category": "流云金属门衣柜",
+          "material": "北美黑胡桃木",
+          "length": "1.8",
+          "height": "2.2",
+          "depth": "0.6",
+          "door_type": "金属门"
+        }
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.cabinet_projection_area",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "price_index_direct_projection_area",
+          "required_calculator_fields": [
+            "category",
+            "material",
+            "length",
+            "height",
+            "depth"
+          ],
+          "runtime_route": "cabinet_projection_area",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "cabinet_projection_area",
+        "runtime_status": "completed",
+        "expected_amount": 29225,
+        "actual_amount": 29225,
+        "reply_excerpt": "{\"items\": [{\"product\": \"北美黑胡桃木流云金属门衣柜\", \"confirmed\": \"北美黑胡桃木，长1.8米，高2.2米，深0.6米，金属门\", \"pricing_method\": \"投影面积计价\", \"calculation_steps\": [\"投影面积：1.8 × 2.2 = 3.96㎡\",..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "category": "流云金属门衣柜",
+        "material": "北美黑胡桃木",
+        "length": "1.8",
+        "height": "2.2",
+        "depth": "0.6",
+        "door_type": "金属门"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0082",
+      "source_data_point_id": "data-point-0082",
+      "source_title": "挡条",
+      "source_page": 4,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "door_type",
+        "wall_or_install_condition"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "22mm",
+          "20mm",
+          "120mm",
+          "≤120",
+          "48*48"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "0 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "designer_manual_zero_impact_structure_rule",
+        "runtime_route": "special_adjustment.manual_zero_impact",
+        "evidence": "新版设计师手册圆弧挡条-门板内嵌段落仅给出22mm、48*48、20mm≤宽度≤120mm及红色标注要求；机器回源未定位到独立收费金额。",
+        "expected_amount": 0,
+        "input_fixture": {
+          "special_rule": "manual_zero_impact",
+          "rule_title": "挡条",
+          "evidence": "圆弧挡条-门板内嵌仅影响结构尺寸和图纸标注，金额影响为0元。"
+        },
+        "match_count": 1,
+        "rule_title": "挡条"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.manual_zero_impact",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "designer_manual_zero_impact_structure_rule",
+          "required_calculator_fields": [
+            "evidence",
+            "rule_title",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.manual_zero_impact",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.manual_zero_impact",
+        "runtime_status": "completed",
+        "expected_amount": 0,
+        "actual_amount": 0,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：挡条 已确认：圆弧挡条-门板内嵌仅影响结构尺寸和图纸标注，金额影响为0元。 这次按新版手册结构规则，金额影响为0元。 正式报价：0元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "manual_zero_impact",
+        "rule_title": "挡条",
+        "evidence": "圆弧挡条-门板内嵌仅影响结构尺寸和图纸标注，金额影响为0元。"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0105",
+      "source_data_point_id": "data-point-0105",
+      "source_title": "平开门说明",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "length",
+        "door_type"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "≤1.5"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "0 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "designer_manual_zero_impact_structure_rule",
+        "runtime_route": "special_adjustment.manual_zero_impact",
+        "evidence": "新版设计师手册平开门说明仅给出门板长宽比例≤1.5等铰链负荷限制；机器回源未定位到独立收费金额。",
+        "expected_amount": 0,
+        "input_fixture": {
+          "special_rule": "manual_zero_impact",
+          "rule_title": "平开门说明",
+          "evidence": "平开门比例限制是报价前结构校验，不改变正式报价金额。"
+        },
+        "match_count": 1,
+        "rule_title": "平开门说明"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.manual_zero_impact",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "designer_manual_zero_impact_structure_rule",
+          "required_calculator_fields": [
+            "evidence",
+            "rule_title",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.manual_zero_impact",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.manual_zero_impact",
+        "runtime_status": "completed",
+        "expected_amount": 0,
+        "actual_amount": 0,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：平开门说明 已确认：平开门比例限制是报价前结构校验，不改变正式报价金额。 这次按新版手册结构规则，金额影响为0元。 正式报价：0元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "manual_zero_impact",
+        "rule_title": "平开门说明",
+        "evidence": "平开门比例限制是报价前结构校验，不改变正式报价金额。"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0249",
+      "source_data_point_id": "data-point-0249",
+      "source_title": "挡条",
+      "source_page": 3,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "door_type"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "15mm",
+          "22mm",
+          "28mm",
+          "20mm",
+          "120mm",
+          "≤120"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "0 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "designer_manual_zero_impact_structure_rule",
+        "runtime_route": "special_adjustment.manual_zero_impact",
+        "evidence": "新版设计师手册圆弧挡条-门板盖顶挡条段落仅给出外露15mm、22/28mm、20mm≤宽度≤120mm和连接件要求；机器回源未定位到独立收费金额。",
+        "expected_amount": 0,
+        "input_fixture": {
+          "special_rule": "manual_zero_impact",
+          "rule_title": "挡条",
+          "evidence": "圆弧挡条-门板盖顶挡条仅影响结构尺寸、连接和标注，金额影响为0元。"
+        },
+        "match_count": 1,
+        "rule_title": "挡条"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.manual_zero_impact",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "designer_manual_zero_impact_structure_rule",
+          "required_calculator_fields": [
+            "evidence",
+            "rule_title",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.manual_zero_impact",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.manual_zero_impact",
+        "runtime_status": "completed",
+        "expected_amount": 0,
+        "actual_amount": 0,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：挡条 已确认：圆弧挡条-门板盖顶挡条仅影响结构尺寸、连接和标注，金额影响为0元。 这次按新版手册结构规则，金额影响为0元。 正式报价：0元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "manual_zero_impact",
+        "rule_title": "挡条",
+        "evidence": "圆弧挡条-门板盖顶挡条仅影响结构尺寸、连接和标注，金额影响为0元。"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0157",
+      "source_data_point_id": "data-point-0157",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 4,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "required_fields": [
+        "product_or_category"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "60mm",
+          "75mm"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "8915 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "modular_child_bed_calculator_golden_total",
+        "runtime_route": "modular_child_bed",
+        "evidence": "新版设计师手册模块化儿童床围栏规则命中现有 modular_child_bed 计算器；golden 使用高架床模块、圆柱围栏、斜梯完整正式报价。",
+        "expected_amount": 8915,
+        "input_fixture": {
+          "category": "定制上下床",
+          "quote_kind": "formal",
+          "bed_form": "半高床",
+          "material": "北美黑胡桃木",
+          "width": "1",
+          "length": "2",
+          "access_style": "斜梯",
+          "access_height": "1.2",
+          "guardrail_style": "圆柱围栏",
+          "guardrail_length": "2",
+          "guardrail_height": "0.35"
+        },
+        "match_count": 1,
+        "rule_title": "模块化儿童床设计要求"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.modular_child_bed",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "modular_child_bed_calculator_golden_total",
+          "required_calculator_fields": [
+            "access_height",
+            "access_style",
+            "bed_form",
+            "category",
+            "guardrail_height",
+            "guardrail_length",
+            "guardrail_style",
+            "length",
+            "material",
+            "quote_kind",
+            "width"
+          ],
+          "runtime_route": "modular_child_bed",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_modular_child_bed_quote",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_modular_child_bed_quote.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "bed_form",
+            "width",
+            "length",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        },
+        {
+          "calculator_id": "calculate_modular_child_bed_combo_quote",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_modular_child_bed_combo_quote.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "bed_form",
+            "width",
+            "length",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "modular_child_bed",
+        "runtime_status": "completed",
+        "expected_amount": 8915,
+        "actual_amount": 8915,
+        "reply_excerpt": "{\"items\": [{\"product\": \"北美黑胡桃木模块化儿童半高床\", \"confirmed\": \"床形态：半高床；床垫尺寸：1m×2m；上层出入方式：斜梯；材质：北美黑胡桃木；围栏：圆柱围栏\", \"pricing_method\": \"模块化儿童床组合计价\", \"calculation_steps\": [\"半..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "category": "定制上下床",
+        "quote_kind": "formal",
+        "bed_form": "半高床",
+        "material": "北美黑胡桃木",
+        "width": "1",
+        "length": "2",
+        "access_style": "斜梯",
+        "access_height": "1.2",
+        "guardrail_style": "圆柱围栏",
+        "guardrail_length": "2",
+        "guardrail_height": "0.35"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0158",
+      "source_data_point_id": "data-point-0158",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 11,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "required_fields": [
+        "product_or_category"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "600mm",
+          "20mm",
+          "200mm",
+          "475mm"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "10271 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "modular_child_bed_drawer_count_golden_total",
+        "runtime_route": "modular_child_bed",
+        "evidence": "新版设计师手册模块化儿童床注明 600mm 需分为2个抽屉；现有 modular_child_bed 计算器含 drawer_count/drawer_width/drawer_depth 字段。",
+        "expected_amount": 10271,
+        "input_fixture": {
+          "category": "定制上下床",
+          "quote_kind": "formal",
+          "bed_form": "半高床",
+          "material": "北美黑胡桃木",
+          "width": "1",
+          "length": "2",
+          "access_style": "斜梯",
+          "access_height": "1.2",
+          "guardrail_style": "圆柱围栏",
+          "guardrail_length": "2",
+          "guardrail_height": "0.35",
+          "drawer_count": 2,
+          "drawer_width": "0.6",
+          "drawer_depth": "0.5"
+        },
+        "match_count": 1,
+        "rule_title": "模块化儿童床设计要求"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.modular_child_bed",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "modular_child_bed_drawer_count_golden_total",
+          "required_calculator_fields": [
+            "access_height",
+            "access_style",
+            "bed_form",
+            "category",
+            "drawer_count",
+            "drawer_depth",
+            "drawer_width",
+            "guardrail_height",
+            "guardrail_length",
+            "guardrail_style",
+            "length",
+            "material",
+            "quote_kind",
+            "width"
+          ],
+          "runtime_route": "modular_child_bed",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_modular_child_bed_quote",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_modular_child_bed_quote.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "bed_form",
+            "width",
+            "length",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        },
+        {
+          "calculator_id": "calculate_modular_child_bed_combo_quote",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_modular_child_bed_combo_quote.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "bed_form",
+            "width",
+            "length",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "modular_child_bed",
+        "runtime_status": "completed",
+        "expected_amount": 10271,
+        "actual_amount": 10271,
+        "reply_excerpt": "{\"items\": [{\"product\": \"北美黑胡桃木模块化儿童半高床\", \"confirmed\": \"床形态：半高床；床垫尺寸：1m×2m；上层出入方式：斜梯；材质：北美黑胡桃木；围栏：圆柱围栏\", \"pricing_method\": \"模块化儿童床组合计价\", \"calculation_steps\": [\"半..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "category": "定制上下床",
+        "quote_kind": "formal",
+        "bed_form": "半高床",
+        "material": "北美黑胡桃木",
+        "width": "1",
+        "length": "2",
+        "access_style": "斜梯",
+        "access_height": "1.2",
+        "guardrail_style": "圆柱围栏",
+        "guardrail_length": "2",
+        "guardrail_height": "0.35",
+        "drawer_count": 2,
+        "drawer_width": "0.6",
+        "drawer_depth": "0.5"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0227",
+      "source_data_point_id": "data-point-0227",
+      "source_title": "常规拆装柜体",
+      "source_page": 7,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响合同备注",
+      "required_fields": [
+        "product_or_category",
+        "depth",
+        "quote_note"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "700mm"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "0 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "designer_manual_zero_impact_structure_rule",
+        "runtime_route": "special_adjustment.manual_zero_impact",
+        "evidence": "新版设计师手册常规拆装柜体超深分段段落要求板件深度＞700mm时前后分段并备注；机器回源未定位到独立收费金额。",
+        "expected_amount": 0,
+        "input_fixture": {
+          "special_rule": "manual_zero_impact",
+          "rule_title": "常规拆装柜体",
+          "evidence": "超深柜体分段是结构和合同备注规则，不改变正式报价金额。"
+        },
+        "match_count": 1,
+        "rule_title": "常规拆装柜体"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.manual_zero_impact",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "designer_manual_zero_impact_structure_rule",
+          "required_calculator_fields": [
+            "evidence",
+            "rule_title",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.manual_zero_impact",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_operation_gap_price",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_operation_gap_price.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "length",
+            "height",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        },
+        {
+          "calculator_id": "calculate_double_sided_door_price",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_double_sided_door_price.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "depth",
+            "side_a_family",
+            "side_b_family",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        },
+        {
+          "calculator_id": "calculate_modular_child_bed_combo_quote",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_modular_child_bed_combo_quote.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "bed_form",
+            "width",
+            "length",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.manual_zero_impact",
+        "runtime_status": "completed",
+        "expected_amount": 0,
+        "actual_amount": 0,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：常规拆装柜体 已确认：超深柜体分段是结构和合同备注规则，不改变正式报价金额。 这次按新版手册结构规则，金额影响为0元。 正式报价：0元 适合场景：适合先把整面收纳结构和常用功能先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "manual_zero_impact",
+        "rule_title": "常规拆装柜体",
+        "evidence": "超深柜体分段是结构和合同备注规则，不改变正式报价金额。"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0505",
+      "source_data_point_id": "data-point-0505",
+      "source_title": "常规拆装柜体",
+      "source_page": 9,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "required_fields": [
+        "product_or_category",
+        "height"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "0 元"
+        ],
+        "has_machine_formula_fields": false,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "designer_manual_zero_impact_structure_rule",
+        "runtime_route": "special_adjustment.manual_zero_impact",
+        "evidence": "新版设计师手册常规拆装柜体组合示意仅说明多组单体柜组合为超高/超深柜体；机器回源未定位到独立收费金额。",
+        "expected_amount": 0,
+        "input_fixture": {
+          "special_rule": "manual_zero_impact",
+          "rule_title": "常规拆装柜体",
+          "evidence": "多组单体柜组合示意是结构表达规则，不改变正式报价金额。"
+        },
+        "match_count": 1,
+        "rule_title": "常规拆装柜体"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.manual_zero_impact",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "designer_manual_zero_impact_structure_rule",
+          "required_calculator_fields": [
+            "evidence",
+            "rule_title",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.manual_zero_impact",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_modular_child_bed_combo_quote",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_modular_child_bed_combo_quote.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "bed_form",
+            "width",
+            "length",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.manual_zero_impact",
+        "runtime_status": "completed",
+        "expected_amount": 0,
+        "actual_amount": 0,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：常规拆装柜体 已确认：多组单体柜组合示意是结构表达规则，不改变正式报价金额。 这次按新版手册结构规则，金额影响为0元。 正式报价：0元 适合场景：适合先把整面收纳结构和常用功能先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "manual_zero_impact",
+        "rule_title": "常规拆装柜体",
+        "evidence": "多组单体柜组合示意是结构表达规则，不改变正式报价金额。"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0136",
+      "source_data_point_id": "data-point-0136",
+      "source_title": "吊轨门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:general_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "door_type",
+        "wall_or_install_condition"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "30kg",
+          "600mm",
+          "1200mm",
+          "2300mm",
+          "26mm",
+          "≤1200",
+          "≤2300"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "400 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_fixed_door_addition",
+        "runtime_route": "special_adjustment.hanging_rail_door",
+        "evidence": "定制产品报价原则 2.3 门板：吊轨门价格在门板基础上+400元。",
+        "expected_amount": 400,
+        "input_fixture": {
+          "special_rule": "hanging_rail_door",
+          "door_count": "1"
+        },
+        "match_count": 1,
+        "rule_title": "吊轨门"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.hanging_rail_door",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_fixed_door_addition",
+          "required_calculator_fields": [
+            "door_count",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.hanging_rail_door",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_modular_child_bed_combo_quote",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_modular_child_bed_combo_quote.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "bed_form",
+            "width",
+            "length",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.hanging_rail_door",
+        "runtime_status": "completed",
+        "expected_amount": 400,
+        "actual_amount": 400,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：吊轨门 已确认：门扇1扇 这次按吊轨门在门板基础上加价。 正式报价：400元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先把预算往下收：如果你想先把预..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "hanging_rail_door",
+        "door_count": "1"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0543",
+      "source_data_point_id": "data-point-0543",
+      "source_title": "吊轨门",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "door_type",
+        "wall_or_install_condition"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "70mm"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "400 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_fixed_door_addition",
+        "runtime_route": "special_adjustment.hanging_rail_door",
+        "evidence": "定制产品报价原则 2.3 门板：吊轨门价格在门板基础上+400元。",
+        "expected_amount": 400,
+        "input_fixture": {
+          "special_rule": "hanging_rail_door",
+          "door_count": "1"
+        },
+        "match_count": 1,
+        "rule_title": "吊轨门"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.hanging_rail_door",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_fixed_door_addition",
+          "required_calculator_fields": [
+            "door_count",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.hanging_rail_door",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "module",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.hanging_rail_door",
+        "runtime_status": "completed",
+        "expected_amount": 400,
+        "actual_amount": 400,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：吊轨门 已确认：门扇1扇 这次按吊轨门在门板基础上加价。 正式报价：400元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先把预算往下收：如果你想先把预..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "hanging_rail_door",
+        "door_count": "1"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    }
+  ],
+  "golden_amount_cases": [
+    {
+      "case_id": "landing-rule-0009-golden-amount",
+      "landing_id": "landing-rule-0009",
+      "source_title": "软包床头",
+      "status": "ready",
+      "input_fixture": {
+        "category": "华夫格软包架式床",
+        "material": "北美黑胡桃木",
+        "length": "2",
+        "width": "1.5"
+      },
+      "expected_amount": 8980,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "price_index_machine_disambiguated_soft_package_bed",
+        "runtime_route": "bed_standard",
+        "match_count": 1,
+        "candidate_count": 1,
+        "record": {
+          "sheet": "床榻",
+          "group": "",
+          "source_row": 13,
+          "product_code": "JSC-06",
+          "name": "华夫格软包架式床",
+          "pricing_mode": "unit_price",
+          "dimensions": {
+            "length": 2,
+            "width": 1.5,
+            "mattress_height": 200
+          },
+          "remark": "",
+          "updated_at": ""
+        },
+        "golden_material": "黑胡桃",
+        "expected_amount": 8980,
+        "input_fixture": {
+          "category": "华夫格软包架式床",
+          "material": "北美黑胡桃木",
+          "length": "2",
+          "width": "1.5"
+        },
+        "evidence": "新版手册软包床头段落未给出独立床头收费；机器在当前价目表中精确消歧到华夫格软包架式床 JSC-06，黑胡桃 1.5m×2m 单件目录价。"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "bed_standard",
+        "runtime_status": "completed",
+        "expected_amount": 8980,
+        "actual_amount": 8980,
+        "reply_excerpt": "{\"items\": [{\"product\": \"北美黑胡桃木华夫格软包架式床\", \"confirmed\": \"北美黑胡桃木，床宽1.5米，床长2米\", \"pricing_method\": \"床类标准规则计价\", \"calculation_steps\": [\"床宽按 1.5 米标准价：8980.00 元\", \"床体小计：..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0002-golden-amount",
+      "landing_id": "landing-rule-0002",
+      "source_title": "天地铰链铝框门",
+      "status": "ready",
+      "input_fixture": {
+        "special_rule": "texture_continuity_markup",
+        "product": "平板门纹理连续加价",
+        "base_amount": "10000",
+        "rate": "0.15"
+      },
+      "expected_amount": 1500,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_percentage_markup",
+        "runtime_route": "special_adjustment.texture_continuity_markup",
+        "evidence": "定制产品报价原则 1.16 天地铰链铝框门+平板门计算方法：平板门纹理连续超过0.9m时，平板门部分需加价15%。",
+        "expected_amount": 1500,
+        "input_fixture": {
+          "special_rule": "texture_continuity_markup",
+          "product": "平板门纹理连续加价",
+          "base_amount": "10000",
+          "rate": "0.15"
+        },
+        "match_count": 1,
+        "rule_title": "天地铰链铝框门"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.texture_continuity_markup",
+        "runtime_status": "completed",
+        "expected_amount": 1500,
+        "actual_amount": 1500,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：平板门纹理连续加价 已确认：基础金额10000元，加价比例15% 这次按比例加价专项计价。 正式报价：1500元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0155-golden-amount",
+      "landing_id": "landing-rule-0155",
+      "source_title": "穿衣镜",
+      "status": "ready",
+      "input_fixture": {
+        "category": "穿衣镜",
+        "material": "北美黑胡桃木",
+        "length": "0.6",
+        "depth": "0.12",
+        "height": "1.8"
+      },
+      "expected_amount": 3680,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "price_index_exact_catalog_unit_price",
+        "runtime_route": "catalog_unit_price",
+        "match_count": 1,
+        "record": {
+          "sheet": "衣柜",
+          "group": "配件",
+          "source_row": 4,
+          "product_code": "YGP-01",
+          "name": "穿衣镜",
+          "pricing_mode": "unit_price",
+          "dimensions": {
+            "length": 0.6,
+            "depth": 0.12,
+            "height": 1.8
+          },
+          "remark": "价格为单件 非投影面积",
+          "updated_at": "25.6.1调价"
+        },
+        "golden_material": "黑胡桃",
+        "expected_amount": 3680,
+        "input_fixture": {
+          "category": "穿衣镜",
+          "material": "北美黑胡桃木",
+          "length": "0.6",
+          "depth": "0.12",
+          "height": "1.8"
+        }
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "catalog_unit_price",
+        "runtime_status": "completed",
+        "expected_amount": 3680,
+        "actual_amount": 3680,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：北美黑胡桃木穿衣镜 已确认：北美黑胡桃木，长0.6米，深0.12米，高1.8米 这次按目录标准单价计价。 正式报价：3680元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0099-golden-amount",
+      "landing_id": "landing-rule-0099",
+      "source_title": "特殊抽屉滑轨",
+      "status": "ready",
+      "input_fixture": {
+        "special_rule": "push_to_open_drawer_slide",
+        "set_count": "1"
+      },
+      "expected_amount": 850,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_per_set_addition",
+        "runtime_route": "special_adjustment.push_to_open_drawer_slide",
+        "evidence": "定制产品报价原则 3.8 按弹抽屉：使用推弹阻尼回收滑轨，收费850元/套。",
+        "expected_amount": 850,
+        "input_fixture": {
+          "special_rule": "push_to_open_drawer_slide",
+          "set_count": "1"
+        },
+        "match_count": 1,
+        "rule_title": "特殊抽屉滑轨"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.push_to_open_drawer_slide",
+        "runtime_status": "completed",
+        "expected_amount": 850,
+        "actual_amount": 850,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：按弹抽屉滑轨 已确认：数量1套 这次按推弹阻尼回收滑轨按套专项计价。 正式报价：850元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先把预算往下收：如..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0027-golden-amount",
+      "landing_id": "landing-rule-0027",
+      "source_title": "极窄斜边拼框门",
+      "status": "ready",
+      "input_fixture": {
+        "special_rule": "door_panel_area",
+        "door_family": "standalone_frame_door",
+        "material": "北美黑胡桃木",
+        "width": "0.6",
+        "height": "2"
+      },
+      "expected_amount": 3576,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_door_panel_area",
+        "runtime_route": "special_adjustment.door_panel_area",
+        "evidence": "定制产品报价原则 2.3 门板：单独拼框门/玻璃门/拱形门，黑胡桃单价2980元/投影面积；新版手册标题为极窄斜边拼框门。",
+        "expected_amount": 3576,
+        "input_fixture": {
+          "special_rule": "door_panel_area",
+          "door_family": "standalone_frame_door",
+          "material": "北美黑胡桃木",
+          "width": "0.6",
+          "height": "2"
+        },
+        "match_count": 1,
+        "rule_title": "极窄斜边拼框门"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.door_panel_area",
+        "runtime_status": "completed",
+        "expected_amount": 3576,
+        "actual_amount": 3576,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：单独拼框门 已确认：北美黑胡桃木，宽0.6m，高2m 这次按单独门板面积专项计价。 正式报价：3576元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0010-golden-amount",
+      "landing_id": "landing-rule-0010",
+      "source_title": "模块卡座书柜定制设计指引",
+      "status": "ready",
+      "input_fixture": {
+        "category": "卡座书柜",
+        "material": "北美黑胡桃木",
+        "length": "2",
+        "height": "2.2",
+        "depth": "0.6",
+        "door_type": "平板门"
+      },
+      "expected_amount": 35112,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "price_index_machine_disambiguated_projection_area",
+        "runtime_route": "cabinet_projection_area",
+        "match_count": 1,
+        "candidate_count": 1,
+        "record": {
+          "match_reason": "machine_exact_record_disambiguated",
+          "sheet": "书柜",
+          "group": "卡座书柜",
+          "source_row": 14,
+          "product_code": "SG-20",
+          "name": "卡座书柜",
+          "series": "卡座",
+          "door_type": "平板门",
+          "pricing_mode": "projection_area",
+          "remark": "平板门",
+          "dimensions": {
+            "length": 2,
+            "depth": 0.6,
+            "height": 2.2
+          },
+          "materials": {
+            "玫瑰木": 4880,
+            "樱桃木": 5380,
+            "白蜡木": 5380,
+            "白橡木": 6380,
+            "黑胡桃": 7980
+          }
+        },
+        "golden_material": "黑胡桃",
+        "unit_price": 7980,
+        "expected_amount": 35112,
+        "input_fixture": {
+          "category": "卡座书柜",
+          "material": "北美黑胡桃木",
+          "length": "2",
+          "height": "2.2",
+          "depth": "0.6",
+          "door_type": "平板门"
+        },
+        "evidence": "新版设计师手册模块卡座书柜命中卡座书柜；机器用门型=平板门、remark=平板门、projection_area 精确消歧到价目表 SG-20。"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "cabinet_projection_area",
+        "runtime_status": "completed",
+        "expected_amount": 35112,
+        "actual_amount": 35112,
+        "reply_excerpt": "{\"items\": [{\"product\": \"北美黑胡桃木卡座书柜\", \"confirmed\": \"北美黑胡桃木，长2米，高2.2米，深0.6米，平板门\", \"pricing_method\": \"投影面积计价\", \"calculation_steps\": [\"投影面积：2 × 2.2 = 4.4㎡\", \"基础单价：7..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0079-golden-amount",
+      "landing_id": "landing-rule-0079",
+      "source_title": "圆弧侧板",
+      "status": "ready",
+      "input_fixture": {
+        "special_rule": "curved_side_panel",
+        "length": "1.8"
+      },
+      "expected_amount": 540,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_linear_addition",
+        "runtime_route": "special_adjustment.curved_side_panel",
+        "evidence": "定制产品报价原则 2.7 圆弧侧板：圆弧侧板价格按米计算，每根长度300元/米。",
+        "expected_amount": 540,
+        "input_fixture": {
+          "special_rule": "curved_side_panel",
+          "length": "1.8"
+        },
+        "match_count": 1,
+        "rule_title": "圆弧侧板"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.curved_side_panel",
+        "runtime_status": "completed",
+        "expected_amount": 540,
+        "actual_amount": 540,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：圆弧侧板 已确认：长度1.8米 这次按圆弧侧板按米专项计价。 正式报价：540元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先把预算往下收：如果你想先..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0122-golden-amount",
+      "landing_id": "landing-rule-0122",
+      "source_title": "藤编门",
+      "status": "ready",
+      "input_fixture": {
+        "special_rule": "door_panel_area",
+        "door_family": "standalone_rattan_door",
+        "material": "北美黑胡桃木",
+        "width": "0.6",
+        "height": "2"
+      },
+      "expected_amount": 4656,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_door_panel_area",
+        "runtime_route": "special_adjustment.door_panel_area",
+        "evidence": "定制产品报价原则 2.3 门板：单独流云/飞瀑/简美/拉线/藤编/外悬条条推拉门，黑胡桃单价3880元/投影面积。",
+        "expected_amount": 4656,
+        "input_fixture": {
+          "special_rule": "door_panel_area",
+          "door_family": "standalone_rattan_door",
+          "material": "北美黑胡桃木",
+          "width": "0.6",
+          "height": "2"
+        },
+        "match_count": 1,
+        "rule_title": "藤编门"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.door_panel_area",
+        "runtime_status": "completed",
+        "expected_amount": 4656,
+        "actual_amount": 4656,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：单独藤编门 已确认：北美黑胡桃木，宽0.6m，高2m 这次按单独门板面积专项计价。 正式报价：4656元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0369-golden-amount",
+      "landing_id": "landing-rule-0369",
+      "source_title": "针式铰链铝框门",
+      "status": "ready",
+      "input_fixture": {
+        "special_rule": "door_panel_area",
+        "door_family": "standalone_aluminum_frame_door",
+        "material": "北美黑胡桃木",
+        "width": "0.6",
+        "height": "2"
+      },
+      "expected_amount": 3936,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_door_panel_area",
+        "runtime_route": "special_adjustment.door_panel_area",
+        "evidence": "定制产品报价原则 2.3 门板：单独铝框门，黑胡桃单价3280元/投影面积。",
+        "expected_amount": 3936,
+        "input_fixture": {
+          "special_rule": "door_panel_area",
+          "door_family": "standalone_aluminum_frame_door",
+          "material": "北美黑胡桃木",
+          "width": "0.6",
+          "height": "2"
+        },
+        "match_count": 1,
+        "rule_title": "针式铰链铝框门"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.door_panel_area",
+        "runtime_status": "completed",
+        "expected_amount": 3936,
+        "actual_amount": 3936,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：单独铝框门 已确认：北美黑胡桃木，宽0.6m，高2m 这次按单独门板面积专项计价。 正式报价：3936元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0067-golden-amount",
+      "landing_id": "landing-rule-0067",
+      "source_title": "无底板柜",
+      "status": "ready",
+      "input_fixture": {
+        "special_rule": "bottomless_cabinet_side_panel",
+        "material": "北美黑胡桃木",
+        "height": "1.85",
+        "depth": "0.65",
+        "side_count": "2"
+      },
+      "expected_amount": 4329,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_side_panel_area",
+        "runtime_route": "special_adjustment.bottomless_cabinet_side_panel",
+        "evidence": "定制产品报价原则 1.14 无底板柜/冰箱柜：下部侧板按照侧板面积计算，黑胡桃单价1800元/投影面积。",
+        "expected_amount": 4329,
+        "input_fixture": {
+          "special_rule": "bottomless_cabinet_side_panel",
+          "material": "北美黑胡桃木",
+          "height": "1.85",
+          "depth": "0.65",
+          "side_count": "2"
+        },
+        "match_count": 1,
+        "rule_title": "无底板柜"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.bottomless_cabinet_side_panel",
+        "runtime_status": "completed",
+        "expected_amount": 4329,
+        "actual_amount": 4329,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：无底板柜下部侧板 已确认：北美黑胡桃木，高1.85m，深0.65m，侧板2块 这次按无底板柜侧板面积专项计价。 正式报价：4329元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0048-golden-amount",
+      "landing_id": "landing-rule-0048",
+      "source_title": "纹理连续说明",
+      "status": "ready",
+      "input_fixture": {
+        "category": "流云金属门衣柜",
+        "material": "北美黑胡桃木",
+        "length": "1.8",
+        "height": "2.2",
+        "depth": "0.6",
+        "door_type": "金属门"
+      },
+      "expected_amount": 29225,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "price_index_direct_projection_area",
+        "runtime_route": "cabinet_projection_area",
+        "match_count": 1,
+        "candidate_count": 1,
+        "record": {
+          "match_reason": "keyword:纹理连续",
+          "sheet": "衣柜",
+          "group": "流云系列",
+          "source_row": 13,
+          "product_code": "YG-03",
+          "name": "流云金属门衣柜",
+          "series": "流云",
+          "door_type": "金属门",
+          "pricing_mode": "projection_area",
+          "remark": "纹理连续不足0.9m",
+          "dimensions": {
+            "length": 1.8,
+            "depth": 0.6,
+            "height": 2.2
+          },
+          "materials": {
+            "玫瑰木": 4980,
+            "樱桃木": 5480,
+            "白蜡木": 5480,
+            "白橡木": 6380,
+            "黑胡桃": 7380
+          }
+        },
+        "golden_material": "黑胡桃",
+        "unit_price": 7380,
+        "expected_amount": 29225,
+        "input_fixture": {
+          "category": "流云金属门衣柜",
+          "material": "北美黑胡桃木",
+          "length": "1.8",
+          "height": "2.2",
+          "depth": "0.6",
+          "door_type": "金属门"
+        }
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "cabinet_projection_area",
+        "runtime_status": "completed",
+        "expected_amount": 29225,
+        "actual_amount": 29225,
+        "reply_excerpt": "{\"items\": [{\"product\": \"北美黑胡桃木流云金属门衣柜\", \"confirmed\": \"北美黑胡桃木，长1.8米，高2.2米，深0.6米，金属门\", \"pricing_method\": \"投影面积计价\", \"calculation_steps\": [\"投影面积：1.8 × 2.2 = 3.96㎡\",..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0082-golden-amount",
+      "landing_id": "landing-rule-0082",
+      "source_title": "挡条",
+      "status": "ready",
+      "input_fixture": {
+        "special_rule": "manual_zero_impact",
+        "rule_title": "挡条",
+        "evidence": "圆弧挡条-门板内嵌仅影响结构尺寸和图纸标注，金额影响为0元。"
+      },
+      "expected_amount": 0,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "designer_manual_zero_impact_structure_rule",
+        "runtime_route": "special_adjustment.manual_zero_impact",
+        "evidence": "新版设计师手册圆弧挡条-门板内嵌段落仅给出22mm、48*48、20mm≤宽度≤120mm及红色标注要求；机器回源未定位到独立收费金额。",
+        "expected_amount": 0,
+        "input_fixture": {
+          "special_rule": "manual_zero_impact",
+          "rule_title": "挡条",
+          "evidence": "圆弧挡条-门板内嵌仅影响结构尺寸和图纸标注，金额影响为0元。"
+        },
+        "match_count": 1,
+        "rule_title": "挡条"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.manual_zero_impact",
+        "runtime_status": "completed",
+        "expected_amount": 0,
+        "actual_amount": 0,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：挡条 已确认：圆弧挡条-门板内嵌仅影响结构尺寸和图纸标注，金额影响为0元。 这次按新版手册结构规则，金额影响为0元。 正式报价：0元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0105-golden-amount",
+      "landing_id": "landing-rule-0105",
+      "source_title": "平开门说明",
+      "status": "ready",
+      "input_fixture": {
+        "special_rule": "manual_zero_impact",
+        "rule_title": "平开门说明",
+        "evidence": "平开门比例限制是报价前结构校验，不改变正式报价金额。"
+      },
+      "expected_amount": 0,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "designer_manual_zero_impact_structure_rule",
+        "runtime_route": "special_adjustment.manual_zero_impact",
+        "evidence": "新版设计师手册平开门说明仅给出门板长宽比例≤1.5等铰链负荷限制；机器回源未定位到独立收费金额。",
+        "expected_amount": 0,
+        "input_fixture": {
+          "special_rule": "manual_zero_impact",
+          "rule_title": "平开门说明",
+          "evidence": "平开门比例限制是报价前结构校验，不改变正式报价金额。"
+        },
+        "match_count": 1,
+        "rule_title": "平开门说明"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.manual_zero_impact",
+        "runtime_status": "completed",
+        "expected_amount": 0,
+        "actual_amount": 0,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：平开门说明 已确认：平开门比例限制是报价前结构校验，不改变正式报价金额。 这次按新版手册结构规则，金额影响为0元。 正式报价：0元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0249-golden-amount",
+      "landing_id": "landing-rule-0249",
+      "source_title": "挡条",
+      "status": "ready",
+      "input_fixture": {
+        "special_rule": "manual_zero_impact",
+        "rule_title": "挡条",
+        "evidence": "圆弧挡条-门板盖顶挡条仅影响结构尺寸、连接和标注，金额影响为0元。"
+      },
+      "expected_amount": 0,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "designer_manual_zero_impact_structure_rule",
+        "runtime_route": "special_adjustment.manual_zero_impact",
+        "evidence": "新版设计师手册圆弧挡条-门板盖顶挡条段落仅给出外露15mm、22/28mm、20mm≤宽度≤120mm和连接件要求；机器回源未定位到独立收费金额。",
+        "expected_amount": 0,
+        "input_fixture": {
+          "special_rule": "manual_zero_impact",
+          "rule_title": "挡条",
+          "evidence": "圆弧挡条-门板盖顶挡条仅影响结构尺寸、连接和标注，金额影响为0元。"
+        },
+        "match_count": 1,
+        "rule_title": "挡条"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.manual_zero_impact",
+        "runtime_status": "completed",
+        "expected_amount": 0,
+        "actual_amount": 0,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：挡条 已确认：圆弧挡条-门板盖顶挡条仅影响结构尺寸、连接和标注，金额影响为0元。 这次按新版手册结构规则，金额影响为0元。 正式报价：0元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0157-golden-amount",
+      "landing_id": "landing-rule-0157",
+      "source_title": "模块化儿童床设计要求",
+      "status": "ready",
+      "input_fixture": {
+        "category": "定制上下床",
+        "quote_kind": "formal",
+        "bed_form": "半高床",
+        "material": "北美黑胡桃木",
+        "width": "1",
+        "length": "2",
+        "access_style": "斜梯",
+        "access_height": "1.2",
+        "guardrail_style": "圆柱围栏",
+        "guardrail_length": "2",
+        "guardrail_height": "0.35"
+      },
+      "expected_amount": 8915,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "modular_child_bed_calculator_golden_total",
+        "runtime_route": "modular_child_bed",
+        "evidence": "新版设计师手册模块化儿童床围栏规则命中现有 modular_child_bed 计算器；golden 使用高架床模块、圆柱围栏、斜梯完整正式报价。",
+        "expected_amount": 8915,
+        "input_fixture": {
+          "category": "定制上下床",
+          "quote_kind": "formal",
+          "bed_form": "半高床",
+          "material": "北美黑胡桃木",
+          "width": "1",
+          "length": "2",
+          "access_style": "斜梯",
+          "access_height": "1.2",
+          "guardrail_style": "圆柱围栏",
+          "guardrail_length": "2",
+          "guardrail_height": "0.35"
+        },
+        "match_count": 1,
+        "rule_title": "模块化儿童床设计要求"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "modular_child_bed",
+        "runtime_status": "completed",
+        "expected_amount": 8915,
+        "actual_amount": 8915,
+        "reply_excerpt": "{\"items\": [{\"product\": \"北美黑胡桃木模块化儿童半高床\", \"confirmed\": \"床形态：半高床；床垫尺寸：1m×2m；上层出入方式：斜梯；材质：北美黑胡桃木；围栏：圆柱围栏\", \"pricing_method\": \"模块化儿童床组合计价\", \"calculation_steps\": [\"半..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0158-golden-amount",
+      "landing_id": "landing-rule-0158",
+      "source_title": "模块化儿童床设计要求",
+      "status": "ready",
+      "input_fixture": {
+        "category": "定制上下床",
+        "quote_kind": "formal",
+        "bed_form": "半高床",
+        "material": "北美黑胡桃木",
+        "width": "1",
+        "length": "2",
+        "access_style": "斜梯",
+        "access_height": "1.2",
+        "guardrail_style": "圆柱围栏",
+        "guardrail_length": "2",
+        "guardrail_height": "0.35",
+        "drawer_count": 2,
+        "drawer_width": "0.6",
+        "drawer_depth": "0.5"
+      },
+      "expected_amount": 10271,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "modular_child_bed_drawer_count_golden_total",
+        "runtime_route": "modular_child_bed",
+        "evidence": "新版设计师手册模块化儿童床注明 600mm 需分为2个抽屉；现有 modular_child_bed 计算器含 drawer_count/drawer_width/drawer_depth 字段。",
+        "expected_amount": 10271,
+        "input_fixture": {
+          "category": "定制上下床",
+          "quote_kind": "formal",
+          "bed_form": "半高床",
+          "material": "北美黑胡桃木",
+          "width": "1",
+          "length": "2",
+          "access_style": "斜梯",
+          "access_height": "1.2",
+          "guardrail_style": "圆柱围栏",
+          "guardrail_length": "2",
+          "guardrail_height": "0.35",
+          "drawer_count": 2,
+          "drawer_width": "0.6",
+          "drawer_depth": "0.5"
+        },
+        "match_count": 1,
+        "rule_title": "模块化儿童床设计要求"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "modular_child_bed",
+        "runtime_status": "completed",
+        "expected_amount": 10271,
+        "actual_amount": 10271,
+        "reply_excerpt": "{\"items\": [{\"product\": \"北美黑胡桃木模块化儿童半高床\", \"confirmed\": \"床形态：半高床；床垫尺寸：1m×2m；上层出入方式：斜梯；材质：北美黑胡桃木；围栏：圆柱围栏\", \"pricing_method\": \"模块化儿童床组合计价\", \"calculation_steps\": [\"半..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0227-golden-amount",
+      "landing_id": "landing-rule-0227",
+      "source_title": "常规拆装柜体",
+      "status": "ready",
+      "input_fixture": {
+        "special_rule": "manual_zero_impact",
+        "rule_title": "常规拆装柜体",
+        "evidence": "超深柜体分段是结构和合同备注规则，不改变正式报价金额。"
+      },
+      "expected_amount": 0,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "designer_manual_zero_impact_structure_rule",
+        "runtime_route": "special_adjustment.manual_zero_impact",
+        "evidence": "新版设计师手册常规拆装柜体超深分段段落要求板件深度＞700mm时前后分段并备注；机器回源未定位到独立收费金额。",
+        "expected_amount": 0,
+        "input_fixture": {
+          "special_rule": "manual_zero_impact",
+          "rule_title": "常规拆装柜体",
+          "evidence": "超深柜体分段是结构和合同备注规则，不改变正式报价金额。"
+        },
+        "match_count": 1,
+        "rule_title": "常规拆装柜体"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.manual_zero_impact",
+        "runtime_status": "completed",
+        "expected_amount": 0,
+        "actual_amount": 0,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：常规拆装柜体 已确认：超深柜体分段是结构和合同备注规则，不改变正式报价金额。 这次按新版手册结构规则，金额影响为0元。 正式报价：0元 适合场景：适合先把整面收纳结构和常用功能先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0505-golden-amount",
+      "landing_id": "landing-rule-0505",
+      "source_title": "常规拆装柜体",
+      "status": "ready",
+      "input_fixture": {
+        "special_rule": "manual_zero_impact",
+        "rule_title": "常规拆装柜体",
+        "evidence": "多组单体柜组合示意是结构表达规则，不改变正式报价金额。"
+      },
+      "expected_amount": 0,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "designer_manual_zero_impact_structure_rule",
+        "runtime_route": "special_adjustment.manual_zero_impact",
+        "evidence": "新版设计师手册常规拆装柜体组合示意仅说明多组单体柜组合为超高/超深柜体；机器回源未定位到独立收费金额。",
+        "expected_amount": 0,
+        "input_fixture": {
+          "special_rule": "manual_zero_impact",
+          "rule_title": "常规拆装柜体",
+          "evidence": "多组单体柜组合示意是结构表达规则，不改变正式报价金额。"
+        },
+        "match_count": 1,
+        "rule_title": "常规拆装柜体"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.manual_zero_impact",
+        "runtime_status": "completed",
+        "expected_amount": 0,
+        "actual_amount": 0,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：常规拆装柜体 已确认：多组单体柜组合示意是结构表达规则，不改变正式报价金额。 这次按新版手册结构规则，金额影响为0元。 正式报价：0元 适合场景：适合先把整面收纳结构和常用功能先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0136-golden-amount",
+      "landing_id": "landing-rule-0136",
+      "source_title": "吊轨门",
+      "status": "ready",
+      "input_fixture": {
+        "special_rule": "hanging_rail_door",
+        "door_count": "1"
+      },
+      "expected_amount": 400,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_fixed_door_addition",
+        "runtime_route": "special_adjustment.hanging_rail_door",
+        "evidence": "定制产品报价原则 2.3 门板：吊轨门价格在门板基础上+400元。",
+        "expected_amount": 400,
+        "input_fixture": {
+          "special_rule": "hanging_rail_door",
+          "door_count": "1"
+        },
+        "match_count": 1,
+        "rule_title": "吊轨门"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.hanging_rail_door",
+        "runtime_status": "completed",
+        "expected_amount": 400,
+        "actual_amount": 400,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：吊轨门 已确认：门扇1扇 这次按吊轨门在门板基础上加价。 正式报价：400元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先把预算往下收：如果你想先把预..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    },
+    {
+      "case_id": "landing-rule-0543-golden-amount",
+      "landing_id": "landing-rule-0543",
+      "source_title": "吊轨门",
+      "status": "ready",
+      "input_fixture": {
+        "special_rule": "hanging_rail_door",
+        "door_count": "1"
+      },
+      "expected_amount": 400,
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_fixed_door_addition",
+        "runtime_route": "special_adjustment.hanging_rail_door",
+        "evidence": "定制产品报价原则 2.3 门板：吊轨门价格在门板基础上+400元。",
+        "expected_amount": 400,
+        "input_fixture": {
+          "special_rule": "hanging_rail_door",
+          "door_count": "1"
+        },
+        "match_count": 1,
+        "rule_title": "吊轨门"
+      },
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.hanging_rail_door",
+        "runtime_status": "completed",
+        "expected_amount": 400,
+        "actual_amount": 400,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：吊轨门 已确认：门扇1扇 这次按吊轨门在门板基础上加价。 正式报价：400元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先把预算往下收：如果你想先把预..."
+      },
+      "assertion": "no_formal_amount_change_until_expected_amount_exists",
+      "blockers": []
+    }
+  ],
+  "activated_formal_amount_rules": [
+    {
+      "landing_id": "landing-rule-0009",
+      "source_data_point_id": "data-point-0009",
+      "source_title": "软包床头",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:bed_or_soft_package_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "length",
+        "material",
+        "door_type",
+        "quote_note"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "18mm"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "报价原则",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "8980 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "price_index_machine_disambiguated_soft_package_bed",
+        "runtime_route": "bed_standard",
+        "match_count": 1,
+        "candidate_count": 1,
+        "record": {
+          "sheet": "床榻",
+          "group": "",
+          "source_row": 13,
+          "product_code": "JSC-06",
+          "name": "华夫格软包架式床",
+          "pricing_mode": "unit_price",
+          "dimensions": {
+            "length": 2,
+            "width": 1.5,
+            "mattress_height": 200
+          },
+          "remark": "",
+          "updated_at": ""
+        },
+        "golden_material": "黑胡桃",
+        "expected_amount": 8980,
+        "input_fixture": {
+          "category": "华夫格软包架式床",
+          "material": "北美黑胡桃木",
+          "length": "2",
+          "width": "1.5"
+        },
+        "evidence": "新版手册软包床头段落未给出独立床头收费；机器在当前价目表中精确消歧到华夫格软包架式床 JSC-06，黑胡桃 1.5m×2m 单件目录价。"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.bed_standard",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "price_index_machine_disambiguated_soft_package_bed",
+          "required_calculator_fields": [
+            "category",
+            "material",
+            "width",
+            "length"
+          ],
+          "runtime_route": "bed_standard",
+          "executable_for_rule": true,
+          "blocker": ""
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "bed_standard",
+        "runtime_status": "completed",
+        "expected_amount": 8980,
+        "actual_amount": 8980,
+        "reply_excerpt": "{\"items\": [{\"product\": \"北美黑胡桃木华夫格软包架式床\", \"confirmed\": \"北美黑胡桃木，床宽1.5米，床长2米\", \"pricing_method\": \"床类标准规则计价\", \"calculation_steps\": [\"床宽按 1.5 米标准价：8980.00 元\", \"床体小计：..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "category": "华夫格软包架式床",
+        "material": "北美黑胡桃木",
+        "length": "2",
+        "width": "1.5"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0002",
+      "source_data_point_id": "data-point-0002",
+      "source_title": "天地铰链铝框门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "material",
+        "door_type",
+        "quote_note"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "305mm",
+          "2200mm",
+          "180mm",
+          "500mm",
+          "26mm",
+          "≤2200",
+          "≤500"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "1500 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_percentage_markup",
+        "runtime_route": "special_adjustment.texture_continuity_markup",
+        "evidence": "定制产品报价原则 1.16 天地铰链铝框门+平板门计算方法：平板门纹理连续超过0.9m时，平板门部分需加价15%。",
+        "expected_amount": 1500,
+        "input_fixture": {
+          "special_rule": "texture_continuity_markup",
+          "product": "平板门纹理连续加价",
+          "base_amount": "10000",
+          "rate": "0.15"
+        },
+        "match_count": 1,
+        "rule_title": "天地铰链铝框门"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.texture_continuity_markup",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_percentage_markup",
+          "required_calculator_fields": [
+            "base_amount",
+            "product",
+            "rate",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.texture_continuity_markup",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.texture_continuity_markup",
+        "runtime_status": "completed",
+        "expected_amount": 1500,
+        "actual_amount": 1500,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：平板门纹理连续加价 已确认：基础金额10000元，加价比例15% 这次按比例加价专项计价。 正式报价：1500元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "texture_continuity_markup",
+        "product": "平板门纹理连续加价",
+        "base_amount": "10000",
+        "rate": "0.15"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0155",
+      "source_data_point_id": "data-point-0155",
+      "source_title": "穿衣镜",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "material",
+        "door_type",
+        "wall_or_install_condition"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "10mm",
+          "380mm",
+          "25mm",
+          "900mm",
+          "≥10",
+          "≥380"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "报价原则",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "3680 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "price_index_exact_catalog_unit_price",
+        "runtime_route": "catalog_unit_price",
+        "match_count": 1,
+        "record": {
+          "sheet": "衣柜",
+          "group": "配件",
+          "source_row": 4,
+          "product_code": "YGP-01",
+          "name": "穿衣镜",
+          "pricing_mode": "unit_price",
+          "dimensions": {
+            "length": 0.6,
+            "depth": 0.12,
+            "height": 1.8
+          },
+          "remark": "价格为单件 非投影面积",
+          "updated_at": "25.6.1调价"
+        },
+        "golden_material": "黑胡桃",
+        "expected_amount": 3680,
+        "input_fixture": {
+          "category": "穿衣镜",
+          "material": "北美黑胡桃木",
+          "length": "0.6",
+          "depth": "0.12",
+          "height": "1.8"
+        }
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.catalog_unit_price",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "price_index_exact_catalog_unit_price",
+          "required_calculator_fields": [
+            "category",
+            "material"
+          ],
+          "runtime_route": "catalog_unit_price",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "module",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "catalog_unit_price",
+        "runtime_status": "completed",
+        "expected_amount": 3680,
+        "actual_amount": 3680,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：北美黑胡桃木穿衣镜 已确认：北美黑胡桃木，长0.6米，深0.12米，高1.8米 这次按目录标准单价计价。 正式报价：3680元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "category": "穿衣镜",
+        "material": "北美黑胡桃木",
+        "length": "0.6",
+        "depth": "0.12",
+        "height": "1.8"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0099",
+      "source_data_point_id": "data-point-0099",
+      "source_title": "特殊抽屉滑轨",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "额外收费",
+          "公式",
+          "不额外收费"
+        ],
+        "explicit_amounts": [
+          "850 元"
+        ],
+        "has_machine_formula_fields": false,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_per_set_addition",
+        "runtime_route": "special_adjustment.push_to_open_drawer_slide",
+        "evidence": "定制产品报价原则 3.8 按弹抽屉：使用推弹阻尼回收滑轨，收费850元/套。",
+        "expected_amount": 850,
+        "input_fixture": {
+          "special_rule": "push_to_open_drawer_slide",
+          "set_count": "1"
+        },
+        "match_count": 1,
+        "rule_title": "特殊抽屉滑轨"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.push_to_open_drawer_slide",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_per_set_addition",
+          "required_calculator_fields": [
+            "set_count",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.push_to_open_drawer_slide",
+          "executable_for_rule": true,
+          "blocker": ""
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.push_to_open_drawer_slide",
+        "runtime_status": "completed",
+        "expected_amount": 850,
+        "actual_amount": 850,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：按弹抽屉滑轨 已确认：数量1套 这次按推弹阻尼回收滑轨按套专项计价。 正式报价：850元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先把预算往下收：如..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "push_to_open_drawer_slide",
+        "set_count": "1"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0027",
+      "source_data_point_id": "data-point-0027",
+      "source_title": "极窄斜边拼框门",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "door_type"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "70mm",
+          "40mm",
+          "60mm",
+          "10mm",
+          "20mm"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "3576 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_door_panel_area",
+        "runtime_route": "special_adjustment.door_panel_area",
+        "evidence": "定制产品报价原则 2.3 门板：单独拼框门/玻璃门/拱形门，黑胡桃单价2980元/投影面积；新版手册标题为极窄斜边拼框门。",
+        "expected_amount": 3576,
+        "input_fixture": {
+          "special_rule": "door_panel_area",
+          "door_family": "standalone_frame_door",
+          "material": "北美黑胡桃木",
+          "width": "0.6",
+          "height": "2"
+        },
+        "match_count": 1,
+        "rule_title": "极窄斜边拼框门"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.door_panel_area",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_door_panel_area",
+          "required_calculator_fields": [
+            "door_family",
+            "height",
+            "material",
+            "special_rule",
+            "width"
+          ],
+          "runtime_route": "special_adjustment.door_panel_area",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "module",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.door_panel_area",
+        "runtime_status": "completed",
+        "expected_amount": 3576,
+        "actual_amount": 3576,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：单独拼框门 已确认：北美黑胡桃木，宽0.6m，高2m 这次按单独门板面积专项计价。 正式报价：3576元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "door_panel_area",
+        "door_family": "standalone_frame_door",
+        "material": "北美黑胡桃木",
+        "width": "0.6",
+        "height": "2"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0010",
+      "source_data_point_id": "data-point-0010",
+      "source_title": "模块卡座书柜定制设计指引",
+      "source_page": 3,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "depth",
+        "material",
+        "door_type"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "900mm",
+          "1800mm",
+          "2000mm",
+          "300mm",
+          "≤300"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "35112 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "price_index_machine_disambiguated_projection_area",
+        "runtime_route": "cabinet_projection_area",
+        "match_count": 1,
+        "candidate_count": 1,
+        "record": {
+          "match_reason": "machine_exact_record_disambiguated",
+          "sheet": "书柜",
+          "group": "卡座书柜",
+          "source_row": 14,
+          "product_code": "SG-20",
+          "name": "卡座书柜",
+          "series": "卡座",
+          "door_type": "平板门",
+          "pricing_mode": "projection_area",
+          "remark": "平板门",
+          "dimensions": {
+            "length": 2,
+            "depth": 0.6,
+            "height": 2.2
+          },
+          "materials": {
+            "玫瑰木": 4880,
+            "樱桃木": 5380,
+            "白蜡木": 5380,
+            "白橡木": 6380,
+            "黑胡桃": 7980
+          }
+        },
+        "golden_material": "黑胡桃",
+        "unit_price": 7980,
+        "expected_amount": 35112,
+        "input_fixture": {
+          "category": "卡座书柜",
+          "material": "北美黑胡桃木",
+          "length": "2",
+          "height": "2.2",
+          "depth": "0.6",
+          "door_type": "平板门"
+        },
+        "evidence": "新版设计师手册模块卡座书柜命中卡座书柜；机器用门型=平板门、remark=平板门、projection_area 精确消歧到价目表 SG-20。"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.cabinet_projection_area",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "price_index_machine_disambiguated_projection_area",
+          "required_calculator_fields": [
+            "category",
+            "material",
+            "length",
+            "height",
+            "depth"
+          ],
+          "runtime_route": "cabinet_projection_area",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_operation_gap_price",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_operation_gap_price.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "length",
+            "height",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "cabinet_projection_area",
+        "runtime_status": "completed",
+        "expected_amount": 35112,
+        "actual_amount": 35112,
+        "reply_excerpt": "{\"items\": [{\"product\": \"北美黑胡桃木卡座书柜\", \"confirmed\": \"北美黑胡桃木，长2米，高2.2米，深0.6米，平板门\", \"pricing_method\": \"投影面积计价\", \"calculation_steps\": [\"投影面积：2 × 2.2 = 4.4㎡\", \"基础单价：7..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "category": "卡座书柜",
+        "material": "北美黑胡桃木",
+        "length": "2",
+        "height": "2.2",
+        "depth": "0.6",
+        "door_type": "平板门"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0079",
+      "source_data_point_id": "data-point-0079",
+      "source_title": "圆弧侧板",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "material"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "50mm",
+          "2600mm",
+          "15m",
+          "2600m",
+          "≤2600",
+          "≥50",
+          "≥15"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "540 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_linear_addition",
+        "runtime_route": "special_adjustment.curved_side_panel",
+        "evidence": "定制产品报价原则 2.7 圆弧侧板：圆弧侧板价格按米计算，每根长度300元/米。",
+        "expected_amount": 540,
+        "input_fixture": {
+          "special_rule": "curved_side_panel",
+          "length": "1.8"
+        },
+        "match_count": 1,
+        "rule_title": "圆弧侧板"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.curved_side_panel",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_linear_addition",
+          "required_calculator_fields": [
+            "length",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.curved_side_panel",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_rock_slab_price",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_rock_slab_price.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "length",
+            "depth",
+            "material",
+            "base_subtotal"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.curved_side_panel",
+        "runtime_status": "completed",
+        "expected_amount": 540,
+        "actual_amount": 540,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：圆弧侧板 已确认：长度1.8米 这次按圆弧侧板按米专项计价。 正式报价：540元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先把预算往下收：如果你想先..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "curved_side_panel",
+        "length": "1.8"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0122",
+      "source_data_point_id": "data-point-0122",
+      "source_title": "藤编门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "door_type"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "560mm",
+          "2300mm",
+          "700mm",
+          "22mm",
+          "60mm",
+          "30mm",
+          "≤560",
+          "≤2300",
+          "≤23"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "4656 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_door_panel_area",
+        "runtime_route": "special_adjustment.door_panel_area",
+        "evidence": "定制产品报价原则 2.3 门板：单独流云/飞瀑/简美/拉线/藤编/外悬条条推拉门，黑胡桃单价3880元/投影面积。",
+        "expected_amount": 4656,
+        "input_fixture": {
+          "special_rule": "door_panel_area",
+          "door_family": "standalone_rattan_door",
+          "material": "北美黑胡桃木",
+          "width": "0.6",
+          "height": "2"
+        },
+        "match_count": 1,
+        "rule_title": "藤编门"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.door_panel_area",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_door_panel_area",
+          "required_calculator_fields": [
+            "door_family",
+            "height",
+            "material",
+            "special_rule",
+            "width"
+          ],
+          "runtime_route": "special_adjustment.door_panel_area",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "module",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.door_panel_area",
+        "runtime_status": "completed",
+        "expected_amount": 4656,
+        "actual_amount": 4656,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：单独藤编门 已确认：北美黑胡桃木，宽0.6m，高2m 这次按单独门板面积专项计价。 正式报价：4656元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "door_panel_area",
+        "door_family": "standalone_rattan_door",
+        "material": "北美黑胡桃木",
+        "width": "0.6",
+        "height": "2"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0369",
+      "source_data_point_id": "data-point-0369",
+      "source_title": "针式铰链铝框门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "material",
+        "door_type",
+        "quote_note"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "305mm",
+          "3000mm",
+          "180mm",
+          "500mm",
+          "36mm",
+          "22mm",
+          "≤3000",
+          "≤500"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "3936 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_door_panel_area",
+        "runtime_route": "special_adjustment.door_panel_area",
+        "evidence": "定制产品报价原则 2.3 门板：单独铝框门，黑胡桃单价3280元/投影面积。",
+        "expected_amount": 3936,
+        "input_fixture": {
+          "special_rule": "door_panel_area",
+          "door_family": "standalone_aluminum_frame_door",
+          "material": "北美黑胡桃木",
+          "width": "0.6",
+          "height": "2"
+        },
+        "match_count": 1,
+        "rule_title": "针式铰链铝框门"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.door_panel_area",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_door_panel_area",
+          "required_calculator_fields": [
+            "door_family",
+            "height",
+            "material",
+            "special_rule",
+            "width"
+          ],
+          "runtime_route": "special_adjustment.door_panel_area",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "module",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.door_panel_area",
+        "runtime_status": "completed",
+        "expected_amount": 3936,
+        "actual_amount": 3936,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：单独铝框门 已确认：北美黑胡桃木，宽0.6m，高2m 这次按单独门板面积专项计价。 正式报价：3936元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "door_panel_area",
+        "door_family": "standalone_aluminum_frame_door",
+        "material": "北美黑胡桃木",
+        "width": "0.6",
+        "height": "2"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0067",
+      "source_data_point_id": "data-point-0067",
+      "source_title": "无底板柜",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "depth",
+        "length",
+        "wall_or_install_condition"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "700mm",
+          "30mm",
+          "1200mm",
+          "1000mm",
+          "≤700",
+          "≥30",
+          "≤1200"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "4329 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_side_panel_area",
+        "runtime_route": "special_adjustment.bottomless_cabinet_side_panel",
+        "evidence": "定制产品报价原则 1.14 无底板柜/冰箱柜：下部侧板按照侧板面积计算，黑胡桃单价1800元/投影面积。",
+        "expected_amount": 4329,
+        "input_fixture": {
+          "special_rule": "bottomless_cabinet_side_panel",
+          "material": "北美黑胡桃木",
+          "height": "1.85",
+          "depth": "0.65",
+          "side_count": "2"
+        },
+        "match_count": 1,
+        "rule_title": "无底板柜"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.bottomless_cabinet_side_panel",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_side_panel_area",
+          "required_calculator_fields": [
+            "depth",
+            "height",
+            "material",
+            "side_count",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.bottomless_cabinet_side_panel",
+          "executable_for_rule": true,
+          "blocker": ""
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.bottomless_cabinet_side_panel",
+        "runtime_status": "completed",
+        "expected_amount": 4329,
+        "actual_amount": 4329,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：无底板柜下部侧板 已确认：北美黑胡桃木，高1.85m，深0.65m，侧板2块 这次按无底板柜侧板面积专项计价。 正式报价：4329元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "bottomless_cabinet_side_panel",
+        "material": "北美黑胡桃木",
+        "height": "1.85",
+        "depth": "0.65",
+        "side_count": "2"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0048",
+      "source_data_point_id": "data-point-0048",
+      "source_title": "纹理连续说明",
+      "source_page": 5,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "material",
+        "door_type",
+        "quote_note"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "2600mm",
+          "≤2600"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "29225 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "price_index_direct_projection_area",
+        "runtime_route": "cabinet_projection_area",
+        "match_count": 1,
+        "candidate_count": 1,
+        "record": {
+          "match_reason": "keyword:纹理连续",
+          "sheet": "衣柜",
+          "group": "流云系列",
+          "source_row": 13,
+          "product_code": "YG-03",
+          "name": "流云金属门衣柜",
+          "series": "流云",
+          "door_type": "金属门",
+          "pricing_mode": "projection_area",
+          "remark": "纹理连续不足0.9m",
+          "dimensions": {
+            "length": 1.8,
+            "depth": 0.6,
+            "height": 2.2
+          },
+          "materials": {
+            "玫瑰木": 4980,
+            "樱桃木": 5480,
+            "白蜡木": 5480,
+            "白橡木": 6380,
+            "黑胡桃": 7380
+          }
+        },
+        "golden_material": "黑胡桃",
+        "unit_price": 7380,
+        "expected_amount": 29225,
+        "input_fixture": {
+          "category": "流云金属门衣柜",
+          "material": "北美黑胡桃木",
+          "length": "1.8",
+          "height": "2.2",
+          "depth": "0.6",
+          "door_type": "金属门"
+        }
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.cabinet_projection_area",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "price_index_direct_projection_area",
+          "required_calculator_fields": [
+            "category",
+            "material",
+            "length",
+            "height",
+            "depth"
+          ],
+          "runtime_route": "cabinet_projection_area",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "cabinet_projection_area",
+        "runtime_status": "completed",
+        "expected_amount": 29225,
+        "actual_amount": 29225,
+        "reply_excerpt": "{\"items\": [{\"product\": \"北美黑胡桃木流云金属门衣柜\", \"confirmed\": \"北美黑胡桃木，长1.8米，高2.2米，深0.6米，金属门\", \"pricing_method\": \"投影面积计价\", \"calculation_steps\": [\"投影面积：1.8 × 2.2 = 3.96㎡\",..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "category": "流云金属门衣柜",
+        "material": "北美黑胡桃木",
+        "length": "1.8",
+        "height": "2.2",
+        "depth": "0.6",
+        "door_type": "金属门"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0082",
+      "source_data_point_id": "data-point-0082",
+      "source_title": "挡条",
+      "source_page": 4,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "door_type",
+        "wall_or_install_condition"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "22mm",
+          "20mm",
+          "120mm",
+          "≤120",
+          "48*48"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "0 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "designer_manual_zero_impact_structure_rule",
+        "runtime_route": "special_adjustment.manual_zero_impact",
+        "evidence": "新版设计师手册圆弧挡条-门板内嵌段落仅给出22mm、48*48、20mm≤宽度≤120mm及红色标注要求；机器回源未定位到独立收费金额。",
+        "expected_amount": 0,
+        "input_fixture": {
+          "special_rule": "manual_zero_impact",
+          "rule_title": "挡条",
+          "evidence": "圆弧挡条-门板内嵌仅影响结构尺寸和图纸标注，金额影响为0元。"
+        },
+        "match_count": 1,
+        "rule_title": "挡条"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.manual_zero_impact",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "designer_manual_zero_impact_structure_rule",
+          "required_calculator_fields": [
+            "evidence",
+            "rule_title",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.manual_zero_impact",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.manual_zero_impact",
+        "runtime_status": "completed",
+        "expected_amount": 0,
+        "actual_amount": 0,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：挡条 已确认：圆弧挡条-门板内嵌仅影响结构尺寸和图纸标注，金额影响为0元。 这次按新版手册结构规则，金额影响为0元。 正式报价：0元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "manual_zero_impact",
+        "rule_title": "挡条",
+        "evidence": "圆弧挡条-门板内嵌仅影响结构尺寸和图纸标注，金额影响为0元。"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0105",
+      "source_data_point_id": "data-point-0105",
+      "source_title": "平开门说明",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "length",
+        "door_type"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "≤1.5"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "0 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "designer_manual_zero_impact_structure_rule",
+        "runtime_route": "special_adjustment.manual_zero_impact",
+        "evidence": "新版设计师手册平开门说明仅给出门板长宽比例≤1.5等铰链负荷限制；机器回源未定位到独立收费金额。",
+        "expected_amount": 0,
+        "input_fixture": {
+          "special_rule": "manual_zero_impact",
+          "rule_title": "平开门说明",
+          "evidence": "平开门比例限制是报价前结构校验，不改变正式报价金额。"
+        },
+        "match_count": 1,
+        "rule_title": "平开门说明"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.manual_zero_impact",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "designer_manual_zero_impact_structure_rule",
+          "required_calculator_fields": [
+            "evidence",
+            "rule_title",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.manual_zero_impact",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.manual_zero_impact",
+        "runtime_status": "completed",
+        "expected_amount": 0,
+        "actual_amount": 0,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：平开门说明 已确认：平开门比例限制是报价前结构校验，不改变正式报价金额。 这次按新版手册结构规则，金额影响为0元。 正式报价：0元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "manual_zero_impact",
+        "rule_title": "平开门说明",
+        "evidence": "平开门比例限制是报价前结构校验，不改变正式报价金额。"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0249",
+      "source_data_point_id": "data-point-0249",
+      "source_title": "挡条",
+      "source_page": 3,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "door_type"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "15mm",
+          "22mm",
+          "28mm",
+          "20mm",
+          "120mm",
+          "≤120"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "0 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "designer_manual_zero_impact_structure_rule",
+        "runtime_route": "special_adjustment.manual_zero_impact",
+        "evidence": "新版设计师手册圆弧挡条-门板盖顶挡条段落仅给出外露15mm、22/28mm、20mm≤宽度≤120mm和连接件要求；机器回源未定位到独立收费金额。",
+        "expected_amount": 0,
+        "input_fixture": {
+          "special_rule": "manual_zero_impact",
+          "rule_title": "挡条",
+          "evidence": "圆弧挡条-门板盖顶挡条仅影响结构尺寸、连接和标注，金额影响为0元。"
+        },
+        "match_count": 1,
+        "rule_title": "挡条"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.manual_zero_impact",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "designer_manual_zero_impact_structure_rule",
+          "required_calculator_fields": [
+            "evidence",
+            "rule_title",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.manual_zero_impact",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.manual_zero_impact",
+        "runtime_status": "completed",
+        "expected_amount": 0,
+        "actual_amount": 0,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：挡条 已确认：圆弧挡条-门板盖顶挡条仅影响结构尺寸、连接和标注，金额影响为0元。 这次按新版手册结构规则，金额影响为0元。 正式报价：0元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "manual_zero_impact",
+        "rule_title": "挡条",
+        "evidence": "圆弧挡条-门板盖顶挡条仅影响结构尺寸、连接和标注，金额影响为0元。"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0157",
+      "source_data_point_id": "data-point-0157",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 4,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "required_fields": [
+        "product_or_category"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "60mm",
+          "75mm"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "8915 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "modular_child_bed_calculator_golden_total",
+        "runtime_route": "modular_child_bed",
+        "evidence": "新版设计师手册模块化儿童床围栏规则命中现有 modular_child_bed 计算器；golden 使用高架床模块、圆柱围栏、斜梯完整正式报价。",
+        "expected_amount": 8915,
+        "input_fixture": {
+          "category": "定制上下床",
+          "quote_kind": "formal",
+          "bed_form": "半高床",
+          "material": "北美黑胡桃木",
+          "width": "1",
+          "length": "2",
+          "access_style": "斜梯",
+          "access_height": "1.2",
+          "guardrail_style": "圆柱围栏",
+          "guardrail_length": "2",
+          "guardrail_height": "0.35"
+        },
+        "match_count": 1,
+        "rule_title": "模块化儿童床设计要求"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.modular_child_bed",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "modular_child_bed_calculator_golden_total",
+          "required_calculator_fields": [
+            "access_height",
+            "access_style",
+            "bed_form",
+            "category",
+            "guardrail_height",
+            "guardrail_length",
+            "guardrail_style",
+            "length",
+            "material",
+            "quote_kind",
+            "width"
+          ],
+          "runtime_route": "modular_child_bed",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_modular_child_bed_quote",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_modular_child_bed_quote.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "bed_form",
+            "width",
+            "length",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        },
+        {
+          "calculator_id": "calculate_modular_child_bed_combo_quote",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_modular_child_bed_combo_quote.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "bed_form",
+            "width",
+            "length",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "modular_child_bed",
+        "runtime_status": "completed",
+        "expected_amount": 8915,
+        "actual_amount": 8915,
+        "reply_excerpt": "{\"items\": [{\"product\": \"北美黑胡桃木模块化儿童半高床\", \"confirmed\": \"床形态：半高床；床垫尺寸：1m×2m；上层出入方式：斜梯；材质：北美黑胡桃木；围栏：圆柱围栏\", \"pricing_method\": \"模块化儿童床组合计价\", \"calculation_steps\": [\"半..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "category": "定制上下床",
+        "quote_kind": "formal",
+        "bed_form": "半高床",
+        "material": "北美黑胡桃木",
+        "width": "1",
+        "length": "2",
+        "access_style": "斜梯",
+        "access_height": "1.2",
+        "guardrail_style": "圆柱围栏",
+        "guardrail_length": "2",
+        "guardrail_height": "0.35"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0158",
+      "source_data_point_id": "data-point-0158",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 11,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "required_fields": [
+        "product_or_category"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "600mm",
+          "20mm",
+          "200mm",
+          "475mm"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "10271 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "modular_child_bed_drawer_count_golden_total",
+        "runtime_route": "modular_child_bed",
+        "evidence": "新版设计师手册模块化儿童床注明 600mm 需分为2个抽屉；现有 modular_child_bed 计算器含 drawer_count/drawer_width/drawer_depth 字段。",
+        "expected_amount": 10271,
+        "input_fixture": {
+          "category": "定制上下床",
+          "quote_kind": "formal",
+          "bed_form": "半高床",
+          "material": "北美黑胡桃木",
+          "width": "1",
+          "length": "2",
+          "access_style": "斜梯",
+          "access_height": "1.2",
+          "guardrail_style": "圆柱围栏",
+          "guardrail_length": "2",
+          "guardrail_height": "0.35",
+          "drawer_count": 2,
+          "drawer_width": "0.6",
+          "drawer_depth": "0.5"
+        },
+        "match_count": 1,
+        "rule_title": "模块化儿童床设计要求"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.modular_child_bed",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "modular_child_bed_drawer_count_golden_total",
+          "required_calculator_fields": [
+            "access_height",
+            "access_style",
+            "bed_form",
+            "category",
+            "drawer_count",
+            "drawer_depth",
+            "drawer_width",
+            "guardrail_height",
+            "guardrail_length",
+            "guardrail_style",
+            "length",
+            "material",
+            "quote_kind",
+            "width"
+          ],
+          "runtime_route": "modular_child_bed",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_modular_child_bed_quote",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_modular_child_bed_quote.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "bed_form",
+            "width",
+            "length",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        },
+        {
+          "calculator_id": "calculate_modular_child_bed_combo_quote",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_modular_child_bed_combo_quote.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "bed_form",
+            "width",
+            "length",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "modular_child_bed",
+        "runtime_status": "completed",
+        "expected_amount": 10271,
+        "actual_amount": 10271,
+        "reply_excerpt": "{\"items\": [{\"product\": \"北美黑胡桃木模块化儿童半高床\", \"confirmed\": \"床形态：半高床；床垫尺寸：1m×2m；上层出入方式：斜梯；材质：北美黑胡桃木；围栏：圆柱围栏\", \"pricing_method\": \"模块化儿童床组合计价\", \"calculation_steps\": [\"半..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "category": "定制上下床",
+        "quote_kind": "formal",
+        "bed_form": "半高床",
+        "material": "北美黑胡桃木",
+        "width": "1",
+        "length": "2",
+        "access_style": "斜梯",
+        "access_height": "1.2",
+        "guardrail_style": "圆柱围栏",
+        "guardrail_length": "2",
+        "guardrail_height": "0.35",
+        "drawer_count": 2,
+        "drawer_width": "0.6",
+        "drawer_depth": "0.5"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0227",
+      "source_data_point_id": "data-point-0227",
+      "source_title": "常规拆装柜体",
+      "source_page": 7,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响合同备注",
+      "required_fields": [
+        "product_or_category",
+        "depth",
+        "quote_note"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "700mm"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "0 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "designer_manual_zero_impact_structure_rule",
+        "runtime_route": "special_adjustment.manual_zero_impact",
+        "evidence": "新版设计师手册常规拆装柜体超深分段段落要求板件深度＞700mm时前后分段并备注；机器回源未定位到独立收费金额。",
+        "expected_amount": 0,
+        "input_fixture": {
+          "special_rule": "manual_zero_impact",
+          "rule_title": "常规拆装柜体",
+          "evidence": "超深柜体分段是结构和合同备注规则，不改变正式报价金额。"
+        },
+        "match_count": 1,
+        "rule_title": "常规拆装柜体"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.manual_zero_impact",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "designer_manual_zero_impact_structure_rule",
+          "required_calculator_fields": [
+            "evidence",
+            "rule_title",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.manual_zero_impact",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_operation_gap_price",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_operation_gap_price.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "length",
+            "height",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        },
+        {
+          "calculator_id": "calculate_double_sided_door_price",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_double_sided_door_price.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "depth",
+            "side_a_family",
+            "side_b_family",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        },
+        {
+          "calculator_id": "calculate_modular_child_bed_combo_quote",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_modular_child_bed_combo_quote.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "bed_form",
+            "width",
+            "length",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.manual_zero_impact",
+        "runtime_status": "completed",
+        "expected_amount": 0,
+        "actual_amount": 0,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：常规拆装柜体 已确认：超深柜体分段是结构和合同备注规则，不改变正式报价金额。 这次按新版手册结构规则，金额影响为0元。 正式报价：0元 适合场景：适合先把整面收纳结构和常用功能先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "manual_zero_impact",
+        "rule_title": "常规拆装柜体",
+        "evidence": "超深柜体分段是结构和合同备注规则，不改变正式报价金额。"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0505",
+      "source_data_point_id": "data-point-0505",
+      "source_title": "常规拆装柜体",
+      "source_page": 9,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "required_fields": [
+        "product_or_category",
+        "height"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "0 元"
+        ],
+        "has_machine_formula_fields": false,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "designer_manual_zero_impact_structure_rule",
+        "runtime_route": "special_adjustment.manual_zero_impact",
+        "evidence": "新版设计师手册常规拆装柜体组合示意仅说明多组单体柜组合为超高/超深柜体；机器回源未定位到独立收费金额。",
+        "expected_amount": 0,
+        "input_fixture": {
+          "special_rule": "manual_zero_impact",
+          "rule_title": "常规拆装柜体",
+          "evidence": "多组单体柜组合示意是结构表达规则，不改变正式报价金额。"
+        },
+        "match_count": 1,
+        "rule_title": "常规拆装柜体"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.manual_zero_impact",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "designer_manual_zero_impact_structure_rule",
+          "required_calculator_fields": [
+            "evidence",
+            "rule_title",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.manual_zero_impact",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_modular_child_bed_combo_quote",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_modular_child_bed_combo_quote.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "bed_form",
+            "width",
+            "length",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.manual_zero_impact",
+        "runtime_status": "completed",
+        "expected_amount": 0,
+        "actual_amount": 0,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：常规拆装柜体 已确认：多组单体柜组合示意是结构表达规则，不改变正式报价金额。 这次按新版手册结构规则，金额影响为0元。 正式报价：0元 适合场景：适合先把整面收纳结构和常用功能先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "manual_zero_impact",
+        "rule_title": "常规拆装柜体",
+        "evidence": "多组单体柜组合示意是结构表达规则，不改变正式报价金额。"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0136",
+      "source_data_point_id": "data-point-0136",
+      "source_title": "吊轨门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:general_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "door_type",
+        "wall_or_install_condition"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "30kg",
+          "600mm",
+          "1200mm",
+          "2300mm",
+          "26mm",
+          "≤1200",
+          "≤2300"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "400 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_fixed_door_addition",
+        "runtime_route": "special_adjustment.hanging_rail_door",
+        "evidence": "定制产品报价原则 2.3 门板：吊轨门价格在门板基础上+400元。",
+        "expected_amount": 400,
+        "input_fixture": {
+          "special_rule": "hanging_rail_door",
+          "door_count": "1"
+        },
+        "match_count": 1,
+        "rule_title": "吊轨门"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.hanging_rail_door",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_fixed_door_addition",
+          "required_calculator_fields": [
+            "door_count",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.hanging_rail_door",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_modular_child_bed_combo_quote",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_modular_child_bed_combo_quote.py",
+          "script_exists": true,
+          "match_reason": "keyword",
+          "required_calculator_fields": [
+            "bed_form",
+            "width",
+            "length",
+            "material"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.hanging_rail_door",
+        "runtime_status": "completed",
+        "expected_amount": 400,
+        "actual_amount": 400,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：吊轨门 已确认：门扇1扇 这次按吊轨门在门板基础上加价。 正式报价：400元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先把预算往下收：如果你想先把预..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "hanging_rail_door",
+        "door_count": "1"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    },
+    {
+      "landing_id": "landing-rule-0543",
+      "source_data_point_id": "data-point-0543",
+      "source_title": "吊轨门",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "door_type",
+        "wall_or_install_condition"
+      ],
+      "formula_fields": {
+        "numeric_constraints": [
+          "70mm"
+        ],
+        "formula_terms": [
+          "加价",
+          "补差",
+          "折减",
+          "公式"
+        ],
+        "explicit_amounts": [
+          "400 元"
+        ],
+        "has_machine_formula_fields": true,
+        "has_explicit_amount_or_unit_price": true
+      },
+      "amount_source": {
+        "status": "ready",
+        "source_type": "quotation_principle_fixed_door_addition",
+        "runtime_route": "special_adjustment.hanging_rail_door",
+        "evidence": "定制产品报价原则 2.3 门板：吊轨门价格在门板基础上+400元。",
+        "expected_amount": 400,
+        "input_fixture": {
+          "special_rule": "hanging_rail_door",
+          "door_count": "1"
+        },
+        "match_count": 1,
+        "rule_title": "吊轨门"
+      },
+      "calculator_candidates": [
+        {
+          "calculator_id": "handle_quote_message.special_adjustment.hanging_rail_door",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/handle_quote_message.py",
+          "script_exists": true,
+          "match_reason": "quotation_principle_fixed_door_addition",
+          "required_calculator_fields": [
+            "door_count",
+            "special_rule"
+          ],
+          "runtime_route": "special_adjustment.hanging_rail_door",
+          "executable_for_rule": true,
+          "blocker": ""
+        },
+        {
+          "calculator_id": "calculate_door_panel_adjustment",
+          "script": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/scripts/calculate_door_panel_adjustment.py",
+          "script_exists": true,
+          "match_reason": "module",
+          "required_calculator_fields": [
+            "cabinet_material",
+            "target_door_material",
+            "base_unit_price",
+            "cabinet_door_family",
+            "target_door_family"
+          ],
+          "executable_for_rule": false,
+          "blocker": "calculator exists but no exact rule-to-calculator field mapping and golden amount fixture was found"
+        }
+      ],
+      "golden_amount_status": "ready",
+      "regression_result": {
+        "status": "passed",
+        "pricing_route": "special_adjustment.hanging_rail_door",
+        "runtime_status": "completed",
+        "expected_amount": 400,
+        "actual_amount": 400,
+        "reply_excerpt": "这次可以正式报价，我先把结果给你。 产品：吊轨门 已确认：门扇1扇 这次按吊轨门在门板基础上加价。 正式报价：400元 适合场景：适合先按当前需求把结构和预算框架先定下来。 关键前提：先按目前已经确认的尺寸、材质和做法计算。 这次报价依据：先按目前已经确认的尺寸、材质和做法计算。 如果你想先把预算往下收：如果你想先把预..."
+      },
+      "regression_status": "passed_activate_formal_amount_calculation",
+      "runtime_action": "activate_formal_amount_calculation",
+      "machine_resolution_lane": "activated_catalog_amount_runtime",
+      "next_machine_action": "正式报价计算已可使用现有 catalog_unit_price runtime。",
+      "blockers": [],
+      "input_fixture": {
+        "special_rule": "hanging_rail_door",
+        "door_count": "1"
+      },
+      "machine_reason": "机器已通过价目表金额来源、golden amount 和现有 catalog_unit_price runtime 回归。"
+    }
+  ],
+  "guardrails": [
+    "不要求人工逐条审金额规则。",
+    "没有明确金额或单价时，不生成正式金额断言。",
+    "没有 golden expected amount 时，不进入正式报价金额计算。",
+    "没有可执行计算器字段映射时，不进入正式报价金额计算。",
+    "冲突金额规则必须先通过金额回归，不能语义强切。"
+  ],
+  "outputs": {
+    "pack_json": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/money-rule-regression-pack.json",
+    "golden_cases_json": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/money-rule-golden-cases.json",
+    "summary_md": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/money-rule-regression-report.md",
+    "board_html": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/money-rule-regression-board.html"
+  }
+}

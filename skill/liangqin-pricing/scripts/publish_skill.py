@@ -9,7 +9,10 @@ import shutil
 import sys
 from pathlib import Path
 
-import yaml
+try:
+    import yaml
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    yaml = None
 
 
 ALLOWED_FRONTMATTER_KEYS = {"name", "description", "license", "allowed-tools", "metadata"}
@@ -51,7 +54,7 @@ def validate_skill_dir(skill_dir: Path) -> None:
     if not match:
         raise SystemExit("Invalid frontmatter format in SKILL.md")
 
-    frontmatter = yaml.safe_load(match.group(1))
+    frontmatter = parse_frontmatter(match.group(1))
     if not isinstance(frontmatter, dict):
         raise SystemExit("Frontmatter must be a YAML mapping")
 
@@ -71,6 +74,27 @@ def validate_skill_dir(skill_dir: Path) -> None:
 
 def ignore_filter(_dir: str, names: list[str]) -> set[str]:
     return {name for name in names if name in IGNORE_NAMES}
+
+
+def parse_frontmatter(frontmatter_text: str) -> dict[str, object]:
+    if yaml is not None:
+        payload = yaml.safe_load(frontmatter_text)
+        return payload if isinstance(payload, dict) else {}
+
+    payload: dict[str, object] = {}
+    for raw_line in frontmatter_text.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if ":" not in line:
+            raise SystemExit("Invalid frontmatter format in SKILL.md")
+        key, value = line.split(":", 1)
+        key = key.strip()
+        value = value.strip()
+        if (value.startswith('"') and value.endswith('"')) or (value.startswith("'") and value.endswith("'")):
+            value = value[1:-1]
+        payload[key] = value
+    return payload
 
 
 def publish(source: Path, dest: Path) -> None:

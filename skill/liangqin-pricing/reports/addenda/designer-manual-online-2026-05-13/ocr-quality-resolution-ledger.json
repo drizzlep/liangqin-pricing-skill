@@ -1,0 +1,904 @@
+{
+  "entries": [
+    {
+      "landing_id": "landing-rule-0152",
+      "source_data_point_id": "data-point-0152",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "穿衣镜",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P0-影响金额",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 143,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0064",
+      "source_data_point_id": "data-point-0064",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "岩板柜",
+      "source_page": 1,
+      "suggested_module": "precheck_quote:safety_or_install_gate",
+      "risk_level": "P0-影响安全/安装",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 114,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0263",
+      "source_data_point_id": "data-point-0263",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "标准抽屉滑轨",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 123,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0107",
+      "source_data_point_id": "data-point-0107",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "飞瀑门",
+      "source_page": 1,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 106,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0012",
+      "source_data_point_id": "data-point-0012",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "书梯书柜",
+      "source_page": 1,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 100,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0234",
+      "source_data_point_id": "data-point-0234",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "无牙称柜体",
+      "source_page": 1,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 141,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0275",
+      "source_data_point_id": "data-point-0275",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "上下翻门说明",
+      "source_page": 1,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 141,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0201",
+      "source_data_point_id": "data-point-0201",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结260102",
+      "source_page": 21,
+      "suggested_module": "pricing_calculation:material_or_rock_slab_adjustment",
+      "risk_level": "P0-影响金额",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 150,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0994",
+      "source_data_point_id": "data-point-0994",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2510",
+      "source_page": 11,
+      "suggested_module": "precheck_quote:safety_or_install_gate",
+      "risk_level": "P0-影响安全/安装",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 165,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0786",
+      "source_data_point_id": "data-point-0786",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2508",
+      "source_page": 16,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 176,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0964",
+      "source_data_point_id": "data-point-0964",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2506",
+      "source_page": 16,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 183,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0979",
+      "source_data_point_id": "data-point-0979",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2508",
+      "source_page": 10,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 178,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1379",
+      "source_data_point_id": "data-point-1379",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2603",
+      "source_page": 9,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 177,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0313",
+      "source_data_point_id": "data-point-0313",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结260102",
+      "source_page": 29,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 158,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0749",
+      "source_data_point_id": "data-point-0749",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2503",
+      "source_page": 16,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 180,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0760",
+      "source_data_point_id": "data-point-0760",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2505",
+      "source_page": 7,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 234,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0796",
+      "source_data_point_id": "data-point-0796",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2510",
+      "source_page": 9,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 156,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0798",
+      "source_data_point_id": "data-point-0798",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2510",
+      "source_page": 17,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 177,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0807",
+      "source_data_point_id": "data-point-0807",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2512",
+      "source_page": 9,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 177,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0925",
+      "source_data_point_id": "data-point-0925",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结250102",
+      "source_page": 28,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 164,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0987",
+      "source_data_point_id": "data-point-0987",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2509",
+      "source_page": 17,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 188,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0470",
+      "source_data_point_id": "data-point-0470",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2511",
+      "source_page": 19,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 186,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1327",
+      "source_data_point_id": "data-point-1327",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2505",
+      "source_page": 18,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 191,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1339",
+      "source_data_point_id": "data-point-1339",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2507",
+      "source_page": 23,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 198,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0957",
+      "source_data_point_id": "data-point-0957",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2505",
+      "source_page": 19,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 165,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1016",
+      "source_data_point_id": "data-point-1016",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结260102",
+      "source_page": 30,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 158,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1311",
+      "source_data_point_id": "data-point-1311",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2503",
+      "source_page": 17,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 140,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1343",
+      "source_data_point_id": "data-point-1343",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2508",
+      "source_page": 13,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 152,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0198",
+      "source_data_point_id": "data-point-0198",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结260102",
+      "source_page": 9,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 215,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0741",
+      "source_data_point_id": "data-point-0741",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结250102",
+      "source_page": 29,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 151,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0743",
+      "source_data_point_id": "data-point-0743",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2503",
+      "source_page": 4,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 158,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1022",
+      "source_data_point_id": "data-point-1022",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2603",
+      "source_page": 10,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 144,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1023",
+      "source_data_point_id": "data-point-1023",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2603",
+      "source_page": 10,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 144,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0193",
+      "source_data_point_id": "data-point-0193",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2511",
+      "source_page": 20,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 144,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0975",
+      "source_data_point_id": "data-point-0975",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2507",
+      "source_page": 24,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 149,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0976",
+      "source_data_point_id": "data-point-0976",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2507",
+      "source_page": 24,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 149,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1351",
+      "source_data_point_id": "data-point-1351",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2509",
+      "source_page": 18,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 160,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0188",
+      "source_data_point_id": "data-point-0188",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2510",
+      "source_page": 18,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 178,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0189",
+      "source_data_point_id": "data-point-0189",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2510",
+      "source_page": 18,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 178,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0947",
+      "source_data_point_id": "data-point-0947",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2504",
+      "source_page": 28,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 175,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1007",
+      "source_data_point_id": "data-point-1007",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2512",
+      "source_page": 10,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 146,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1008",
+      "source_data_point_id": "data-point-1008",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2512",
+      "source_page": 10,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 146,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0980",
+      "source_data_point_id": "data-point-0980",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2508",
+      "source_page": 17,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 155,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0981",
+      "source_data_point_id": "data-point-0981",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2508",
+      "source_page": 17,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 155,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0314",
+      "source_data_point_id": "data-point-0314",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "2026.4.30更新日志",
+      "source_page": 1,
+      "suggested_module": "precheck_quote:rule_gate",
+      "risk_level": "P2-影响说明完整性",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 177,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    }
+  ]
+}

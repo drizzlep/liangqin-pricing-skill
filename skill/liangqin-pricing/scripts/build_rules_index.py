@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import html as html_lib
 import json
 import os
 import re
@@ -55,6 +56,9 @@ ROCK_SLAB_COLOR_NAMES = (
     "莱姆石中灰",
 )
 
+HTML_TAG_RE = re.compile(r"</?[^>]+>")
+MARKDOWN_IMAGE_RE = re.compile(r"!\[[^\]]*\]\([^)]+\)")
+
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build a high-signal rules index from candidate JSON.")
@@ -65,7 +69,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def normalize_text(text: str) -> str:
-    return re.sub(r"\s+", " ", text.replace("\r", "\n").replace("\n", " ")).strip()
+    cleaned = MARKDOWN_IMAGE_RE.sub("", str(text))
+    cleaned = HTML_TAG_RE.sub("", cleaned)
+    cleaned = html_lib.unescape(cleaned)
+    return re.sub(r"\s+", " ", cleaned.replace("\r", "\n").replace("\n", " ")).strip()
 
 
 def effective_char_count(text: str) -> int:
@@ -141,8 +148,9 @@ def classify_response_kind(text: str) -> str:
 
 
 def build_entry(section: dict[str, object]) -> dict[str, object]:
-    heading = str(section.get("heading", ""))
-    content = [str(item) for item in section.get("content", [])]
+    heading = normalize_text(str(section.get("heading", "")))
+    content = [normalize_text(str(item)) for item in section.get("content", [])]
+    content = [item for item in content if item]
     tags = [str(item) for item in section.get("tags", [])]
     rule_type = str(section.get("rule_type", "narrative_rule"))
     confidence = float(section.get("confidence", 0.0))
@@ -155,7 +163,7 @@ def build_entry(section: dict[str, object]) -> dict[str, object]:
     pricing_relevant = score >= 5
     runtime_relevant = pricing_relevant or response_kind == "catalog_option"
 
-    return {
+    entry = {
         "page": int(section.get("page", 1)),
         "domain": domain,
         "clean_title": clean_title,
@@ -165,16 +173,20 @@ def build_entry(section: dict[str, object]) -> dict[str, object]:
         "rule_type": rule_type,
         "confidence": confidence,
         "extract_method": section.get("extract_method", "unknown"),
-        "normalized_rule": section.get("normalized_rule", ""),
+        "normalized_rule": normalize_text(str(section.get("normalized_rule", ""))),
         "relevance_score": score,
         "pricing_relevant": pricing_relevant,
         "runtime_relevant": runtime_relevant,
         "response_kind": response_kind,
     }
+    for field_name in ("source_path", "source_title", "source_node_id", "source_local_path", "source_page"):
+        if section.get(field_name) not in {None, ""}:
+            entry[field_name] = section.get(field_name)
+    return entry
 
 
 def build_page_entry(page: dict[str, object]) -> dict[str, object] | None:
-    raw_text = str(page.get("raw_text", "")).strip()
+    raw_text = normalize_text(str(page.get("raw_text", "")).strip())
     if not raw_text:
         return None
     response_kind = classify_response_kind(raw_text)
@@ -198,7 +210,7 @@ def build_page_entry(page: dict[str, object]) -> dict[str, object] | None:
     elif response_kind == "catalog_option" and "岩板" in raw_text:
         clean_title = "岩板可选色样"
 
-    return {
+    entry = {
         "page": int(page.get("page", 1)),
         "domain": domain,
         "clean_title": clean_title,
@@ -208,12 +220,16 @@ def build_page_entry(page: dict[str, object]) -> dict[str, object] | None:
         "rule_type": str(page.get("rule_type", "narrative_rule")),
         "confidence": float(page.get("confidence", 0.0)),
         "extract_method": str(page.get("extract_method", "unknown")),
-        "normalized_rule": str(page.get("normalized_explanation", "")),
+        "normalized_rule": normalize_text(str(page.get("normalized_explanation", ""))),
         "relevance_score": max(score, 6 if response_kind == "catalog_option" else score),
         "pricing_relevant": False,
         "runtime_relevant": True,
         "response_kind": response_kind,
     }
+    for field_name in ("source_path", "source_title", "source_node_id", "source_local_path", "source_page"):
+        if page.get(field_name) not in {None, ""}:
+            entry[field_name] = page.get(field_name)
+    return entry
 
 
 def deduplicate_entries(entries: list[dict[str, object]]) -> list[dict[str, object]]:

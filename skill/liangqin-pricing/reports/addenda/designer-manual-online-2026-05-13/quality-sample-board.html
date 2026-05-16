@@ -1,0 +1,1108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>设计师手册文字质量抽样</title>
+  <style>
+    :root {
+      --paper: #fbf7ee;
+      --ink: #2b2118;
+      --muted: #7c6f61;
+      --line: #e5d8c7;
+      --accent: #8f4d24;
+      --card: #fffaf2;
+      --warn: #b84a28;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: radial-gradient(circle at 15% 5%, #fff7df, var(--paper) 38%, #f3eadc); color: var(--ink); font-family: "Songti SC", "Noto Serif CJK SC", serif; }
+    .shell { max-width: 1180px; margin: 0 auto; padding: 42px 24px 72px; }
+    .hero { border: 1px solid var(--line); background: rgba(255, 250, 242, .82); padding: 34px; border-radius: 28px; box-shadow: 0 24px 70px rgba(88, 58, 28, .12); }
+    .eyebrow { color: var(--accent); letter-spacing: .16em; font-size: 13px; }
+    h1 { margin: 12px 0; font-size: clamp(32px, 5vw, 58px); line-height: 1.05; }
+    .hero p { max-width: 760px; color: var(--muted); font-size: 18px; line-height: 1.8; }
+    .status { display: inline-flex; margin-top: 12px; padding: 9px 14px; border-radius: 999px; background: #fff0e7; color: var(--warn); font-weight: 700; }
+    .metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 18px 0; }
+    .metric { border: 1px solid var(--line); background: rgba(255, 250, 242, .86); padding: 18px; border-radius: 20px; }
+    .metric__label { color: var(--muted); font-size: 14px; }
+    .metric__value { font-size: 30px; margin: 8px 0; font-weight: 800; }
+    .metric__hint { color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .note { border-left: 4px solid var(--accent); background: rgba(255,255,255,.55); padding: 16px 18px; line-height: 1.8; color: var(--muted); }
+    .board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 22px; }
+    .sample-card { background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 18px; box-shadow: 0 14px 40px rgba(83, 57, 31, .08); }
+    .sample-card__meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; }
+    .sample-card__meta span { border: 1px solid var(--line); border-radius: 999px; padding: 5px 9px; background: #fffdf8; }
+    h3 { margin: 14px 0; font-size: 20px; }
+    .sample-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .label { margin: 0 0 6px; color: var(--accent); font-weight: 800; }
+    .hint { color: var(--muted); font-size: 13px; line-height: 1.55; }
+    img { margin-top: 14px; width: 100%; max-height: 460px; object-fit: contain; border: 1px solid var(--line); border-radius: 16px; background: white; }
+    .image-fallback { margin-top: 14px; padding: 12px; border: 1px dashed var(--line); border-radius: 16px; color: var(--muted); }
+    @media (max-width: 860px) { .metrics, .board, .sample-grid { grid-template-columns: 1fr; } .shell { padding: 24px 14px 48px; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow">良禽佳木 · 线上手册文字质量</div>
+      <h1>先确认文字有没有读靠谱，再谈接进报价</h1>
+      <p>33 页 PDF 文字层未知页已全部写入 unknown-page-resolution-ledger，不再阻塞发布。</p>
+      <div class="status">可发布闭环 · designer-manual-online-2026-05-13</div>
+    </section>
+    <section class="metrics">
+      
+      <section class="metric">
+        <div class="metric__label">总页数</div>
+        <div class="metric__value">829</div>
+        <div class="metric__hint">候选层里 PDF 页级记录数</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">没读到文字页</div>
+        <div class="metric__value">33</div>
+        <div class="metric__hint">这些页不能直接当作已完成提取</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">图片较多页</div>
+        <div class="metric__value">453</div>
+        <div class="metric__hint">图片或图示多，容易漏掉图中标注</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">本轮 OCR 抽样</div>
+        <div class="metric__value"></div>
+        <div class="metric__hint">只抽高风险页，不全量替换</div>
+      </section>
+    
+    </section>
+    <section class="metrics">
+      
+      <section class="metric">
+        <div class="metric__label">PaddleOCR 成功</div>
+        <div class="metric__value"></div>
+        <div class="metric__hint">抽样页里 OCR 读到文字</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">OCR 空结果</div>
+        <div class="metric__value"></div>
+        <div class="metric__hint">需要回看原文</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">OCR 失败</div>
+        <div class="metric__value"></div>
+        <div class="metric__hint">需要重跑或人工看 PDF</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">看板样本</div>
+        <div class="metric__value">43</div>
+        <div class="metric__hint">按风险挑，不是随机凑数</div>
+      </section>
+    
+    </section>
+    <section class="note">
+      这个页面不是给程序看的底表，而是给人判断“这批手册能不能进入下一步”的抽样台。PaddleOCR 结果只用于交叉检查；真正激活规则前，仍然看人工在审核台上的选择。
+    </section>
+    <section class="board">
+      
+      <article class="sample-card" data-method="unknown">
+        <div class="sample-card__meta">
+          <span>GB 28007-2024 婴幼儿及儿童家具安全技术规范</span>
+          <span>源页 2</span>
+          <span>unknown</span>
+        </div>
+        <h3>PDF 文字层没有读到内容</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>这页没有读到文字。</p>
+            <p class="hint">文字层字数：；图片数：2</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="unknown">
+        <div class="sample-card__meta">
+          <span>GB 28007-2024 婴幼儿及儿童家具安全技术规范</span>
+          <span>源页 4</span>
+          <span>unknown</span>
+        </div>
+        <h3>PDF 文字层没有读到内容</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>这页没有读到文字。</p>
+            <p class="hint">文字层字数：；图片数：2</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="unknown">
+        <div class="sample-card__meta">
+          <span>GB 28007-2024 婴幼儿及儿童家具安全技术规范</span>
+          <span>源页 8</span>
+          <span>unknown</span>
+        </div>
+        <h3>PDF 文字层没有读到内容</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>这页没有读到文字。</p>
+            <p class="hint">文字层字数：；图片数：2</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="unknown">
+        <div class="sample-card__meta">
+          <span>GB 28008-2024 家具结构安全技术规范</span>
+          <span>源页 2</span>
+          <span>unknown</span>
+        </div>
+        <h3>PDF 文字层没有读到内容</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>这页没有读到文字。</p>
+            <p class="hint">文字层字数：；图片数：2</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="unknown">
+        <div class="sample-card__meta">
+          <span>可调节床头使用说明书</span>
+          <span>源页 1</span>
+          <span>unknown</span>
+        </div>
+        <h3>PDF 文字层没有读到内容</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>这页没有读到文字。</p>
+            <p class="hint">文字层字数：；图片数：1</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="unknown">
+        <div class="sample-card__meta">
+          <span>岩板</span>
+          <span>源页 5</span>
+          <span>unknown</span>
+        </div>
+        <h3>PDF 文字层没有读到内容</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>这页没有读到文字。</p>
+            <p class="hint">文字层字数：；图片数：5</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="unknown">
+        <div class="sample-card__meta">
+          <span>常规推拉门</span>
+          <span>源页 8</span>
+          <span>unknown</span>
+        </div>
+        <h3>PDF 文字层没有读到内容</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>这页没有读到文字。</p>
+            <p class="hint">文字层字数：；图片数：1</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="unknown">
+        <div class="sample-card__meta">
+          <span>常规边角风格</span>
+          <span>源页 12</span>
+          <span>unknown</span>
+        </div>
+        <h3>PDF 文字层没有读到内容</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>这页没有读到文字。</p>
+            <p class="hint">文字层字数：；图片数：4</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="unknown">
+        <div class="sample-card__meta">
+          <span>木材种类</span>
+          <span>源页 3</span>
+          <span>unknown</span>
+        </div>
+        <h3>PDF 文字层没有读到内容</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>这页没有读到文字。</p>
+            <p class="hint">文字层字数：；图片数：7</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="unknown">
+        <div class="sample-card__meta">
+          <span>极窄斜边拼框门</span>
+          <span>源页 5</span>
+          <span>unknown</span>
+        </div>
+        <h3>PDF 文字层没有读到内容</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>这页没有读到文字。</p>
+            <p class="hint">文字层字数：；图片数：1</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="unknown">
+        <div class="sample-card__meta">
+          <span>模块卡座书柜定制设计指引</span>
+          <span>源页 13</span>
+          <span>unknown</span>
+        </div>
+        <h3>PDF 文字层没有读到内容</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>这页没有读到文字。</p>
+            <p class="hint">文字层字数：；图片数：2</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="unknown">
+        <div class="sample-card__meta">
+          <span>雪见推拉门</span>
+          <span>源页 2</span>
+          <span>unknown</span>
+        </div>
+        <h3>PDF 文字层没有读到内容</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>这页没有读到文字。</p>
+            <p class="hint">文字层字数：；图片数：1</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>NHLA分等规则</span>
+          <span>源页 5</span>
+          <span>text_layer</span>
+        </div>
+        <h3>图片较多，文字层可能漏掉图中标注 / 包含可能影响报价或设计限制的词</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>了解NHLA分等规则 普1级中最小板面的规格是3英寸宽4英尺长，净划面比例是 。最小净划面的尺寸3英寸宽3英尺长和和 4英寸宽2英尺长。净划面数量根据板材的尺寸而定， NHLA分等规则</p>
+            <p class="hint">文字层字数：88；图片数：21</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>侧板通顶柜体设计应用</span>
+          <span>源页 6</span>
+          <span>text_layer</span>
+        </div>
+        <h3>图片较多，文字层可能漏掉图中标注 / 包含可能影响报价或设计限制的词</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>≥40mm可通高侧板分段柜 适用于：上下分段侧板可水平放置于地面安装的柜体,如通高衣柜、书柜等 安装步骤：将分段侧板先水平放置于地面组装，待关键结构固定后再整体竖立。不可通高侧板分段柜 适用于：上下侧板由横向板件或岩板等断开的柜体，柜体高度需考虑三合一安装空间≥40mm 如餐边柜、卡座书柜等。 安装步骤：先下后上原则，即下柜安装完成后再安装上柜，上柜单板件安装，注意侧板需由 上至下安装。 分段侧板柜安装顺序说明</p>
+            <p class="hint">文字层字数：200；图片数：13</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>售后设计问题总结250102</span>
+          <span>源页 2</span>
+          <span>text_layer</span>
+        </div>
+        <h3>文字很少，可能是图示页或扫描页</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>1.沟通问题</p>
+            <p class="hint">文字层字数：6；图片数：</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>售后设计问题总结250102</span>
+          <span>源页 30</span>
+          <span>text_layer</span>
+        </div>
+        <h3>图片较多，文字层可能漏掉图中标注 / 包含可能影响报价或设计限制的词</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>3）.问题：图纸与效果图/备注不一致 ●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸， 而备注尺寸未修改，导致备注与图纸不符。 ●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。进深不符，和设计沟通按备注为准 备注与效果图不符，和设计沟通确认按备注为准 效果图和图纸边角不同，和设计师沟通按图纸圆边做 深度尺寸不一致 踢脚线尺寸前后备注不一致 总长度...</p>
+            <p class="hint">文字层字数：241；图片数：12</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>售后设计问题总结2503</span>
+          <span>源页 2</span>
+          <span>text_layer</span>
+        </div>
+        <h3>文字很少，可能是图示页或扫描页</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>1.沟通问题</p>
+            <p class="hint">文字层字数：6；图片数：</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>售后设计问题总结2503</span>
+          <span>源页 18</span>
+          <span>text_layer</span>
+        </div>
+        <h3>图片较多，文字层可能漏掉图中标注 / 包含可能影响报价或设计限制的词</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>3）.问题：图纸与效果图/备注不一致 ●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸， 而备注尺寸未修改，导致备注与图纸不符。 ●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。顶视图和侧视图进深不符，和设计沟通按侧视图为准 图纸和备注尺寸不符，经沟通以图纸为准 效果图边角和图纸备注不符，经沟通按图纸为准 图纸和备注尺寸不符，经沟通以图纸为准 高度...</p>
+            <p class="hint">文字层字数：249；图片数：13</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>售后设计问题总结2504</span>
+          <span>源页 12</span>
+          <span>text_layer</span>
+        </div>
+        <h3>文字很少，可能是图示页或扫描页</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>2.备注问题</p>
+            <p class="hint">文字层字数：6；图片数：</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>售后设计问题总结2504</span>
+          <span>源页 30</span>
+          <span>text_layer</span>
+        </div>
+        <h3>图片较多，文字层可能漏掉图中标注</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>3）.问题：图纸与效果图/备注不一致 ●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸， 而备注尺寸未修改，导致备注与图纸不符。 ●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。 门板画的直角拼框，实际上应该做斜角拼框 备注边角和图纸边角不符，和设计沟通按图纸边角做，圆边圆角 门板样式不一样 活层调节方式备注不一致 柜体深度备注、图纸和模型3个尺寸...</p>
+            <p class="hint">文字层字数：243；图片数：11</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>售后设计问题总结2505</span>
+          <span>源页 20</span>
+          <span>text_layer</span>
+        </div>
+        <h3>图片较多，文字层可能漏掉图中标注 / 包含可能影响报价或设计限制的词</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>3）.问题：图纸与效果图/备注不一致 ●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸， 而备注尺寸未修改，导致备注与图纸不符。 ●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。备注尺寸和图纸尺寸不一样，和设计沟通以图纸尺寸为准 效果图与图纸信息上不一致，玻璃颜色应该是欧茶 订单备注圆边，模型还原出来是直边； 和设计师沟通是备注错了，应该是直角平边...</p>
+            <p class="hint">文字层字数：304；图片数：12</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>售后设计问题总结2506</span>
+          <span>源页 15</span>
+          <span>text_layer</span>
+        </div>
+        <h3>文字很少，可能是图示页或扫描页</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>9.拆单问题</p>
+            <p class="hint">文字层字数：6；图片数：</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>售后设计问题总结2506</span>
+          <span>源页 18</span>
+          <span>text_layer</span>
+        </div>
+        <h3>图片较多，文字层可能漏掉图中标注 / 包含可能影响报价或设计限制的词</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>3）.问题：图纸与效果图/备注不一致 ●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸， 而备注尺寸未修改，导致备注与图纸不符。 ●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。备注写的用通长拉手，实际用反弹器 备注反弹开启，实际通长拉手 备注尺寸与图纸尺寸不一样，和设计沟通以图纸尺寸为准 尺寸不符，和设计沟通按备注为准 备注与图纸不符。和酷家乐也...</p>
+            <p class="hint">文字层字数：269；图片数：12</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>售后设计问题总结2507</span>
+          <span>源页 9</span>
+          <span>text_layer</span>
+        </div>
+        <h3>文字很少，可能是图示页或扫描页</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>2.备注问题</p>
+            <p class="hint">文字层字数：6；图片数：</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>售后设计问题总结2507</span>
+          <span>源页 25</span>
+          <span>text_layer</span>
+        </div>
+        <h3>图片较多，文字层可能漏掉图中标注 / 包含可能影响报价或设计限制的词</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>3）.问题：图纸与效果图/备注不一致 ●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸， 而备注尺寸未修改，导致备注与图纸不符。 ●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。图纸和备注信息尺寸不一致，以图为准 柜体总宽正视图1390备注信息以及顶视图1400，1390对的 上门板应该是玻璃门 图纸备注的是活动茶格，酷家乐还原出来是固定的 两张图...</p>
+            <p class="hint">文字层字数：267；图片数：11</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>售后设计问题总结2508</span>
+          <span>源页 8</span>
+          <span>text_layer</span>
+        </div>
+        <h3>文字很少，可能是图示页或扫描页</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>2.设计问题</p>
+            <p class="hint">文字层字数：6；图片数：</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>售后设计问题总结2509</span>
+          <span>源页 10</span>
+          <span>text_layer</span>
+        </div>
+        <h3>文字很少，可能是图示页或扫描页</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>2.设计问题</p>
+            <p class="hint">文字层字数：6；图片数：</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>售后设计问题总结2510</span>
+          <span>源页 6</span>
+          <span>text_layer</span>
+        </div>
+        <h3>文字很少，可能是图示页或扫描页</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>2.设计问题</p>
+            <p class="hint">文字层字数：6；图片数：</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>售后设计问题总结2511</span>
+          <span>源页 9</span>
+          <span>text_layer</span>
+        </div>
+        <h3>文字很少，可能是图示页或扫描页</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>2.设计问题</p>
+            <p class="hint">文字层字数：6；图片数：</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>常规边角风格</span>
+          <span>源页 1</span>
+          <span>text_layer</span>
+        </div>
+        <h3>图片较多，文字层可能漏掉图中标注 / 包含可能影响报价或设计限制的词</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>常规边角风格 家具边角可根据实际需求进行调整，目前现有的边角风格有14种，具体可见下表。各边角细节尺寸见后续小节。平边边缘及直角边缘实物均有 R2.38mm（3/16）小圆弧，非锋利直角边。合同中备注边角风格可直接截图本页图片+名称部分，图纸中无需额外标注边角细节尺寸。 a）直角平边 b）圆角平边 c）直角圆边 d）圆角圆边 g）直角侧圆边 e）直角内斜边 f）圆角内斜边 i）新现代边角-侧边平齐h）圆边切角 k）外直角新古典圆边 j）新现代边角-侧边飘出 l）外圆角新古典圆...</p>
+            <p class="hint">文字层字数：228；图片数：12</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>支腿柜体</span>
+          <span>源页 5</span>
+          <span>text_layer</span>
+        </div>
+        <h3>图片较多，文字层可能漏掉图中标注 / 包含可能影响报价或设计限制的词</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>框架式标准支腿 支腿名称支腿 顶直径支腿 底直径支腿高度 腿称高度 使用产品 圆直腿 1-15045 25 150 40 圆直腿 1-20045 25 200 40 圆直腿 1-22045 25 220 40 圆直腿 1-24045 25 240 40 圆直腿 2-15045 30 150 40 圆直腿 2-20045 30 200 40 圆斜腿 1-15045 25 150 40DG-02 DG-06 DG-10 DSG-03 CTG-01 CTG-03 CBG-04 DS...</p>
+            <p class="hint">文字层字数：268；图片数：21</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>极窄斜边拼框门</span>
+          <span>源页 3</span>
+          <span>text_layer</span>
+        </div>
+        <h3>文字很少，可能是图示页或扫描页</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>场 景 应 用</p>
+            <p class="hint">文字层字数：4；图片数：1</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>玻璃</span>
+          <span>源页 1</span>
+          <span>text_layer</span>
+        </div>
+        <h3>图片较多，文字层可能漏掉图中标注 / 包含可能影响报价或设计限制的词</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>黑玻 欧茶 金茶 欧灰超白长虹 超白 油砂 欧灰长虹•玻璃均为钢化玻璃，长虹玻璃高度＜300mm或高度＞300mm长度＜365mm无法做钢化，其他玻璃尺寸长度高度均小于365mm时无法做钢化； •玻璃厚度统一5mm； •使用玻璃时，需截图手册玻璃样式图片附于合同中，常规玻璃无备注默认使用超白玻，长虹玻璃默认为超白长虹玻璃，使用其他种类玻璃 需明确备注对应名称；铝框门不可选用“水波纹”，可选用“超白银玻”；“镜面玻璃-单向透光”只用于铝框门； •长虹玻璃统一凸面朝外； •油砂玻...</p>
+            <p class="hint">文字层字数：270；图片数：12</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>玻璃</span>
+          <span>源页 2</span>
+          <span>text_layer</span>
+        </div>
+        <h3>文字很少，可能是图示页或扫描页</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>超白</p>
+            <p class="hint">文字层字数：2；图片数：4</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>转角柜</span>
+          <span>源页 6</span>
+          <span>text_layer</span>
+        </div>
+        <h3>图片较多，文字层可能漏掉图中标注 / 包含可能影响报价或设计限制的词</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>•对开门，可用大角度铰链 •设计通长扣手及对扣手时漏缝，请勿做该设计 •门板抽涨两门间可能有漏缝或无法开门的情况发生 •两门无法同时开启，需先后打开两门，门板开启后两 门间空间较小，可能无法正常使用 •非必要不设计该样式柜门，如客户要求，请向客户说 明使用上的不便之处并在合同中说明 以下为带门整体转角柜开门设计方法，设计时应注意柜门开启时是否方便使用。 平行铰链+铰链称 铰链称宽度≥80mm 平行铰链+铰链称 铰链称宽度≥80mm常规铰链+铰链称 门板内嵌 铰链称宽度≥门厚+...</p>
+            <p class="hint">文字层字数：256；图片数：19</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>零食柜门</span>
+          <span>源页 3</span>
+          <span>text_layer</span>
+        </div>
+        <h3>文字很少，可能是图示页或扫描页</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>•应用场景</p>
+            <p class="hint">文字层字数：5；图片数：2</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>售后设计问题总结2512</span>
+          <span>源页 11</span>
+          <span>text_layer</span>
+        </div>
+        <h3>包含可能影响报价或设计限制的词</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>3）.问题：图纸与效果图/备注/实际需求不一致 ●原因：家具在做完合同后修改过，但该部分替换图纸时，没有全部删掉重新替换，遗漏了部分之前的图纸；由于只替换了图纸， 而备注尺寸未修改，导致备注与图纸不符。 ●如何避免：修改替换合同图纸时需仔细，把需要修改的图纸全部替换，同时修改合同中的备注与标注，保持备注与图纸的一致。门板尺寸与图纸对不上 图纸挡条宽度不一致，一个图纸40 一个50 按照40做的 备注是直角圆边，图上是直角直边，备注是错的按照图纸做 备注尺寸和图纸尺寸不一致，以...</p>
+            <p class="hint">文字层字数：289；图片数：11</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>GB 28008-2024 家具结构安全技术规范</span>
+          <span>源页 9</span>
+          <span>text_layer</span>
+        </div>
+        <h3>普通页抽查，用来校准整体稳定性</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>4.1.2.3 使用过程中的剪切和挤压点 4.1.2.3.1 在预定的使用条件下,不应有可触及的剪切和挤压点。 4.1.2.3.2 正常动作和操作(例如,尝试通过抬起椅面或调整椅背来移动椅子)时,不应有可能造成伤害 的剪切和挤压点。 4.1.2.3.3 正常使用中受力作用下可接触间隙用半球形手指探棒(如图1所示)试验,间隙应小于7mm 或不小于18mm。 4.1.2.3.4 剪切和挤压点的判定流程按附录A的规定进行。 4.1.3 孔及间隙 4.1.3.1 产品可触及区域内刚性...</p>
+            <p class="hint">文字层字数：945；图片数：2</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>五金拉手</span>
+          <span>源页 1</span>
+          <span>text_layer</span>
+        </div>
+        <h3>普通页抽查，用来校准整体稳定性</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>•型号：JS-FX •名称：方形金属拉手 •规格尺寸： 长度31mm 宽度30mm 高度20mm •型号：JS-YX •名称：圆形金属拉手 •规格尺寸： 直径32mm 高度25mm •型号：JS-YZ •名称：圆珠金属拉手 •规格尺寸： 直径19mm 高度20mm •型号：JS-ZT •名称：锥台金属拉手 •规格尺寸： 直径上20下13mm 高度25mm •型号：JS-BK •名称：贝壳金属拉手 •规格尺寸： 直径25mm 高度23mm •型号：JS-MSS •名称：美式双孔...</p>
+            <p class="hint">文字层字数：260；图片数：6</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>售后设计问题总结2505</span>
+          <span>源页 8</span>
+          <span>text_layer</span>
+        </div>
+        <h3>普通页抽查，用来校准整体稳定性</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>3).问题：收口条2.5cm，客户门框凸出的尺寸和收口条卡扣的尺寸加起来3cm，导致加上 卡扣差几毫米柜子推不进去（U型空间） ● 原因：设计师没有按照U型空间的要求预留挡边条；且没有为门边框突出多预留出挡边条的安装空间。 ●如何避免：无额外安装空间的U型空间柜体，U形空间内无踢脚线，左右两侧挡条宽度之和要求≥80mm；如两侧有踢脚线， 则在此基础增加踢脚线相应厚度。</p>
+            <p class="hint">文字层字数：180；图片数：3</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>极窄斜边拼框门</span>
+          <span>源页 1</span>
+          <span>text_layer</span>
+        </div>
+        <h3>普通页抽查，用来校准整体稳定性</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>极窄斜边拼框门 •尺寸限制：单扇门宽W≤500mm；高H≤2200mm •门板厚度：门厚28mm •门边框宽度：外露30mm（斜切边:25mm,外露平边5mm），边宽60mm •开启方式：可推弹开启；扣手开启 •门板结构：45°斜角拼接 •无外露中横，门后有暗称 •适用铰链：内嵌门铰链称宽度需≥100mm，外盖门铰链称需≥80mm ；柜内拉 篮等避让铰链宽度至少50mm；因门边限制，铰链不可嵌入式安装，因此该门 不可用在钻石柜、大角度圆边柜体以及不可安装平装铰链。 门板背面图...</p>
+            <p class="hint">文字层字数：242；图片数：3</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>活动层板</span>
+          <span>源页 1</span>
+          <span>text_layer</span>
+        </div>
+        <h3>普通页抽查，用来校准整体稳定性</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>活动层板 •活动层板指在柜体中可拆卸或可调节的层板，使用层板钉与柜体连接，层板上有限位卡槽； •活动层板按结构方式可分为平板活动层板和拼框活动层板； ①平板活动层板 与其他常规层板相同，层板宽度W＜555mm ②拼框活动层板 与其他常规层板不同，上平装拼框结构，边框宽度60mm厚度22mm，芯板厚度11mm，层板宽度W≥555mm</p>
+            <p class="hint">文字层字数：160；图片数：4</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+
+      <article class="sample-card" data-method="text_layer">
+        <div class="sample-card__meta">
+          <span>灯带</span>
+          <span>源页 14</span>
+          <span>text_layer</span>
+        </div>
+        <h3>普通页抽查，用来校准整体稳定性</h3>
+        <div class="sample-grid">
+          <div>
+            <p class="label">原文字层</p>
+            <p>灯带分区控制设计说明 •多个开关分区控制 多个开关分区控制通过设置多个开关实现，最多可控制5个单独区域，可通过各区域单独开关控制，也可通过1个开关进行总控。以下以 最多情况示例： 控制器1 控制器2 控制器3 控制器4 控制器5驱动1 驱动2 驱动3 驱动4 驱动5A区开关 B区开关 C区开关 D区开关 E区开关总控开关</p>
+            <p class="hint">文字层字数：145；图片数：1</p>
+          </div>
+          <div>
+            <p class="label">PaddleOCR 抽样结果</p>
+            <p>这页未进入本轮 OCR 抽样。</p>
+            <p class="hint">这页未进入本轮 OCR 抽样。</p>
+          </div>
+        </div>
+        
+      </article>
+    
+    </section>
+  </main>
+</body>
+</html>

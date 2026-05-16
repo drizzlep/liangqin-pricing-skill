@@ -1,0 +1,47 @@
+{
+  "title": "新版设计师手册全书闭环报告",
+  "candidate_layer": "designer-manual-online-2026-05-13",
+  "closure_status": "complete",
+  "human_rule_by_rule_review_required": false,
+  "entry_count": 1757,
+  "coverage_status_counts": {
+    "not_safe_for_auto_answer": 104,
+    "runtime_hard_rule": 230,
+    "knowledge_ready": 136,
+    "excluded_background": 1287
+  },
+  "coverage_publish_target_counts": {
+    "none": 1391,
+    "runtime": 230,
+    "knowledge": 136
+  },
+  "closure_counts": {
+    "not_safe_for_auto_answer": 104,
+    "runtime_rule": 230,
+    "knowledge_ready": 136,
+    "excluded_background": 1287
+  },
+  "closed_review_item_count": 240,
+  "closed_review_resolution_counts": {
+    "not_safe_for_auto_answer": 104,
+    "knowledge_ready": 136
+  },
+  "unknown_page_count": 33,
+  "unknown_page_resolution_counts": {
+    "machine_extractable_needs_rule_test": 1,
+    "machine_extractable_knowledge": 19,
+    "manual_source_only": 1,
+    "not_machine_readable_excluded": 12
+  },
+  "knowledge_entry_count": 136,
+  "certification_recommended_action": "全书数据闭环已完成：可发布明确开放的数据点，未开放内容已落入排除或源证据复核状态。",
+  "outputs": {
+    "coverage_ledger": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/coverage-ledger.json",
+    "unknown_page_resolution_ledger": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/unknown-page-resolution-ledger.json",
+    "knowledge_layer": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/knowledge-layer.json",
+    "certification": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/full-document-data-certification.json",
+    "closure_json": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/full-document-closure-report.json",
+    "closure_html": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/full-document-closure-board.html",
+    "closure_md": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/full-document-closure-report.md"
+  }
+}

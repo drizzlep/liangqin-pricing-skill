@@ -1,0 +1,1701 @@
+{
+  "title": "剩余规则机器化清障与安全接入报告",
+  "candidate_layer": "designer-manual-online-2026-05-13",
+  "old_layer": "designer-manual-2026-03-22",
+  "source_ledger": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/baseline-migration-ledger.json",
+  "final_status": "machine_resolution_complete",
+  "human_rule_by_rule_review_required": false,
+  "counts": {
+    "money_total": 20,
+    "ocr_quality_total": 45,
+    "conflict_total": 5,
+    "money_requeue_count": 0,
+    "ocr_requeue_count": 45,
+    "conflict_requeue_count": 0,
+    "still_paused_count": 25
+  },
+  "money_rule_regression_ledger": [
+    {
+      "landing_id": "landing-rule-0009",
+      "source_data_point_id": "data-point-0009",
+      "machine_resolution_status": "conflict_blocked_until_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "软包床头",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:bed_or_soft_package_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "length",
+        "material",
+        "door_type",
+        "quote_note"
+      ],
+      "numeric_signals": [
+        "18mm"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0002",
+      "source_data_point_id": "data-point-0002",
+      "machine_resolution_status": "conflict_blocked_until_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "天地铰链铝框门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "material",
+        "door_type",
+        "quote_note"
+      ],
+      "numeric_signals": [
+        "305mm",
+        "2200mm",
+        "180mm",
+        "500mm",
+        "26mm",
+        "≤2200",
+        "≤500"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0155",
+      "source_data_point_id": "data-point-0155",
+      "machine_resolution_status": "conflict_blocked_until_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "穿衣镜",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "material",
+        "door_type",
+        "wall_or_install_condition"
+      ],
+      "numeric_signals": [
+        "10mm",
+        "380mm",
+        "25mm",
+        "900mm",
+        "≥10",
+        "≥380"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "报价原则",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0099",
+      "source_data_point_id": "data-point-0099",
+      "machine_resolution_status": "conflict_blocked_until_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "特殊抽屉滑轨",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category"
+      ],
+      "numeric_signals": [],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "额外收费",
+        "公式",
+        "不额外收费"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "机器未抽取到足够公式字段或金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0027",
+      "source_data_point_id": "data-point-0027",
+      "machine_resolution_status": "conflict_blocked_until_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "极窄斜边拼框门",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P0-影响金额",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "door_type"
+      ],
+      "numeric_signals": [
+        "70mm",
+        "40mm",
+        "60mm",
+        "10mm",
+        "20mm"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0010",
+      "source_data_point_id": "data-point-0010",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "模块卡座书柜定制设计指引",
+      "source_page": 3,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "depth",
+        "material",
+        "door_type"
+      ],
+      "numeric_signals": [
+        "900mm",
+        "1800mm",
+        "2000mm",
+        "300mm",
+        "≤300"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0079",
+      "source_data_point_id": "data-point-0079",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "圆弧侧板",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "material"
+      ],
+      "numeric_signals": [
+        "50mm",
+        "2600mm",
+        "15m",
+        "2600m",
+        "≤2600",
+        "≥50",
+        "≥15"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0122",
+      "source_data_point_id": "data-point-0122",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "藤编门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "door_type"
+      ],
+      "numeric_signals": [
+        "560mm",
+        "2300mm",
+        "700mm",
+        "22mm",
+        "60mm",
+        "30mm",
+        "≤560",
+        "≤2300",
+        "≤23"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0369",
+      "source_data_point_id": "data-point-0369",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "针式铰链铝框门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "material",
+        "door_type",
+        "quote_note"
+      ],
+      "numeric_signals": [
+        "305mm",
+        "3000mm",
+        "180mm",
+        "500mm",
+        "36mm",
+        "22mm",
+        "≤3000",
+        "≤500"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0067",
+      "source_data_point_id": "data-point-0067",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "无底板柜",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "depth",
+        "length",
+        "wall_or_install_condition"
+      ],
+      "numeric_signals": [
+        "700mm",
+        "30mm",
+        "1200mm",
+        "1000mm",
+        "≤700",
+        "≥30",
+        "≤1200"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0048",
+      "source_data_point_id": "data-point-0048",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "纹理连续说明",
+      "source_page": 5,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "material",
+        "door_type",
+        "quote_note"
+      ],
+      "numeric_signals": [
+        "2600mm",
+        "≤2600"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0082",
+      "source_data_point_id": "data-point-0082",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "挡条",
+      "source_page": 4,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "door_type",
+        "wall_or_install_condition"
+      ],
+      "numeric_signals": [
+        "22mm",
+        "20mm",
+        "120mm",
+        "≤120",
+        "48*48"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0105",
+      "source_data_point_id": "data-point-0105",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "平开门说明",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "length",
+        "door_type"
+      ],
+      "numeric_signals": [
+        "≤1.5"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0249",
+      "source_data_point_id": "data-point-0249",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "挡条",
+      "source_page": 3,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "door_type"
+      ],
+      "numeric_signals": [
+        "15mm",
+        "22mm",
+        "28mm",
+        "20mm",
+        "120mm",
+        "≤120"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0157",
+      "source_data_point_id": "data-point-0157",
+      "machine_resolution_status": "blocked_missing_formula_fields_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 4,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "required_fields": [
+        "product_or_category"
+      ],
+      "numeric_signals": [],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "机器未抽取到足够公式字段或金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0158",
+      "source_data_point_id": "data-point-0158",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 11,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "required_fields": [
+        "product_or_category"
+      ],
+      "numeric_signals": [
+        "600mm"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0227",
+      "source_data_point_id": "data-point-0227",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "常规拆装柜体",
+      "source_page": 7,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响合同备注",
+      "required_fields": [
+        "product_or_category",
+        "depth",
+        "quote_note"
+      ],
+      "numeric_signals": [
+        "700mm"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0505",
+      "source_data_point_id": "data-point-0505",
+      "machine_resolution_status": "blocked_missing_formula_fields_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "常规拆装柜体",
+      "source_page": 9,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "required_fields": [
+        "product_or_category",
+        "height"
+      ],
+      "numeric_signals": [],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "机器未抽取到足够公式字段或金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0136",
+      "source_data_point_id": "data-point-0136",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "吊轨门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:general_adjustment",
+      "risk_level": "P1-影响能否下单",
+      "required_fields": [
+        "product_or_category",
+        "height",
+        "width",
+        "door_type",
+        "wall_or_install_condition"
+      ],
+      "numeric_signals": [
+        "30kg",
+        "600mm",
+        "1200mm",
+        "2300mm",
+        "26mm",
+        "≤1200",
+        "≤2300"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    },
+    {
+      "landing_id": "landing-rule-0543",
+      "source_data_point_id": "data-point-0543",
+      "machine_resolution_status": "regression_spec_ready_paused",
+      "runtime_action": "keep_paused",
+      "source_title": "吊轨门",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "required_fields": [
+        "product_or_category",
+        "width",
+        "door_type",
+        "wall_or_install_condition"
+      ],
+      "numeric_signals": [
+        "70mm"
+      ],
+      "formula_signals": [
+        "加价",
+        "补差",
+        "折减",
+        "公式"
+      ],
+      "regression_spec": {
+        "positive_case": "完整字段命中该规则时，报价明细必须显式列出该规则，但本阶段不写入真实金额。",
+        "missing_field_case": "缺少任一 required_fields 时必须转 precheck，不得直接影响正式报价金额。",
+        "amount_assertion": "blocked_until_formula_and_golden_amount_exist"
+      },
+      "machine_reason": "已抽取到金额/尺寸信号，可生成回归规格，但缺少可执行金额 golden 值，继续暂停。"
+    }
+  ],
+  "ocr_quality_resolution_ledger": [
+    {
+      "landing_id": "landing-rule-0152",
+      "source_data_point_id": "data-point-0152",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "穿衣镜",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P0-影响金额",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 143,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0064",
+      "source_data_point_id": "data-point-0064",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "岩板柜",
+      "source_page": 1,
+      "suggested_module": "precheck_quote:safety_or_install_gate",
+      "risk_level": "P0-影响安全/安装",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 114,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0263",
+      "source_data_point_id": "data-point-0263",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "标准抽屉滑轨",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P1-影响金额候选",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 123,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0107",
+      "source_data_point_id": "data-point-0107",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "飞瀑门",
+      "source_page": 1,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 106,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0012",
+      "source_data_point_id": "data-point-0012",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "书梯书柜",
+      "source_page": 1,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 100,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0234",
+      "source_data_point_id": "data-point-0234",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "无牙称柜体",
+      "source_page": 1,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 141,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0275",
+      "source_data_point_id": "data-point-0275",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "上下翻门说明",
+      "source_page": 1,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 141,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0201",
+      "source_data_point_id": "data-point-0201",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结260102",
+      "source_page": 21,
+      "suggested_module": "pricing_calculation:material_or_rock_slab_adjustment",
+      "risk_level": "P0-影响金额",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 150,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0994",
+      "source_data_point_id": "data-point-0994",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2510",
+      "source_page": 11,
+      "suggested_module": "precheck_quote:safety_or_install_gate",
+      "risk_level": "P0-影响安全/安装",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 165,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0786",
+      "source_data_point_id": "data-point-0786",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2508",
+      "source_page": 16,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 176,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0964",
+      "source_data_point_id": "data-point-0964",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2506",
+      "source_page": 16,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 183,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0979",
+      "source_data_point_id": "data-point-0979",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2508",
+      "source_page": 10,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 178,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1379",
+      "source_data_point_id": "data-point-1379",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2603",
+      "source_page": 9,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 177,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0313",
+      "source_data_point_id": "data-point-0313",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结260102",
+      "source_page": 29,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 158,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0749",
+      "source_data_point_id": "data-point-0749",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2503",
+      "source_page": 16,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 180,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0760",
+      "source_data_point_id": "data-point-0760",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2505",
+      "source_page": 7,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 234,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0796",
+      "source_data_point_id": "data-point-0796",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2510",
+      "source_page": 9,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 156,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0798",
+      "source_data_point_id": "data-point-0798",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2510",
+      "source_page": 17,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 177,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0807",
+      "source_data_point_id": "data-point-0807",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2512",
+      "source_page": 9,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 177,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0925",
+      "source_data_point_id": "data-point-0925",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结250102",
+      "source_page": 28,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 164,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0987",
+      "source_data_point_id": "data-point-0987",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2509",
+      "source_page": 17,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 188,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0470",
+      "source_data_point_id": "data-point-0470",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2511",
+      "source_page": 19,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 186,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1327",
+      "source_data_point_id": "data-point-1327",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2505",
+      "source_page": 18,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 191,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1339",
+      "source_data_point_id": "data-point-1339",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2507",
+      "source_page": 23,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 198,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0957",
+      "source_data_point_id": "data-point-0957",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2505",
+      "source_page": 19,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 165,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1016",
+      "source_data_point_id": "data-point-1016",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结260102",
+      "source_page": 30,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 158,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1311",
+      "source_data_point_id": "data-point-1311",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2503",
+      "source_page": 17,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 140,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1343",
+      "source_data_point_id": "data-point-1343",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2508",
+      "source_page": 13,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 152,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0198",
+      "source_data_point_id": "data-point-0198",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结260102",
+      "source_page": 9,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 215,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0741",
+      "source_data_point_id": "data-point-0741",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结250102",
+      "source_page": 29,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 151,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0743",
+      "source_data_point_id": "data-point-0743",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2503",
+      "source_page": 4,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 158,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1022",
+      "source_data_point_id": "data-point-1022",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2603",
+      "source_page": 10,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 144,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1023",
+      "source_data_point_id": "data-point-1023",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2603",
+      "source_page": 10,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 144,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0193",
+      "source_data_point_id": "data-point-0193",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2511",
+      "source_page": 20,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 144,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0975",
+      "source_data_point_id": "data-point-0975",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2507",
+      "source_page": 24,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 149,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0976",
+      "source_data_point_id": "data-point-0976",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2507",
+      "source_page": 24,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 149,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1351",
+      "source_data_point_id": "data-point-1351",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2509",
+      "source_page": 18,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 160,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0188",
+      "source_data_point_id": "data-point-0188",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2510",
+      "source_page": 18,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 178,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0189",
+      "source_data_point_id": "data-point-0189",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2510",
+      "source_page": 18,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 178,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0947",
+      "source_data_point_id": "data-point-0947",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2504",
+      "source_page": 28,
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "risk_level": "P1-影响能否下单",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 175,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1007",
+      "source_data_point_id": "data-point-1007",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2512",
+      "source_page": 10,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 146,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-1008",
+      "source_data_point_id": "data-point-1008",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2512",
+      "source_page": 10,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 146,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0980",
+      "source_data_point_id": "data-point-0980",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2508",
+      "source_page": 17,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 155,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0981",
+      "source_data_point_id": "data-point-0981",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "售后设计问题总结2508",
+      "source_page": 17,
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "risk_level": "P1-影响合同备注",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 155,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    },
+    {
+      "landing_id": "landing-rule-0314",
+      "source_data_point_id": "data-point-0314",
+      "machine_resolution_status": "evidence_resolved_can_requeue",
+      "runtime_action": "requeue_for_machine_landing",
+      "source_title": "2026.4.30更新日志",
+      "source_page": 1,
+      "suggested_module": "precheck_quote:rule_gate",
+      "risk_level": "P2-影响说明完整性",
+      "evidence": {
+        "data_point_found": true,
+        "data_point_needs_human_review": false,
+        "text_layer_char_count": 177,
+        "blocking_page_found": false,
+        "ocr_status": null,
+        "ocr_char_count": 0,
+        "image_ready": false
+      },
+      "machine_reason": "文本层和认证数据点可用，且未标记人工复核，可回流到机器候选。"
+    }
+  ],
+  "conflict_resolution_ledger": [
+    {
+      "landing_id": "landing-rule-0009",
+      "source_data_point_id": "data-point-0009",
+      "machine_resolution_status": "blocked_by_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "软包床头",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:bed_or_soft_package_adjustment",
+      "risk_level": "P0-影响金额",
+      "old_rule_match_count": 0,
+      "old_rule_matches": [],
+      "machine_reason": "该冲突规则同时属于金额规则，必须先通过金额回归，不能仅靠语义 shadow 覆盖。"
+    },
+    {
+      "landing_id": "landing-rule-0002",
+      "source_data_point_id": "data-point-0002",
+      "machine_resolution_status": "blocked_by_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "天地铰链铝框门",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P0-影响金额",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "只适用天地铰链",
+          "match_type": "source_title"
+        },
+        {
+          "title": "针式铰链铝框门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "铝框岩板门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "拱形藤编门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "藤编门尺寸限制",
+          "match_type": "signal_overlap"
+        }
+      ],
+      "machine_reason": "该冲突规则同时属于金额规则，必须先通过金额回归，不能仅靠语义 shadow 覆盖。"
+    },
+    {
+      "landing_id": "landing-rule-0155",
+      "source_data_point_id": "data-point-0155",
+      "machine_resolution_status": "blocked_by_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "穿衣镜",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P0-影响金额",
+      "old_rule_match_count": 0,
+      "old_rule_matches": [],
+      "machine_reason": "该冲突规则同时属于金额规则，必须先通过金额回归，不能仅靠语义 shadow 覆盖。"
+    },
+    {
+      "landing_id": "landing-rule-0099",
+      "source_data_point_id": "data-point-0099",
+      "machine_resolution_status": "blocked_by_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "特殊抽屉滑轨",
+      "source_page": 1,
+      "suggested_module": "pricing_calculation:cabinet_structure_adjustment",
+      "risk_level": "P0-影响金额",
+      "old_rule_match_count": 0,
+      "old_rule_matches": [],
+      "machine_reason": "该冲突规则同时属于金额规则，必须先通过金额回归，不能仅靠语义 shadow 覆盖。"
+    },
+    {
+      "landing_id": "landing-rule-0027",
+      "source_data_point_id": "data-point-0027",
+      "machine_resolution_status": "blocked_by_money_regression",
+      "runtime_action": "keep_paused",
+      "source_title": "极窄斜边拼框门",
+      "source_page": 2,
+      "suggested_module": "pricing_calculation:door_panel_adjustment",
+      "risk_level": "P0-影响金额",
+      "old_rule_match_count": 0,
+      "old_rule_matches": [],
+      "machine_reason": "该冲突规则同时属于金额规则，必须先通过金额回归，不能仅靠语义 shadow 覆盖。"
+    }
+  ],
+  "guardrails": [
+    "机器可证明安全的规则才可进入下一轮接入。",
+    "金额规则没有公式字段和 golden amount 回归前继续暂停。",
+    "OCR/质量规则没有多路证据一致性前继续暂停。",
+    "冲突金额规则必须等待金额回归，不允许语义强切。"
+  ],
+  "outputs": {
+    "money_json": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/money-rule-regression-ledger.json",
+    "money_summary": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/money-rule-regression-ledger.md",
+    "ocr_json": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/ocr-quality-resolution-ledger.json",
+    "ocr_summary": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/ocr-quality-resolution-ledger.md",
+    "conflict_json": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/conflict-resolution-ledger.json",
+    "conflict_summary": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/conflict-resolution-ledger.md",
+    "final_json": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/remaining-rule-resolution-report.json",
+    "final_summary": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/remaining-rule-resolution-report.md"
+  }
+}

@@ -1,0 +1,2154 @@
+{
+  "candidate_layer": "designer-manual-online-2026-05-13",
+  "runtime_gates": [
+    {
+      "rule_id": "landing-rule-0034",
+      "source_title": "轨道插座电源标准",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "轨道插座电源标准"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合",
+        "满足",
+        "可固定",
+        "承重墙",
+        "不超过50kg",
+        "50kg以内"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "wall_or_install_condition",
+      "question": "轨道插座电源标准 涉及新版手册的安全/安装前置条件；正式报价前请先确认该条件是否满足。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0034.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0406",
+      "source_title": "轨道插座电源标准",
+      "source_page": 2,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "轨道插座电源标准"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合",
+        "满足",
+        "可固定",
+        "承重墙",
+        "不超过50kg",
+        "50kg以内"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "wall_or_install_condition",
+      "question": "轨道插座电源标准 涉及新版手册的安全/安装前置条件；正式报价前请先确认该条件是否满足。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0406.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0151",
+      "source_title": "轨道插座电源标准",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "轨道插座电源标准"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合",
+        "满足",
+        "可固定",
+        "承重墙",
+        "不超过50kg",
+        "50kg以内"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "wall_or_install_condition",
+      "question": "轨道插座电源标准 涉及新版手册的安全/安装前置条件；正式报价前请先确认该条件是否满足。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0151.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0069",
+      "source_title": "悬空电视柜",
+      "source_page": 1,
+      "category_type": "table",
+      "trigger_terms": [
+        "悬空电视柜"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合",
+        "满足",
+        "可固定",
+        "承重墙",
+        "不超过50kg",
+        "50kg以内"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "wall_or_install_condition",
+      "question": "悬空电视柜 涉及新版手册的安全/安装前置条件；正式报价前请先确认该条件是否满足。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0069.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0168",
+      "source_title": "挂墙桌",
+      "source_page": 1,
+      "category_type": "table",
+      "trigger_terms": [
+        "挂墙桌"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合",
+        "满足",
+        "可固定",
+        "承重墙",
+        "不超过50kg",
+        "50kg以内"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "wall_or_install_condition",
+      "question": "挂墙桌 涉及新版手册的安全/安装前置条件；正式报价前请先确认该条件是否满足。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0168.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0144",
+      "source_title": "下翻门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "下翻门"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合",
+        "满足",
+        "可固定",
+        "承重墙",
+        "不超过50kg",
+        "50kg以内"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "wall_or_install_condition",
+      "question": "下翻门 涉及新版手册的安全/安装前置条件；正式报价前请先确认该条件是否满足。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0144.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0691",
+      "source_title": "电动举升器",
+      "source_page": 1,
+      "category_type": "bed",
+      "trigger_terms": [
+        "电动举升器"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合",
+        "满足",
+        "可固定",
+        "承重墙",
+        "不超过50kg",
+        "50kg以内"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "mattress_weight",
+      "question": "电动举升器 涉及新版手册的安全/安装前置条件；正式报价前请先确认该条件是否满足。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0691.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0074",
+      "source_title": "活动层板",
+      "source_page": 3,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "活动层板"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合",
+        "满足",
+        "可固定",
+        "承重墙",
+        "不超过50kg",
+        "50kg以内"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "wall_or_install_condition",
+      "question": "活动层板 涉及新版手册的安全/安装前置条件；正式报价前请先确认该条件是否满足。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0074.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0299",
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_page": 32,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+        "GB",
+        "28007",
+        "2024",
+        "婴幼儿及儿童家具安全技术规范"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合",
+        "满足",
+        "可固定",
+        "承重墙",
+        "不超过50kg",
+        "50kg以内"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "wall_or_install_condition",
+      "question": "GB 28007-2024 婴幼儿及儿童家具安全技术规范 涉及新版手册的安全/安装前置条件；正式报价前请先确认该条件是否满足。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0299.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0428",
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_page": 38,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+        "GB",
+        "28007",
+        "2024",
+        "婴幼儿及儿童家具安全技术规范"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合",
+        "满足",
+        "可固定",
+        "承重墙",
+        "不超过50kg",
+        "50kg以内"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "wall_or_install_condition",
+      "question": "GB 28007-2024 婴幼儿及儿童家具安全技术规范 涉及新版手册的安全/安装前置条件；正式报价前请先确认该条件是否满足。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0428.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0065",
+      "source_title": "岩板柜",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "岩板柜"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合",
+        "满足",
+        "可固定",
+        "承重墙",
+        "不超过50kg",
+        "50kg以内"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "wall_or_install_condition",
+      "question": "岩板柜 涉及新版手册的安全/安装前置条件；正式报价前请先确认该条件是否满足。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0065.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0437",
+      "source_title": "抽拉床",
+      "source_page": 1,
+      "category_type": "bed",
+      "trigger_terms": [
+        "抽拉床"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "抽拉床 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0437.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0124",
+      "source_title": "真格栅门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "真格栅门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "真格栅门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0124.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0358",
+      "source_title": "骨骼线门板",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "骨骼线门板"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "骨骼线门板 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0358.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0433",
+      "source_title": "小蜻蜓举升器",
+      "source_page": 1,
+      "category_type": "bed",
+      "trigger_terms": [
+        "小蜻蜓举升器"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "小蜻蜓举升器 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0433.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0088",
+      "source_title": "平板背板",
+      "source_page": 2,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "平板背板"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "平板背板 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0088.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0089",
+      "source_title": "平板背板",
+      "source_page": 3,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "平板背板"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "平板背板 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0089.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0090",
+      "source_title": "平板背板",
+      "source_page": 6,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "平板背板"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "平板背板 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0090.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0097",
+      "source_title": "托盘抽",
+      "source_page": 1,
+      "category_type": "table",
+      "trigger_terms": [
+        "托盘抽"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "托盘抽 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0097.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0120",
+      "source_title": "极窄斜边拼框门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "极窄斜边拼框门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "极窄斜边拼框门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0120.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0349",
+      "source_title": "超大带轮抽屉",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "超大带轮抽屉"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "超大带轮抽屉 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0349.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0286",
+      "source_title": "抽屉锁",
+      "source_page": 6,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "抽屉锁"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "抽屉锁 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0286.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0023",
+      "source_title": "百川门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "百川门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "百川门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0023.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0030",
+      "source_title": "外悬推拉门（木门）",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "外悬推拉门（木门）",
+        "外悬推拉门",
+        "木门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "外悬推拉门（木门） 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0030.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0108",
+      "source_title": "飞瀑门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "飞瀑门"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "飞瀑门 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0108.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0110",
+      "source_title": "竖向拉线门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "竖向拉线门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "竖向拉线门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0110.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0119",
+      "source_title": "超高经典/拱形/胶囊玻璃门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "超高经典/拱形/胶囊玻璃门",
+        "超高经典",
+        "拱形",
+        "胶囊玻璃门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "超高经典/拱形/胶囊玻璃门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0119.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0142",
+      "source_title": "上翻门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "上翻门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "上翻门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0142.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0370",
+      "source_title": "铝框岩板门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "铝框岩板门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "铝框岩板门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0370.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0391",
+      "source_title": "雪见推拉门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "雪见推拉门"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "雪见推拉门 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0391.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0414",
+      "source_title": "儿童房家具设计要求",
+      "source_page": 3,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "儿童房家具设计要求"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "儿童房家具设计要求 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0414.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0574",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 18,
+      "category_type": "bed",
+      "trigger_terms": [
+        "模块化儿童床设计要求"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "模块化儿童床设计要求 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0574.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0013",
+      "source_title": "书梯书柜",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "书梯书柜"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "书梯书柜 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0013.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0216",
+      "source_title": "侧板通顶柜体设计应用",
+      "source_page": 6,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "侧板通顶柜体设计应用"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "侧板通顶柜体设计应用 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0216.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0255",
+      "source_title": "拼框背板",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "拼框背板"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "拼框背板 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0255.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0268",
+      "source_title": "零食柜门",
+      "source_page": 2,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "零食柜门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "零食柜门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0268.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0360",
+      "source_title": "铝框门说明及检索表",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "铝框门说明及检索表"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "铝框门说明及检索表 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0360.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0411",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 6,
+      "category_type": "bed",
+      "trigger_terms": [
+        "模块化儿童床设计要求"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "模块化儿童床设计要求 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0411.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0424",
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_page": 30,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+        "GB",
+        "28007",
+        "2024",
+        "婴幼儿及儿童家具安全技术规范"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "GB 28007-2024 婴幼儿及儿童家具安全技术规范 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0424.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0572",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 9,
+      "category_type": "bed",
+      "trigger_terms": [
+        "模块化儿童床设计要求"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "模块化儿童床设计要求 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0572.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0680",
+      "source_title": "床榻说明",
+      "source_page": 3,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "床榻说明"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "床榻说明 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0680.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0684",
+      "source_title": "排骨架",
+      "source_page": 1,
+      "category_type": "bed",
+      "trigger_terms": [
+        "排骨架"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "排骨架 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0684.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0686",
+      "source_title": "床垫限位器",
+      "source_page": 1,
+      "category_type": "bed",
+      "trigger_terms": [
+        "床垫限位器"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "床垫限位器 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0686.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0007",
+      "source_title": "洞洞板",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "洞洞板"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "洞洞板 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0007.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0083",
+      "source_title": "挡条",
+      "source_page": 6,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "挡条"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "挡条 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0083.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0148",
+      "source_title": "花瓣拉手",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "花瓣拉手"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "花瓣拉手 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0148.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0150",
+      "source_title": "灯带",
+      "source_page": 6,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "灯带"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "灯带 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0150.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0235",
+      "source_title": "无牙称柜体",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "无牙称柜体"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "无牙称柜体 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0235.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0239",
+      "source_title": "钻石柜",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "钻石柜"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "钻石柜 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0239.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0241",
+      "source_title": "无底板柜",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "无底板柜"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "无底板柜 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0241.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0248",
+      "source_title": "挡条",
+      "source_page": 2,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "挡条"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "挡条 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0248.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0254",
+      "source_title": "拼框背板",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "拼框背板"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "拼框背板 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0254.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0262",
+      "source_title": "抽屉说明",
+      "source_page": 2,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "抽屉说明"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "抽屉说明 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0262.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0276",
+      "source_title": "上下翻门说明",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "上下翻门说明"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "上下翻门说明 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0276.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0278",
+      "source_title": "上翻回收门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "上翻回收门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "上翻回收门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0278.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0293",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 17,
+      "category_type": "bed",
+      "trigger_terms": [
+        "模块化儿童床设计要求"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "模块化儿童床设计要求 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0293.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0295",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 19,
+      "category_type": "bed",
+      "trigger_terms": [
+        "模块化儿童床设计要求"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "模块化儿童床设计要求 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0295.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0501",
+      "source_title": "常规边角风格",
+      "source_page": 11,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "常规边角风格"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "常规边角风格 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0501.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0828",
+      "source_title": "海棠角设计与应用",
+      "source_page": 2,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "海棠角设计与应用"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "海棠角设计与应用 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0828.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0836",
+      "source_title": "侧板通顶柜体设计应用",
+      "source_page": 5,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "侧板通顶柜体设计应用"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "侧板通顶柜体设计应用 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0836.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0845",
+      "source_title": "海棠角边角风格",
+      "source_page": 4,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "海棠角边角风格"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "海棠角边角风格 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0845.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0847",
+      "source_title": "柜体分类说明",
+      "source_page": 1,
+      "category_type": "table",
+      "trigger_terms": [
+        "柜体分类说明"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "柜体分类说明 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0847.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0129",
+      "source_title": "常规推拉门",
+      "source_page": 6,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "常规推拉门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "常规推拉门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0129.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0392",
+      "source_title": "日式障子门",
+      "source_page": 3,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "日式障子门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "日式障子门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0392.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0510",
+      "source_title": "转角柜",
+      "source_page": 4,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "转角柜"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "转角柜 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0510.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0006",
+      "source_title": "洞洞板",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "洞洞板"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "洞洞板 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0006.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0265",
+      "source_title": "抽屉悬空解决方案",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "抽屉悬空解决方案"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "抽屉悬空解决方案 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0265.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0266",
+      "source_title": "抽屉悬空解决方案",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "抽屉悬空解决方案"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "抽屉悬空解决方案 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0266.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0512",
+      "source_title": "书梯书柜",
+      "source_page": 2,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "书梯书柜"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "书梯书柜 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0512.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0726",
+      "source_title": "定制并立书桌",
+      "source_page": 1,
+      "category_type": "table",
+      "trigger_terms": [
+        "定制并立书桌"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "定制并立书桌 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0726.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0005",
+      "source_title": "黑 白板门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "黑 白板门",
+        "白板门"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "黑 白板门 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0005.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0389",
+      "source_title": "常规推拉门",
+      "source_page": 3,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "常规推拉门"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "常规推拉门 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0389.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0442",
+      "source_title": "斜腿桌系列",
+      "source_page": 1,
+      "category_type": "table",
+      "trigger_terms": [
+        "斜腿桌系列"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "斜腿桌系列 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0442.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0488",
+      "source_title": "海棠角设计与应用",
+      "source_page": 9,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "海棠角设计与应用"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "海棠角设计与应用 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0488.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0515",
+      "source_title": "活动层板",
+      "source_page": 2,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "活动层板"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "活动层板 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0515.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0404",
+      "source_title": "玻璃",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "玻璃"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "玻璃 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0404.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0429",
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_page": 39,
+      "category_type": "bed",
+      "trigger_terms": [
+        "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+        "GB",
+        "28007",
+        "2024",
+        "婴幼儿及儿童家具安全技术规范"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合手册",
+        "按手册"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "GB 28007-2024 婴幼儿及儿童家具安全技术规范 命中新版手册规则；正式报价前请先确认是否按新版手册要求处理。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0429.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0430",
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_page": 42,
+      "category_type": "bed",
+      "trigger_terms": [
+        "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+        "GB",
+        "28007",
+        "2024",
+        "婴幼儿及儿童家具安全技术规范"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合手册",
+        "按手册"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "GB 28007-2024 婴幼儿及儿童家具安全技术规范 命中新版手册规则；正式报价前请先确认是否按新版手册要求处理。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0430.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0225",
+      "source_title": "常规拆装柜体",
+      "source_page": 4,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "常规拆装柜体"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合手册",
+        "按手册"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "常规拆装柜体 命中新版手册规则；正式报价前请先确认是否按新版手册要求处理。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0225.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0231",
+      "source_title": "美式拆装柜体",
+      "source_page": 5,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "美式拆装柜体"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合手册",
+        "按手册"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "美式拆装柜体 命中新版手册规则；正式报价前请先确认是否按新版手册要求处理。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0231.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0573",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 11,
+      "category_type": "bed",
+      "trigger_terms": [
+        "模块化儿童床设计要求"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合手册",
+        "按手册"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "模块化儿童床设计要求 命中新版手册规则；正式报价前请先确认是否按新版手册要求处理。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0573.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0264",
+      "source_title": "内置抽屉滑道架",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "内置抽屉滑道架"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合手册",
+        "按手册"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "内置抽屉滑道架 命中新版手册规则；正式报价前请先确认是否按新版手册要求处理。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0264.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    }
+  ]
+}

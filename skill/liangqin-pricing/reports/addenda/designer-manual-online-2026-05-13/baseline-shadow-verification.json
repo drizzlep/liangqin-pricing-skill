@@ -1,0 +1,2467 @@
+{
+  "title": "良禽报价体新基准 shadow 验证报告",
+  "candidate_layer": "designer-manual-online-2026-05-13",
+  "old_layer": "designer-manual-2026-03-22",
+  "source_ledger": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/baseline-migration-ledger.json",
+  "total_shadow_targets": 47,
+  "outcome_counts": {
+    "coverable_by_config_gate": 47
+  },
+  "module_counts": {
+    "precheck_quote:safety_or_install_gate": 3,
+    "precheck_quote:dimension_or_limit_gate": 32,
+    "precheck_quote:required_note_or_confirmation_gate": 10,
+    "precheck_quote:rule_gate": 2
+  },
+  "runtime_gate_count": 47,
+  "guardrails": [
+    "只让高置信、非金额、非 OCR 风险的 precheck 规则配置化覆盖旧规则。",
+    "金额规则必须进入金额回归测试，不通过 shadow 自动覆盖。",
+    "配置化 gate 只负责正式报价前追问/确认，不直接改金额。"
+  ],
+  "entries": [
+    {
+      "landing_id": "landing-rule-0168",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P0-影响安全/安装",
+      "suggested_module": "precheck_quote:safety_or_install_gate",
+      "source_title": "挂墙桌",
+      "source_page": 1,
+      "topic": "该类书桌必须固定在承重墙上;无需与其他柜体固定订制注意事项： 1.订制可改桌面边角; 2.桌面厚度不可更改，仅可调整抽屉尺寸，抽屉高度最小110mm； 3.若作为书桌或梳妆台等需考虑桌下容腿空间，柜体下沿距地建 议≥580mm。 订制款：",
+      "old_rule_match_count": 3,
+      "old_rule_matches": [
+        {
+          "title": "2000*900*780 订制款： 长度≤2000mm 宽度≤900mm其他桌 该类书桌必须固定在承重墙上;无需与其他柜体固定订制注意事项：",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "若作为书桌或梳妆台等需考虑桌下容腿空间，柜体下沿距地建",
+          "match_type": "source_title"
+        },
+        {
+          "title": "桌面厚度不可更改，仅可调整抽屉尺寸，抽屉高度最小110mm；",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0144",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P0-影响安全/安装",
+      "suggested_module": "precheck_quote:safety_or_install_gate",
+      "source_title": "下翻门",
+      "source_page": 1,
+      "topic": "下翻门（安全阻尼器） •门板面积（㎡）*门高H≤0.2 •开启方式：可抠手开启、五金拉手开启 •尺寸限制：门长度≤1040mm，真格栅下翻门门长度＞765mm时需加竖撑 拼框门高度≤560mm；横纹平板下翻门高度≤500mm，门高＞450m",
+      "old_rule_match_count": 4,
+      "old_rule_matches": [
+        {
+          "title": "可推弹开启、抠手开启、拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可铣型拉手开启、五金拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可抠手开启、五金拉手",
+          "match_type": "source_title"
+        },
+        {
+          "title": "10mm；边框可选择无斜边，默认有，无斜边需要备注；",
+          "match_type": "source_title"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0691",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P0-影响安全/安装",
+      "suggested_module": "precheck_quote:safety_or_install_gate",
+      "source_title": "电动举升器",
+      "source_page": 1,
+      "topic": "电动举升器 床垫重量应≤50kg，设计时需考虑客户家床垫重量。 电动举升器完全打开后可达27°大开角，取放方便。 安装空间要求：内空长度≥1350mm 内空高度≥205mm。 每个电动举升器配有1个电源、1个开关接收器、一个遥控器。 床箱内",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "床垫重量应≤50kg，设计时需考虑客户家床垫重量，如床垫超重可使用两套750N举升器，下单时需备注。",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0437",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "抽拉床",
+      "source_page": 1,
+      "topic": "抽拉床 •尺寸限制:整体W≤2000mm，床身主体W1≤1200，拉出尺寸：W2≤800 •排骨架尺寸：排骨架宽度根据长L度均分；宽度≈80mm，之间缝隙为1.5mm •可定制抽屉款抽拉床，不可做箱体抽拉床 固定床架宽度 W1 W1≤120",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "可推弹开启、抠手开启、拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可推弹开启、拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "2000*900*780 订制款： 长度≤2000mm 宽度≤900mm其他桌 该类书桌必须固定在承重墙上;无需与其他柜体固定订制注意事项：",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "长拉手长度1100mm，可靠下安装，距边30mm，不可安装于其他位置",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "30mm，不可安装于其他位置。",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0124",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "真格栅门",
+      "source_page": 1,
+      "topic": "真格栅门 •尺寸限制：单扇门宽≤560mm，门高≤2300mm •门板厚度：26mm •门边框宽度：60mm（含斜切边），腰称宽度：65mm •开启方式：可推弹开启、抠手开启、拉手开启。 •适用铰链：铰链均可适用。内嵌门铰链称宽度需≥100",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "超高拼框木门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "拱形玻璃门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "胶囊玻璃门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "超高拼框玻璃门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "拱形藤编门尺寸限制",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0358",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "骨骼线门板",
+      "source_page": 1,
+      "topic": "•尺寸限制：单扇门宽≤450mm，高度≤2300mm •门板厚度：20mm •穿带避让尺寸*：20mm/30mm •开启方式：可推弹开启、拉手开启；拉手尺寸：40*20 •特殊要求：拉手不可安装在上下，只能安装在左右 •适用铰链：所有铰链均",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "拱形藤编门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "藤编门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可推弹开启、抠手开启、拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "50*20mm，默认门盖拉条，如需抽屉盖拉条须备注，注意会影响抽盒高度。",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可推弹开启、拉手",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0088",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "平板背板",
+      "source_page": 2,
+      "topic": "•9mm竖纹平板背板(整装柜体) •尺寸限制:内空高度H≤2400mm，超过800需要加横撑； 当内空宽度W≤360mm时，为一整块背板； 当W＞360mm时需断开，且单块背板宽度L≤260mm； •适用范围:除有横向狭长背板的小件家具外的",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "背板和层板需要自攻螺丝固定",
+          "match_type": "source_title"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0089",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "平板背板",
+      "source_page": 3,
+      "topic": "H WL•15mm竖纹平板背板(拆装柜体) •背板可通顶或者分段使用； •分段背板承重性更好，与层板之间不容易漏缝； •层板间距＞1700时，背板与层板需要自攻螺丝固定； •尺寸限制： 内空高度H≤2400mm 当内空宽度W≤360mm时为",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "背板和层板需要自攻螺丝固定",
+          "match_type": "source_title"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0090",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "平板背板",
+      "source_page": 6,
+      "topic": "•15mm竖纹平装平板背板(拆装柜体)； •背板可通顶或者分段使用,背板与层板无需自攻螺丝固定； •尺寸限制： 内空高度H≤1700mm 当内空宽度W≤360mm时为一整块背板 当W＞360mm时需要断开，且单块背板宽度L≤260mm；平板",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "背板和层板需要自攻螺丝固定",
+          "match_type": "source_title"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0097",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "托盘抽",
+      "source_page": 1,
+      "topic": "托盘抽 •托盘抽主要用于书桌键盘抽、储物柜/餐边柜拉出平台等； •抽面厚度：22mm •尺寸限制：66mm≤抽面高度H≤128mm；抽面上沿至托盘上沿高差20mm≤C≤60mm；抽面长度L≤1050mm •承重：30Kg •开启方式：可使用",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "托盘抽尺寸与开启方式限制",
+          "match_type": "source_title"
+        },
+        {
+          "title": "可推弹开启、抠手开启、拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "50*20mm，默认门盖拉条，如需抽屉盖拉条须备注，注意会影响抽盒高度。",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可推弹开启、拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可使用扣手、明装拉手",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0120",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "极窄斜边拼框门",
+      "source_page": 1,
+      "topic": "极窄斜边拼框门 •尺寸限制：单扇门宽W≤500mm；高H≤2200mm •门板厚度：门厚28mm •门边框宽度：外露30mm（斜切边:25mm,外露平边5mm），边宽60mm •开启方式：可推弹开启；扣手开启 •门板结构：45°斜角拼接 •",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "可推弹开启、抠手开启、拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可推弹开启、拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "40mm≤W≤60mm，默认40mm，有其他临近平开门边框为60mm时可调为60mm；",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可抠手开启、五金拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "长拉手长度1100mm，可靠下安装，距边30mm，不可安装于其他位置",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0349",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "超大带轮抽屉",
+      "source_page": 1,
+      "topic": "超大带轮抽屉 •超大带轮抽屉为床下落地抽屉；抽盒板厚20mm；抽底为拼框结构 •抽面厚度：22mm •尺寸限制： 抽面长度建议小于700mm；抽屉总进深建议不大于1200mm；抽面高度≤350mm 设计时应考虑抽屉开启时空间是否足够以及拉动",
+      "old_rule_match_count": 4,
+      "old_rule_matches": [
+        {
+          "title": "50*20mm，默认门盖拉条，如需抽屉盖拉条须备注，注意会影响抽盒高度。",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可使用扣手、明装拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可使用明装拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "长拉手长度1100mm，可靠下安装，距边30mm，不可安装于其他位置",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0286",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "source_title": "抽屉锁",
+      "source_page": 6,
+      "topic": "机械抽屉锁 •普通锁使用钥匙开启，颜色可选黑色、镍色，使用时应备注及附图； •注意使用普通锁时抽屉无法使用通长扣手；可选择靠左、靠右、居中安装； •带锁抽屉上方必须要有层板或≥50宽的拉条； •普通锁仅可用于锁住一个抽屉，不可联排锁定； •",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "无背板柜体需要安装拉条用膨胀螺丝与墙体固定",
+          "match_type": "source_title"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0023",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "百川门",
+      "source_page": 1,
+      "topic": "百川门 •尺寸限制：单扇门宽≤550mm，高度≤2400mm •门板厚度：22mm •穿带避让尺寸：无需避让 •开启方式：该门型开启方式为按弹开启、拉手开启（建议搭配 弦月拉手使用）、铣型扣手开启、（可做推拉门）推拉开启。 •特殊要求：百川",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "拱形藤编门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "藤编门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可推弹开启、抠手开启、拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "50*20mm，默认门盖拉条，如需抽屉盖拉条须备注，注意会影响抽盒高度。",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可推弹开启、拉手",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0108",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "source_title": "飞瀑门",
+      "source_page": 1,
+      "topic": "•尺寸限制：单扇门宽≤500mm，宽度＞450mm时，需两块拼接（外 观有中缝），高度≤2300mm •门板厚度：20mm •穿带避让尺寸*：20mm/30mm •开启方式：可推弹开启、抠手开启、拉手开启。无备注无标注时 默认为推弹开启，其",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "针式铰链铝框门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "铝框岩板门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "超高拼框木门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "拱形玻璃门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "胶囊玻璃门尺寸限制",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0110",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "竖向拉线门",
+      "source_page": 1,
+      "topic": "竖向拉线门 •竖向拉线门是在飞瀑门基础上铣型而成的柜门 •尺寸限制：单扇门宽≤500mm，宽度＞450mm时，需两块拼接，高 度≤2300mm •门板厚度：20mm •穿带避让尺寸：20mm/30mm •开启方式：可推弹开启、抠手开启。无备",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "拱形藤编门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "藤编门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可推弹开启、抠手开启、拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "50*20mm，默认门盖拉条，如需抽屉盖拉条须备注，注意会影响抽盒高度。",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可推弹开启、拉手",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0119",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "超高经典/拱形/胶囊玻璃门",
+      "source_page": 1,
+      "topic": "超高经典玻璃门/拱形玻璃门/胶囊玻璃门",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "超高拼框木门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "拱形玻璃门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "胶囊玻璃门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "超高拼框玻璃门尺寸限制",
+          "match_type": "topic_overlap"
+        },
+        {
+          "title": "美式木门尺寸限制",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0142",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "上翻门",
+      "source_page": 1,
+      "topic": "上翻门（小螳螂） •门板面积(㎡)*门高(m)≤0.28 •开启方式：可推弹开启、抠手开启、五金拉手开启 •尺寸限制：门长度≤1040mm；真格栅上翻门长度＞765mm时需加竖撑 拼框门高度≤560mm；横纹平板上翻门（含展板门）高度≤50",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "拱形藤编门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "藤编门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可推弹开启、抠手开启、拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "50*20mm，默认门盖拉条，如需抽屉盖拉条须备注，注意会影响抽盒高度。",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可推弹开启、拉手",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0370",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "铝框岩板门",
+      "source_page": 1,
+      "topic": "铝框岩板门 •尺寸限制：300mm≤高度≤2700mm，300mm≤宽度≤500mm •门板厚度：22mm •门边框宽度：55mm •岩板厚度：6mm •门边框颜色：黑色 •开启方式：按弹开启 •适用铰链：所有铰链均适用。内嵌门铰链称宽度需",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "针式铰链铝框门尺寸限制",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "铝框岩板门尺寸限制",
+          "match_type": "source_title"
+        },
+        {
+          "title": "铝框岩板门板按长度加价",
+          "match_type": "source_title"
+        },
+        {
+          "title": "可推弹开启、抠手开启、拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "50*20mm，默认门盖拉条，如需抽屉盖拉条须备注，注意会影响抽盒高度。",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0391",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "source_title": "雪见推拉门",
+      "source_page": 1,
+      "topic": "•尺寸限制：高度H≤1200；宽度W≤1200；拼框 门边框宽度外露30mm； •门板厚度：22mm； •横格栅条：无斜切边，宽度10mm，厚度:21mm， 横格栅条之间间距≈30mm，默认均分，有特殊 要求需标注及备注； •竖格栅条：无斜",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "可推弹开启、抠手开启、拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可推弹开启、拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可使用扣手、明装拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "长拉手长度1100mm，可靠下安装，距边30mm，不可安装于其他位置",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "30mm，不可安装于其他位置。",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0414",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "儿童房家具设计要求",
+      "source_page": 3,
+      "topic": "上表面离地高度不小于 600 mm床铺声明 上下床/高架床，上铺宽度均不能超过1.2M，为单人床尺寸，超过1.2M宽的高层产品定仅允许定制置物架，且置物架不提供休息功能，儿童 成人均不可在置物架上住宿。 √",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "床榻包括箱体床、架式床、儿童床、榻榻米",
+          "match_type": "topic_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0574",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 18,
+      "topic": "•挂梯错层床，挂梯落于下床、错落差值变化时，挂梯始终位于上床左侧，位置变动时，挂梯右侧距离下床床腿的距离L应满足：12≤L＜ 25mm 或 60≤L＜75mm 或 L≥200mm；挂梯落地、错落差值变化时，挂梯始终位于上床右侧，位置变动时，",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "设计时应注意上床距离房顶高度，以免无法起身，使用不便",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0013",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "书梯书柜",
+      "source_page": 1,
+      "topic": "•指带有可滑动书梯的书柜。 •带有书梯的书柜高度建议≥2800mm •爬梯宽度500mm，爬梯总长≤2600mm •爬梯滑轨安装板净高度要求≥80mm；超高柜体如分段在 上，分缝处应在滑轨安装板下方。 •为方便攀爬，梯子上带有扣手，扣手尺寸",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "书梯书柜尺寸与滑轨安装要求",
+          "match_type": "source_title"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0255",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "拼框背板",
+      "source_page": 1,
+      "topic": "•背板宽度应控制在1100mm以内，高度2300mm以内；芯板任意一边长应≤500mm，特殊情",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "•背板宽度应控制在1100mm以内，高度2300mm以内；芯板任意一边长应≤500mm，特殊情",
+          "match_type": "topic_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0268",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "零食柜门",
+      "source_page": 2,
+      "topic": "零食柜门 •零食柜体与层板间距需≥10mm；柜体深度需满足：60mm≤柜深≤100mm； •门板距地需≥10mm；柜体上左右距门板边缘40mm；底板距地：39mm； 零食柜体与层板间距需≥10mm顶板 零 食 柜 体门 板 层板 60mm≤",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "可使用扣手、明装拉手",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0572",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 9,
+      "topic": "g)所有踏脚板上表面的前边缘应在一 直线上，允差±20mm； 步深示意图 h)有效步深应不小于90mm(见右图)； i)位于踏脚板附近的构件(抽屉、翼板、门等)不应干扰踏脚板的使用空间； j)上层床铺面框架不可视为踏脚板；符合本条上述规定的",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "50*20mm，默认门盖拉条，如需抽屉盖拉条须备注，注意会影响抽盒高度。",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0684",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "排骨架",
+      "source_page": 1,
+      "topic": "所有床的排骨架统一为8公分宽的排骨条 单块排骨架 1.宽度≤1450mm时，排骨架数量为单 块。 2.排骨条均为80mm宽 3.排骨架间隙为15-25mm 主要适用于架式床、儿童床、侧翻床、 尾翻床等双块排骨架 1.宽度＞1450mm时，排",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "600mm需分为2个抽屉；",
+          "match_type": "source_title"
+        },
+        {
+          "title": "设计时应注意上床距离房顶高度，以免无法起身，使用不便",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "床榻包括箱体床、架式床、儿童床、榻榻米",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "排骨架间隙为15-25mm 主要适用于尾翻箱体床等排骨架 榻榻米结构",
+          "match_type": "source_title"
+        },
+        {
+          "title": "尺寸 双层床上床及高架床床宽应≤1200mm（床垫尺寸） *高架床指床铺面（排骨架）的上表面离地高度≥600mm的床类产品 双层床上下床铺面之间净空距离建议不小于1100mm 双层床及高架床设计时应注意上床距离屋顶空间，防止上床后无法起身，离顶高度建议不小于900mm ≤1200mm 离地高度 离地高度",
+          "match_type": "source_title"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0083",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "source_title": "挡条",
+      "source_page": 6,
+      "topic": "•柜体设计需考虑安装空间，推荐添加柜体挡条，特殊情况下如客户特殊要求无挡条，应要求客户保证墙体平整度并量尺准确，同时备注于 合同中；以下分述不同情况下的挡条要求： •到顶柜体顶挡条高度要求≥50mm； •有石膏线的墙面，建议到顶柜体总高在石",
+      "old_rule_match_count": 3,
+      "old_rule_matches": [
+        {
+          "title": "窄边风格拆装时门盖牙称与顶挡条最少留出15mm",
+          "match_type": "source_title"
+        },
+        {
+          "title": "60mm以下不能做居中圆扣手。",
+          "match_type": "source_title"
+        },
+        {
+          "title": "标准尺寸使用标准挂梯，定制尺寸时，应满足以下要求：",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0150",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "灯带",
+      "source_page": 6,
+      "topic": "12mm集控双门碰感应开关(插拔头)05.64.0013；",
+      "old_rule_match_count": 4,
+      "old_rule_matches": [
+        {
+          "title": "可隔门板手扫雷达开关适用材质与灯带范围",
+          "match_type": "source_title"
+        },
+        {
+          "title": "12mm集控触模感应开关(插拔头)05.65.0012；",
+          "match_type": "source_title"
+        },
+        {
+          "title": "适用于所有型号灯带",
+          "match_type": "source_title"
+        },
+        {
+          "title": "无线单面板动能开关",
+          "match_type": "source_title"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0235",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "source_title": "无牙称柜体",
+      "source_page": 1,
+      "topic": "•无牙称柜体分为无前牙称柜体和无前后牙称柜体，需备注或在图纸中标注； •牙称高度≤250mm； •无前牙称柜体内空长度＞1200mm时，需加装一个暗支腿，暗支腿距前100mm，或由中间竖板落地； •无前后牙称柜体内空长度＞900mm时，需加",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "榻榻米组合柜空区加托称时需固定上墙",
+          "match_type": "source_title"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0239",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "钻石柜",
+      "source_page": 1,
+      "topic": "•钻石柜即五边形角柜，指柜体俯视图中有五边形区域的柜体。 •此类柜体设计时，如有接近三角形或四边形区域，不应直接设计为尖角，以避免机加工及运输时造成的板件尖角损坏，平边长度需＞105mm； 为保证板件稳定性，纹理方向板件长度≤1100mm，",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "抽屉应距离门板至少60mm特殊铰链",
+          "match_type": "source_title"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0248",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "挡条",
+      "source_page": 2,
+      "topic": "脱缝挡条 •脱缝挡条：挡条厚度22mm，30mm≤宽度≤120mm，使用连接件与柜体连接。在图纸中应标注为红色； •脱缝挡条一般与外盖门柜体搭配使用，柜门左右上半盖，可见参考模型； 顶挡条与侧挡条关系 挡条与柜体关系及样式 挡条与柜体关系",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "窄边风格拆装时门盖牙称与顶挡条最少留出15mm",
+          "match_type": "source_title"
+        },
+        {
+          "title": "可推弹开启、抠手开启、拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可推弹开启、拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "60mm以下不能做居中圆扣手。",
+          "match_type": "source_title"
+        },
+        {
+          "title": "可使用明装拉手",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0254",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "拼框背板",
+      "source_page": 1,
+      "topic": "•背板分为拼框背板与平板背板，其中拼框背板又分为卧装背板与平装背板。 •拼框背板为框嵌板结构，背称（边框）宽度50mm，厚度22mm；芯板厚度卧装8mm，平装 11mm。 •背板宽度应控制在1100mm以内，高度2300mm以内；芯板任意一",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "•背板宽度应控制在1100mm以内，高度2300mm以内；芯板任意一边长应≤500mm，特殊情",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0278",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "上翻回收门",
+      "source_page": 1,
+      "topic": "上翻回收门 •门长度≤1040mm，拼框门高度≤560mm •横纹平板上翻回收门（含展板回收门）高度≤500mm，门高＞450mm需要加中缝 •设计时应注意门高与柜体进深的关系，门高大于柜体进深时，应满足：门高-柜体进深≤1/4门高 •当上",
+      "old_rule_match_count": 2,
+      "old_rule_matches": [
+        {
+          "title": "60mm以下不能做居中圆扣手。",
+          "match_type": "source_title"
+        },
+        {
+          "title": "可抠手开启、五金拉手",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0295",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 19,
+      "topic": "床底无支撑 床底有部分柜体支撑床底有等宽等长柜体支撑•所有高架床及错层床上床底部无柜体时，上床离地高度h≤1450mm，床底有部分柜体支撑时，离地高度h≤1600mm，床底有床体等长等宽柜体 支撑时，离地高度h≤1800mm；设计时应注意上",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "设计时应注意上床距离房顶高度，以免无法起身，使用不便",
+          "match_type": "topic_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0845",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "海棠角边角风格",
+      "source_page": 4,
+      "topic": "•图示为45°拼接结构，该样式边角不可做其他结构。 •使用该样式边角设计有门板的柜体时只能为普通门板的内嵌门。海棠边角-海棠角平边",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "当高柜使用海棠角斜边时，顶底板为直角平边，门板盖顶底板",
+          "match_type": "topic_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0129",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "常规推拉门",
+      "source_page": 6,
+      "topic": "拼框木推拉门 拼框玻璃推拉门 真格栅推拉门 藤编推拉门 新古典格栅推拉门美式推拉门 单扇门宽≤1200mm 门宽＞650mm需加竖撑单扇门宽≤780mm 单扇门宽≤1200mm 门宽＞765mm需加竖撑单扇门宽≤1200mm 门宽＞650m",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "门宽＞650mm需加竖撑单扇门",
+          "match_type": "topic_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0392",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "日式障子门",
+      "source_page": 3,
+      "topic": "日式障子门——活动格栅 格栅门为三扇时，最上面的格栅门为固定扇不能活动 格栅门为两扇时均为活动扇，上侧格栅门下端默认加拉手拉手固 定 门 板",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "默认双边居中内扣拉手",
+          "match_type": "source_title"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0510",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "转角柜",
+      "source_page": 4,
+      "topic": "平门铰链 常规铰链 大角度铰链 常规铰链+铰链称 门板外盖 铰链称宽度≥80mm 常规铰链+铰链称 门板内嵌 铰链称宽度≥门厚+80mm以下为带门分组转角柜常见开门设计方法，设计时应注意柜门开启时是否与邻柜柜门拉手冲突。 平行铰链+铰链称",
+      "old_rule_match_count": 3,
+      "old_rule_matches": [
+        {
+          "title": "L型层板后方均为背板",
+          "match_type": "source_title"
+        },
+        {
+          "title": "抽屉应距离门板至少60mm特殊铰链",
+          "match_type": "source_title"
+        },
+        {
+          "title": "30mm，不可安装于其他位置。",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0265",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响合同备注",
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "source_title": "抽屉悬空解决方案",
+      "source_page": 1,
+      "topic": "50*20mm，默认门盖拉条，如需抽屉盖拉条须备注，注意会影响抽盒高度。",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "50*20mm，默认门盖拉条，如需抽屉盖拉条须备注，注意会影响抽盒高度。",
+          "match_type": "topic_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0266",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响合同备注",
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "source_title": "抽屉悬空解决方案",
+      "source_page": 1,
+      "topic": "•外置抽屉下与柜门相接，抽屉悬空时，下方需加装横向拉条，规格 50*20mm，默认门盖拉条，如需抽屉盖拉条须备注，注意会影响抽盒高度。 （以2个抽屉悬空为例） •外置抽屉下方如果是开放区域（没有柜门），则使 用层板 开放柜体 加层板抽屉悬空",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "50*20mm，默认门盖拉条，如需抽屉盖拉条须备注，注意会影响抽盒高度。",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0512",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响合同备注",
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "source_title": "书梯书柜",
+      "source_page": 2,
+      "topic": "•柜体圆边时，书梯滑轨安装板上下层板外侧圆边 外侧圆边 •爬梯滑轨安装板默认平板无造型，可做造型设计，选择增加造型时 需备注 •造型尺寸默认如右侧俯视图，槽间距默认6，可根据实际情况适当调 整，需要备注在合同中以及附有修改后的尺寸图纸 •注",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "书梯书柜尺寸与滑轨安装要求",
+          "match_type": "source_title"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0389",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响合同备注",
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "source_title": "常规推拉门",
+      "source_page": 3,
+      "topic": "推拉门拉手 •拼框推拉门多使用扣手，也可以使用拉手，使用拉手时注意拉手在外侧门板上，内侧门板可做扣手或无扣手； •带阻尼的推拉门默认带居中全圆扣手，尺寸200×22mm，不要扣手或特殊扣手需备注及标注； •使用木轨道的推拉门因扣手尽头有缺口",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "也可以使用拉手",
+          "match_type": "topic_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0442",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响能否下单",
+      "suggested_module": "precheck_quote:dimension_or_limit_gate",
+      "source_title": "斜腿桌系列",
+      "source_page": 1,
+      "topic": "CZ-02 斜腿餐桌 CZ-07 岩板餐桌 标准款： 1600*800*780 1800*900*780订制款： 长度≤2100mm 宽度≤900mm L尺寸要求 S上腿径X下腿径ZS左右上边距ZX左右下边距QS前后上边距QX前后下边距H横",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "可推弹开启、抠手开启、拉手",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "超长定制款：桌长超过2400可进行分段定制，分段处需增加支腿，支腿尺寸不变；中支腿位于分缝处中心，左右支腿参照标准品左右距边SZ-14 漂流岛/漂流岛Y",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "2000*900*780 订制款： 长度≤2000mm 宽度≤900mm其他桌 该类书桌必须固定在承重墙上;无需与其他柜体固定订制注意事项：",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "若作为书桌或梳妆台等需考虑桌下容腿空间，柜体下沿距地建",
+          "match_type": "signal_overlap"
+        },
+        {
+          "title": "可使用明装拉手",
+          "match_type": "signal_overlap"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0404",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P1-影响合同备注",
+      "suggested_module": "precheck_quote:required_note_or_confirmation_gate",
+      "source_title": "玻璃",
+      "source_page": 1,
+      "topic": "黑玻 欧茶 金茶 欧灰超白长虹 超白 油砂 欧灰长虹•玻璃均为钢化玻璃，长虹玻璃高度＜300mm或高度＞300mm长度＜365mm无法做钢化，其他玻璃尺寸长度高度均小于365mm时无法做钢化； •玻璃厚度统一5mm； •使用玻璃时，需截图手",
+      "old_rule_match_count": 5,
+      "old_rule_matches": [
+        {
+          "title": "玻璃抽屉尺寸与开启方式限制",
+          "match_type": "source_title"
+        },
+        {
+          "title": "拱形玻璃门尺寸限制",
+          "match_type": "source_title"
+        },
+        {
+          "title": "胶囊玻璃门尺寸限制",
+          "match_type": "source_title"
+        },
+        {
+          "title": "超高拼框玻璃门尺寸限制",
+          "match_type": "source_title"
+        },
+        {
+          "title": "美式玻璃门尺寸限制",
+          "match_type": "source_title"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0225",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P2-影响说明完整性",
+      "suggested_module": "precheck_quote:rule_gate",
+      "source_title": "常规拆装柜体",
+      "source_page": 4,
+      "topic": "a）外露层板常规拆装柜体-超高柜体分段示例 柜体高度＞2600mm时需分段，上下分段柜体分段处接缝需与层板上方及柜门门缝平齐，可见图，特殊情况门板可横跨分缝处，但需有层板连接固定； 不分段的情况下，默认上下门半盖层板，特殊情况：柜门断开位置",
+      "old_rule_match_count": 2,
+      "old_rule_matches": [
+        {
+          "title": "常规拆装柜体牙称常用50/80mm，允许范围50-250mm",
+          "match_type": "source_title"
+        },
+        {
+          "title": "常规拆装柜体高度≤1700mm默认顶盖侧，＞1700mm默认侧盖顶",
+          "match_type": "source_title"
+        }
+      ]
+    },
+    {
+      "landing_id": "landing-rule-0573",
+      "shadow_outcome": "coverable_by_config_gate",
+      "shadow_reason": "新规则是高置信 precheck 追问/拦截，机器判定为更保守路径，可配置化覆盖旧规则。",
+      "machine_status": "active_new_baseline_candidate",
+      "conflict_status": "old_overlap_shadow_required",
+      "risk_level": "P2-影响说明完整性",
+      "suggested_module": "precheck_quote:rule_gate",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 11,
+      "topic": "c)两连续的踏脚板表面距离应为250mm±50mm； 200-300mm d)所有踏脚板上表面间的距离应均匀，允差为±5mm； abcde)踏脚板使用宽度应不小于450mm，最大600mm，超过 600mm需分为2个抽屉； 450-600m",
+      "old_rule_match_count": 1,
+      "old_rule_matches": [
+        {
+          "title": "标准尺寸使用标准挂梯，定制尺寸时，应满足以下要求：",
+          "match_type": "signal_overlap"
+        }
+      ]
+    }
+  ],
+  "runtime_gates": [
+    {
+      "rule_id": "landing-rule-0168",
+      "source_title": "挂墙桌",
+      "source_page": 1,
+      "category_type": "table",
+      "trigger_terms": [
+        "挂墙桌"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合",
+        "满足",
+        "可固定",
+        "承重墙",
+        "不超过50kg",
+        "50kg以内"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "wall_or_install_condition",
+      "question": "挂墙桌 涉及新版手册的安全/安装前置条件；正式报价前请先确认该条件是否满足。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0168.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0144",
+      "source_title": "下翻门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "下翻门"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合",
+        "满足",
+        "可固定",
+        "承重墙",
+        "不超过50kg",
+        "50kg以内"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "wall_or_install_condition",
+      "question": "下翻门 涉及新版手册的安全/安装前置条件；正式报价前请先确认该条件是否满足。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0144.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0691",
+      "source_title": "电动举升器",
+      "source_page": 1,
+      "category_type": "bed",
+      "trigger_terms": [
+        "电动举升器"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合",
+        "满足",
+        "可固定",
+        "承重墙",
+        "不超过50kg",
+        "50kg以内"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "mattress_weight",
+      "question": "电动举升器 涉及新版手册的安全/安装前置条件；正式报价前请先确认该条件是否满足。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0691.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0437",
+      "source_title": "抽拉床",
+      "source_page": 1,
+      "category_type": "bed",
+      "trigger_terms": [
+        "抽拉床"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "抽拉床 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0437.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0124",
+      "source_title": "真格栅门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "真格栅门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "真格栅门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0124.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0358",
+      "source_title": "骨骼线门板",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "骨骼线门板"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "骨骼线门板 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0358.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0088",
+      "source_title": "平板背板",
+      "source_page": 2,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "平板背板"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "平板背板 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0088.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0089",
+      "source_title": "平板背板",
+      "source_page": 3,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "平板背板"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "平板背板 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0089.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0090",
+      "source_title": "平板背板",
+      "source_page": 6,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "平板背板"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "平板背板 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0090.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0097",
+      "source_title": "托盘抽",
+      "source_page": 1,
+      "category_type": "table",
+      "trigger_terms": [
+        "托盘抽"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "托盘抽 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0097.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0120",
+      "source_title": "极窄斜边拼框门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "极窄斜边拼框门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "极窄斜边拼框门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0120.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0349",
+      "source_title": "超大带轮抽屉",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "超大带轮抽屉"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "超大带轮抽屉 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0349.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0286",
+      "source_title": "抽屉锁",
+      "source_page": 6,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "抽屉锁"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "抽屉锁 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0286.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0023",
+      "source_title": "百川门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "百川门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "百川门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0023.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0108",
+      "source_title": "飞瀑门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "飞瀑门"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "飞瀑门 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0108.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0110",
+      "source_title": "竖向拉线门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "竖向拉线门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "竖向拉线门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0110.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0119",
+      "source_title": "超高经典/拱形/胶囊玻璃门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "超高经典/拱形/胶囊玻璃门",
+        "超高经典",
+        "拱形",
+        "胶囊玻璃门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "超高经典/拱形/胶囊玻璃门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0119.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0142",
+      "source_title": "上翻门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "上翻门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "上翻门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0142.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0370",
+      "source_title": "铝框岩板门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "铝框岩板门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "铝框岩板门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0370.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0391",
+      "source_title": "雪见推拉门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "雪见推拉门"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "雪见推拉门 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0391.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0414",
+      "source_title": "儿童房家具设计要求",
+      "source_page": 3,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "儿童房家具设计要求"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "儿童房家具设计要求 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0414.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0574",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 18,
+      "category_type": "bed",
+      "trigger_terms": [
+        "模块化儿童床设计要求"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "模块化儿童床设计要求 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0574.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0013",
+      "source_title": "书梯书柜",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "书梯书柜"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "书梯书柜 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0013.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0255",
+      "source_title": "拼框背板",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "拼框背板"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "拼框背板 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0255.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0268",
+      "source_title": "零食柜门",
+      "source_page": 2,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "零食柜门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "零食柜门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0268.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0572",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 9,
+      "category_type": "bed",
+      "trigger_terms": [
+        "模块化儿童床设计要求"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "模块化儿童床设计要求 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0572.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0684",
+      "source_title": "排骨架",
+      "source_page": 1,
+      "category_type": "bed",
+      "trigger_terms": [
+        "排骨架"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "排骨架 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0684.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0083",
+      "source_title": "挡条",
+      "source_page": 6,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "挡条"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "挡条 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0083.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0150",
+      "source_title": "灯带",
+      "source_page": 6,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "灯带"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "灯带 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0150.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0235",
+      "source_title": "无牙称柜体",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "无牙称柜体"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "无牙称柜体 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0235.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0239",
+      "source_title": "钻石柜",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "钻石柜"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "钻石柜 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0239.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0248",
+      "source_title": "挡条",
+      "source_page": 2,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "挡条"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "挡条 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0248.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0254",
+      "source_title": "拼框背板",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "拼框背板"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "拼框背板 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0254.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0278",
+      "source_title": "上翻回收门",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "上翻回收门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "上翻回收门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0278.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0295",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 19,
+      "category_type": "bed",
+      "trigger_terms": [
+        "模块化儿童床设计要求"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "模块化儿童床设计要求 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0295.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0845",
+      "source_title": "海棠角边角风格",
+      "source_page": 4,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "海棠角边角风格"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "海棠角边角风格 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0845.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0129",
+      "source_title": "常规推拉门",
+      "source_page": 6,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "常规推拉门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "常规推拉门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0129.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0392",
+      "source_title": "日式障子门",
+      "source_page": 3,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "日式障子门"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "日式障子门 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0392.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0510",
+      "source_title": "转角柜",
+      "source_page": 4,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "转角柜"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "转角柜 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0510.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0265",
+      "source_title": "抽屉悬空解决方案",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "抽屉悬空解决方案"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "抽屉悬空解决方案 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0265.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0266",
+      "source_title": "抽屉悬空解决方案",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "抽屉悬空解决方案"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "抽屉悬空解决方案 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0266.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0512",
+      "source_title": "书梯书柜",
+      "source_page": 2,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "书梯书柜"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "书梯书柜 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0512.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0389",
+      "source_title": "常规推拉门",
+      "source_page": 3,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "常规推拉门"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "常规推拉门 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0389.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0442",
+      "source_title": "斜腿桌系列",
+      "source_page": 1,
+      "category_type": "table",
+      "trigger_terms": [
+        "斜腿桌系列"
+      ],
+      "required_terms": [
+        "尺寸符合",
+        "符合尺寸",
+        "未超限",
+        "不超限",
+        "符合手册",
+        "已确认"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "dimension_limit_confirmation",
+      "question": "斜腿桌系列 有新版手册的尺寸/限制要求；正式报价前需要先确认当前方案是否符合这些限制，请补充尺寸是否符合。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0442.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0404",
+      "source_title": "玻璃",
+      "source_page": 1,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "玻璃"
+      ],
+      "required_terms": [
+        "已备注",
+        "备注",
+        "已确认",
+        "确认",
+        "附图"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "玻璃 需要按新版手册补充备注或确认项；正式报价前请先确认相关备注是否已经写清楚。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0404.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0225",
+      "source_title": "常规拆装柜体",
+      "source_page": 4,
+      "category_type": "cabinet",
+      "trigger_terms": [
+        "常规拆装柜体"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合手册",
+        "按手册"
+      ],
+      "required_quote_fields": [
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "常规拆装柜体 命中新版手册规则；正式报价前请先确认是否按新版手册要求处理。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0225.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    },
+    {
+      "rule_id": "landing-rule-0573",
+      "source_title": "模块化儿童床设计要求",
+      "source_page": 11,
+      "category_type": "bed",
+      "trigger_terms": [
+        "模块化儿童床设计要求"
+      ],
+      "required_terms": [
+        "已确认",
+        "符合手册",
+        "按手册"
+      ],
+      "required_quote_fields": [
+        "width",
+        "length"
+      ],
+      "missing_field": "quote_note",
+      "question": "模块化儿童床设计要求 命中新版手册规则；正式报价前请先确认是否按新版手册要求处理。",
+      "reason": "machine shadow verified: new baseline precheck gate safely supersedes old overlapping rule",
+      "constraint_code": "baseline.shadow.landing_rule_0573.required",
+      "hard_block": false,
+      "verification_mode": "machine_shadow_config_gate"
+    }
+  ],
+  "outputs": {
+    "json": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/baseline-shadow-verification.json",
+    "summary": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/baseline-shadow-verification.md",
+    "runtime_gates": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/baseline-runtime-gates.json"
+  }
+}

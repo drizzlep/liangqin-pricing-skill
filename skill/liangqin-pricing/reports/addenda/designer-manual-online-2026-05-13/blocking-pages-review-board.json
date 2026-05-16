@@ -1,0 +1,1105 @@
+{
+  "candidate_layer": "designer-manual-online-2026-05-13",
+  "candidate_status": "ACTIVE",
+  "html_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages-review-board.html",
+  "blocking_page_count": 33,
+  "ocr_status_counts": {
+    "succeeded": 30,
+    "empty": 3
+  },
+  "image_status_counts": {
+    "succeeded": 33
+  },
+  "summary": "本复核包聚焦 33 个阻断页：PDF 文字层为空，或此前 OCR 抽样为空。本轮 PaddleOCR 后仍有 3 页为空或失败，需要人工看截图；候选层不得激活。",
+  "pages": [
+    {
+      "page": 137002,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/9.儿童床/GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_node_id": "ZgpG2NdyVX5xOMAaUbwNZNAEJMwvDqPk",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0137__9.儿童床__GB 28007-2024 婴幼儿及儿童家具安全技术规范__ZgpG2NdyVX5x.pdf",
+      "source_page": 2,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p002.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "DIzs",
+        "char_count": 4,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p002",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p002/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "不影响规则",
+      "default_decision_reason": "当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。"
+    },
+    {
+      "page": 137004,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/9.儿童床/GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_node_id": "ZgpG2NdyVX5xOMAaUbwNZNAEJMwvDqPk",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0137__9.儿童床__GB 28007-2024 婴幼儿及儿童家具安全技术规范__ZgpG2NdyVX5x.pdf",
+      "source_page": 4,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p004.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "szIc",
+        "char_count": 4,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p004",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p004/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "不影响规则",
+      "default_decision_reason": "当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。"
+    },
+    {
+      "page": 137008,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/9.儿童床/GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_node_id": "ZgpG2NdyVX5xOMAaUbwNZNAEJMwvDqPk",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0137__9.儿童床__GB 28007-2024 婴幼儿及儿童家具安全技术规范__ZgpG2NdyVX5x.pdf",
+      "source_page": 8,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p008.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "SzC",
+        "char_count": 3,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p008",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p008/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "不影响规则",
+      "default_decision_reason": "当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。"
+    },
+    {
+      "page": 137045,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/9.儿童床/GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_node_id": "ZgpG2NdyVX5xOMAaUbwNZNAEJMwvDqPk",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0137__9.儿童床__GB 28007-2024 婴幼儿及儿童家具安全技术规范__ZgpG2NdyVX5x.pdf",
+      "source_page": 45,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p045.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "SAC",
+        "char_count": 3,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p045",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p045/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "不影响规则",
+      "default_decision_reason": "当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。"
+    },
+    {
+      "page": 137046,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/9.儿童床/GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_node_id": "ZgpG2NdyVX5xOMAaUbwNZNAEJMwvDqPk",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0137__9.儿童床__GB 28007-2024 婴幼儿及儿童家具安全技术规范__ZgpG2NdyVX5x.pdf",
+      "source_page": 46,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p046.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "SZC",
+        "char_count": 3,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p046",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p046/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "不影响规则",
+      "default_decision_reason": "当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。"
+    },
+    {
+      "page": 137047,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/9.儿童床/GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_node_id": "ZgpG2NdyVX5xOMAaUbwNZNAEJMwvDqPk",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0137__9.儿童床__GB 28007-2024 婴幼儿及儿童家具安全技术规范__ZgpG2NdyVX5x.pdf",
+      "source_page": 47,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p047.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "empty",
+        "text": "",
+        "char_count": 0,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p047",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28007-2024_婴幼儿及儿童家具安全技术规范__p047/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "不影响规则",
+      "default_decision_reason": "当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。"
+    },
+    {
+      "page": 138002,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/9.儿童床/GB 28008-2024 家具结构安全技术规范",
+      "source_title": "GB 28008-2024 家具结构安全技术规范",
+      "source_node_id": "kDnRL6jAJM6ZAOjDsGYQNKov8yMoPYe1",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0138__9.儿童床__GB 28008-2024 家具结构安全技术规范__kDnRL6jAJM6Z.pdf",
+      "source_page": 2,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/GB_28008-2024_家具结构安全技术规范__p002.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "SAC",
+        "char_count": 3,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28008-2024_家具结构安全技术规范__p002",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28008-2024_家具结构安全技术规范__p002/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "不影响规则",
+      "default_decision_reason": "当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。"
+    },
+    {
+      "page": 138004,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/9.儿童床/GB 28008-2024 家具结构安全技术规范",
+      "source_title": "GB 28008-2024 家具结构安全技术规范",
+      "source_node_id": "kDnRL6jAJM6ZAOjDsGYQNKov8yMoPYe1",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0138__9.儿童床__GB 28008-2024 家具结构安全技术规范__kDnRL6jAJM6Z.pdf",
+      "source_page": 4,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/GB_28008-2024_家具结构安全技术规范__p004.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "empty",
+        "text": "",
+        "char_count": 0,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28008-2024_家具结构安全技术规范__p004",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28008-2024_家具结构安全技术规范__p004/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "不影响规则",
+      "default_decision_reason": "当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。"
+    },
+    {
+      "page": 138016,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/9.儿童床/GB 28008-2024 家具结构安全技术规范",
+      "source_title": "GB 28008-2024 家具结构安全技术规范",
+      "source_node_id": "kDnRL6jAJM6ZAOjDsGYQNKov8yMoPYe1",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0138__9.儿童床__GB 28008-2024 家具结构安全技术规范__kDnRL6jAJM6Z.pdf",
+      "source_page": 16,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/GB_28008-2024_家具结构安全技术规范__p016.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "SAC",
+        "char_count": 3,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28008-2024_家具结构安全技术规范__p016",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28008-2024_家具结构安全技术规范__p016/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "不影响规则",
+      "default_decision_reason": "当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。"
+    },
+    {
+      "page": 138017,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/9.儿童床/GB 28008-2024 家具结构安全技术规范",
+      "source_title": "GB 28008-2024 家具结构安全技术规范",
+      "source_node_id": "kDnRL6jAJM6ZAOjDsGYQNKov8yMoPYe1",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0138__9.儿童床__GB 28008-2024 家具结构安全技术规范__kDnRL6jAJM6Z.pdf",
+      "source_page": 17,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/GB_28008-2024_家具结构安全技术规范__p017.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "SZIC",
+        "char_count": 4,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28008-2024_家具结构安全技术规范__p017",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28008-2024_家具结构安全技术规范__p017/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "不影响规则",
+      "default_decision_reason": "当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。"
+    },
+    {
+      "page": 138018,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/9.儿童床/GB 28008-2024 家具结构安全技术规范",
+      "source_title": "GB 28008-2024 家具结构安全技术规范",
+      "source_node_id": "kDnRL6jAJM6ZAOjDsGYQNKov8yMoPYe1",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0138__9.儿童床__GB 28008-2024 家具结构安全技术规范__kDnRL6jAJM6Z.pdf",
+      "source_page": 18,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/GB_28008-2024_家具结构安全技术规范__p018.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "SAC",
+        "char_count": 3,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28008-2024_家具结构安全技术规范__p018",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28008-2024_家具结构安全技术规范__p018/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "不影响规则",
+      "default_decision_reason": "当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。"
+    },
+    {
+      "page": 138019,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/9.儿童床/GB 28008-2024 家具结构安全技术规范",
+      "source_title": "GB 28008-2024 家具结构安全技术规范",
+      "source_node_id": "kDnRL6jAJM6ZAOjDsGYQNKov8yMoPYe1",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0138__9.儿童床__GB 28008-2024 家具结构安全技术规范__kDnRL6jAJM6Z.pdf",
+      "source_page": 19,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/GB_28008-2024_家具结构安全技术规范__p019.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "empty",
+        "text": "",
+        "char_count": 0,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28008-2024_家具结构安全技术规范__p019",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/GB_28008-2024_家具结构安全技术规范__p019/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "不影响规则",
+      "default_decision_reason": "当前未读到可用文字，且图片数较少；优先判断是否为空白、封面或纯装饰页。"
+    },
+    {
+      "page": 145001,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 1,
+      "source_path": "<root>/10.床榻/可调节床头使用说明书",
+      "source_title": "可调节床头使用说明书",
+      "source_node_id": "gwva2dxOW4ZQp42yiA2PzvKOJbkz3BRL",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0145__10.床榻__可调节床头使用说明书__gwva2dxOW4ZQ.pdf",
+      "source_page": 1,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/可调节床头使用说明书__p001.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "<div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_0_6_1080_1912.jpg\" alt=\"Image\" width=\"100%\" /></div>",
+        "char_count": 111,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/可调节床头使用说明书__p001",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/可调节床头使用说明书__p001/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "OCR 可用",
+      "default_decision_reason": "OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。"
+    },
+    {
+      "page": 122005,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 5,
+      "source_path": "<root>/8.配件/岩板",
+      "source_title": "岩板",
+      "source_node_id": "ZX6GRezwJl6jDOZysR1Q7QwvWdqbropQ",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0122__8.配件__岩板__ZX6GRezwJl6j.pdf",
+      "source_page": 5,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/岩板__p005.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "## 圣勃朗鱼肚 ## DESCRIPTION 踏上瓦特纳冰原，凝视着冰川划过的痕迹，纵横交错，犹如不同的人生轨迹，曲折或顺利，进退之间，都化作一段奇妙的旅程。 As if stepping on the Vatnajokull,we gaze at the crisscrossing glaciers.Like different life trajectories,it's full of twists or success.Between advance and retreat,they all turn into a wonderful journey. <div style=\"text-align: center;\">SPECIFICATION </div> DA2M78BR-Y-天鹅绒面1200X2400X12MM 12MM DB2M78BR-Y-天鹅绒面1600X3200X12MM 12 MM ## FEATURES <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_0_972_596_1077.jpg\" alt=\"Image\" width=\"31%\" /></div> <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_634_1_1055_1078.jpg\" alt=\"Image\" width=\"21%\" /></div> <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_1135_146_1891_678.jpg\" alt=\"Image\" width=\"39%\" /></div> <div style=\"text-align: center;\">APPLYTO SPACE </div> <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_1387_973_1917_1047.jpg\" alt=\"Image\" width=\"27%\" /></div>",
+        "char_count": 879,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/岩板__p005",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/岩板__p005/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "暂缓激活",
+      "default_decision_reason": "OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。"
+    },
+    {
+      "page": 122006,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 5,
+      "source_path": "<root>/8.配件/岩板",
+      "source_title": "岩板",
+      "source_node_id": "ZX6GRezwJl6jDOZysR1Q7QwvWdqbropQ",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0122__8.配件__岩板__ZX6GRezwJl6j.pdf",
+      "source_page": 6,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/岩板__p006.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "## 保加利亚浅灰 ## DESCRIPTION 保加利亚，“上帝的后花园”位于欧洲巴尔干半岛东南部，悠久的历史建筑，人文风情，从巴尔干山峰，到黑海岸边迷人的沙滩，独特的风景令人叹为观止。皎洁柔和的灰色线条交织，灵动得如舞动的月光，飘酒到纯粹的极简空间，保加利亚石材中的灰色系，弥足珍贵，抢眼夺目。 Bulgaria, the \"God's Back Garden\" is located in the southeastern part of the Balkan Peninsula in Europe. With a long history of architecture and cultural charm, the unique scenery from the Balkan peaks to the charming beaches along the Black Coast is breathtaking. The bright and soft gray lines interweave, as agile as dancing moonlight, flowing into pure minimalist spaces, The gray series in Bulgarian stone is precious and eye-catching. ## SPECIFICATION GA1632CY12A096N-粗哑面1600X3200X12MM 12 MM ## FEATURES <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_0_965_588_1068.jpg\" alt=\"Image\" width=\"30%\" /></div> <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_618_1_1058_1079.jpg\" alt=\"Image\" width=\"22%\" /></div> <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_1178_38_1913_724.jpg\" alt=\"Image\" width=\"38%\" /></div> <div style=\"text-align: center;\">APPLY TO SPACE </div> <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_1377_970_1915_1045.jpg\" alt=\"Image\" width=\"28%\" /></div>",
+        "char_count": 1078,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/岩板__p006",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/岩板__p006/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "暂缓激活",
+      "default_decision_reason": "OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。"
+    },
+    {
+      "page": 122008,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 5,
+      "source_path": "<root>/8.配件/岩板",
+      "source_title": "岩板",
+      "source_node_id": "ZX6GRezwJl6jDOZysR1Q7QwvWdqbropQ",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0122__8.配件__岩板__ZX6GRezwJl6j.pdf",
+      "source_page": 8,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/岩板__p008.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "## 劳伦特 ## DESCRIPTION 白色与金属色纹理纵横交错，宛如墨染苍穹时的一缕曙光，摄人心魂，彰显气势磅礴器宇轩昂之势。 Like a ray of dawn across the sky stained with ink, the white and metallic textures are criss-crossed.lt captures people'hearts and souls, demonstrats the majestice, nergetic and extraordinary momentum. ## SPECIFICATION DB2M70BC-Y-粗哑面1600X3200X12MM 12 MM ## FEATURES <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_607_2_1052_1079.jpg\" alt=\"Image\" width=\"23%\" /></div> <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_1179_63_1895_667.jpg\" alt=\"Image\" width=\"37%\" /></div> <div style=\"text-align: center;\">APPLYTOSPACE </div> <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_1356_973_1889_1047.jpg\" alt=\"Image\" width=\"27%\" /></div>",
+        "char_count": 682,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/岩板__p008",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/岩板__p008/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "暂缓激活",
+      "default_decision_reason": "OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。"
+    },
+    {
+      "page": 122009,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 5,
+      "source_path": "<root>/8.配件/岩板",
+      "source_title": "岩板",
+      "source_node_id": "ZX6GRezwJl6jDOZysR1Q7QwvWdqbropQ",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0122__8.配件__岩板__ZX6GRezwJl6j.pdf",
+      "source_page": 9,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/岩板__p009.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "## 阿勒闪电 ## DESCRIPTION 无以复加的天然质感，经久不衰的黑白色调，呈现出一种超越边界之美，如闪电般的纹理，又如激起荡漾的波光，带来强烈视觉冲击，空间表现力强，尽显新潮时尚风。 Unsurpassed natural texture and enduring black and white tones present a beauty that transcends boundaries. The texture is like lightning and rippling waves, which brings a strong visual impact.It has a strong spatial expressiveness and shows the trendy fashion style. ## SPECIFICATION DB2M90CC-Y-粗哑面+数码纹理通体1600X3200X12MM 12MM ## FEATURES <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_0_966_574_1072.jpg\" alt=\"Image\" width=\"29%\" /></div> <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_623_3_1046_1079.jpg\" alt=\"Image\" width=\"22%\" /></div> <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_1208_221_1856_626.jpg\" alt=\"Image\" width=\"33%\" /></div> <div style=\"text-align: center;\">APPLYTOSPACE </div> <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_1370_973_1909_1047.jpg\" alt=\"Image\" width=\"28%\" /></div>",
+        "char_count": 887,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/岩板__p009",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/岩板__p009/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "暂缓激活",
+      "default_decision_reason": "OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。"
+    },
+    {
+      "page": 96008,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 1,
+      "source_path": "<root>/7.门板/常规推拉门",
+      "source_title": "常规推拉门",
+      "source_node_id": "gvNG4YZ7Jn6kMwLbs9g7DY1oJ2LD0oRE",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0096__7.门板__常规推拉门__gvNG4YZ7Jn6k.pdf",
+      "source_page": 8,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/常规推拉门__p008.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "<div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_1_0_1920_1078.jpg\" alt=\"Image\" width=\"99%\" /></div>",
+        "char_count": 110,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/常规推拉门__p008",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/常规推拉门__p008/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "暂缓激活",
+      "default_decision_reason": "OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。"
+    },
+    {
+      "page": 96009,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 1,
+      "source_path": "<root>/7.门板/常规推拉门",
+      "source_title": "常规推拉门",
+      "source_node_id": "gvNG4YZ7Jn6kMwLbs9g7DY1oJ2LD0oRE",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0096__7.门板__常规推拉门__gvNG4YZ7Jn6k.pdf",
+      "source_page": 9,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/常规推拉门__p009.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "<div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_1_0_1920_1078.jpg\" alt=\"Image\" width=\"99%\" /></div>",
+        "char_count": 110,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/常规推拉门__p009",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/常规推拉门__p009/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "暂缓激活",
+      "default_decision_reason": "OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。"
+    },
+    {
+      "page": 96010,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 1,
+      "source_path": "<root>/7.门板/常规推拉门",
+      "source_title": "常规推拉门",
+      "source_node_id": "gvNG4YZ7Jn6kMwLbs9g7DY1oJ2LD0oRE",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0096__7.门板__常规推拉门__gvNG4YZ7Jn6k.pdf",
+      "source_page": 10,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/常规推拉门__p010.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "<div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_1_1_1920_1078.jpg\" alt=\"Image\" width=\"99%\" /></div>",
+        "char_count": 110,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/常规推拉门__p010",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/常规推拉门__p010/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "暂缓激活",
+      "default_decision_reason": "OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。"
+    },
+    {
+      "page": 11012,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 4,
+      "source_path": "<root>/2.边角风格/常规边角风格",
+      "source_title": "常规边角风格",
+      "source_node_id": "a9E05BDRVQ57LqANU2lOG7KxV63zgkYA",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0011__2.边角风格__常规边角风格__a9E05BDRVQ57.pdf",
+      "source_page": 12,
+      "_blocking_reason": "PDF 文字层为空；PaddleOCR 抽样为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/常规边角风格__p012.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "<div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_575_0_1417_506.jpg\" alt=\"Image\" width=\"43%\" /></div> <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_86_565_596_1005.jpg\" alt=\"Image\" width=\"26%\" /></div> <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_767_567_1221_1009.jpg\" alt=\"Image\" width=\"23%\" /></div> <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_1402_568_1873_1007.jpg\" alt=\"Image\" width=\"24%\" /></div>",
+        "char_count": 452,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/常规边角风格__p012",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/常规边角风格__p012/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "OCR 可用",
+      "default_decision_reason": "OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。"
+    },
+    {
+      "page": 9003,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 7,
+      "source_path": "<root>/1.材料/木材种类",
+      "source_title": "木材种类",
+      "source_node_id": "7NkDwLng8Z5P3rnKUM5p5Y9pJKMEvZBY",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0009__1.材料__木材种类__7NkDwLng8Z5P.pdf",
+      "source_page": 3,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/木材种类__p003.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "## 白蜡木 ## WHITE ASH WOOD",
+        "char_count": 19,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/木材种类__p003",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/木材种类__p003/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "必须看图",
+      "default_decision_reason": "图片较多且 OCR 不充分，可能有图示、尺寸或表格需要人工看截图。"
+    },
+    {
+      "page": 9004,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 7,
+      "source_path": "<root>/1.材料/木材种类",
+      "source_title": "木材种类",
+      "source_node_id": "7NkDwLng8Z5P3rnKUM5p5Y9pJKMEvZBY",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0009__1.材料__木材种类__7NkDwLng8Z5P.pdf",
+      "source_page": 4,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/木材种类__p004.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "## CHERRY WOOD 木质温润细腻 时光着色 还稳 <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_433_122_1920_985.jpg\" alt=\"Image\" width=\"77%\" /></div>",
+        "char_count": 137,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/木材种类__p004",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/木材种类__p004/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "OCR 可用",
+      "default_decision_reason": "OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。"
+    },
+    {
+      "page": 9005,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 7,
+      "source_path": "<root>/1.材料/木材种类",
+      "source_title": "木材种类",
+      "source_node_id": "7NkDwLng8Z5P3rnKUM5p5Y9pJKMEvZBY",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0009__1.材料__木材种类__7NkDwLng8Z5P.pdf",
+      "source_page": 5,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/木材种类__p005.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "## 白橡木WHITE OAK WOOD 提到原木色 你脑袋里出现的颜色和纹路准是它 <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_443_179_1918_1001.jpg\" alt=\"Image\" width=\"76%\" /></div>",
+        "char_count": 151,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/木材种类__p005",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/木材种类__p005/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "OCR 可用",
+      "default_decision_reason": "OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。"
+    },
+    {
+      "page": 9006,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 7,
+      "source_path": "<root>/1.材料/木材种类",
+      "source_title": "木材种类",
+      "source_node_id": "7NkDwLng8Z5P3rnKUM5p5Y9pJKMEvZBY",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0009__1.材料__木材种类__7NkDwLng8Z5P.pdf",
+      "source_page": 6,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/木材种类__p006.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "## 黑胡桃木 ## BLACK <div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_4_169_1920_1026.jpg\" alt=\"Image\" width=\"99%\" /></div>",
+        "char_count": 125,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/木材种类__p006",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/木材种类__p006/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "OCR 可用",
+      "default_decision_reason": "OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。"
+    },
+    {
+      "page": 89005,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 1,
+      "source_path": "<root>/7.门板/极窄斜边拼框门",
+      "source_title": "极窄斜边拼框门",
+      "source_node_id": "dQPGYqjpJY5O0jLmUZQoaze3Jakx1Z5N",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0089__7.门板__极窄斜边拼框门__dQPGYqjpJY5O.pdf",
+      "source_page": 5,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/极窄斜边拼框门__p005.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "<div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_5_96_1918_1075.jpg\" alt=\"Image\" width=\"99%\" /></div>",
+        "char_count": 111,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/极窄斜边拼框门__p005",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/极窄斜边拼框门__p005/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "OCR 可用",
+      "default_decision_reason": "OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。"
+    },
+    {
+      "page": 5013,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/0.设计与应用指引/模块卡座书柜定制设计指引",
+      "source_title": "模块卡座书柜定制设计指引",
+      "source_node_id": "AR4GpnMqJzDbLBvYfaP2YNoYWKe0xjE3",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0005__0.设计与应用指引__模块卡座书柜定制设计指引__AR4GpnMqJzDb.pdf",
+      "source_page": 13,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/模块卡座书柜定制设计指引__p013.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "Loremipsum dolor sit amet.",
+        "char_count": 23,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/模块卡座书柜定制设计指引__p013",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/模块卡座书柜定制设计指引__p013/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "OCR 可用",
+      "default_decision_reason": "OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。"
+    },
+    {
+      "page": 5014,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 2,
+      "source_path": "<root>/0.设计与应用指引/模块卡座书柜定制设计指引",
+      "source_title": "模块卡座书柜定制设计指引",
+      "source_node_id": "AR4GpnMqJzDbLBvYfaP2YNoYWKe0xjE3",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0005__0.设计与应用指引__模块卡座书柜定制设计指引__AR4GpnMqJzDb.pdf",
+      "source_page": 14,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/模块卡座书柜定制设计指引__p014.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "<div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_0_19_1920_1080.jpg\" alt=\"Image\" width=\"100%\" /></div>",
+        "char_count": 112,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/模块卡座书柜定制设计指引__p014",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/模块卡座书柜定制设计指引__p014/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "OCR 可用",
+      "default_decision_reason": "OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。"
+    },
+    {
+      "page": 5015,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 1,
+      "source_path": "<root>/0.设计与应用指引/模块卡座书柜定制设计指引",
+      "source_title": "模块卡座书柜定制设计指引",
+      "source_node_id": "AR4GpnMqJzDbLBvYfaP2YNoYWKe0xjE3",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0005__0.设计与应用指引__模块卡座书柜定制设计指引__AR4GpnMqJzDb.pdf",
+      "source_page": 15,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/模块卡座书柜定制设计指引__p015.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "<div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_9_20_1916_1035.jpg\" alt=\"Image\" width=\"99%\" /></div>",
+        "char_count": 111,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/模块卡座书柜定制设计指引__p015",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/模块卡座书柜定制设计指引__p015/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "OCR 可用",
+      "default_decision_reason": "OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。"
+    },
+    {
+      "page": 5016,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 1,
+      "source_path": "<root>/0.设计与应用指引/模块卡座书柜定制设计指引",
+      "source_title": "模块卡座书柜定制设计指引",
+      "source_node_id": "AR4GpnMqJzDbLBvYfaP2YNoYWKe0xjE3",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0005__0.设计与应用指引__模块卡座书柜定制设计指引__AR4GpnMqJzDb.pdf",
+      "source_page": 16,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/模块卡座书柜定制设计指引__p016.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "<div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_19_5_1906_1074.jpg\" alt=\"Image\" width=\"98%\" /></div>",
+        "char_count": 111,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/模块卡座书柜定制设计指引__p016",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/模块卡座书柜定制设计指引__p016/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "OCR 可用",
+      "default_decision_reason": "OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。"
+    },
+    {
+      "page": 5017,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 1,
+      "source_path": "<root>/0.设计与应用指引/模块卡座书柜定制设计指引",
+      "source_title": "模块卡座书柜定制设计指引",
+      "source_node_id": "AR4GpnMqJzDbLBvYfaP2YNoYWKe0xjE3",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0005__0.设计与应用指引__模块卡座书柜定制设计指引__AR4GpnMqJzDb.pdf",
+      "source_page": 17,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/模块卡座书柜定制设计指引__p017.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "<div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_0_2_1912_1077.jpg\" alt=\"Image\" width=\"99%\" /></div>",
+        "char_count": 110,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/模块卡座书柜定制设计指引__p017",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/模块卡座书柜定制设计指引__p017/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "OCR 可用",
+      "default_decision_reason": "OCR 已补回主要文字，可作为候选证据，但仍建议抽看截图。"
+    },
+    {
+      "page": 98002,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 1,
+      "source_path": "<root>/7.门板/雪见推拉门",
+      "source_title": "雪见推拉门",
+      "source_node_id": "P7QG4Yx2Jp6pNqe3sgK2YRdkW9dEq3XD",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0098__7.门板__雪见推拉门__P7QG4Yx2Jp6p.pdf",
+      "source_page": 2,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/雪见推拉门__p002.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "<div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_1_5_1919_1077.jpg\" alt=\"Image\" width=\"99%\" /></div>",
+        "char_count": 110,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/雪见推拉门__p002",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/雪见推拉门__p002/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "暂缓激活",
+      "default_decision_reason": "OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。"
+    },
+    {
+      "page": 98003,
+      "extract_method": "unknown",
+      "raw_text": "",
+      "normalized_explanation": "本页未抽取到可用文字，建议人工复核原 PDF。",
+      "tags": [
+        "待分类"
+      ],
+      "rule_type": "empty",
+      "confidence": 0.5,
+      "image_count": 1,
+      "source_path": "<root>/7.门板/雪见推拉门",
+      "source_title": "雪见推拉门",
+      "source_node_id": "P7QG4Yx2Jp6pNqe3sgK2YRdkW9dEq3XD",
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0098__7.门板__雪见推拉门__P7QG4Yx2Jp6p.pdf",
+      "source_page": 3,
+      "_blocking_reason": "PDF 文字层为空",
+      "image": {
+        "status": "succeeded",
+        "path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/雪见推拉门__p003.png",
+        "reused": true
+      },
+      "ocr": {
+        "status": "succeeded",
+        "text": "<div style=\"text-align: center;\"><img src=\"imgs/img_in_image_box_32_0_1917_1075.jpg\" alt=\"Image\" width=\"98%\" /></div>",
+        "char_count": 111,
+        "output_dir": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/雪见推拉门__p003",
+        "one_page_pdf": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/ocr/雪见推拉门__p003/source-page.pdf",
+        "reused": true
+      },
+      "default_decision": "暂缓激活",
+      "default_decision_reason": "OCR 补到了较多文字，而且涉及规则/尺寸/安全等关键词，需要人工确认后再进规则。"
+    }
+  ]
+}

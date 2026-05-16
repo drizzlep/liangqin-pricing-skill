@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>良禽佳木图文证据层总览</title>
+  <style>
+    :root { --paper:#f7efe4; --card:#fffaf2; --ink:#271f18; --muted:#756757; --line:#dfcfb8; --accent:#85522f; --warn:#9b5524; --good:#3f704a; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:linear-gradient(135deg,#fffaf2 0%,var(--paper) 54%,#e8d8c2 100%); font-family:"Songti SC","Noto Serif CJK SC",serif; }
+    main { max-width:1180px; margin:0 auto; padding:42px 22px 80px; }
+    .hero { border:1px solid var(--line); border-radius:30px; padding:32px; background:rgba(255,250,242,.92); box-shadow:0 24px 70px rgba(63,41,18,.12); }
+    .eyebrow { color:var(--accent); letter-spacing:.14em; font-size:13px; }
+    h1 { margin:12px 0; font-size:clamp(34px,5vw,56px); line-height:1.05; }
+    .hero p { max-width:900px; color:var(--muted); font-size:18px; line-height:1.8; }
+    .metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin:18px 0; }
+    .metric,.topic-card { border:1px solid var(--line); border-radius:22px; background:rgba(255,250,242,.88); padding:18px; }
+    .metric b { display:block; margin-top:6px; font-size:32px; }
+    .topics { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; margin-top:20px; }
+    .topic-card h2 { margin:8px 0 14px; font-size:28px; }
+    .status { display:inline-block; border:1px solid var(--line); border-radius:999px; padding:5px 10px; color:var(--accent); background:#fffdf8; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; color:var(--muted); }
+    .grid span { border:1px solid var(--line); border-radius:14px; padding:10px; background:#fffdf8; }
+    .grid b { color:var(--ink); }
+    p { color:var(--muted); line-height:1.75; }
+    .links { display:flex; flex-wrap:wrap; gap:10px; }
+    a { color:#fff; background:var(--accent); text-decoration:none; border-radius:999px; padding:8px 12px; }
+    @media (max-width: 820px) { .metrics,.topics { grid-template-columns:1fr; } main { padding:24px 14px 52px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <div class="eyebrow">良禽佳木 · 多主题 page-first 验收入口</div>
+      <h1>图文证据层总览</h1>
+      <p>本页用于判断哪些内容可以交给 Agent。默认只把整页图作为正式证据，自动裁剪图只保留为调试信息。OCR 弱不再自动升级成人工介入；只要有整页图，就由 Agent 直接读图处理，人工只作为缺图或证据不可展示时的兜底。</p>
+    </section>
+    <section class="metrics">
+      <div class="metric">主题总数<b>4</b></div>
+      <div class="metric">Agent 可直接引用<b>1</b></div>
+      <div class="metric">Agent 视觉阅读<b>3</b></div>
+      <div class="metric">需要人工兜底<b>0</b></div>
+    </section>
+    <section class="topics">
+      <article class="topic-card">
+        <div class="status">Agent 可直接引用</div>
+        <h2>岩板</h2>
+        <div class="grid">
+          <span>覆盖页数 <b>4</b></span>
+          <span>可用整页图 <b>4</b></span>
+          <span>Agent 直接引用 <b>4</b></span>
+          <span>Agent 读图 <b></b></span>
+          <span>人工兜底 <b></b></span>
+          <span>调试裁剪 <b>15</b></span>
+        </div>
+        <p>可进入下一阶段：可作为企业 Agent page-first 样板继续封装。</p>
+        <div class="links"><a href="岩板/visual-evidence-board.html">打开人工看板</a><a href="岩板/visual-assets.json">查看 JSON 证据</a></div>
+      </article>
+    
+      <article class="topic-card">
+        <div class="status">Agent 视觉阅读</div>
+        <h2>推拉门</h2>
+        <div class="grid">
+          <span>覆盖页数 <b>5</b></span>
+          <span>可用整页图 <b>5</b></span>
+          <span>Agent 直接引用 <b></b></span>
+          <span>Agent 读图 <b>5</b></span>
+          <span>人工兜底 <b></b></span>
+          <span>调试裁剪 <b>5</b></span>
+        </div>
+        <p>可进入 Agent 视觉阅读：有整页图，OCR 弱的页面由 Agent 直接读图处理。</p>
+        <div class="links"><a href="推拉门/visual-evidence-board.html">打开人工看板</a><a href="推拉门/visual-assets.json">查看 JSON 证据</a></div>
+      </article>
+    
+      <article class="topic-card">
+        <div class="status">Agent 视觉阅读</div>
+        <h2>儿童床</h2>
+        <div class="grid">
+          <span>覆盖页数 <b>12</b></span>
+          <span>可用整页图 <b>12</b></span>
+          <span>Agent 直接引用 <b></b></span>
+          <span>Agent 读图 <b>12</b></span>
+          <span>人工兜底 <b></b></span>
+          <span>调试裁剪 <b></b></span>
+        </div>
+        <p>可进入 Agent 视觉阅读：有整页图，OCR 弱的页面由 Agent 直接读图处理。</p>
+        <div class="links"><a href="儿童床/visual-evidence-board.html">打开人工看板</a><a href="儿童床/visual-assets.json">查看 JSON 证据</a></div>
+      </article>
+    
+      <article class="topic-card">
+        <div class="status">Agent 视觉阅读</div>
+        <h2>安全规范</h2>
+        <div class="grid">
+          <span>覆盖页数 <b>12</b></span>
+          <span>可用整页图 <b>12</b></span>
+          <span>Agent 直接引用 <b></b></span>
+          <span>Agent 读图 <b>12</b></span>
+          <span>人工兜底 <b></b></span>
+          <span>调试裁剪 <b></b></span>
+        </div>
+        <p>可进入 Agent 视觉阅读：有整页图，OCR 弱的页面由 Agent 直接读图处理。</p>
+        <div class="links"><a href="安全规范/visual-evidence-board.html">打开人工看板</a><a href="安全规范/visual-assets.json">查看 JSON 证据</a></div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

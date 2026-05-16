@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>岩板图文证据看板</title>
+  <style>
+    :root {
+      --paper: #f8f1e7;
+      --card: #fffaf2;
+      --ink: #271f18;
+      --muted: #796a5b;
+      --line: #e2d2bd;
+      --accent: #87512d;
+      --good: #3f6f4c;
+      --warn: #a45c24;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: radial-gradient(circle at top left, #fff 0, var(--paper) 42%, #eadcc8 100%); font-family: "Songti SC", "Noto Serif CJK SC", serif; }
+    .shell { max-width: 1220px; margin: 0 auto; padding: 40px 22px 80px; }
+    .hero { padding: 34px; border: 1px solid var(--line); border-radius: 30px; background: rgba(255, 250, 242, .92); box-shadow: 0 24px 70px rgba(63, 41, 18, .13); }
+    .eyebrow { color: var(--accent); letter-spacing: .14em; font-size: 13px; }
+    h1 { margin: 12px 0; font-size: clamp(34px, 5vw, 58px); line-height: 1.04; }
+    .hero p { max-width: 850px; color: var(--muted); font-size: 18px; line-height: 1.8; }
+    .metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 18px 0; }
+    .metric { border: 1px solid var(--line); border-radius: 20px; background: rgba(255, 250, 242, .86); padding: 17px; }
+    .metric__label { color: var(--muted); font-size: 14px; }
+    .metric__value { font-size: 30px; font-weight: 900; margin: 8px 0; }
+    .metric__hint { color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .card { border: 1px solid var(--line); border-radius: 24px; padding: 18px; background: var(--card); box-shadow: 0 16px 44px rgba(70, 46, 23, .09); }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; }
+    .meta span, .keyword-row span { border: 1px solid var(--line); border-radius: 999px; padding: 5px 9px; background: #fffdf8; }
+    h3 { margin: 14px 0 8px; font-size: 22px; }
+    .summary { color: var(--ink); line-height: 1.75; }
+    .hint { color: var(--warn); line-height: 1.65; }
+    .keyword-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; color: var(--muted); font-size: 13px; }
+    img { object-fit: contain; background: white; }
+    .page-image { width: 100%; height: auto; max-height: 520px; margin-top: 10px; border: 1px solid var(--line); border-radius: 16px; }
+    .debug-note { margin: 10px 0 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .empty, .empty-crops { color: var(--muted); padding: 20px; border: 1px dashed var(--line); border-radius: 18px; background: #fffdf8; }
+    .decision { margin: 18px 0; padding: 18px 20px; border: 1px solid var(--line); border-radius: 22px; background: rgba(255, 253, 248, .9); color: var(--ink); line-height: 1.7; }
+    .decision strong { color: var(--accent); }
+    @media (max-width: 900px) { .metrics, .board { grid-template-columns: 1fr; } .shell { padding: 24px 14px 52px; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow">良禽佳木 · 图文证据层</div>
+      <h1>岩板资料问答 + 配图</h1>
+      <p>第一版默认只给 Agent 和人工审核员看“对应整页图”，不把自动裁剪图作为主要证据。自动裁剪候选图只保留在 JSON 里用于机器调试，避免人类误判是裁错还是原图本身有透视。</p>
+    </section>
+    <section class="metrics">
+      
+      <section class="metric">
+        <div class="metric__label">图文条目</div>
+        <div class="metric__value">4</div>
+        <div class="metric__hint">当前主题收录页数</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">可用页图</div>
+        <div class="metric__value">4</div>
+        <div class="metric__hint">可作为整页证据返回</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">Agent 读图</div>
+        <div class="metric__value"></div>
+        <div class="metric__hint">有整页图但 OCR 偏弱</div>
+      </section>
+    
+      
+      <section class="metric">
+        <div class="metric__label">人工兜底</div>
+        <div class="metric__value"></div>
+        <div class="metric__hint">仅缺整页图时触发</div>
+      </section>
+    
+    </section>
+    <section class="decision"><strong>推荐动作：</strong>可进入下一阶段：可作为企业 Agent page-first 样板继续封装。</section>
+    <section class="board">
+      <article class="card" data-review="可给 Agent 引用">
+        <div class="meta">
+          <span>岩板</span>
+          <span>源页 5</span>
+          <span>可给 Agent 引用</span>
+        </div>
+        <h3>岩板 · 第 5 页</h3>
+        <p class="summary">## 圣勃朗鱼肚 ## DESCRIPTION 踏上瓦特纳冰原，凝视着冰川划过的痕迹，纵横交错，犹如不同的人生轨迹，曲折或顺利，进退之间，都化作一段奇妙的旅程。 As if stepping on the Vatnajokull,we gaze at the crisscrossing glaciers.Like different life trajectories,it&#x27;s full of twists or success.Between advance and retreat,they all turn into a wonderful journey. SPECIFICATION DA2M78BR-Y-天鹅绒面1200X2400X12MM 12MM DB2M78BR-Y-天鹅绒面1600X3200X1...</p>
+        <p class="hint">文字和整页图证据均可用，Agent 可直接引用。</p>
+        <div class="keyword-row"><span>岩板</span><span>&lt;root&gt;/8.配件/岩板</span><span>圣勃朗鱼肚</span><span>DESCRIPTION</span><span>踏上瓦特纳冰原</span><span>凝视着冰川划过的痕迹</span><span>纵横交错</span><span>犹如不同的人生轨迹</span><span>曲折或顺利</span><span>进退之间</span></div>
+        <img class="page-image" src="file:///Users/admin/Nutstore%20Files/%E6%88%91%E7%9A%84%E5%9D%9A%E6%9E%9C%E4%BA%91/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/%E5%B2%A9%E6%9D%BF__p005.png" alt="整页图">
+        <p class="debug-note">自动裁剪候选图：4 张，已保留在 JSON 中，仅用于机器调试，不在人工看板默认展示。</p>
+      </article>
+    
+
+      <article class="card" data-review="可给 Agent 引用">
+        <div class="meta">
+          <span>岩板</span>
+          <span>源页 6</span>
+          <span>可给 Agent 引用</span>
+        </div>
+        <h3>岩板 · 第 6 页</h3>
+        <p class="summary">## 保加利亚浅灰 ## DESCRIPTION 保加利亚，“上帝的后花园”位于欧洲巴尔干半岛东南部，悠久的历史建筑，人文风情，从巴尔干山峰，到黑海岸边迷人的沙滩，独特的风景令人叹为观止。皎洁柔和的灰色线条交织，灵动得如舞动的月光，飘酒到纯粹的极简空间，保加利亚石材中的灰色系，弥足珍贵，抢眼夺目。 Bulgaria, the &quot;God&#x27;s Back Garden&quot; is located in the southeastern part of the Balkan Peninsula in Europe. With a long history of architecture and cultural charm, the unique scenery from the Balkan peaks to the c...</p>
+        <p class="hint">文字和整页图证据均可用，Agent 可直接引用。</p>
+        <div class="keyword-row"><span>岩板</span><span>&lt;root&gt;/8.配件/岩板</span><span>保加利亚浅灰</span><span>DESCRIPTION</span><span>保加利亚</span><span>上帝的后花园</span><span>位于欧洲巴尔干半岛东南部</span><span>悠久的历史建筑</span><span>人文风情</span><span>从巴尔干山峰</span></div>
+        <img class="page-image" src="file:///Users/admin/Nutstore%20Files/%E6%88%91%E7%9A%84%E5%9D%9A%E6%9E%9C%E4%BA%91/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/%E5%B2%A9%E6%9D%BF__p006.png" alt="整页图">
+        <p class="debug-note">自动裁剪候选图：4 张，已保留在 JSON 中，仅用于机器调试，不在人工看板默认展示。</p>
+      </article>
+    
+
+      <article class="card" data-review="可给 Agent 引用">
+        <div class="meta">
+          <span>岩板</span>
+          <span>源页 8</span>
+          <span>可给 Agent 引用</span>
+        </div>
+        <h3>岩板 · 第 8 页</h3>
+        <p class="summary">## 劳伦特 ## DESCRIPTION 白色与金属色纹理纵横交错，宛如墨染苍穹时的一缕曙光，摄人心魂，彰显气势磅礴器宇轩昂之势。 Like a ray of dawn across the sky stained with ink, the white and metallic textures are criss-crossed.lt captures people&#x27;hearts and souls, demonstrats the majestice, nergetic and extraordinary momentum. ## SPECIFICATION DB2M70BC-Y-粗哑面1600X3200X12MM 12 MM ## FEATURES APPLYTOSPACE</p>
+        <p class="hint">文字和整页图证据均可用，Agent 可直接引用。</p>
+        <div class="keyword-row"><span>岩板</span><span>&lt;root&gt;/8.配件/岩板</span><span>劳伦特</span><span>DESCRIPTION</span><span>白色与金属色纹理纵横交错</span><span>宛如墨染苍穹时的一缕曙光</span><span>摄人心魂</span><span>彰显气势磅礴器宇轩昂之势</span><span>Like</span><span>ray</span></div>
+        <img class="page-image" src="file:///Users/admin/Nutstore%20Files/%E6%88%91%E7%9A%84%E5%9D%9A%E6%9E%9C%E4%BA%91/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/%E5%B2%A9%E6%9D%BF__p008.png" alt="整页图">
+        <p class="debug-note">自动裁剪候选图：3 张，已保留在 JSON 中，仅用于机器调试，不在人工看板默认展示。</p>
+      </article>
+    
+
+      <article class="card" data-review="可给 Agent 引用">
+        <div class="meta">
+          <span>岩板</span>
+          <span>源页 9</span>
+          <span>可给 Agent 引用</span>
+        </div>
+        <h3>岩板 · 第 9 页</h3>
+        <p class="summary">## 阿勒闪电 ## DESCRIPTION 无以复加的天然质感，经久不衰的黑白色调，呈现出一种超越边界之美，如闪电般的纹理，又如激起荡漾的波光，带来强烈视觉冲击，空间表现力强，尽显新潮时尚风。 Unsurpassed natural texture and enduring black and white tones present a beauty that transcends boundaries. The texture is like lightning and rippling waves, which brings a strong visual impact.It has a strong spatial expressiveness and shows the trendy fashion...</p>
+        <p class="hint">文字和整页图证据均可用，Agent 可直接引用。</p>
+        <div class="keyword-row"><span>岩板</span><span>&lt;root&gt;/8.配件/岩板</span><span>阿勒闪电</span><span>DESCRIPTION</span><span>无以复加的天然质感</span><span>经久不衰的黑白色调</span><span>呈现出一种超越边界之美</span><span>如闪电般的纹理</span><span>又如激起荡漾的波光</span><span>带来强烈视觉冲击</span></div>
+        <img class="page-image" src="file:///Users/admin/Nutstore%20Files/%E6%88%91%E7%9A%84%E5%9D%9A%E6%9E%9C%E4%BA%91/CODE/project/liangqin-skill/skill/liangqin-pricing/reports/addenda/designer-manual-online-2026-05-13/blocking-pages/images/%E5%B2%A9%E6%9D%BF__p009.png" alt="整页图">
+        <p class="debug-note">自动裁剪候选图：4 张，已保留在 JSON 中，仅用于机器调试，不在人工看板默认展示。</p>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

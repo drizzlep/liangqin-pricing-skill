@@ -324,6 +324,23 @@ class HandleQuoteMessageTests(unittest.TestCase):
         self.assertEqual(result["next_best_action"]["code"], "formal_quote_ready")
         self.assertIn("可以进入正式报价", result["reply_text"])
 
+    def test_new_baseline_track_socket_gate_is_reached_from_natural_language(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="这组黑胡桃衣柜长1.8米高2.2米深600，想加轨道插座，直接正式报价。",
+                context_json=self.context_json,
+                channel="feishu",
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                execute_quote_when_ready=True,
+            )
+
+        self.assertEqual(result["handled_by"], "precheck_quote")
+        self.assertEqual(result["status"], "needs_input")
+        self.assertEqual(result["constraint_code"], "baseline.track_socket.power_reservation.required")
+        self.assertEqual(result["downstream_result"]["baseline_rule_gate"]["rule_id"], "landing-rule-0034")
+        self.assertIn("预留插座", result["reply_text"])
+
     def test_customer_precise_need_returns_guided_discovery_reply_for_bookcase(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             result = MODULE.handle_message(
@@ -1843,6 +1860,144 @@ class HandleQuoteMessageTests(unittest.TestCase):
         self.assertEqual(result["pricing_route"], "special_adjustment.hidden_rosewood_discount")
         self.assertIn("正式报价：7378元/㎡", result["reply_text"])
         self.assertIn("折减计价", result["reply_text"])
+
+    def test_executes_curved_side_panel_special_quote(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="圆弧侧板按米直接算正式报价。",
+                context_json=self.context_json,
+                channel="feishu",
+                special_quote={
+                    "special_rule": "curved_side_panel",
+                    "length": "1.8",
+                },
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["handled_by"], "format_quote_reply")
+        self.assertEqual(result["pricing_route"], "special_adjustment.curved_side_panel")
+        self.assertIn("正式报价：540元", result["reply_text"])
+        self.assertIn("圆弧侧板按米专项计价", result["reply_text"])
+
+    def test_executes_push_to_open_drawer_slide_special_quote(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="按弹抽屉滑轨一套直接算正式报价。",
+                context_json=self.context_json,
+                channel="feishu",
+                special_quote={
+                    "special_rule": "push_to_open_drawer_slide",
+                    "set_count": "1",
+                },
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["pricing_route"], "special_adjustment.push_to_open_drawer_slide")
+        self.assertIn("正式报价：850元", result["reply_text"])
+
+    def test_executes_hanging_rail_door_special_quote(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="吊轨门一扇加价直接算正式报价。",
+                context_json=self.context_json,
+                channel="feishu",
+                special_quote={
+                    "special_rule": "hanging_rail_door",
+                    "door_count": "1",
+                },
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["pricing_route"], "special_adjustment.hanging_rail_door")
+        self.assertIn("正式报价：400元", result["reply_text"])
+
+    def test_executes_texture_continuity_markup_special_quote(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="平板门纹理连续超过0.9米，按15%加价直接算。",
+                context_json=self.context_json,
+                channel="feishu",
+                special_quote={
+                    "special_rule": "texture_continuity_markup",
+                    "product": "平板门纹理连续加价",
+                    "base_amount": "10000",
+                    "rate": "0.15",
+                },
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["pricing_route"], "special_adjustment.texture_continuity_markup")
+        self.assertIn("正式报价：1500元", result["reply_text"])
+
+    def test_executes_bottomless_cabinet_side_panel_special_quote(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="无底板柜下部侧板按面积直接算正式报价。",
+                context_json=self.context_json,
+                channel="feishu",
+                special_quote={
+                    "special_rule": "bottomless_cabinet_side_panel",
+                    "material": "北美黑胡桃木",
+                    "height": "1.85",
+                    "depth": "0.65",
+                    "side_count": "2",
+                },
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["pricing_route"], "special_adjustment.bottomless_cabinet_side_panel")
+        self.assertIn("正式报价：4329元", result["reply_text"])
+
+    def test_executes_door_panel_area_special_quote(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="藤编门按单独门板面积直接算正式报价。",
+                context_json=self.context_json,
+                channel="feishu",
+                special_quote={
+                    "special_rule": "door_panel_area",
+                    "door_family": "standalone_rattan_door",
+                    "material": "北美黑胡桃木",
+                    "width": "0.6",
+                    "height": "2",
+                },
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["pricing_route"], "special_adjustment.door_panel_area")
+        self.assertIn("正式报价：4656元", result["reply_text"])
+
+    def test_executes_manual_zero_impact_special_quote(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = MODULE.handle_message(
+                text="圆弧挡条结构规则按新版手册进入正式金额门。",
+                context_json=self.context_json,
+                channel="feishu",
+                special_quote={
+                    "special_rule": "manual_zero_impact",
+                    "rule_title": "挡条",
+                    "evidence": "圆弧挡条仅给出尺寸、连接和图纸标注要求，未给出独立收费金额。",
+                },
+                state_root=Path(tmpdir) / "states",
+                bundle_root=Path(tmpdir) / "bundles",
+                disable_addenda=True,
+            )
+
+        self.assertEqual(result["pricing_route"], "special_adjustment.manual_zero_impact")
+        self.assertIn("正式报价：0元", result["reply_text"])
+        self.assertIn("金额影响为0元", result["reply_text"])
 
     def test_continues_rock_slab_adjustment_from_existing_formal_quote(self) -> None:
         payload = {

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新版设计师手册全书闭环</title>
+  <style>
+    body { margin:0; font-family:"Songti SC","Noto Serif CJK SC",serif; color:#281f17; background:#f7efe3; }
+    main { max-width:1120px; margin:0 auto; padding:42px 20px 72px; }
+    .hero, article, section { background:#fffaf1; border:1px solid #dfcdb6; border-radius:24px; box-shadow:0 18px 50px rgba(80,48,20,.08); }
+    .hero { padding:32px; }
+    h1 { margin:8px 0 12px; font-size:44px; line-height:1.08; }
+    .status { display:inline-flex; border-radius:999px; background:#edf6ea; color:#416d46; padding:8px 14px; font-weight:800; }
+    .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin:20px 0; }
+    article { padding:20px; }
+    article b { display:block; color:#825431; font-size:15px; }
+    article span { display:block; font-size:34px; font-weight:900; margin-top:8px; }
+    section { padding:22px; line-height:1.8; margin-top:16px; }
+    @media(max-width:760px) { .grid { grid-template-columns:1fr; } h1 { font-size:32px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="hero">
+      <div class="status">complete</div>
+      <h1>新版设计师手册全书闭环完成</h1>
+      <p>本页是发布前的人类入口：所有原 `manual_review/unresolved` 项均已改写为明确的机器闭环状态；未知页也已落入可抽取、排除、仅人工证据或源证据复核，不再阻塞技能封装。</p>
+    </div>
+    <div class="grid"><article><b>runtime 规则</b><span>230</span></article>
+<article><b>知识层</b><span>136</span></article>
+<article><b>排除背景</b><span>1287</span></article>
+<article><b>不自动回答</b><span>104</span></article>
+<article><b>源证据复核</b><span></span></article>
+<article><b>未知页</b><span>33</span></article>
+<article><b>原待复核项</b><span>240</span></article></div>
+    <section>
+      <h2>未知页处理</h2>
+      <ul><li>machine_extractable_needs_rule_test: 1</li>
+<li>machine_extractable_knowledge: 19</li>
+<li>manual_source_only: 1</li>
+<li>not_machine_readable_excluded: 12</li></ul>
+    </section>
+    <section>
+      <h2>原待复核项处理</h2>
+      <ul><li>not_safe_for_auto_answer: 104</li>
+<li>knowledge_ready: 136</li></ul>
+    </section>
+    <section>
+      <h2>发布护栏</h2>
+      <p>本闭环不代表所有手册内容都自动参与报价。高风险金额、公式、安全和尺寸限制内容，未通过专项测试前只会保留为不自动回答或源证据复核状态。</p>
+    </section>
+  </main>
+</body>
+</html>

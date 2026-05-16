@@ -1,0 +1,573 @@
+{
+  "title": "新版设计师手册未知页机器闭环清单",
+  "unknown_page_count": 33,
+  "resolution_counts": {
+    "machine_extractable_needs_rule_test": 1,
+    "machine_extractable_knowledge": 19,
+    "manual_source_only": 1,
+    "not_machine_readable_excluded": 12
+  },
+  "entries": [
+    {
+      "source_title": "模块卡座书柜定制设计指引",
+      "source_page": 13,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0005__0.设计与应用指引__模块卡座书柜定制设计指引__AR4GpnMqJzDb.pdf",
+      "image_count": 2,
+      "resolution_status": "machine_extractable_needs_rule_test",
+      "runtime_action": "requeue_for_rule_test",
+      "reason": "OCR 可用，但仍需下游规则测试后才能进入报价链路。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": true,
+        "default_decision": "OCR 可用",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 23,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "模块卡座书柜定制设计指引",
+      "source_page": 14,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0005__0.设计与应用指引__模块卡座书柜定制设计指引__AR4GpnMqJzDb.pdf",
+      "image_count": 2,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "OCR 可用",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 112,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "模块卡座书柜定制设计指引",
+      "source_page": 15,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0005__0.设计与应用指引__模块卡座书柜定制设计指引__AR4GpnMqJzDb.pdf",
+      "image_count": 1,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "OCR 可用",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 111,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "模块卡座书柜定制设计指引",
+      "source_page": 16,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0005__0.设计与应用指引__模块卡座书柜定制设计指引__AR4GpnMqJzDb.pdf",
+      "image_count": 1,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "OCR 可用",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 111,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "模块卡座书柜定制设计指引",
+      "source_page": 17,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0005__0.设计与应用指引__模块卡座书柜定制设计指引__AR4GpnMqJzDb.pdf",
+      "image_count": 1,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "OCR 可用",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 110,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "木材种类",
+      "source_page": 3,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0009__1.材料__木材种类__7NkDwLng8Z5P.pdf",
+      "image_count": 7,
+      "resolution_status": "manual_source_only",
+      "runtime_action": "keep_as_evidence_only",
+      "reason": "截图证据可用，但机器文字证据不足；仅保留为人工证据，不进入自动回答。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": true,
+        "default_decision": "必须看图",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 19,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "木材种类",
+      "source_page": 4,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0009__1.材料__木材种类__7NkDwLng8Z5P.pdf",
+      "image_count": 7,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "OCR 可用",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 137,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "木材种类",
+      "source_page": 5,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0009__1.材料__木材种类__7NkDwLng8Z5P.pdf",
+      "image_count": 7,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "OCR 可用",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 151,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "木材种类",
+      "source_page": 6,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0009__1.材料__木材种类__7NkDwLng8Z5P.pdf",
+      "image_count": 7,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "OCR 可用",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 125,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "常规边角风格",
+      "source_page": 12,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0011__2.边角风格__常规边角风格__a9E05BDRVQ57.pdf",
+      "image_count": 4,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": true,
+        "default_decision": "OCR 可用",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 452,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "极窄斜边拼框门",
+      "source_page": 5,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0089__7.门板__极窄斜边拼框门__dQPGYqjpJY5O.pdf",
+      "image_count": 1,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": true,
+        "default_decision": "OCR 可用",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 111,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "常规推拉门",
+      "source_page": 8,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0096__7.门板__常规推拉门__gvNG4YZ7Jn6k.pdf",
+      "image_count": 1,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": true,
+        "default_decision": "暂缓激活",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 110,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "常规推拉门",
+      "source_page": 9,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0096__7.门板__常规推拉门__gvNG4YZ7Jn6k.pdf",
+      "image_count": 1,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "暂缓激活",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 110,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "常规推拉门",
+      "source_page": 10,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0096__7.门板__常规推拉门__gvNG4YZ7Jn6k.pdf",
+      "image_count": 1,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "暂缓激活",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 110,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "雪见推拉门",
+      "source_page": 2,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0098__7.门板__雪见推拉门__P7QG4Yx2Jp6p.pdf",
+      "image_count": 1,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": true,
+        "default_decision": "暂缓激活",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 110,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "雪见推拉门",
+      "source_page": 3,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0098__7.门板__雪见推拉门__P7QG4Yx2Jp6p.pdf",
+      "image_count": 1,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "暂缓激活",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 111,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "岩板",
+      "source_page": 5,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0122__8.配件__岩板__ZX6GRezwJl6j.pdf",
+      "image_count": 5,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": true,
+        "default_decision": "暂缓激活",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 879,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "岩板",
+      "source_page": 6,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0122__8.配件__岩板__ZX6GRezwJl6j.pdf",
+      "image_count": 5,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "暂缓激活",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 1078,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "岩板",
+      "source_page": 8,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0122__8.配件__岩板__ZX6GRezwJl6j.pdf",
+      "image_count": 5,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "暂缓激活",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 682,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "岩板",
+      "source_page": 9,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0122__8.配件__岩板__ZX6GRezwJl6j.pdf",
+      "image_count": 5,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "暂缓激活",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 887,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_page": 2,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0137__9.儿童床__GB 28007-2024 婴幼儿及儿童家具安全技术规范__ZgpG2NdyVX5x.pdf",
+      "image_count": 2,
+      "resolution_status": "not_machine_readable_excluded",
+      "runtime_action": "exclude_from_runtime",
+      "reason": "阻断页复核默认判断为不影响规则，闭环为不进入自动链路。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": true,
+        "default_decision": "不影响规则",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 4,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_page": 4,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0137__9.儿童床__GB 28007-2024 婴幼儿及儿童家具安全技术规范__ZgpG2NdyVX5x.pdf",
+      "image_count": 2,
+      "resolution_status": "not_machine_readable_excluded",
+      "runtime_action": "exclude_from_runtime",
+      "reason": "阻断页复核默认判断为不影响规则，闭环为不进入自动链路。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": true,
+        "default_decision": "不影响规则",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 4,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_page": 8,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0137__9.儿童床__GB 28007-2024 婴幼儿及儿童家具安全技术规范__ZgpG2NdyVX5x.pdf",
+      "image_count": 2,
+      "resolution_status": "not_machine_readable_excluded",
+      "runtime_action": "exclude_from_runtime",
+      "reason": "阻断页复核默认判断为不影响规则，闭环为不进入自动链路。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": true,
+        "default_decision": "不影响规则",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 3,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_page": 45,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0137__9.儿童床__GB 28007-2024 婴幼儿及儿童家具安全技术规范__ZgpG2NdyVX5x.pdf",
+      "image_count": 2,
+      "resolution_status": "not_machine_readable_excluded",
+      "runtime_action": "exclude_from_runtime",
+      "reason": "阻断页复核默认判断为不影响规则，闭环为不进入自动链路。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "不影响规则",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 3,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_page": 46,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0137__9.儿童床__GB 28007-2024 婴幼儿及儿童家具安全技术规范__ZgpG2NdyVX5x.pdf",
+      "image_count": 2,
+      "resolution_status": "not_machine_readable_excluded",
+      "runtime_action": "exclude_from_runtime",
+      "reason": "阻断页复核默认判断为不影响规则，闭环为不进入自动链路。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "不影响规则",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 3,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "GB 28007-2024 婴幼儿及儿童家具安全技术规范",
+      "source_page": 47,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0137__9.儿童床__GB 28007-2024 婴幼儿及儿童家具安全技术规范__ZgpG2NdyVX5x.pdf",
+      "image_count": 2,
+      "resolution_status": "not_machine_readable_excluded",
+      "runtime_action": "exclude_from_runtime",
+      "reason": "阻断页复核默认判断为不影响规则，闭环为不进入自动链路。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "不影响规则",
+        "ocr_status": "empty",
+        "ocr_char_count": 0,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "GB 28008-2024 家具结构安全技术规范",
+      "source_page": 2,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0138__9.儿童床__GB 28008-2024 家具结构安全技术规范__kDnRL6jAJM6Z.pdf",
+      "image_count": 2,
+      "resolution_status": "not_machine_readable_excluded",
+      "runtime_action": "exclude_from_runtime",
+      "reason": "阻断页复核默认判断为不影响规则，闭环为不进入自动链路。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": true,
+        "default_decision": "不影响规则",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 3,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "GB 28008-2024 家具结构安全技术规范",
+      "source_page": 4,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0138__9.儿童床__GB 28008-2024 家具结构安全技术规范__kDnRL6jAJM6Z.pdf",
+      "image_count": 2,
+      "resolution_status": "not_machine_readable_excluded",
+      "runtime_action": "exclude_from_runtime",
+      "reason": "阻断页复核默认判断为不影响规则，闭环为不进入自动链路。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "不影响规则",
+        "ocr_status": "empty",
+        "ocr_char_count": 0,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "GB 28008-2024 家具结构安全技术规范",
+      "source_page": 16,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0138__9.儿童床__GB 28008-2024 家具结构安全技术规范__kDnRL6jAJM6Z.pdf",
+      "image_count": 2,
+      "resolution_status": "not_machine_readable_excluded",
+      "runtime_action": "exclude_from_runtime",
+      "reason": "阻断页复核默认判断为不影响规则，闭环为不进入自动链路。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "不影响规则",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 3,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "GB 28008-2024 家具结构安全技术规范",
+      "source_page": 17,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0138__9.儿童床__GB 28008-2024 家具结构安全技术规范__kDnRL6jAJM6Z.pdf",
+      "image_count": 2,
+      "resolution_status": "not_machine_readable_excluded",
+      "runtime_action": "exclude_from_runtime",
+      "reason": "阻断页复核默认判断为不影响规则，闭环为不进入自动链路。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "不影响规则",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 4,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "GB 28008-2024 家具结构安全技术规范",
+      "source_page": 18,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0138__9.儿童床__GB 28008-2024 家具结构安全技术规范__kDnRL6jAJM6Z.pdf",
+      "image_count": 2,
+      "resolution_status": "not_machine_readable_excluded",
+      "runtime_action": "exclude_from_runtime",
+      "reason": "阻断页复核默认判断为不影响规则，闭环为不进入自动链路。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "不影响规则",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 3,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "GB 28008-2024 家具结构安全技术规范",
+      "source_page": 19,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0138__9.儿童床__GB 28008-2024 家具结构安全技术规范__kDnRL6jAJM6Z.pdf",
+      "image_count": 2,
+      "resolution_status": "not_machine_readable_excluded",
+      "runtime_action": "exclude_from_runtime",
+      "reason": "阻断页复核默认判断为不影响规则，闭环为不进入自动链路。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": false,
+        "default_decision": "不影响规则",
+        "ocr_status": "empty",
+        "ocr_char_count": 0,
+        "image_ready": true
+      }
+    },
+    {
+      "source_title": "可调节床头使用说明书",
+      "source_page": 1,
+      "source_local_path": "/Users/admin/Nutstore Files/我的坚果云/CODE/project/liangqin-skill/skill/liangqin-pricing/sources/inbox/designer-manual-online-2026-05-13/files/0145__10.床榻__可调节床头使用说明书__gwva2dxOW4ZQ.pdf",
+      "image_count": 1,
+      "resolution_status": "machine_extractable_knowledge",
+      "runtime_action": "requeue_as_knowledge",
+      "reason": "OCR 文字足够且未命中金额/安全/限制高风险词，可作为知识候选回流。",
+      "evidence": {
+        "blocking_page_found": true,
+        "quality_sample_found": true,
+        "default_decision": "OCR 可用",
+        "ocr_status": "succeeded",
+        "ocr_char_count": 111,
+        "image_ready": true
+      }
+    }
+  ]
+}
